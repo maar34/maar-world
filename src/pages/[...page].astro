@@ -1,0 +1,211 @@
+---
+/**
+ * Every migrated page, at the exact path the frozen route policy demands.
+ *
+ * Modelled on `[cardCode].astro`: `getStaticPaths` enumerates the collection, so
+ * this route can only ever claim paths that a content record asked for. The
+ * param is `outputPath` verbatim — never re-derived from a title, a slug or a
+ * filename, because the whole point is that `/collect/cards/032_-maar-sky-
+ * sounds.3-card X ` keeps its internal space *and* its trailing space.
+ *
+ * One file per page. The host serves `/x` and `/x.html` from the same `x.html`,
+ * so both spellings resolve from a single emitted file and no twin is written.
+ * Pages whose contract includes the literal `…/index.html` spelling carry an
+ * `outputPath` ending `/index` for exactly that reason.
+ *
+ * Layout is page family 03 (entry) as used by the card pages: single measure,
+ * h1 may carry marks, nothing below it does. Legacy bodies arrive as raw HTML
+ * carrying dead theme class names; they are scoped by `.legacy` and given a
+ * neutral reading treatment rather than restyled page by page, which is MW-11's
+ * responsibility once the design spec's page families are implemented.
+ */
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GlyphRun from '../components/patterns/GlyphRun.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');
+  const byPath = new Map(pages.map((p) => [p.data.outputPath, p]));
+
+  return pages.map((entry) => ({
+    // Byte-for-byte. No trimming, no slugifying, no case folding.
+    params: { page: entry.data.outputPath },
+    props: { entry, all: [...byPath.values()] },
+  }));
+}
+
+const { entry, all } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+
+/** `{% include article-list.html %}` used to render these. */
+const listed =
+  d.indexOf === 'lab'
+    ? all.filter((p) => p.data.kind === 'lab')
+    : d.indexOf === 'collect-cards'
+      ? all.filter((p) => p.data.kind === 'collect-card')
+      : d.indexOf === 'collect-docs'
+        ? all.filter((p) => p.data.kind === 'doc')
+        : [];
+
+const sorted = [...listed].sort((a, b) => {
+  const da = String(a.data.date ?? '');
+  const db = String(b.data.date ?? '');
+  if (da !== db) return db.localeCompare(da);
+  return a.data.outputPath.localeCompare(b.data.outputPath);
+});
+
+/** dist-relative outputPath → the URL a browser asks for. */
+const hrefOf = (outputPath: string) =>
+  `/${outputPath.replace(/(^|\/)index$/, '')}`.replace(/\/$/, '') || '/';
+
+const isCard = d.kind === 'collect-card';
+---
+
+<BaseLayout
+  title={d.title}
+  description={d.description ?? d.card_description}
+  surface={d.surface}
+  noindex={d.noindex}
+  redirectTo={d.redirectTo}
+>
+  <main class="page">
+    {
+      isCard && (
+        <p class="t-meta suit">
+          {d.suit_title}
+          <GlyphRun seed={d.outputPath} />
+          {d.card_title}
+        </p>
+      )
+    }
+
+    {isCard && <h1>{d.card_title}</h1>}
+
+    {
+      isCard && d.card_image && (
+        <figure class="cover">
+          <img src={d.card_image} alt={`${d.suit_title} ${d.card_title}`} loading="lazy" decoding="async" />
+        </figure>
+      )
+    }
+
+    {isCard && d.card_description && <p class="description">{d.card_description}</p>}
+
+    <div class="legacy">
+      <Content />
+    </div>
+
+    {
+      /* play.maar.world shares the registrable domain, so it is same-site even
+         inside an iframe and needs no click-to-load facade. */
+      isCard && d.snip_player && (
+        <iframe src={d.snip_player} title={`${d.suit_title} ${d.card_title} player`} loading="lazy" class="player" />
+      )
+    }
+
+    {
+      sorted.length > 0 && (
+        <ul role="list" class="index-list">
+          {sorted.map((p) => (
+            <li>
+              <a href={hrefOf(p.data.outputPath)}>{p.data.title}</a>
+              {p.data.date && <span class="t-meta"> {String(p.data.date).slice(0, 10)}</span>}
+              {p.data.lang && <span class="t-meta"> {p.data.lang}</span>}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </main>
+</BaseLayout>
+
+<style>
+  /* Page family 03 — entry. Single measure. */
+  .page {
+    max-width: 72ch;
+    margin: 0 auto;
+    padding: var(--s-16) var(--s-6) var(--s-24);
+    display: flex;
+    flex-direction: column;
+    /* Sibling groups use gap, never margins. Space is the primary separator. */
+    gap: var(--s-6);
+  }
+
+  .suit {
+    color: var(--ink-meta);
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    margin: 0;
+  }
+
+  .cover {
+    margin: 0;
+    background: var(--sf-raised);
+    border-radius: var(--r-0);
+  }
+
+  .cover img {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+
+  .description {
+    color: var(--ink-muted);
+  }
+
+  .player {
+    width: 100%;
+    min-height: 220px;
+    border: 0;
+    background: var(--sf-sunken);
+    border-radius: var(--r-0);
+  }
+
+  .index-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+
+  .index-list .t-meta {
+    color: var(--ink-meta);
+  }
+
+  /* Legacy bodies. Everything below is containment, not design: the markup
+     carries class names from a theme that no longer exists, so it is given a
+     neutral reading treatment and prevented from overflowing the measure. */
+  .legacy :global(img),
+  .legacy :global(video),
+  .legacy :global(iframe),
+  .legacy :global(object) {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--r-0);
+  }
+
+  .legacy :global(iframe) {
+    width: 100%;
+    min-height: 320px;
+    border: 0;
+    background: var(--sf-sunken);
+  }
+
+  .legacy :global(pre),
+  .legacy :global(table) {
+    overflow-x: auto;
+    display: block;
+    max-width: 100%;
+  }
+
+  .legacy :global(.embed-facade) {
+    background: var(--sf-raised);
+    padding: var(--s-4);
+    border-radius: var(--r-0);
+  }
+</style>

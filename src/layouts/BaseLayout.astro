@@ -32,10 +32,18 @@ interface Props {
   surface?: 'dark' | 'paper';
   noindex?: boolean;
   canonical?: string;
+  /**
+   * A deprecated address that production serves as a 200 with a meta refresh,
+   * not as an HTTP redirect. `/interplanetary-players` is the only one. Kept as
+   * a meta refresh rather than JavaScript so it works with scripting disabled.
+   */
+  redirectTo?: string;
 }
 
-const { title, description, surface = 'dark', noindex = false, canonical } = Astro.props;
-const canonicalUrl = canonical ?? new URL(Astro.url.pathname, SITE.origin).href;
+const { title, description, surface = 'dark', noindex = false, canonical, redirectTo } = Astro.props;
+const canonicalUrl = canonical ?? (redirectTo
+  ? new URL(redirectTo, SITE.origin).href
+  : new URL(Astro.url.pathname, SITE.origin).href);
 ---
 
 <!doctype html>
@@ -46,6 +54,7 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname, SITE.origin).href;
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     {noindex && <meta name="robots" content="noindex" />}
+    {redirectTo && <meta http-equiv="refresh" content={`0; url=${redirectTo}`} />}
     <link rel="canonical" href={canonicalUrl} />
   </head>
   <body>

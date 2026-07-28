@@ -1,0 +1,28 @@
+---
+outputPath: "revx000"
+title: "revx000"
+area: "maar"
+kind: "genesis"
+surface: "dark"
+inNav: false
+tags: []
+source: "maar.world/collections/_genesis/revx000.md"
+---
+
+# Revolution X  
+
+Aural improvisation that fuses electronic and acoustic instruments from Africa, America, Asia, Europe, and Oceania.
+
+- Artwork: Maar
+ <br>
+
+### Download
+
+Thanks for purchasing this composition, hope you enjoy it. 
+
+<a href="https://www.dropbox.com/s/wbp47dj78aj8jm4/06%20RevolutionX.mp3?dl=0" rel="mp3" target="_blank">mp3</a> <br>
+
+<a href="https://www.dropbox.com/s/49n12aysvla2sml/06%20RevolutionX.aif?dl=0" rel="wav" target="_blank">uncompressed wav</a> <br>
+<br>
+ 
+![Image](/img/6.revx.Artboard.png){:.border.rounded.shadow}

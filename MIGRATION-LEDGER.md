@@ -72,3 +72,4 @@ npm run ledger -- append MW-7 BLOCKED lab/es/dadada.html "reason: source referen
 2026-07-28T22:12Z  MW-6   DONE     cards/orbiter-forward                      33 of 35 cards forward to orbiter.plantasia.space/?trackId=<track_v2_id> after 300ms, matching production; DWE1406+STW3344 correctly do not
 2026-07-28T22:12Z  MW-6   NOTE     cards/forward-was-missed                   crawler does not run JS so the forward was invisible in MW-4; found via planning README. verify:cards now asserts it (12 assertions)
 2026-07-28T22:12Z  MW-6   NOTE     design/reference-4a                        Maar World 4a.dc.html is a direction mockup: cut-word+echo mechanics useful, but its blur/gradient washes and off-palette colours are forbidden by the spec. Spec wins.
+2026-07-28T22:31Z  MW-7   DONE     routes/all-preserved-paths                 verify:routes green - 264 distinct paths, 0 missing (was 192); 95 pages migrated from 3 legacy sites
