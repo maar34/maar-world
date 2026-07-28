@@ -8,6 +8,8 @@ inNav: false
 tags: ["ES", "Capital", "Cultural", "Música", "Compartida", "Acceso"]
 source: "maar.world/collections/_lab/es/2026-01-07-Music-access-human-mind.md"
 lang: "es"
+indexGroup: "lab"
+indexOrder: "es/2026-01-07-Music-access-human-mind.md"
 date: "2026-01-07"
 ---
 

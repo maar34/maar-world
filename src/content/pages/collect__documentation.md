@@ -8,6 +8,7 @@ inNav: false
 tags: []
 source: "collect.maar.world/collections/_pages/documentation.html"
 indexOf: "collect-docs"
+indexCovers: true
 ---
 
 # Docs

@@ -7,6 +7,9 @@ surface: "paper"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_documentation/07-mw/02-Terms&Conditions.md"
+indexGroup: "collect-docs"
+indexOrder: "07-mw/02-Terms&Conditions.md"
+cover: "/img/docs/covers/terms-cover.jpg"
 ---
 
 # Terms and Conditions

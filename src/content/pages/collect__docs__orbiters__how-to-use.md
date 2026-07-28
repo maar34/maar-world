@@ -7,6 +7,9 @@ surface: "paper"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_documentation/04-orbiters/01-how-to-use.md"
+indexGroup: "collect-docs"
+indexOrder: "04-orbiters/01-how-to-use.md"
+cover: "/img/docs/covers/how-to.jpg"
 ---
 
 # How to use

@@ -347,12 +347,29 @@ function expandHomeSwiper(body) {
   return body.slice(0, start) + slides + body.slice(end + '{% endfor %}'.length);
 }
 
-/** Which collection an `article-list` include was rendering. */
+/**
+ * Which collection an `article-list` include was rendering, and whether that
+ * include showed each entry's cover image.
+ *
+ * The second half is load-bearing, not decoration. `type='grid'` renders a
+ * thumbnail per entry; `show_cover=false` renders none. Dropping it is how
+ * `/collect/documentation.html` — nine cover thumbnails in production — shipped
+ * as a bare list of nine links with no images at all.
+ */
 function indexOfInclude(body) {
-  if (/article-list\.html[\s\S]{0,120}?articles=site\.lab/.test(body)) return 'lab';
-  if (/article-list\.html[\s\S]{0,120}?articles=site\.cards/.test(body)) return 'collect-cards';
-  if (/article-list\.html[\s\S]{0,120}?articles=site\.documentation/.test(body)) return 'collect-docs';
-  return null;
+  const m = /\{%-?\s*include\s+article-list\.html([\s\S]{0,240}?)-?%\}/.exec(body);
+  if (!m) return null;
+  const args = m[1];
+  const name = /articles=site\.lab\b/.test(args)
+    ? 'lab'
+    : /articles=site\.cards\b/.test(args)
+      ? 'collect-cards'
+      : /articles=site\.documentation\b/.test(args)
+        ? 'collect-docs'
+        : null;
+  if (!name) return null;
+  const covers = /type\s*=\s*'grid'/.test(args) || /show_cover\s*=\s*true/.test(args);
+  return { name, covers };
 }
 
 /** Strip a whole element (including children) wherever it appears. */
@@ -622,6 +639,72 @@ function kindOf(key, area) {
   return 'page';
 }
 
+/**
+ * Which legacy Jekyll collection a source belonged to, and where it sat in it.
+ *
+ * `site.documentation` is the set of files under `collections/_documentation/`,
+ * full stop — it is not "every page whose URL starts /docs/". Deriving the list
+ * from the URL instead lost `/privacy.html`, which lives in that collection but
+ * is published at the site root, so the Documentation index shipped nine entries
+ * where production renders ten.
+ *
+ * `indexOrder` is the collection-relative path. Jekyll orders an output
+ * collection by that path, and because `.` sorts before `/`, `03-ent-cards.md`
+ * precedes `03-ent-cards/01-sustainability.md` — which is exactly the order
+ * production renders. Sorting by it reproduces the live page rather than
+ * approximating it.
+ */
+const INDEX_COLLECTION = {
+  '_documentation': 'collect-docs',
+  '_cards': 'collect-cards',
+  '_lab': 'lab',
+};
+
+function indexMembership(rel) {
+  const m = /^collections\/(_[a-z]+)\/([\s\S]+)$/.exec(rel);
+  if (!m) return null;
+  const group = INDEX_COLLECTION[m[1]];
+  return group ? { group, order: m[2] } : null;
+}
+
+/**
+ * Groups whose index page renders a cover per entry, so a cover is worth
+ * carrying at all.
+ *
+ * Computed ahead of the write loop because the decision belongs to the *index*
+ * page and applies to every *member*. Carrying a cover nobody renders is not
+ * free: collect-media.mjs copies whatever a record references, so an unrendered
+ * cover puts megabytes of unreachable image into git forever.
+ */
+const coveredGroups = new Set();
+for (const m of matched) {
+  const inc = indexOfInclude(parse(readFileSync(m.source.abs, 'utf8')).body);
+  if (inc?.covers) coveredGroups.add(inc.name);
+}
+
+/**
+ * A cover image that this repository can actually serve.
+ *
+ * Only a root-relative path that exists in the read-only checkout qualifies:
+ * collect-media.mjs copies exactly those into media/, so the reference resolves
+ * first-party. Legacy `cover:` values that are absolute URLs — the Dropbox card
+ * art — are deliberately not carried. Carrying them would fire a third-party
+ * request on page load, which is the MW-6 BLOCKED this build must not widen.
+ */
+function coverFrom(data, origin) {
+  const raw = typeof data.cover === 'string' ? data.cover.trim().replace(/^["']|["']$/g, '') : '';
+  if (!raw || /^(https?:)?\/\//i.test(raw)) return null;
+  const path = raw.startsWith('/') ? raw : `/${raw}`;
+  if (!/^\/(img|assets)\//.test(path)) return null;
+  let onDisk = path.slice(1);
+  try {
+    onDisk = decodeURIComponent(onDisk);
+  } catch {
+    /* malformed escape — compare literally */
+  }
+  return existsSync(join(SITES[origin], onDisk)) ? path : null;
+}
+
 function titleFrom(data, key) {
   for (const k of ['title', 'card_title']) {
     if (typeof data[k] === 'string' && data[k].trim()) {
@@ -674,7 +757,21 @@ for (const m of matched) {
   if (/^lab\/en\//.test(m.key)) record.lang = 'en';
   if (/^lab\/es\//.test(m.key)) record.lang = 'es';
   if (data.noindex === true) record.noindex = true;
-  if (t.wantsIndex) record.indexOf = t.wantsIndex;
+  if (t.wantsIndex) {
+    record.indexOf = t.wantsIndex.name;
+    if (t.wantsIndex.covers) record.indexCovers = true;
+  }
+
+  const member = indexMembership(m.source.rel);
+  if (member) {
+    record.indexGroup = member.group;
+    record.indexOrder = member.order;
+  }
+
+  if (member && coveredGroups.has(member.group)) {
+    const cover = coverFrom(data, m.meta.origin);
+    if (cover) record.cover = cover;
+  }
   if (typeof data.excerpt === 'string' && data.excerpt.trim() && !data.excerpt.includes('<')) {
     record.description = data.excerpt.trim();
   }

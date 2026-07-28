@@ -7,6 +7,9 @@ surface: "paper"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_documentation/03-ent-cards/04-nfc.md"
+indexGroup: "collect-docs"
+indexOrder: "03-ent-cards/04-nfc.md"
+cover: "/img/docs/covers/nfc-cover.jpeg"
 ---
 
 # NFC

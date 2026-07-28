@@ -7,6 +7,9 @@ surface: "dark"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_documentation/07-mw/03-Privacy.md"
+indexGroup: "collect-docs"
+indexOrder: "07-mw/03-Privacy.md"
+cover: "/img/docs/covers/terms-cover.jpg"
 ---
 
 # Privacy and Cookies Policy  

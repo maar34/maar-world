@@ -7,6 +7,9 @@ surface: "paper"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_documentation/03-ent-cards/01-sustainability.md"
+indexGroup: "collect-docs"
+indexOrder: "03-ent-cards/01-sustainability.md"
+cover: "/img/docs/covers/sustainability-cover.jpeg"
 ---
 
 # Sustainability

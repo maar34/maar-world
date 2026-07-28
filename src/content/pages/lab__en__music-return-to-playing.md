@@ -8,6 +8,8 @@ inNav: false
 tags: ["EN", "Music", "Cultural", "Capital", "Participation", "Listening", "Intelligence"]
 source: "maar.world/collections/_lab/en/2026-01-20-music-abstraction-return-playing.md"
 lang: "en"
+indexGroup: "lab"
+indexOrder: "en/2026-01-20-music-abstraction-return-playing.md"
 date: "2026-01-20"
 ---
 

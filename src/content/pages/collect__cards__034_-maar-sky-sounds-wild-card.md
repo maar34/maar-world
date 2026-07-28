@@ -7,6 +7,8 @@ surface: "dark"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_cards/034_-maar-sky-sounds-wild-card.md"
+indexGroup: "collect-cards"
+indexOrder: "034_-maar-sky-sounds-wild-card.md"
 suit_title: "SkySounds"
 card_title: "WildCard"
 card_image: "https://www.dropbox.com/s/k2gdp6saf52082y/SkySounds34.png?raw=1"

@@ -39,20 +39,30 @@ const { entry, all } = Astro.props;
 const d = entry.data;
 const { Content } = await render(entry);
 
-/** `{% include article-list.html %}` used to render these. */
-const listed =
-  d.indexOf === 'lab'
-    ? all.filter((p) => p.data.kind === 'lab')
-    : d.indexOf === 'collect-cards'
-      ? all.filter((p) => p.data.kind === 'collect-card')
-      : d.indexOf === 'collect-docs'
-        ? all.filter((p) => p.data.kind === 'doc')
-        : [];
+/**
+ * `{% include article-list.html %}` used to render these.
+ *
+ * Membership comes from `indexGroup` — the legacy Jekyll collection the record
+ * was migrated out of — not from `kind`, which is derived from the URL. The two
+ * are not the same set: `/collect/privacy` belongs to `site.documentation` but
+ * is published at the site root, so a URL-derived filter left it out and the
+ * Documentation index rendered nine entries where production renders ten.
+ */
+const listed = d.indexOf ? all.filter((p) => p.data.indexGroup === d.indexOf) : [];
 
+/**
+ * Dated collections (the Lab) read newest first. Undated ones fall through to
+ * `indexOrder`, the collection-relative source path, which is the order Jekyll
+ * itself rendered — `03-ent-cards.md` before `03-ent-cards/01-sustainability.md`
+ * because `.` sorts before `/`.
+ */
 const sorted = [...listed].sort((a, b) => {
   const da = String(a.data.date ?? '');
   const db = String(b.data.date ?? '');
   if (da !== db) return db.localeCompare(da);
+  const oa = String(a.data.indexOrder ?? '');
+  const ob = String(b.data.indexOrder ?? '');
+  if (oa !== ob) return oa.localeCompare(ob);
   return a.data.outputPath.localeCompare(b.data.outputPath);
 });
 
@@ -121,9 +131,19 @@ const isCard = d.kind === 'collect-card';
 
     {
       sorted.length > 0 && (
-        <ul role="list" class="index-list">
+        <ul role="list" class={d.indexCovers ? 'index-list index-list--covers' : 'index-list'}>
           {sorted.map((p) => (
             <li>
+              {/* The legacy include rendered a thumbnail per entry for
+                  `type='grid'` lists. The image is decorative — the anchor
+                  beside it carries the same destination and the readable name —
+                  so it takes an empty alt rather than repeating the title to a
+                  screen reader. */}
+              {d.indexCovers && p.data.cover && (
+                <a class="index-list__cover" href={hrefOf(p.data.outputPath)} tabindex="-1" aria-hidden="true">
+                  <img src={p.data.cover} alt="" loading="lazy" decoding="async" />
+                </a>
+              )}
               <a href={hrefOf(p.data.outputPath)}>{p.data.title}</a>
               {p.data.date && <span class="t-meta"> {String(p.data.date).slice(0, 10)}</span>}
               {p.data.lang && <span class="t-meta"> {p.data.lang}</span>}
@@ -190,6 +210,30 @@ const isCard = d.kind === 'collect-card';
 
   .index-list .t-meta {
     color: var(--ink-meta);
+  }
+
+  /* A covered list is a grid of entries, not a run of lines. Two columns at
+     reading width, one below it. No wash, no shadow: the plate is the surface
+     token and the image sits flush on it. */
+  .index-list--covers {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: var(--s-6);
+  }
+
+  .index-list__cover {
+    display: block;
+    background: var(--sf-raised);
+    border-radius: var(--r-0);
+    margin-bottom: var(--s-2);
+  }
+
+  .index-list__cover img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: var(--r-0);
   }
 
   /* Legacy bodies. Everything below is containment, not design: the markup

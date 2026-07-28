@@ -7,6 +7,9 @@ surface: "paper"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_documentation/02-tutorials.md"
+indexGroup: "collect-docs"
+indexOrder: "02-tutorials.md"
+cover: "/img/docs/covers/tutorials-cover.jpeg"
 ---
 
 # Tutorials

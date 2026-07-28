@@ -7,6 +7,8 @@ surface: "dark"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_cards/007_-maar-sky-sounds.1-card VII.md"
+indexGroup: "collect-cards"
+indexOrder: "007_-maar-sky-sounds.1-card VII.md"
 suit_title: "SkySounds.1"
 card_title: "Card VII"
 card_image: "https://www.dropbox.com/s/j78enrhvw79bgbz/SkySounds1_7.png?raw=1"

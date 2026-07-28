@@ -7,6 +7,9 @@ surface: "paper"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_documentation/07-mw.md"
+indexGroup: "collect-docs"
+indexOrder: "07-mw.md"
+cover: "/img/docs/covers/information-cover.jpg"
 ---
 
 # Information

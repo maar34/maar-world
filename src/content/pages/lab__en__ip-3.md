@@ -8,6 +8,8 @@ inNav: false
 tags: ["EW", "orbiter", "EN"]
 source: "maar.world/collections/_lab/en/2023-08-25-01_IP3.md"
 lang: "en"
+indexGroup: "lab"
+indexOrder: "en/2023-08-25-01_IP3.md"
 ---
 
 # Interplanetary ancestors 3-3 (EN)

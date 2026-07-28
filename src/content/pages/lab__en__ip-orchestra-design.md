@@ -8,6 +8,8 @@ inNav: false
 tags: ["orbiter", "EN"]
 source: "maar.world/collections/_lab/en/2024-09-01-Orbital Creation Workshop.md"
 lang: "en"
+indexGroup: "lab"
+indexOrder: "en/2024-09-01-Orbital Creation Workshop.md"
 ---
 
 # "Orbital Creation Workshop"

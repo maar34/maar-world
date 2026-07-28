@@ -138,6 +138,36 @@ export const pageSchema = z
     indexOf: z.enum(['lab', 'collect-cards', 'collect-docs']).optional(),
 
     /**
+     * Whether that list renders each entry's cover image. The legacy include
+     * took `type='grid'` (covers) or `show_cover=false` (none), and losing the
+     * distinction is what shipped `/collect/documentation.html` with none of its
+     * nine thumbnails.
+     */
+    indexCovers: z.boolean().optional(),
+
+    /**
+     * Membership of a legacy Jekyll output collection, and the position in it.
+     *
+     * `site.documentation` is a directory, not a URL prefix: `/privacy.html`
+     * belongs to it while living at the site root. Deriving the list from `kind`
+     * — which is derived from the URL — silently dropped it. `indexOrder` is the
+     * collection-relative source path, which is the order Jekyll rendered.
+     */
+    indexGroup: z.enum(['lab', 'collect-cards', 'collect-docs']).optional(),
+    indexOrder: z.string().optional(),
+
+    /**
+     * A first-party cover image, root-relative. Only covers that exist in a
+     * read-only legacy checkout are carried, because only those can be
+     * self-hosted out of media/; an absolute URL here would be a third-party
+     * request on page load.
+     */
+    cover: z
+      .string()
+      .regex(/^\/(img|assets)\//, 'cover must be a root-relative first-party /img or /assets path')
+      .optional(),
+
+    /**
      * `/interplanetary-players` is a deprecated address that production serves
      * as a meta-refresh stub, not an HTTP redirect. Preserved exactly, because
      * the route policy says preserve and a 200 is what is live.

@@ -7,6 +7,8 @@ surface: "dark"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_cards/033_-maar-sky-sounds.3-card XI.md"
+indexGroup: "collect-cards"
+indexOrder: "033_-maar-sky-sounds.3-card XI.md"
 suit_title: "SkySounds 3"
 card_title: "Card XI"
 card_image: "https://www.dropbox.com/s/vu87kq77f0a7cr4/Thumb_SkySounds_3_11.jpg?raw=1"

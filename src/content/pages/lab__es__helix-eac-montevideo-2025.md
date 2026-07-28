@@ -8,6 +8,8 @@ inNav: false
 tags: ["ES", "Helix", "EAC", "Montevideo", "instalacion", "interaccion", "red", "Plantasia"]
 source: "maar.world/collections/_lab/es/2026-03-24-Helix-EAC-Montevideo.md"
 lang: "es"
+indexGroup: "lab"
+indexOrder: "es/2026-03-24-Helix-EAC-Montevideo.md"
 date: "2026-03-24"
 ---
 
