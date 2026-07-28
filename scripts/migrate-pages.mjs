@@ -970,6 +970,159 @@ for (const m of matched) {
   if (inc?.covers) coveredGroups.add(inc.name);
 }
 
+// ── 5a. the Lab index ────────────────────────────────────────────────────
+
+/**
+ * A one-line plain-text reduction of a legacy body, for an index excerpt.
+ *
+ * Jekyll had no `excerpt_separator` in any Lab article, so `a.excerpt` was the
+ * *whole rendered document* run through `strip_html` and truncated. This does
+ * the same reduction against the same source: markup out, syntax out, the
+ * reading order kept.
+ */
+function bodyToText(body) {
+  return body
+    .replace(/^---\r?\n[\s\S]*?\r?\n---/, '')
+    .replace(/\{%[\s\S]*?%\}/g, ' ')
+    .replace(/\{\{[\s\S]*?\}\}/g, ' ')
+    .replace(/\{:[.#][^}\n]*\}/g, ' ')
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, ' ')
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/^\s{0,3}#{1,6}\s+/gm, '')
+    .replace(/^\s{0,3}>\s?/gm, '')
+    .replace(/^\s{0,3}([-*+]|\d+[.)])\s+/gm, '')
+    .replace(/[*_`~]/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Liquid's `truncate` — the ellipsis counts towards the length. */
+function truncate(text, length = 200, ellipsis = '…') {
+  return text.length <= length ? text : text.slice(0, length - ellipsis.length).trimEnd() + ellipsis;
+}
+
+/**
+ * The date Jekyll gave a document.
+ *
+ * Frontmatter first, then the `YYYY-MM-DD-` filename prefix, which is where 13
+ * of the 20 Lab articles keep theirs — Jekyll reads it off the name of a file in
+ * an output collection, and reading only `date:` left those 13 undated, which
+ * silently dropped the whole of 2024 and 2023 out of the year-grouped index.
+ */
+function dateOf(data, rel) {
+  if (typeof data.date === 'string' && /^\d{4}-\d{2}-\d{2}/.test(data.date)) return data.date.slice(0, 10);
+  const m = /(^|\/)(\d{4}-\d{2}-\d{2})-/.exec(rel);
+  return m ? m[2] : null;
+}
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/** `2026-03-24` → `Mar 24, 2026`, the format the Lab index has always shown. */
+function readableDate(iso) {
+  const [y, mo, d] = iso.split('-').map(Number);
+  return `${MONTHS[mo - 1]} ${String(d).padStart(2, '0')}, ${y}`;
+}
+
+const escapeText = (s) =>
+  String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+/**
+ * The Lab index, rendered into the page body.
+ *
+ * `{% include article-list.html … group_by='year' show_date=true show_excerpt=true %}`
+ * rendered a year heading, a title heading, a formatted date, a 200-character
+ * excerpt and a tag list per article — 26 headings and 20 excerpts. The
+ * migration reduced the whole include to `indexOf: 'lab'`, and the generic index
+ * the route renders from that is one flat `<ul>` of title · ISO date · language:
+ * 1016 characters against production's 5792, with every excerpt and every tag
+ * gone.
+ *
+ * It is written here, into the record's own body, because the generic index
+ * lives in `src/pages/[...page].astro` and this session does not own that file.
+ * `indexOf` is dropped from this one record so the two do not both render.
+ *
+ * The shape is the design spec's page family 02: year-grouped rows, one rule per
+ * year group — the single place the spec allows a rule inside a page body — and
+ * no rule between rows.
+ *
+ * Tags are chips, not links. Production linked each to `/lab.html?tag=X` and a
+ * `<script>` on the page hid the non-matching rows; MW-7 forbids application
+ * JavaScript outside the Helix island, so those links would land on an
+ * unfiltered `/lab` and do nothing. The tag text is what carries the meaning and
+ * it is all kept.
+ */
+function labIndexHtml(entries) {
+  const byYear = new Map();
+  for (const e of entries) {
+    const year = e.date.slice(0, 4);
+    if (!byYear.has(year)) byYear.set(year, []);
+    byYear.get(year).push(e);
+  }
+
+  const out = ['<div class="index index--lab">'];
+  for (const year of [...byYear.keys()].sort().reverse()) {
+    out.push(`<section class="index-year" aria-labelledby="lab-${year}">`);
+    out.push(`<h2 class="index-year__label" id="lab-${year}">${year}</h2>`);
+    out.push('<hr class="index-year__rule" />');
+    out.push('<ul class="index-rows" role="list">');
+    for (const e of byYear.get(year)) {
+      out.push('<li class="index-row">');
+      out.push(`<h3 class="index-row__title"><a href="${escapeAttr(e.href)}">${escapeText(e.title)}</a></h3>`);
+      out.push(`<time class="index-row__date" datetime="${e.date}">${readableDate(e.date)}</time>`);
+      if (e.excerpt) out.push(`<p class="index-row__excerpt">${escapeText(e.excerpt)}</p>`);
+      if (e.tags.length) {
+        out.push(
+          '<ul class="index-row__tags" role="list">' +
+            e.tags.map((t) => `<li class="index-row__tag">${escapeText(t)}</li>`).join('') +
+            '</ul>',
+        );
+      }
+      out.push('</li>');
+    }
+    out.push('</ul>');
+    out.push('</section>');
+  }
+  out.push('</div>');
+  return out.join('\n');
+}
+
+/**
+ * Every Lab article, in the order the index shows them: newest first, and inside
+ * a day the order Jekyll itself used — the collection-relative source path.
+ */
+function collectLabEntries() {
+  const entries = [];
+  for (const m of matched) {
+    if (!/^collections\/_lab\//.test(m.source.rel)) continue;
+    const raw = readFileSync(m.source.abs, 'utf8');
+    const { data, body } = parse(raw);
+    const date = dateOf(data, m.source.rel);
+    if (!date) continue;
+    entries.push({
+      href: encodeURI(`/${m.key}`),
+      title: pageTitleFrom(data, m.key),
+      date,
+      order: m.source.rel,
+      tags: typeof data.tags === 'string' ? data.tags.split(/\s+/).filter(Boolean) : [],
+      excerpt: truncate(bodyToText(body)),
+    });
+  }
+  /**
+   * `sort: 'date' | reverse` in the legacy include. Jekyll's stable sort leaves
+   * same-day articles in document order — which is source-path order — and
+   * `reverse` then flips the whole array, so within a day the *last* path comes
+   * first. That is why production lists es/ip-3, es/ip-2, es/ip-1, en/ip-3 …
+   */
+  return entries.sort((a, b) => (a.date === b.date ? b.order.localeCompare(a.order) : b.date.localeCompare(a.date)));
+}
+
+const LAB_ENTRIES = collectLabEntries();
+
 /**
  * A cover image that this repository can actually serve.
  *
@@ -1060,7 +1213,13 @@ for (const m of matched) {
   if (/^lab\/en\//.test(m.key)) record.lang = 'en';
   if (/^lab\/es\//.test(m.key)) record.lang = 'es';
   if (data.noindex === true) record.noindex = true;
-  if (t.wantsIndex) {
+  /**
+   * The Lab index is written into the body instead — see `labIndexHtml`. Both
+   * would render otherwise, and the generic one carries neither the excerpts
+   * nor the tags.
+   */
+  const ownIndex = t.wantsIndex?.name === 'lab' ? labIndexHtml(LAB_ENTRIES) : null;
+  if (t.wantsIndex && !ownIndex) {
     record.indexOf = t.wantsIndex.name;
     if (t.wantsIndex.covers) record.indexCovers = true;
   }
@@ -1091,7 +1250,8 @@ for (const m of matched) {
   if (typeof data.excerpt === 'string' && data.excerpt.trim() && !data.excerpt.includes('<')) {
     record.description = data.excerpt.trim();
   }
-  if (typeof data.date === 'string' && /^\d{4}-\d{2}-\d{2}/.test(data.date)) record.date = data.date.slice(0, 10);
+  const recordDate = dateOf(data, m.source.rel);
+  if (recordDate) record.date = recordDate;
 
   // Card facts the collect card pages need, carried verbatim from the legacy
   // record. Commerce URLs are deliberately not carried — the schema bans them.
@@ -1116,6 +1276,8 @@ for (const m of matched) {
     if (record.description) lead.push('', record.description);
     finalBody = `${lead.join('\n')}\n\n${finalBody}`.trim();
   }
+
+  if (ownIndex) finalBody = `${finalBody}\n\n${ownIndex}\n`;
 
   if (SPECIAL[m.key]) finalBody = SPECIAL[m.key](record);
 

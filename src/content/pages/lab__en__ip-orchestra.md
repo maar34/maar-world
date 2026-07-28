@@ -11,6 +11,7 @@ lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2024-08-30-IP_Orchestra.md"
 indexLabel: "Orbital Creation Workshop: Orbiters Orchestra (EN)"
+date: "2024-08-30"
 ---
 
 # Orbital Creation Workshop: Orbiters Orchestra (EN)

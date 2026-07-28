@@ -11,6 +11,7 @@ lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2023-12-09-Dadada.md"
 indexLabel: "Dadada (ES)"
+date: "2023-12-09"
 ---
 
 <p class="embed-facade" data-embed-facade data-embed-provider="soundcloud"><a class="embed-facade__action" href="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1685947338%3Fsecret_token%3Ds-LAlb1xhIGLz&color=%23ff5500&auto_play=false&hide_related=true&show_comments=true&show_user=true&show_reposts=false&show_teaser=false&visual=true" target="_blank" rel="noopener noreferrer"><span class="embed-facade__provider" aria-hidden="true">soundcloud</span><span class="embed-facade__label">listen on soundcloud</span></a><span class="embed-facade__note">opens in a new tab. nothing is requested from soundcloud until you choose it.</span></p><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/maarworld" title="Maar World" target="_blank" style="color: #cccccc; text-decoration: none;">Maar World</a> · <a href="https://soundcloud.com/maarworld/episode-42-season-1-maar-live-set-dadada/s-LAlb1xhIGLz" title="𝕄𝓌 🆁🅰🅳🅸🅾 | Episode 4.2 - Season 1 | Maar Live Set Dadada |" target="_blank" style="color: #cccccc; text-decoration: none;">𝕄𝓌 🆁🅰🅳🅸🅾 | Episode 4.2 - Season 1 | Maar Live Set Dadada |</a></div>

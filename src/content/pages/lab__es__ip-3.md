@@ -11,6 +11,7 @@ lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2023-08-25-01_IP3.md"
 indexLabel: "Ancestros interplanetarios 3-3 (ES)"
+date: "2023-08-25"
 ---
 
 # Ancestros interplanetarios 3-3 (ES)

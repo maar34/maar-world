@@ -11,6 +11,7 @@ lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2024-09-01-Orbital Creation Workshop.md"
 indexLabel: "Orbital Creation Workshop"
+date: "2024-09-01"
 ---
 
 # Orbital Creation Workshop

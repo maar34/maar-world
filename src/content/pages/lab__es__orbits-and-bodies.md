@@ -11,6 +11,7 @@ lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2025-08-24-01-Orbit-and-Bodies.md"
 indexLabel: "Órbitas y Cuerpos"
+date: "2025-08-24"
 ---
 
 # Órbitas y Cuerpos

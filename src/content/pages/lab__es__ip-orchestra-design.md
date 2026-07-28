@@ -11,6 +11,7 @@ lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2024-09-01-Taller de creación orbital.md"
 indexLabel: "Taller de creación orbital"
+date: "2024-09-01"
 ---
 
 # Taller de creación orbital

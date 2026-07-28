@@ -11,6 +11,7 @@ lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2023-08-25-01_IP3.md"
 indexLabel: "Interplanetary ancestors 3-3 (EN)"
+date: "2023-08-25"
 ---
 
 # Interplanetary ancestors 3-3 (EN)

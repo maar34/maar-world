@@ -11,6 +11,7 @@ lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2024-08-30-IP_Orchestra.md"
 indexLabel: "Taller de creación orbital: Orbiters Orchestra (ES)"
+date: "2024-08-30"
 ---
 
 # Taller de creación orbital: Orbiters Orchestra (ES)
