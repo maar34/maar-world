@@ -248,14 +248,48 @@ const FIRST_PARTY = /(^|\/\/|\.)maar\.world(\/|$|:)/i;
 const isFirstParty = (url) =>
   FIRST_PARTY.test(url) || url.startsWith('#') || (url.startsWith('/') && !url.startsWith('//'));
 
+/** How a provider is named to a reader. Never a bare hostname. */
+const PROVIDER_NAME = {
+  youtube: 'youtube',
+  vimeo: 'vimeo',
+  soundcloud: 'soundcloud',
+  bandcamp: 'bandcamp',
+  'google-forms': 'google forms',
+  'google-calendar': 'google calendar',
+  external: 'the source',
+};
+
 /**
  * A click-out facade. No third-party byte is fetched until the visitor chooses
- * to leave, which is what lets the site ship with no cookie banner. MW-9 owns
- * upgrading these in place to true click-to-load players; the marker attribute
- * `data-embed-facade` is what both this and verify:content count as an embed.
+ * to leave, which is what lets the site ship with no cookie banner. The marker
+ * attribute `data-embed-facade` is what both this and verify:content count as
+ * an embed.
+ *
+ * MW-9 kept these as click-*out* rather than turning them into click-to-load
+ * players, and that is a decision, not an omission: an in-page player has to be
+ * injected by script, so every one of these thirteen pages would start shipping
+ * application JavaScript. MW-9 also says the Helix island is the only page
+ * allowed to. Both cannot hold — see the ledger, embeds/click-out-not-load.
+ *
+ * The accessible name of the control is the label alone. The provider chip is
+ * aria-hidden because it repeats a word the label already contains, and the
+ * note sits outside the anchor so it informs the reader without being read out
+ * as part of the link.
+ *
+ * `noreferrer` is deliberate on top of `noopener`: following the link is
+ * consent to visit, not consent to tell them which page sent you.
  */
 function facade(provider, href, label) {
-  return `<p class="embed-facade" data-embed-facade data-embed-provider="${provider}"><a href="${href}" target="_blank" rel="noopener">${label}</a></p>`;
+  const who = PROVIDER_NAME[provider] || PROVIDER_NAME.external;
+  return (
+    `<p class="embed-facade" data-embed-facade data-embed-provider="${provider}">` +
+    `<a class="embed-facade__action" href="${href}" target="_blank" rel="noopener noreferrer">` +
+    `<span class="embed-facade__provider" aria-hidden="true">${who}</span>` +
+    `<span class="embed-facade__label">${label}</span>` +
+    `</a>` +
+    `<span class="embed-facade__note">opens in a new tab. nothing is requested from ${who} until you choose it.</span>` +
+    `</p>`
+  );
 }
 
 const YT_FACADE = (id) => facade('youtube', `https://youtu.be/${id}`, 'watch this video on youtube');

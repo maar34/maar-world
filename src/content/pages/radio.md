@@ -44,7 +44,7 @@ source: "maar.world/collections/_pages/radio.md"
 
 <div class="hero hero--center" style="background-color: #000000;">
 <div class="hero__content">
-<p class="embed-facade" data-embed-facade data-embed-provider="external"><a href="https://s1.ssl-stream.com/public/maar_world_radio/embed?theme=dark" target="_blank" rel="noopener">open this embedded media at its source</a></p>
+<p class="embed-facade" data-embed-facade data-embed-provider="external"><a class="embed-facade__action" href="https://s1.ssl-stream.com/public/maar_world_radio/embed?theme=dark" target="_blank" rel="noopener noreferrer"><span class="embed-facade__provider" aria-hidden="true">the source</span><span class="embed-facade__label">open this embedded media at its source</span></a><span class="embed-facade__note">opens in a new tab. nothing is requested from the source until you choose it.</span></p>
 
 </div>
 </div>

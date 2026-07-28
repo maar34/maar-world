@@ -25,7 +25,7 @@ The workshop arises from the need to explore different forms of interaction and 
 ### For what purpose?
 To promote the creation of an inclusive and experimental sound ensemble, where no prior musical experience is required, allowing participants to explore the infinite possibilities of music and sound in a collaborative environment. Additionally, the workshop aims to integrate artists, students, and the audience into a comprehensive art experience, using technology to synchronize musical creation with human movement and cosmic patterns, such as those of the planets in the Kepler-47 star system.
 
-<div><p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a href="https://youtu.be/3FYGWpvH8Gs" target="_blank" rel="noopener">watch this video on youtube</a></p></div>
+<div><p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a class="embed-facade__action" href="https://youtu.be/3FYGWpvH8Gs" target="_blank" rel="noopener noreferrer"><span class="embed-facade__provider" aria-hidden="true">youtube</span><span class="embed-facade__label">watch this video on youtube</span></a><span class="embed-facade__note">opens in a new tab. nothing is requested from youtube until you choose it.</span></p></div>
 Summary of the presentation of the first orbital creation workshop, University of the Arts Guayaquil, September 2024.
 
 ### What are the Orbiters?

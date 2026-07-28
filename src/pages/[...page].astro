@@ -218,9 +218,76 @@ const isCard = d.kind === 'collect-card';
     max-width: 100%;
   }
 
+  /* ---- click-to-load facades -------------------------------------------
+     Every third-party embed on this site is one of these. No YouTube, Vimeo,
+     SoundCloud, Google Forms or radio-stream byte is requested until the
+     visitor chooses it — which is the whole reason there is no cookie banner
+     and no consent engine in this codebase.
+
+     It is a link, so it is keyboard-operable for free and cannot be operated
+     by accident. The focus ring is the global one from --focus-*; it is only
+     restated here to sit outside the plate rather than inside it. */
   .legacy :global(.embed-facade) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
     background: var(--sf-raised);
-    padding: var(--s-4);
+    border: 1px solid var(--ink-hairline);
     border-radius: var(--r-0);
+    padding: var(--s-4);
+  }
+
+  .legacy :global(.embed-facade__action) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-3);
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  /* The pigment is maar — wayfinding. It is a flat field, not a wash: the
+     provider chip is the only pigment in the component, and type on a pastel
+     is always dark. */
+  .legacy :global(.embed-facade__provider) {
+    flex: none;
+    background: var(--c-maar);
+    color: var(--pigment-ink);
+    border-radius: var(--r-0);
+    padding: 0 var(--s-2);
+    font-family: var(--t-meta-face);
+    font-size: var(--t-meta-size);
+    line-height: var(--t-meta-line);
+    letter-spacing: var(--t-meta-track);
+  }
+
+  .legacy :global(.embed-facade__label) {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .legacy :global(.embed-facade__note) {
+    color: var(--ink-meta);
+    font-family: var(--t-meta-face);
+    font-size: var(--t-meta-size);
+    line-height: var(--t-meta-line);
+    letter-spacing: var(--t-meta-track);
+  }
+
+  .legacy :global(.embed-facade__action:hover) {
+    background: transparent;
+    color: var(--ink);
+  }
+
+  .legacy :global(.embed-facade__action:hover .embed-facade__label) {
+    background: var(--c-maar);
+    color: var(--pigment-ink);
+    text-decoration: none;
+  }
+
+  .legacy :global(.embed-facade__action:focus-visible) {
+    outline: var(--focus-w) solid var(--focus-c);
+    outline-offset: var(--focus-o);
   }
 </style>

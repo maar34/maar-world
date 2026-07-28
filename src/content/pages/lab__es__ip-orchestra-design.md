@@ -25,7 +25,7 @@ El taller surge de la necesidad de explorar distintas formas de interacción y c
 ###  ¿Para qué?
 Fomentar la creación de un ensamble sonoro inclusivo y experimental, donde no se requiere experiencia musical previa, permitiendo a los participantes explorar las infinitas posibilidades de la música y el sonido en un ambiente colaborativo. Además, el taller busca integrar a artistas, estudiantes, y el público presente en una experiencia de arte integral, utilizando la tecnología para sincronizar la creación musical con el movimiento humano y los patrones cósmicos, como los de los planetas del sistema estelar Kepler-47.
 
-<div><p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a href="https://youtu.be/3FYGWpvH8Gs" target="_blank" rel="noopener">watch this video on youtube</a></p></div>
+<div><p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a class="embed-facade__action" href="https://youtu.be/3FYGWpvH8Gs" target="_blank" rel="noopener noreferrer"><span class="embed-facade__provider" aria-hidden="true">youtube</span><span class="embed-facade__label">watch this video on youtube</span></a><span class="embed-facade__note">opens in a new tab. nothing is requested from youtube until you choose it.</span></p></div>
 Resumen de presentación del primer taller de creación orbital, Universidad de las Artes Guayaquil, septiembre 2024. 
 
 ### ¿ Que son los interplanetary Players?

@@ -48,7 +48,7 @@ ENT Worlds
 
 <a href="https://youtu.be/GYhV2qAPZ6w" rel="Trappist Live" target="_blank">TRAPPIST - 01 LIVE AV Head Brothers</a>
 <div class="hero hero--center hero--dark" style="margin:.75rem 0 1rem;">
-<p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a href="https://youtu.be/GYhV2qAPZ6w" target="_blank" rel="noopener">watch this video on youtube</a></p>
+<p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a class="embed-facade__action" href="https://youtu.be/GYhV2qAPZ6w" target="_blank" rel="noopener noreferrer"><span class="embed-facade__provider" aria-hidden="true">youtube</span><span class="embed-facade__label">watch this video on youtube</span></a><span class="embed-facade__note">opens in a new tab. nothing is requested from youtube until you choose it.</span></p>
 <p style="text-align:center;font-size:.85rem;opacity:.85;margin:.35rem 0 0;">TRAPPIST - 01 live AV (Head Brothers)</p>
 </div>
 
@@ -68,13 +68,13 @@ ENT Worlds
   - 21/7/18 📍 Villa serrana SERRANA, MINAS Uruguay
 
 <div class="hero hero--center hero--dark" style="margin:.75rem 0 0;">
-<p class="embed-facade" data-embed-facade data-embed-provider="vimeo"><a href="https://vimeo.com/252728417" target="_blank" rel="noopener">watch this video on vimeo</a></p>
+<p class="embed-facade" data-embed-facade data-embed-provider="vimeo"><a class="embed-facade__action" href="https://vimeo.com/252728417" target="_blank" rel="noopener noreferrer"><span class="embed-facade__provider" aria-hidden="true">vimeo</span><span class="embed-facade__label">watch this video on vimeo</span></a><span class="embed-facade__note">opens in a new tab. nothing is requested from vimeo until you choose it.</span></p>
 <p style="text-align:center;font-size:.85rem;opacity:.85;margin:.35rem 0 0;">Exoplanetas — Hybrid set (excerpt, Vimeo)</p>
 </div>
 
 <a href="https://youtu.be/riEIWUQ-OWQ" rel="Exoplanetas Hybrid" target="_blank">🙏🏼</a>
 <div class="hero hero--center hero--dark" style="margin:.5rem 0 1rem;">
-<p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a href="https://youtu.be/riEIWUQ-OWQ" target="_blank" rel="noopener">watch this video on youtube</a></p>
+<p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a class="embed-facade__action" href="https://youtu.be/riEIWUQ-OWQ" target="_blank" rel="noopener noreferrer"><span class="embed-facade__provider" aria-hidden="true">youtube</span><span class="embed-facade__label">watch this video on youtube</span></a><span class="embed-facade__note">opens in a new tab. nothing is requested from youtube until you choose it.</span></p>
 <p style="text-align:center;font-size:.85rem;opacity:.85;margin:.35rem 0 0;">Exoplanetas — additional excerpt</p>
 </div>
 
@@ -90,7 +90,7 @@ ENT Worlds
   - 05/08/2017 Music production with Watson Supercomputer. 📍 Montevideo, Uruguay
 
 <div class="hero hero--center hero--dark" style="margin:.75rem 0 1rem;">
-<p class="embed-facade" data-embed-facade data-embed-provider="vimeo"><a href="https://vimeo.com/235986660" target="_blank" rel="noopener">watch this video on vimeo</a></p>
+<p class="embed-facade" data-embed-facade data-embed-provider="vimeo"><a class="embed-facade__action" href="https://vimeo.com/235986660" target="_blank" rel="noopener noreferrer"><span class="embed-facade__provider" aria-hidden="true">vimeo</span><span class="embed-facade__label">watch this video on vimeo</span></a><span class="embed-facade__note">opens in a new tab. nothing is requested from vimeo until you choose it.</span></p>
 <p style="text-align:center;font-size:.85rem;opacity:.85;margin:.35rem 0 0;">Watson Says. (Vimeo)</p>
 </div>
 
