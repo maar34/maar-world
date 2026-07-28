@@ -38,6 +38,22 @@ They are human-gated. Reaching MW-11 with checks passing is a complete, successf
 A check that reports SKIP has not passed — it has not run. Green with skips is not
 completeness, and `npm run verify` prints those skips separately for exactly that reason.
 
+`npm run verify` is the source of truth because it is the strongest command here, not because
+it is the one named in this document. It composes, in order:
+
+```
+verify:selftest → verify:schemas → verify:build → verify:contract
+               → verify:routes → verify:cards → verify:content → verify:links → ledger:check
+```
+
+It used to omit `verify:selftest`, `verify:schemas` and `ledger:check` while CI ran them, so a
+local green could still be a red push. `scripts/selftest.mjs` now asserts that every command
+in `.github/workflows/verify.yml` is one `npm run verify` also runs; if you add a step to CI,
+add it to `CHECKS` in `scripts/verify.mjs` too, or that case fails.
+
+**Every fix to the harness gets a selftest case.** A check that has never been seen to fail is
+not evidence of anything. Fixtures use the `MW_VERIFY_ROOT` hook and never touch the real repo.
+
 ## Invariants
 
 These are not preferences. Work that can only pass by breaking one of these does not pass.

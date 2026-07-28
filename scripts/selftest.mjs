@@ -17,6 +17,8 @@ import { tmpdir } from 'node:os';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { CHECK_NAMES } from './verify.mjs';
+
 const SCRIPTS = resolve(dirname(fileURLToPath(import.meta.url)));
 
 /** Same fingerprint verify:cards uses for a frozen card description. */
@@ -724,6 +726,27 @@ check('a recorded removal passes verify:links', (root) => {
   const { code, out } = run(root, 'verify-links.mjs');
   const ok = code === 0 && /all recorded/.test(out);
   return { ok, detail: ok ? 'exit 0, recorded removal accepted' : `expected exit 0, got ${code}\n${out}` };
+});
+
+// --- F7: the documented source of truth is the strongest command ---------
+
+// OPERATING-RULES designates `npm run verify` as the command whose exit code
+// decides whether work is done, but it omitted verify:selftest, verify:schemas
+// and ledger:check — all of which CI ran. An agent could satisfy the documented
+// source of truth and still be red on push. This asserts the containment holds,
+// against the workflow file itself rather than against a copy of its contents.
+check('npm run verify runs everything CI runs', () => {
+  const workflow = readFileSync(resolve(SCRIPTS, '..', '.github/workflows/verify.yml'), 'utf8');
+  const ciCommands = [...workflow.matchAll(/npm run ([a-z0-9:-]+)/g)].map((m) => m[1]);
+  const composed = new Set([...CHECK_NAMES, 'verify']);
+  const missing = [...new Set(ciCommands)].filter((cmd) => !composed.has(cmd));
+  const ok = ciCommands.length > 0 && missing.length === 0;
+  return {
+    ok,
+    detail: ok
+      ? `${new Set(ciCommands).size} CI commands, all composed into npm run verify`
+      : `not run by npm run verify: ${missing.join(', ')}`,
+  };
 });
 
 // --- Results ------------------------------------------------------------
