@@ -3,9 +3,9 @@
 Regenerated at every stop. A fresh agent should need nothing but this file,
 `MIGRATION-LEDGER.md`, `docs/agent/OPERATING-RULES.md` and the Linear issue.
 
-**Last updated:** 2026-07-28T22:55Z
-**Last issue worked:** MW-5 (complete)
-**Next action:** MW-6 — migrate the 35 NFC card records and emit all 70 immutable URLs.
+**Last updated:** 2026-07-28T23:05Z
+**Last issue worked:** MW-6 (build + verification complete; human sign-off outstanding)
+**Next action:** MW-7 — migrate Maar pages, 6 genesis codes and 20 Lab articles (en/es).
 
 ---
 
@@ -16,8 +16,8 @@ Regenerated at every stop. A fresh agent should need nothing but this file,
 | MW-3 | Resumable execution harness | **done** |
 | MW-4 | Freeze the production route manifest | **done** — 306 routes frozen |
 | MW-5 | Repository, Astro scaffold, content schemas | **done** |
-| MW-6 | 35 NFC card records, 70 immutable URLs | not started ← **next** |
-| MW-7 | Maar pages, genesis codes, Lab articles | not started |
+| MW-6 | 35 NFC card records, 70 immutable URLs | **build done, in review** — human must review 35 pages + scan 3 cards |
+| MW-7 | Maar pages, genesis codes, Lab articles | not started ← **next** |
 | MW-8 | Collect → `/collect/*`, Tree → `/tree` | not started |
 | MW-9 | Embed facades, self-hosted fonts, Helix island | not started |
 | MW-11 | Full verification + a11y/responsive sign-off | not started |
@@ -33,7 +33,7 @@ progress metric — it should fall monotonically:
 | Checkpoint | preserved paths missing |
 |---|---|
 | after MW-5 | 262 of 264 |
-| after MW-6 | should drop by the 35 card paths |
+| after MW-6 | **192 of 264** — dropped by exactly the 70 card forms |
 | after MW-8 | must be 0 |
 
 `verify:build`, `verify:links` and the non-build half of `verify:cards` pass **now** and
@@ -41,11 +41,22 @@ must stay passing. A regression there is real.
 
 ## In flight
 
-Nothing. MW-5 finished cleanly.
+Nothing. MW-6 finished cleanly; only its human sign-off remains.
 
 ## Blocked — needs a human
 
-1. **The 34 `%20` Collect card URLs** (`MW-4`, ledger `collect/%20-card-urls`). Are they
+1. **Card art is hotlinked from Dropbox** (`MW-6`, ledger `cards/dropbox-third-party`).
+   37 `<img src>` references to `www.dropbox.com`. MW-6 says keep those URLs and that
+   migrating them is out of scope; the MW-1 quality gate says no third-party request may fire
+   on page load. **Both cannot hold.** `verify:links` fails on this deliberately — the check
+   was not weakened to make the build pass. Either self-host the card art (needs approval) or
+   record an explicit exception for card art as page content. Two of these Dropbox URLs are
+   already dead in production.
+2. **No Artizen destination URL** (`MW-6`, ledger `cards/artizen-destination`).
+   `COMMERCE.destinationUrl` is `null`, so card pages render no destination link at all.
+   MW-1 and MW-6 forbid introducing Bandcamp, so nothing is substituted. One line in
+   `src/config/site.ts` when the URL exists.
+3. **The 34 `%20` Collect card URLs** (`MW-4`, ledger `collect/%20-card-urls`). Are they
    printed on any card, sleeve or packaging? Every one currently defaults to `preserve`,
    because preserving keeps both options open and redirecting does not. 66 routes carry
    this open decision in `routes/policy.json`.
@@ -82,10 +93,10 @@ routes/manifest.production.json   306 routes, frozen — CONTRACT, do not edit
 routes/policy.json                299 preserve / 5 drop / 2 redirect — CONTRACT
 routes/nfc-cards.json             the 35 codes (34 skysounds + STW3344)
 routes/seeds.json                 URLs a crawler cannot discover
-verify/external-links-*.json      326 external URLs, 11 already dead
+verify/external-links-*.json      562 external URLs (incl. on-load resources), 11 already dead
 src/styles/tokens.css             design tokens, framework-neutral
 src/content/schemas.mjs           zod schemas (testable without a build)
-src/config/site.ts                COMMERCE.storeUrl — the ONLY storefront URL
+src/config/site.ts                COMMERCE.destinationUrl — the ONLY destination URL (null)
 ```
 
 Route-shape proofs live at `src/pages/ZZZ0000.astro` and
@@ -117,4 +128,5 @@ npm run ledger -- status summary, including every BLOCKED item
   directory listing.
 - Cards must carry `noindex`, and the schema enforces `noindex: true` as a literal.
 - Commerce URLs are banned from content records by the schema. They come from
-  `COMMERCE.storeUrl`.
+  `COMMERCE.destinationUrl`, which is deliberately `null` — MW-1 and MW-6 forbid introducing
+  Bandcamp or any storefront, so card pages render no destination at all until Artizen exists.
