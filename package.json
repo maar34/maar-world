@@ -8,6 +8,9 @@
     "node": ">=20.3.0"
   },
   "scripts": {
+    "dev": "node scripts/assemble-public.mjs && astro dev",
+    "build": "node scripts/assemble-public.mjs && astro build",
+    "preview": "astro preview",
     "verify": "node scripts/verify.mjs",
     "verify:routes": "node scripts/verify-routes.mjs",
     "verify:cards": "node scripts/verify-cards.mjs",
@@ -16,6 +19,16 @@
     "verify:build": "node scripts/verify-build.mjs",
     "verify:selftest": "node scripts/selftest.mjs",
     "ledger": "node scripts/ledger.mjs",
-    "ledger:check": "node scripts/ledger.mjs check"
+    "ledger:check": "node scripts/ledger.mjs check",
+    "verify:schemas": "node scripts/check-schemas.mjs",
+    "freeze:routes": "node scripts/collect-seeds.mjs && node scripts/freeze-routes.mjs && node scripts/author-policy.mjs",
+    "check:links": "node scripts/check-external-links.mjs"
+  },
+  "dependencies": {
+    "@fontsource/archivo": "^5.3.0",
+    "@fontsource/bodoni-moda": "^5.3.0",
+    "@fontsource/dm-mono": "^5.3.0",
+    "@fontsource/libre-franklin": "^5.3.0",
+    "astro": "^5.18.2"
   }
 }

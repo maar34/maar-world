@@ -1,0 +1,169 @@
+/**
+ * Maar World design tokens.
+ *
+ * Transcribed from the Claude Design project "Maar World Design System" (1.1),
+ * which is the source of truth. Read it live before changing anything here.
+ *
+ * This file is deliberately framework-neutral — plain CSS custom properties, no
+ * Astro and no React. Component code will not transfer to Plantasia (Astro
+ * components and React components are not interchangeable), but tokens transfer
+ * perfectly. This file is the artifact that flows outward, so it must stay
+ * liftable with no refactor.
+ *
+ * The spec's rule: nothing in the build carries a raw hex, a raw pixel size or a
+ * raw duration. This file is the only place raw values are allowed to exist.
+ *
+ * Dark is not a theme toggle — it is the surface. Paper is reached only by
+ * document routes (print, export, long-form reading). Every component is
+ * specified on dark first; the paper variant is the same component with surface
+ * and ink swapped and pastels unchanged.
+ */
+
+:root {
+  /* ---- pigment roles -------------------------------------------------- */
+  /* One pigment per component instance; never two pastels touching.
+     A pastel is always a background, never type. */
+  --c-maar: #a9d5e8;    /* maar — water, place, wayfinding */
+  --c-collect: #f0aecb; /* collect — saving, sets, favourites */
+  --c-tree: #e7c98f;    /* tree — growth, time, lineage */
+  --c-dark: #100f14;
+
+  /* Type on any pastel is always dark, on both surfaces. */
+  --pigment-ink: var(--c-dark);
+
+  /* ---- surface roles: dark shell (default) ---------------------------- */
+  --sf-base: #100f14;
+  --ink: #efe7da;
+
+  --sf-raised: color-mix(in srgb, var(--ink) 7%, transparent);
+  --sf-raised-2: color-mix(in srgb, var(--ink) 12%, transparent);
+  --sf-sunken: color-mix(in srgb, var(--ink) 4%, transparent);
+
+  --ink-muted: color-mix(in srgb, var(--ink) 75%, transparent);
+  --ink-meta: color-mix(in srgb, var(--ink) 60%, transparent);
+  --ink-faint: color-mix(in srgb, var(--ink) 40%, transparent);
+  --ink-hairline: color-mix(in srgb, var(--ink) 13%, transparent);
+  --ink-tint: color-mix(in srgb, var(--ink) 10%, transparent);
+
+  --action-invert: var(--ink);
+  --disabled-bg: color-mix(in srgb, var(--ink) 10%, transparent);
+
+  /* ---- type scale ------------------------------------------------------ */
+  /* All type is lowercase. Bodoni is display only — never below 34px.
+     Archivo never used for prose. DM Mono never used above 14px. */
+  --face-display: 'Bodoni Moda', serif;
+  --face-head: 'Archivo', sans-serif;
+  --face-body: 'Libre Franklin', sans-serif;
+  --face-mono: 'DM Mono', monospace;
+
+  --t-display-face: var(--face-display);
+  --t-display-weight: 400;
+  --t-display-size: 76px;
+  --t-display-line: 0.98;
+  --t-display-track: -0.02em;
+
+  --t-h1-sm-face: var(--face-display);
+  --t-h1-sm-weight: 400;
+  --t-h1-sm-size: 48px;
+  --t-h1-sm-line: 1.02;
+  --t-h1-sm-track: -0.02em;
+
+  --t-h2-face: var(--face-head);
+  --t-h2-weight: 600;
+  --t-h2-size: 34px;
+  --t-h2-line: 1.15;
+  --t-h2-track: -0.015em;
+
+  --t-h3-face: var(--face-head);
+  --t-h3-weight: 600;
+  --t-h3-size: 17px;
+  --t-h3-line: 1.3;
+  --t-h3-track: 0;
+
+  --t-body-face: var(--face-body);
+  --t-body-weight: 400;
+  --t-body-size: 17px;
+  --t-body-line: 1.6;
+  --t-body-track: 0;
+
+  --t-small-face: var(--face-body);
+  --t-small-weight: 400;
+  --t-small-size: 14px;
+  --t-small-line: 1.55;
+  --t-small-track: 0;
+
+  --t-meta-face: var(--face-mono);
+  --t-meta-weight: 400;
+  --t-meta-size: 12px;
+  --t-meta-line: 1.8;
+  --t-meta-track: 0.1em;
+
+  /* ---- spacing --------------------------------------------------------- */
+  /* Section rhythm is --s-24 top. Sibling groups use gap, never margins.
+     Space is the primary separator — see the divider rule. */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-24: 96px;
+
+  /* ---- radii ----------------------------------------------------------- */
+  --r-0: 0;      /* marks, badges, cards, media, slides */
+  --r-1: 2px;    /* inputs, buttons, carousel controls */
+  --r-pill: 999px; /* avatars, toggle knob only */
+
+  /* ---- tilt set -------------------------------------------------------- */
+  /* Applies to a containing block only. A highlighted span is never rotated.
+     Four values, no others, chosen per instance and then frozen. */
+  --tilt-a: -2.5deg;
+  --tilt-b: -1deg;
+  --tilt-c: 1.5deg;
+  --tilt-d: 3deg;
+
+  /* ---- motion ---------------------------------------------------------- */
+  /* Moves opacity, height and 2d transform only. No blur, no parallax, no
+     colour animation. All motion is suppressed under prefers-reduced-motion. */
+  --m-fast: 120ms;
+  --m-base: 220ms;
+  --m-slide: 320ms;
+  --m-slow: 420ms;
+  --m-orbit: 28s;
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+
+  /* ---- focus ----------------------------------------------------------- */
+  /* Always a visible outline, never a shadow, never removed. Keyboard focus
+     and mouse focus render identically. */
+  --focus-w: 2px;
+  --focus-o: 3px;
+  --focus-c: var(--c-maar);
+}
+
+/* ---- surface roles: paper ---------------------------------------------- */
+/* Document routes only — print, export, long-form reading. Same components,
+   surface and ink swapped, pastels unchanged. */
+[data-surface='paper'] {
+  --sf-base: #efe7da;
+  --ink: #100f14;
+
+  /* Paper's raised steps are measured colours, not ink opacities. */
+  --sf-raised: #f2ece2;
+  --sf-raised-2: #e8dfd0;
+  --sf-sunken: #e3d9c8;
+
+  --focus-c: var(--ink);
+}
+
+@media print {
+  :root {
+    --sf-base: #efe7da;
+    --ink: #100f14;
+    --sf-raised: #f2ece2;
+    --sf-raised-2: #e8dfd0;
+    --sf-sunken: #e3d9c8;
+    --focus-c: var(--ink);
+  }
+}

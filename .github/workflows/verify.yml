@@ -1,0 +1,37 @@
+name: verify
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# The route manifest is a contract. CI's job is to prove the build still
+# satisfies it — never to update it.
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Proves the verify suite itself still fails on broken builds. Runs first:
+      # a green suite that cannot go red is worth nothing.
+      - name: verify harness selftest
+        run: npm run verify:selftest
+
+      - name: content schemas
+        run: npm run verify:schemas
+
+      # Builds, then checks routes, cards, content and links against the build.
+      # Exit code is the source of truth.
+      - name: verify
+        run: npm run verify
+
+      - name: ledger format and append-only
+        run: npm run ledger:check

@@ -1,0 +1,29 @@
+---
+/**
+ * Route-shape proof for filenames containing a space AND a trailing space
+ * (MW-5 acceptance criterion).
+ *
+ * Production serves `/cards/032_-maar-sky-sounds.3-card%20X%20.html` with 200
+ * today — note the space inside the name and the trailing space before `.html`.
+ * It is the single highest-risk URL in the set, so it is proved here before any
+ * content migration depends on it.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export function getStaticPaths() {
+  return [
+    // Trailing space is intentional and load-bearing. Do not trim it.
+    { params: { slug: '032_-maar-sky-sounds.3-card X ' } },
+    { params: { slug: 'plain-space test' } },
+  ];
+}
+
+const { slug } = Astro.params;
+---
+
+<BaseLayout title="route shape proof — spaces" noindex={true}>
+  <main style="padding: var(--s-16);">
+    <h1>space proof</h1>
+    <p>slug: <code>{slug}</code></p>
+  </main>
+</BaseLayout>

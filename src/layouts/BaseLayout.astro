@@ -1,0 +1,54 @@
+---
+/**
+ * The shell every route renders inside.
+ *
+ * Two surfaces, per the design spec: `dark` is the surface for all product
+ * routes, `paper` is reached only by document routes (print, export, long-form
+ * reading). Dark is not a theme toggle.
+ *
+ * Fonts are imported from @fontsource and therefore served from this origin.
+ * No page may request a font, script, style or frame from a third-party host —
+ * launching with no analytics and no cookie banner depends on nothing
+ * third-party firing on page load.
+ */
+
+// Self-hosted faces. Bodoni Moda carries an italic because mark.face swaps one
+// word to italic bodoni; the other three need a single weight each.
+import '@fontsource/bodoni-moda/400.css';
+import '@fontsource/bodoni-moda/400-italic.css';
+import '@fontsource/archivo/600.css';
+import '@fontsource/libre-franklin/400.css';
+import '@fontsource/dm-mono/400.css';
+
+import '../styles/tokens.css';
+import '../styles/reset.css';
+import '../styles/type.css';
+
+import { SITE } from '../config/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  surface?: 'dark' | 'paper';
+  noindex?: boolean;
+  canonical?: string;
+}
+
+const { title, description, surface = 'dark', noindex = false, canonical } = Astro.props;
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, SITE.origin).href;
+---
+
+<!doctype html>
+<html lang="en" data-surface={surface}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonicalUrl} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

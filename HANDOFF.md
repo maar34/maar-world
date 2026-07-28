@@ -3,9 +3,9 @@
 Regenerated at every stop. A fresh agent should need nothing but this file,
 `MIGRATION-LEDGER.md`, `docs/agent/OPERATING-RULES.md` and the Linear issue.
 
-**Last updated:** 2026-07-28T22:20Z
-**Last issue worked:** MW-3
-**Next action:** start MW-4 — crawl the three production sites and freeze `routes/manifest.json`.
+**Last updated:** 2026-07-28T22:55Z
+**Last issue worked:** MW-5 (complete)
+**Next action:** MW-6 — migrate the 35 NFC card records and emit all 70 immutable URLs.
 
 ---
 
@@ -13,93 +13,108 @@ Regenerated at every stop. A fresh agent should need nothing but this file,
 
 | Issue | Title | State |
 |---|---|---|
-| MW-3 | Resumable execution harness | **complete** — harness built, selftest green |
-| MW-4 | Freeze the production route manifest | not started ← **next** |
-| MW-5 | Repository, Astro scaffold, content schemas | not started |
-| MW-6 | 35 NFC card records, 70 immutable URLs | not started |
+| MW-3 | Resumable execution harness | **done** |
+| MW-4 | Freeze the production route manifest | **done** — 306 routes frozen |
+| MW-5 | Repository, Astro scaffold, content schemas | **done** |
+| MW-6 | 35 NFC card records, 70 immutable URLs | not started ← **next** |
 | MW-7 | Maar pages, genesis codes, Lab articles | not started |
 | MW-8 | Collect → `/collect/*`, Tree → `/tree` | not started |
 | MW-9 | Embed facades, self-hosted fonts, Helix island | not started |
 | MW-11 | Full verification + a11y/responsive sign-off | not started |
 | MW-10, MW-12 | Cutover, stabilise | **human-gated — do not start** |
 
+## Read this before trusting a green run
+
+`npm run verify` is **expected to exit non-zero until MW-8 finishes.** That is the
+harness working, not a defect: `verify:routes` compares the build against 264 distinct
+preserved paths and content migration has not happened yet. Use the *missing count* as the
+progress metric — it should fall monotonically:
+
+| Checkpoint | preserved paths missing |
+|---|---|
+| after MW-5 | 262 of 264 |
+| after MW-6 | should drop by the 35 card paths |
+| after MW-8 | must be 0 |
+
+`verify:build`, `verify:links` and the non-build half of `verify:cards` pass **now** and
+must stay passing. A regression there is real.
+
 ## In flight
 
-Nothing. MW-3 finished cleanly.
+Nothing. MW-5 finished cleanly.
 
-## Blocked
+## Blocked — needs a human
 
-Nothing yet. Blocked items are recorded in `MIGRATION-LEDGER.md` with `BLOCKED` and a reason,
-and summarised by `npm run ledger -- status`.
+1. **The 34 `%20` Collect card URLs** (`MW-4`, ledger `collect/%20-card-urls`). Are they
+   printed on any card, sleeve or packaging? Every one currently defaults to `preserve`,
+   because preserving keeps both options open and redirecting does not. 66 routes carry
+   this open decision in `routes/policy.json`.
 
-## Decisions taken during MW-3 that a human should confirm
+## Decisions taken that a human should confirm
 
-- **Repository name `maar-world`**, created at
-  `/Users/Qubit/Documents/Github/maar-world/maar-world/`. Taken from the architecture review
-  itself (§6 `maar-world/ # new repo`, §7 `github.com/maar34/maar-world`) rather than
-  invented, because the brief left the destination repo name blank and stalling an unattended
-  run was the worse option. Renaming is a `git mv` plus one line in `package.json`.
-- **No git remote created and nothing pushed.** Creating a GitHub repository is outward-facing
-  and human-gated. All work so far is local commits on `main`.
+- **Repository name `maar-world`**, at `/Users/Qubit/Documents/Github/maar-world/maar-world/`.
+  Taken from ARCHITECTURE-REVIEW §6/§7 rather than invented, because the brief left it blank
+  and stalling an unattended run was worse. Renaming is a `git mv` plus one line in
+  `package.json`.
+- **No git remote, nothing pushed.** Creating a GitHub repository is outward-facing and
+  human-gated. All work is local commits on `main`.
+- **5 routes dropped**: `/z/README-zh(.html)` on maar and tree (theme ballast, per
+  ARCHITECTURE-REVIEW §10 item 12) and the already-404 collect
+  `/docs/ent-worlds/glossary.html`.
+- **Tree merges to `/tree/*`, not a single `/tree` page.** Tree has two real pages, so
+  collapsing everything onto one path would lose `/max-network-berlin`.
 
-## State of the verify harness
+## Two things production told us that the decision records did not
 
-`npm run verify` currently exits **0 with 5 skips** — correct for this point in the
-programme, because every check's input is produced by work that has not happened yet:
+1. **The dual-form property is site-wide.** Every page is live at both `/X` and `/X.html`
+   via the host's `.html` fallback — not just the 35 card codes. The crawl probes the twin of
+   every HTML route; that found 97 extra live URLs. Preserving both spellings is automatic
+   under `build.format: 'file'`.
+2. **Addendum §5.1 is stale against production.** It reports all 68 card pages pointing at
+   dead storefronts. The live Collect card pages already link to
+   `maar-world.bandcamp.com/merch`; `physical.maar.world` and `digital.maar.world` appear
+   nowhere in the crawl. Trust the manifest, not the addendum, on commerce links.
 
-| Check | Waiting on |
-|---|---|
-| `verify:build` | `astro.config.mjs` (MW-5) |
-| `verify:routes` | `routes/manifest.json` (MW-4) |
-| `verify:cards` | `routes/nfc-cards.json` (MW-4) |
-| `verify:content` | `verify/content-expectations.json` (MW-7 / MW-8) |
-| `verify:links` | `dist/` (MW-5) |
+## State of the repo
 
-`npm run verify:selftest` exits 0 with 10/10 cases and is the evidence that the suite really
-fails on broken builds — it constructs fixtures with known defects (missing card page,
-re-cased filename, dropped `STW3344`, stripped `noindex`, redirected card URL, unclassified
-route, third-party iframe) and asserts each one is caught.
-
-## Artifact contracts the next sessions must produce
-
-`routes/manifest.json` (MW-4):
-
-```json
-{
-  "frozenAt": "ISO-8601",
-  "source": "production crawl",
-  "routes": [
-    { "url": "/EBT5599", "origin": "maar.world", "status": 200,
-      "policy": "preserve", "target": null, "title": "…", "notes": "nfc-card" }
-  ]
-}
+```
+routes/manifest.production.json   306 routes, frozen — CONTRACT, do not edit
+routes/policy.json                299 preserve / 5 drop / 2 redirect — CONTRACT
+routes/nfc-cards.json             the 35 codes (34 skysounds + STW3344)
+routes/seeds.json                 URLs a crawler cannot discover
+verify/external-links-*.json      326 external URLs, 11 already dead
+src/styles/tokens.css             design tokens, framework-neutral
+src/content/schemas.mjs           zod schemas (testable without a build)
+src/config/site.ts                COMMERCE.storeUrl — the ONLY storefront URL
 ```
 
-`policy` is one of `preserve` | `redirect` | `drop`, and is **required on every route**.
-`redirect` requires a non-empty `target`.
+Route-shape proofs live at `src/pages/ZZZ0000.astro` and
+`src/pages/route-proof/[...slug].astro`. They prove `CODE.html` emits at the output root and
+that a filename with a space *and a trailing space* survives the build. **Remove both at
+MW-11**, once the 35 real cards carry the guarantee themselves.
 
-`routes/nfc-cards.json` (MW-4):
+## Commands
 
-```json
-{ "cards": [ { "code": "EBT5599", "source": "skysounds" },
-             { "code": "STW3344", "source": "stoney_way" } ] }
 ```
-
-Exactly 35 entries: 34 `skysounds` + 1 `stoney_way`.
-
-`verify/external-links-baseline.json` (MW-4): `{ "urls": [...], "allowedNew": [...] }`.
-
-`verify/content-expectations.json` (MW-7/8): `{ "pages": [ { "url", "headings", "contains",
-"minTextLength", "images", "embeds", "links" } ] }`.
-
-`verify/host-canary.json` (MW-10, human-gated): `{ "host": "...", "verifiedAt": "...",
-"extensionlessFallback": true }`.
+npm run build            assemble media + astro build
+npm run verify           everything; exit code decides
+npm run verify:cards     the physical-card contract, cheapest useful check
+npm run verify:selftest  proves the suite still fails on broken builds (10/10)
+npm run verify:schemas   proves the schemas still reject bad records (12/12)
+npm run freeze:routes    re-crawl production (only if the contract must be re-frozen)
+npm run ledger -- status summary, including every BLOCKED item
+```
 
 ## Reminders that are easy to get wrong
 
 - The design system project is **actively edited**. Re-read it live before implementing any
-  component; never cache its values here.
-- Legacy checkouts one directory up are **read-only**. Read them, never write.
+  component; never cache its values into this repo. Token values in `src/styles/tokens.css`
+  were transcribed from spec version **1.1** — re-check them against the live spec before
+  building new components.
+- Legacy checkouts one directory up are **read-only**.
 - `verify:cards` guards a case-insensitive-filesystem trap: on macOS `existsSync` confirms
-  `/ebt5599.html` for a file named `EBT5599.html`. Card filenames are therefore compared
-  against an exact directory listing.
+  `/ebt5599.html` for a file named `EBT5599.html`, so casing is compared against an exact
+  directory listing.
+- Cards must carry `noindex`, and the schema enforces `noindex: true` as a literal.
+- Commerce URLs are banned from content records by the schema. They come from
+  `COMMERCE.storeUrl`.

@@ -1,0 +1,91 @@
+/**
+ * Type — face assignments per level.
+ *
+ * The @font-face declarations themselves come from the @fontsource packages,
+ * imported by the base layout. Every font file is served from this origin.
+ * The design spec loads these four faces from fonts.googleapis.com; that is a
+ * mockup convenience, not the target. No page may request a font from a
+ * third-party host — the absence of a cookie banner depends on it.
+ *
+ * Faces: Bodoni Moda (display), Archivo (heads), Libre Franklin (prose),
+ * DM Mono (meta).
+ *
+ * Bodoni is display only — never below 34px.
+ * Archivo is never used for prose.
+ * DM Mono is never used above 14px.
+ */
+
+body {
+  font-family: var(--t-body-face);
+  font-weight: var(--t-body-weight);
+  font-size: var(--t-body-size);
+  line-height: var(--t-body-line);
+  letter-spacing: var(--t-body-track);
+  color: var(--ink);
+  background: var(--sf-base);
+}
+
+h1,
+.t-display {
+  font-family: var(--t-display-face);
+  font-weight: var(--t-display-weight);
+  font-size: var(--t-display-size);
+  line-height: var(--t-display-line);
+  letter-spacing: var(--t-display-track);
+}
+
+/* h1 below 900px */
+@media (max-width: 899px) {
+  h1,
+  .t-display {
+    font-size: var(--t-h1-sm-size);
+    line-height: var(--t-h1-sm-line);
+    letter-spacing: var(--t-h1-sm-track);
+  }
+}
+
+h2,
+.t-h2 {
+  font-family: var(--t-h2-face);
+  font-weight: var(--t-h2-weight);
+  font-size: var(--t-h2-size);
+  line-height: var(--t-h2-line);
+  letter-spacing: var(--t-h2-track);
+}
+
+h3,
+.t-h3 {
+  font-family: var(--t-h3-face);
+  font-weight: var(--t-h3-weight);
+  font-size: var(--t-h3-size);
+  line-height: var(--t-h3-line);
+  letter-spacing: var(--t-h3-track);
+}
+
+.t-small {
+  font-family: var(--t-small-face);
+  font-weight: var(--t-small-weight);
+  font-size: var(--t-small-size);
+  line-height: var(--t-small-line);
+  letter-spacing: var(--t-small-track);
+}
+
+.t-meta {
+  font-family: var(--t-meta-face);
+  font-weight: var(--t-meta-weight);
+  font-size: var(--t-meta-size);
+  line-height: var(--t-meta-line);
+  letter-spacing: var(--t-meta-track);
+}
+
+a {
+  color: currentColor;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  color: var(--pigment-ink);
+  background: var(--c-maar);
+}

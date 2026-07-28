@@ -50,3 +50,13 @@ npm run ledger -- append MW-7 BLOCKED lab/es/dadada.html "reason: source referen
 2026-07-28T21:44Z  MW-4   NOTE     contract/dual-form                         every page live at BOTH /X and /X.html via host fallback, not just NFC codes; 97 twins added
 2026-07-28T21:44Z  MW-4   NOTE     contract/addendum-drift                    live collect cards already link Bandcamp; physical./digital.maar.world absent in production, addendum 5.1 stale vs live
 2026-07-28T21:44Z  MW-4   BLOCKED  collect/%20-card-urls                      are the 34 %20 Collect card URLs printed on physical material? defaulted to preserve; redirect option needs a human
+2026-07-28T21:52Z  MW-5   DONE     astro/scaffold                             astro 5.18.2, build.format=file, trailingSlash=never, publicDir=.public
+2026-07-28T21:52Z  MW-5   DONE     styles/tokens.css                          surfaces, 3 pigments, type scale, spacing, radii, tilt, motion, focus; framework-neutral
+2026-07-28T21:52Z  MW-5   DONE     styles/reset+type                          self-hosted fontsource faces; no fonts.googleapis.com anywhere
+2026-07-28T21:52Z  MW-5   DONE     content/schemas                            zod per collection; bans per-record commerce fields; 12/12 schema cases
+2026-07-28T21:52Z  MW-5   DONE     config/site.ts                             COMMERCE.storeUrl single source = bandcamp; artizen move is one line
+2026-07-28T21:52Z  MW-5   DONE     proof/ZZZ0000.html                         emits CODE.html at output root - card route shape proved
+2026-07-28T21:52Z  MW-5   DONE     proof/space-trailing-space                 route-proof/032_-maar-sky-sounds.3-card X .html emitted with trailing space intact
+2026-07-28T21:52Z  MW-5   DONE     scripts/assemble-public.mjs                media/shared + per-area layering; errors on differing collisions
+2026-07-28T21:52Z  MW-5   DONE     ci/verify.yml                              selftest + schemas + verify + ledger:check on PR and main
+2026-07-28T21:52Z  MW-5   NOTE     verify/expected-red                        verify:routes and verify:cards fail by design until MW-6/7/8 migrate content; 262 of 264 paths outstanding

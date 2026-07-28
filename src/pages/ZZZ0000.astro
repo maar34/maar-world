@@ -1,0 +1,25 @@
+---
+/**
+ * Route-shape proof for the NFC card codes (MW-5 acceptance criterion).
+ *
+ * With `build.format: 'file'` this emits `ZZZ0000.html` at the output root,
+ * which is exactly the shape all 35 real codes need. The extensionless
+ * `/ZZZ0000` is then served by the host's `.html` fallback — the part that
+ * cannot be proved from build output and must be confirmed on the real host
+ * before cutover (MW-10 canary).
+ *
+ * ZZZ0000 is deliberately not a real code. Remove both proofs at MW-11 once the
+ * 35 real cards carry the guarantee themselves.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="route shape proof — ZZZ0000" noindex={true}>
+  <main style="padding: var(--s-16);">
+    <h1>zzz0000</h1>
+    <p>
+      route-shape proof for the nfc card codes. this file proves the build emits
+      <code>CODE.html</code> at the output root.
+    </p>
+  </main>
+</BaseLayout>

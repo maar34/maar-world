@@ -70,10 +70,12 @@ export async function checkLinks(report) {
       if (isIgnorable(raw)) continue;
 
       if (isExternal(raw)) {
-        external.add(raw.split('#')[0]);
         const host = hostOf(raw);
-        if (ON_LOAD_TAGS.has(tag) && host && !FIRST_PARTY.test(host)) {
-          thirdPartyOnLoad.push(`${file}: <${tag}> -> ${host}`);
+        // Absolute first-party URLs (canonical tags, absolute internal links)
+        // are not external links and do not belong in the baseline comparison.
+        if (host && !FIRST_PARTY.test(host)) {
+          external.add(raw.split('#')[0]);
+          if (ON_LOAD_TAGS.has(tag)) thirdPartyOnLoad.push(`${file}: <${tag}> -> ${host}`);
         }
         continue;
       }

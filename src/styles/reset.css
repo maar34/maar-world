@@ -1,0 +1,81 @@
+/**
+ * Reset — box sizing, margin reset, lowercase transform.
+ *
+ * Per the design spec's folder map. Deliberately minimal: this is not a
+ * normalise library, it is the three things the design actually depends on.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd,
+ul,
+ol {
+  margin: 0;
+}
+
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+  padding: 0;
+}
+
+/* All type is lowercase. This is a design decision, not a content decision —
+   the source text keeps its own casing so it stays correct when copied,
+   quoted, read by a screen reader, or rendered anywhere without this stylesheet. */
+body {
+  text-transform: lowercase;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Focus is always a visible outline, never a shadow, never removed.
+   Keyboard focus and mouse focus render identically. */
+:focus-visible {
+  outline: var(--focus-w) solid var(--focus-c);
+  outline-offset: var(--focus-o);
+}
+
+/* Motion moves opacity, height and 2d transform only, and is suppressed
+   entirely here — including the orbit mark and every carousel transition. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
