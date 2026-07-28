@@ -1,0 +1,21 @@
+{
+  "name": "maar-world",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Maar World — one static Astro site consolidating maar.world, collect.maar.world and tree.maar.world.",
+  "engines": {
+    "node": ">=20.3.0"
+  },
+  "scripts": {
+    "verify": "node scripts/verify.mjs",
+    "verify:routes": "node scripts/verify-routes.mjs",
+    "verify:cards": "node scripts/verify-cards.mjs",
+    "verify:content": "node scripts/verify-content.mjs",
+    "verify:links": "node scripts/verify-links.mjs",
+    "verify:build": "node scripts/verify-build.mjs",
+    "verify:selftest": "node scripts/selftest.mjs",
+    "ledger": "node scripts/ledger.mjs",
+    "ledger:check": "node scripts/ledger.mjs check"
+  }
+}
