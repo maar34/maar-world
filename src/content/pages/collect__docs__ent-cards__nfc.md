@@ -12,7 +12,7 @@ source: "collect.maar.world/collections/_documentation/03-ent-cards/04-nfc.md"
 ![Image](/img/docs/ent-cards/04-NFC.png "NFC card")
 ### Each ENT Card includes an NFC Chip. 
 
-[NFC](/collect/docs/ent-worlds/glossary.html#nfc) (Near Field Communication) is a technology designed to simplify and accelerate data exchange between devices. As an international transmission standard, NFC enables contactless data exchange over short distances of 1-4 cm.
+NFC (Near Field Communication) is a technology designed to simplify and accelerate data exchange between devices. As an international transmission standard, NFC enables contactless data exchange over short distances of 1-4 cm.
 
 Every NFC-enabled device, including smartphones and dedicated NFC readers, can read the information on an NFC chip. The information stored on the NFC chip can provide an enhanced experience associated with the card, and with a dedicated NFC app like <a href="https://www.wakdev.com/en/apps.html" target="_blank">NFC Tools</a>, users can access metadata related to the NFT (non-fungible token) side of that card.
 

@@ -14,7 +14,7 @@ source: "tree.maar.world/collections/_pages/max-network-berlin.html"
   
   <br>
   <div style="text-align: center;">
-    <img class="image image--xl"  src="img/music-tree.jpg" alt="Music Technology Tree. 50.000 years old">
+    <img class="image image--xl"  src="/img/music-tree.jpg" alt="Music Technology Tree. 50.000 years old">
   </div>
   <br>
 

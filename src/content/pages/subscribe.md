@@ -10,7 +10,6 @@ source: "maar.world/collections/_pages/subscribe.md"
 ---
 
 <!-- Begin Mailchimp Signup Form -->
-<link href="//cdn-images.mailchimp.com/embedcode/classic-071822.css" rel="stylesheet" type="text/css">
 
 <div id="mc_embed_signup">
     <form action="https://aventuresonores.us7.list-manage.com/subscribe/post?u=8cc5ff1d6fb14f3fdc831c40a&amp;id=873fbbbbb9&amp;f_id=00acc5e4f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_self">

@@ -213,8 +213,26 @@ for (const [key, meta] of targets) {
 
 // ── 4. body transforms ───────────────────────────────────────────────────
 
+/** Merged-site paths of every route the policy drops, in both spellings. */
+const AREA_PREFIX = { 'maar.world': '', 'collect.maar.world': '/collect', 'tree.maar.world': '/tree' };
+const DROPPED = new Set(
+  policy.routes
+    .filter((r) => r.policy === 'drop')
+    .flatMap((r) => {
+      const p = `${AREA_PREFIX[r.origin] ?? ''}${r.url}`;
+      return [p, p.replace(/\.html$/i, ''), `${p.replace(/\.html$/i, '')}.html`];
+    }),
+);
+
 const FIRST_PARTY = /(^|\/\/|\.)maar\.world(\/|$|:)/i;
-const isFirstParty = (url) => FIRST_PARTY.test(url) || url.startsWith('/') || url.startsWith('#');
+
+/**
+ * `//host/path` is protocol-relative and reaches off-domain — it is emphatically
+ * not "starts with a slash, therefore internal". The legacy Mailchimp stylesheet
+ * is written exactly that way, which is how it survived a naive check once.
+ */
+const isFirstParty = (url) =>
+  FIRST_PARTY.test(url) || url.startsWith('#') || (url.startsWith('/') && !url.startsWith('//'));
 
 /**
  * A click-out facade. No third-party byte is fetched until the visitor chooses
@@ -357,6 +375,12 @@ function transform(body, ctx) {
 
   out = defuseThirdParty(out, problems, ctx.key);
 
+  // Page-relative asset references were correct while every page sat at the
+  // site root. `/tree/max-network-berlin.html` is one directory deep, so
+  // `img/music-tree.jpg` would resolve to `/tree/img/…` and 404. Rooting them
+  // is not a URL change: it is the same file the legacy page already served.
+  out = out.replace(/\b(href|src|data)\s*=\s*(["'])((?:img|assets)\/[^"']*)\2/gi, (_, attr, q, url) => `${attr}=${q}/${url}${q}`);
+
   // Collect and Tree move under a path prefix, so their root-relative internal
   // links move with them. Absolute links to their own subdomain keep working
   // through the 301s produced in routes/redirects.map.
@@ -370,6 +394,24 @@ function transform(body, ctx) {
       url.startsWith(`${prefix}/`) ? m : `](${prefix}${url})`,
     );
   }
+
+  /**
+   * Links to routes the policy drops. `/collect/docs/ent-worlds/glossary.html`
+   * is dropped because it already 404s in production, so the link is dead rot
+   * either way — the text is kept and the anchor removed rather than shipping a
+   * link that is known to go nowhere.
+   */
+  out = out.replace(/<a\b[^>]*href\s*=\s*["']([^"'#]+)(?:#[^"']*)?["'][^>]*>([\s\S]*?)<\/a>/gi, (m, href, text) => {
+    if (!DROPPED.has(href)) return m;
+    problems.push(`${ctx.key}: unwrapped link to dropped route ${href}`);
+    return text;
+  });
+  // …and the same link written as markdown, which is still an <a> once rendered.
+  out = out.replace(/\[([^\]]*)\]\(([^)\s#]+)(#[^)\s]*)?\)/g, (m, text, href) => {
+    if (!DROPPED.has(href)) return m;
+    problems.push(`${ctx.key}: unwrapped link to dropped route ${href}`);
+    return text;
+  });
 
   // MW-8: nothing under /collect/* may point at the retired storefronts.
   if (ctx.area === 'collect') {

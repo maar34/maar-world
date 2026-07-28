@@ -55,9 +55,16 @@ const sorted = [...listed].sort((a, b) => {
   return a.data.outputPath.localeCompare(b.data.outputPath);
 });
 
-/** dist-relative outputPath → the URL a browser asks for. */
+/**
+ * dist-relative outputPath → the URL a browser asks for.
+ *
+ * Percent-encoded, because one Collect card path ends in a space and an href
+ * with a trailing literal space is not reliably preserved by anything that
+ * touches it — including HTML parsers. `%20` is the spelling the frozen
+ * manifest itself records, so this is the contract's own form, not a tidy-up.
+ */
 const hrefOf = (outputPath: string) =>
-  `/${outputPath.replace(/(^|\/)index$/, '')}`.replace(/\/$/, '') || '/';
+  encodeURI(`/${outputPath.replace(/(^|\/)index$/, '')}`.replace(/\/(?=$)/, '')) || '/';
 
 const isCard = d.kind === 'collect-card';
 ---
