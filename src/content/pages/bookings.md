@@ -9,7 +9,7 @@ tags: []
 source: "maar.world/collections/_pages/bookings.md"
 ---
 
-# <span class="material-symbols-outlined" style="font-size:48px;vertical-align:middle;">speaker_group</span> Bookings
+# Bookings
 
 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾
 

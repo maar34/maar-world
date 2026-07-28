@@ -368,6 +368,19 @@ function transform(body, ctx) {
   out = stripElement(out, 'script');
   out = stripElement(out, 'style');
 
+  /**
+   * Material Symbols icon spans. The glyph came from fonts.googleapis.com,
+   * which the self-hosted-fonts rule forbids outright, and there is no
+   * self-hosted equivalent. Without the font the span does not degrade to an
+   * icon — it degrades to the literal ligature name, so `# <span…>speaker_group
+   * </span> Bookings` reads as "speaker_group Bookings". They are decorative,
+   * so they go; keeping them would ship that string to a reader.
+   */
+  out = out.replace(/<span\b[^>]*material-symbols-outlined[^>]*>[\s\S]*?<\/span>\s*/gi, (m) => {
+    problems.push(`${ctx.key}: dropped material-symbols icon span (${stripElement(m, 'x').replace(/<[^>]+>/g, '').trim()})`);
+    return '';
+  });
+
   // Substitutions Jekyll made. `page.suit_title` is undefined on /radio, so
   // Jekyll emitted nothing there — matching that exactly.
   out = out.replace(/\{\{\s*site\.baseurl\s*\}\}/g, '');

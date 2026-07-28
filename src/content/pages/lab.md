@@ -10,7 +10,7 @@ source: "maar.world/collections/_pages/lab.md"
 indexOf: "lab"
 ---
 
-# <span class="material-symbols-outlined" style="font-size:48px;vertical-align:middle;">science</span> Lab
+# Lab
 
 <div class="hero hero--dark" style='height:200px; background-image:url("/img/lab/genesis-lab.jpg");'>
   <div class="hero__content"></div>

@@ -39,7 +39,7 @@ const d = card.data;
 const { Content } = await render(card);
 
 /**
- * The Orbiter forward.
+ * The Orbiter forward, and its no-JavaScript fallback.
  *
  * Production card pages return 200 and then forward to the Orbiter listening
  * experience 300ms later, via `window.location.href`. This is what actually
@@ -51,20 +51,112 @@ const { Content } = await render(card);
  * So the presence of `track_v2_id` is the condition, not a flag of its own.
  *
  * This is NOT an HTTP redirect. The URL still returns 200 and never 3xx, which
- * is what the physical-card contract requires. The rendered card below remains
- * the no-JavaScript fallback, exactly as it is today.
+ * is what the physical-card contract requires.
+ *
+ * The timeout is only half of it. Legacy `_layouts/card.html` (and therefore
+ * live production, verified with `curl https://maar.world/EBT5599`) also emits a
+ * VISIBLE `<a href="https://orbiter.plantasia.space/?trackId=…">Open Maar
+ * Orbiter</a>`, the line "If nothing happens automatically, use the button
+ * above", and a `<noscript>` note. That anchor is the whole degradation story:
+ * with JavaScript restricted — Lockdown Mode, a locked-down in-app webview, a
+ * content blocker — the script never runs, and without the anchor a tapped
+ * physical card would offer no route to the Orbiter at all. It is restored here
+ * for the same cards that forward.
+ *
+ * The visible label is production's: `track_v2_slug`, falling back to the card
+ * title, exactly as the Liquid `track_redirect_label` default chain did.
  */
 const orbiterUrl = d.track_v2_id
   ? `https://orbiter.plantasia.space/?trackId=${d.track_v2_id}`
   : null;
+const orbiterLabel = d.track_v2_slug ?? d.card_title;
 
-const title = d.titles?.en ?? `${d.suit_title} — ${d.card_title}`;
-const players = [d.player, d.player2, d.snip_player].filter(Boolean) as string[];
-const downloads = [d.download, d.download2].filter(Boolean) as string[];
+/**
+ * The document title.
+ *
+ * NOT `titles.en`. That field is a legacy display string and it is not unique:
+ * `_stoney_way` carries a copy-pasted `titles.en` of "Maar Sky Sounds Card I",
+ * so promoting it would title a Stoney Way card — Spanish/Catalan text about a
+ * stone from Uruguay — as a Sky Sounds card, identical to EBT5599. The
+ * frontmatter is correct as a record of the source, so the fix belongs here.
+ *
+ * Jekyll derived the title from the filename, which is why production serves
+ * "001_ Maar Sky Sounds.1 Card_i" and "001_ Sebas Stoney_way" — ugly, but
+ * distinct per card. `suit_title` + `card_title` carries the same distinction
+ * in readable form and is unique across all 35.
+ */
+const cardName = `${d.suit_title} ${d.card_title}`;
+
+/**
+ * Player and download semantics.
+ *
+ * Legacy `card.html` names the two media pairs by what they CONTAIN, not by
+ * file format: `player`/`download` is the soundscapes & music mix, and
+ * `player2`/`download2` is the spoken word reading. Labelling both by file
+ * extension produces two links reading "wav", which tells neither a sighted
+ * reader nor a screen reader which is which.
+ *
+ * STW3344 is the exception, and deliberately so: it never used `card.html`. Its
+ * Jekyll body rendered a single "music" player and offered one mix in two
+ * formats, so for that record the format IS the distinction. (Its legacy body
+ * labels the .mp3 "download wav" and the .wav "download mp3" — a source typo;
+ * the file decides, not the stale label.)
+ */
+const isStoney = d.source === 'stoney_way';
+
+const audioFormat = (href: string) =>
+  /\.wav(\?|#|$)/i.test(href) ? 'wav' : /\.mp3(\?|#|$)/i.test(href) ? 'mp3' : 'audio';
+
+const playerLabels = isStoney
+  ? ['music', 'music', 'excerpt']
+  : ['soundscapes & music', 'spoken word', 'excerpt'];
+
+const players = [d.player, d.player2, d.snip_player]
+  .map((src, i) => (src ? { src: src as string, label: playerLabels[i] } : null))
+  .filter((p): p is { src: string; label: string } => p !== null)
+  // STW3344 lists the same player URL as both `player` and `player2`.
+  // Production renders it once; two identical iframes under two different
+  // labels would be a new falsehood, not a restored one.
+  .filter((p, i, all) => all.findIndex((q) => q.src === p.src) === i);
+
+const downloads = [d.download, d.download2]
+  .map((href, i) =>
+    href
+      ? {
+          href: href as string,
+          label: isStoney ? `mix (${audioFormat(href as string)})` : playerLabels[i],
+        }
+      : null,
+  )
+  .filter((x): x is { href: string; label: string } => x !== null);
 ---
 
-<BaseLayout title={title} description={d.card_description} noindex={true}>
+<BaseLayout title={cardName} description={d.card_description} noindex={true}>
   <main class="card-page">
+    {
+      orbiterUrl && (
+        <section class="orbiter" aria-label="now playing on Maar Orbiter">
+          {/* Deliberately not an <h2>: this block precedes the page's <h1>, and
+              a heading above the h1 inverts the document outline. The section
+              is a labelled landmark instead, so it is still announced. */}
+          <p class="orbiter__head">{orbiterLabel} is now playing on Maar Orbiter</p>
+          <p class="orbiter__lede">We are redirecting you to the updated listening experience.</p>
+          <a class="orbiter__link" href={orbiterUrl} rel="noopener">
+            Open Maar Orbiter
+          </a>
+          <p class="orbiter__hint">
+            If nothing happens automatically, use the button above. The card remains below.
+          </p>
+          <noscript>
+            <p class="orbiter__noscript">
+              <strong>JavaScript is disabled.</strong> Use the button above to open the Maar
+              Orbiter track page.
+            </p>
+          </noscript>
+        </section>
+      )
+    }
+
     <p class="t-meta suit">
       {d.suit_title}
       <GlyphRun seed={d.permalink} />
@@ -83,14 +175,17 @@ const downloads = [d.download, d.download2].filter(Boolean) as string[];
 
     {
       players.length > 0 && (
-        <section class="players" aria-label="player">
-          {players.map((src) => (
-            <iframe
-              src={src}
-              title={`${d.suit_title} ${d.card_title} player`}
-              loading="lazy"
-              class="player"
-            />
+        <section class="players" aria-label="players">
+          {players.map((p) => (
+            <div class="player-block">
+              <p class="t-meta player-label">{p.label}</p>
+              <iframe
+                src={p.src}
+                title={`${cardName} — ${p.label}`}
+                loading="lazy"
+                class="player"
+              />
+            </div>
           ))}
         </section>
       )
@@ -101,11 +196,9 @@ const downloads = [d.download, d.download2].filter(Boolean) as string[];
         <section class="downloads" aria-label="downloads">
           <p class="t-meta">download</p>
           <ul role="list" class="download-list">
-            {downloads.map((href, i) => (
+            {downloads.map((dl) => (
               <li>
-                <a href={href}>
-                  {href.toLowerCase().includes('.wav') ? 'wav' : href.toLowerCase().includes('.mp3') ? 'mp3' : `file ${i + 1}`}
-                </a>
+                <a href={dl.href}>{dl.label}</a>
               </li>
             ))}
           </ul>
@@ -146,6 +239,64 @@ const downloads = [d.download, d.download2].filter(Boolean) as string[];
     gap: var(--s-6);
   }
 
+  /* The no-JavaScript route to the Orbiter. Tokens only — no raw hex, no raw
+     pixel size, no raw duration. One pigment for the instance (--c-maar, the
+     wayfinding pigment), used as a background with dark type, per the spec. */
+  .orbiter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    padding: var(--s-6);
+    background: var(--sf-raised);
+    border-radius: var(--r-0);
+  }
+
+  .orbiter p {
+    margin: 0;
+  }
+
+  .orbiter__head {
+    font-family: var(--t-h3-face);
+    font-weight: var(--t-h3-weight);
+    font-size: var(--t-h3-size);
+    line-height: var(--t-h3-line);
+  }
+
+  .orbiter__lede {
+    color: var(--ink-muted);
+  }
+
+  .orbiter__link {
+    align-self: start;
+    padding: var(--s-3) var(--s-6);
+    border-radius: var(--r-1);
+    background: var(--c-maar);
+    color: var(--pigment-ink);
+    font-family: var(--t-h3-face);
+    font-weight: var(--t-h3-weight);
+    font-size: var(--t-h3-size);
+    line-height: var(--t-h3-line);
+    text-decoration: none;
+  }
+
+  .orbiter__link:focus-visible {
+    outline: var(--focus-w) solid var(--focus-c);
+    outline-offset: var(--focus-o);
+  }
+
+  .orbiter__hint,
+  .orbiter__noscript {
+    color: var(--ink-meta);
+    font-size: var(--t-small-size);
+    line-height: var(--t-small-line);
+  }
+
+  .orbiter__noscript {
+    padding: var(--s-3);
+    background: var(--sf-raised-2);
+    border-radius: var(--r-0);
+  }
+
   .suit {
     color: var(--ink-meta);
     display: flex;
@@ -174,7 +325,18 @@ const downloads = [d.download, d.download2].filter(Boolean) as string[];
   .players {
     display: flex;
     flex-direction: column;
-    gap: var(--s-4);
+    gap: var(--s-6);
+  }
+
+  .player-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+
+  .player-label {
+    color: var(--ink-meta);
+    margin: 0;
   }
 
   /* play.maar.world shares the registrable domain, so it is same-site even

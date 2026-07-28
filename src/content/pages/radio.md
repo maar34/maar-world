@@ -13,7 +13,7 @@ source: "maar.world/collections/_pages/radio.md"
 
 </header>
 
-# <span class="material-symbols-outlined" style="font-size: 48px; vertical-align: middle;"> radio </span> Radio
+# Radio
 
 <div class="hero hero--dark" style='height: 200px; background-image: url("/img/433.1b.jpg");'>
   <div class="hero__content">  

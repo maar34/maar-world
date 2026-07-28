@@ -15,6 +15,11 @@ const NOINDEX = new Set([
   ...JSON.parse(readFileSync(new URL('./routes/nfc-cards.json', import.meta.url), 'utf8'))
     .cards.flatMap(({ code }) => [`/${code}`, `/${code}.html`]),
   '/ZZZ0000', '/ZZZ0000.html',
+  // A deprecated address production serves as a 200 with a meta refresh to
+  // /orbiters. MW-7 settles that orbiters.md owns /orbiters; listing its old
+  // address too would put the same page in the sitemap twice, which is the
+  // duplicate the issue exists to remove.
+  '/interplanetary-players', '/interplanetary-players.html',
 ]);
 
 /**

@@ -9,7 +9,7 @@ tags: []
 source: "maar.world/collections/_pages/music.md"
 ---
 
-# <span class="material-symbols-outlined" style="font-size: 48px; vertical-align: middle;"> nature_people </span> Music
+# Music
 
 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - RMX Lana Wachowski - Neo's phone call to the machines - Rabbit Hole.
 {:.success}

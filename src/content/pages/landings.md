@@ -9,7 +9,7 @@ tags: []
 source: "maar.world/collections/_pages/landings.md"
 ---
 
-# <span class="material-symbols-outlined" style="font-size: 48px; vertical-align: middle;"> travel_explore </span> Landings
+# Landings
 ### Sonic events on planet earth
 
 ENT Worlds

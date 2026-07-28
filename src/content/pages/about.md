@@ -10,7 +10,7 @@ source: "maar.world/collections/_pages/about.md"
 ---
 
 <header class="page-header">
-  <h1><span class="material-symbols-outlined" aria-hidden="true" style="font-size:48px;vertical-align:middle;">looks</span> About</h1>
+  <h1>About</h1>
 </header>
 
 <div class="bio-wrapper">

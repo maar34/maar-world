@@ -1,0 +1,639 @@
+{
+  "note": "Per-page content-presence assertions for the migrated pages (MW-7 / MW-8). Headings are taken from the legacy source, so they assert that migration preserved them. minTextLength is a regression floor at 90% of the build at authoring time. Regenerate with scripts/author-content-expectations.mjs after an intentional content change.",
+  "authoredAt": "2026-07-28T22:36:30.191Z",
+  "pageCount": 95,
+  "pages": [
+    {
+      "url": "/about",
+      "headings": [
+        "About"
+      ],
+      "minTextLength": 1148
+    },
+    {
+      "url": "/bookings",
+      "headings": [
+        "Bookings",
+        "Hybrid (Live + DJ) sets",
+        "Contact"
+      ],
+      "minTextLength": 931
+    },
+    {
+      "url": "/calendar",
+      "headings": [],
+      "minTextLength": 47
+    },
+    {
+      "url": "/collect/about",
+      "headings": [
+        "About"
+      ],
+      "minTextLength": 9
+    },
+    {
+      "url": "/collect/cards",
+      "headings": [],
+      "minTextLength": 255
+    },
+    {
+      "url": "/collect/cards/001_-maar-sky-sounds.1-card I",
+      "headings": [],
+      "minTextLength": 913
+    },
+    {
+      "url": "/collect/cards/002_-maar-sky-sounds.1-card II",
+      "headings": [],
+      "minTextLength": 560
+    },
+    {
+      "url": "/collect/cards/003_-maar-sky-sounds.1-card III",
+      "headings": [],
+      "minTextLength": 593
+    },
+    {
+      "url": "/collect/cards/004_-maar-sky-sounds.1-card IV",
+      "headings": [],
+      "minTextLength": 719
+    },
+    {
+      "url": "/collect/cards/005_-maar-sky-sounds.1-card V",
+      "headings": [],
+      "minTextLength": 709
+    },
+    {
+      "url": "/collect/cards/006_-maar-sky-sounds.1-card VI",
+      "headings": [],
+      "minTextLength": 675
+    },
+    {
+      "url": "/collect/cards/007_-maar-sky-sounds.1-card VII",
+      "headings": [],
+      "minTextLength": 787
+    },
+    {
+      "url": "/collect/cards/008_-maar-sky-sounds.1-card VIII",
+      "headings": [],
+      "minTextLength": 680
+    },
+    {
+      "url": "/collect/cards/009_-maar-sky-sounds.1-card IX",
+      "headings": [],
+      "minTextLength": 899
+    },
+    {
+      "url": "/collect/cards/010_-maar-sky-sounds.1-card X",
+      "headings": [],
+      "minTextLength": 822
+    },
+    {
+      "url": "/collect/cards/011_-maar-sky-sounds.1-card XI",
+      "headings": [],
+      "minTextLength": 821
+    },
+    {
+      "url": "/collect/cards/012_-maar-sky-sounds.2-card I",
+      "headings": [],
+      "minTextLength": 687
+    },
+    {
+      "url": "/collect/cards/013_-maar-sky-sounds.2-card II",
+      "headings": [],
+      "minTextLength": 935
+    },
+    {
+      "url": "/collect/cards/014_-maar-sky-sounds.2-card III",
+      "headings": [],
+      "minTextLength": 518
+    },
+    {
+      "url": "/collect/cards/015_-maar-sky-sounds.2-card IV",
+      "headings": [],
+      "minTextLength": 776
+    },
+    {
+      "url": "/collect/cards/016_-maar-sky-sounds.2-card V",
+      "headings": [],
+      "minTextLength": 716
+    },
+    {
+      "url": "/collect/cards/017_-maar-sky-sounds.2-card VI",
+      "headings": [],
+      "minTextLength": 771
+    },
+    {
+      "url": "/collect/cards/018_-maar-sky-sounds.2-card VII",
+      "headings": [],
+      "minTextLength": 807
+    },
+    {
+      "url": "/collect/cards/019_-maar-sky-sounds.2-card VIII",
+      "headings": [],
+      "minTextLength": 640
+    },
+    {
+      "url": "/collect/cards/020_-maar-sky-sounds.2-card IX",
+      "headings": [],
+      "minTextLength": 693
+    },
+    {
+      "url": "/collect/cards/021_-maar-sky-sounds.2-card X",
+      "headings": [],
+      "minTextLength": 717
+    },
+    {
+      "url": "/collect/cards/022_-maar-sky-sounds.2-card XI",
+      "headings": [],
+      "minTextLength": 666
+    },
+    {
+      "url": "/collect/cards/023_-maar-sky-sounds.3-card I",
+      "headings": [],
+      "minTextLength": 698
+    },
+    {
+      "url": "/collect/cards/024_-maar-sky-sounds.3-card II",
+      "headings": [],
+      "minTextLength": 852
+    },
+    {
+      "url": "/collect/cards/025_-maar-sky-sounds.3-card III",
+      "headings": [],
+      "minTextLength": 499
+    },
+    {
+      "url": "/collect/cards/026_-maar-sky-sounds.3-card IV",
+      "headings": [],
+      "minTextLength": 611
+    },
+    {
+      "url": "/collect/cards/027_-maar-sky-sounds.3-card V",
+      "headings": [],
+      "minTextLength": 704
+    },
+    {
+      "url": "/collect/cards/028_-maar-sky-sounds.3-card VI",
+      "headings": [],
+      "minTextLength": 728
+    },
+    {
+      "url": "/collect/cards/029_-maar-sky-sounds.3-card VII",
+      "headings": [],
+      "minTextLength": 593
+    },
+    {
+      "url": "/collect/cards/030_-maar-sky-sounds.3-card VIII",
+      "headings": [],
+      "minTextLength": 684
+    },
+    {
+      "url": "/collect/cards/031_-maar-sky-sounds.3-card IX",
+      "headings": [],
+      "minTextLength": 689
+    },
+    {
+      "url": "/collect/cards/032_-maar-sky-sounds.3-card X ",
+      "headings": [],
+      "minTextLength": 598
+    },
+    {
+      "url": "/collect/cards/033_-maar-sky-sounds.3-card XI",
+      "headings": [],
+      "minTextLength": 768
+    },
+    {
+      "url": "/collect/cards/034_-maar-sky-sounds-wild-card",
+      "headings": [],
+      "minTextLength": 833
+    },
+    {
+      "url": "/collect/decks",
+      "headings": [],
+      "minTextLength": 7
+    },
+    {
+      "url": "/collect/docs/ent-cards",
+      "headings": [
+        "ENT Cards"
+      ],
+      "minTextLength": 856
+    },
+    {
+      "url": "/collect/docs/ent-cards/nfc",
+      "headings": [
+        "Each ENT Card includes an NFC Chip."
+      ],
+      "minTextLength": 2329
+    },
+    {
+      "url": "/collect/docs/ent-cards/sustainability",
+      "headings": [
+        "Human-Centered Technology."
+      ],
+      "minTextLength": 2122
+    },
+    {
+      "url": "/collect/docs/mw",
+      "headings": [],
+      "minTextLength": 2750
+    },
+    {
+      "url": "/collect/docs/mw/terms",
+      "headings": [
+        "Terms and Conditions"
+      ],
+      "minTextLength": 924
+    },
+    {
+      "url": "/collect/docs/orbiters/development",
+      "headings": [],
+      "minTextLength": 1390
+    },
+    {
+      "url": "/collect/docs/orbiters/how-to-use",
+      "headings": [
+        "A Planet is a Vinyl + One dimension"
+      ],
+      "minTextLength": 2591
+    },
+    {
+      "url": "/collect/docs/releases/skysounds",
+      "headings": [
+        "Formation"
+      ],
+      "minTextLength": 479
+    },
+    {
+      "url": "/collect/docs/tutorials",
+      "headings": [],
+      "minTextLength": 260
+    },
+    {
+      "url": "/collect/documentation",
+      "headings": [
+        "Documentation"
+      ],
+      "minTextLength": 111
+    },
+    {
+      "url": "/collect",
+      "headings": [
+        "Play music cards with exoplanets",
+        "Start your journey",
+        "Contact us"
+      ],
+      "minTextLength": 2280
+    },
+    {
+      "url": "/collect/privacy",
+      "headings": [
+        "Privacy and Cookies Policy"
+      ],
+      "minTextLength": 1857
+    },
+    {
+      "url": "/collect/samples",
+      "headings": [
+        "Documentation"
+      ],
+      "minTextLength": 395
+    },
+    {
+      "url": "/collect/suits",
+      "headings": [],
+      "minTextLength": 7
+    },
+    {
+      "url": "/eng-feedback",
+      "headings": [],
+      "minTextLength": 38
+    },
+    {
+      "url": "/esp-feedback",
+      "headings": [],
+      "minTextLength": 38
+    },
+    {
+      "url": "/helix-diagram",
+      "headings": [],
+      "minTextLength": 173
+    },
+    {
+      "url": "/",
+      "headings": [
+        "Play music cards with exoplanets"
+      ],
+      "minTextLength": 1797
+    },
+    {
+      "url": "/interplanetary-players",
+      "headings": [],
+      "minTextLength": 44
+    },
+    {
+      "url": "/lab",
+      "headings": [],
+      "minTextLength": 918
+    },
+    {
+      "url": "/lab/en/dadada",
+      "headings": [
+        "Is it possible to slow down time?",
+        "4 the dadadaistS"
+      ],
+      "minTextLength": 1049
+    },
+    {
+      "url": "/lab/en/helix-technical-requirements",
+      "headings": [
+        "HELIX",
+        "Technical installation documentation",
+        "1. General description",
+        "2. Internet connectivity requirements",
+        "3. Network topology",
+        "4. Interactive diagram",
+        "5. Physical layout",
+        "6. Base equipment inventory",
+        "Computing and network",
+        "Displays and interaction",
+        "Audio",
+        "7. Notes and checklist"
+      ],
+      "minTextLength": 3132
+    },
+    {
+      "url": "/lab/en/ip-1",
+      "headings": [],
+      "minTextLength": 2107
+    },
+    {
+      "url": "/lab/en/ip-2",
+      "headings": [],
+      "minTextLength": 1546
+    },
+    {
+      "url": "/lab/en/ip-3",
+      "headings": [],
+      "minTextLength": 881
+    },
+    {
+      "url": "/lab/en/ip-orchestra-design",
+      "headings": [
+        "🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬",
+        "What?",
+        "Why?",
+        "For what purpose?",
+        "What are the Orbiters?",
+        "Control the Sound:",
+        "Explore Regenerative Modes:",
+        "Contact me"
+      ],
+      "minTextLength": 2343
+    },
+    {
+      "url": "/lab/en/ip-orchestra",
+      "headings": [
+        "🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬",
+        "Invitation",
+        "Workshop Description",
+        "Schedule",
+        "Concert September 13 7:00pm",
+        "Special Invitation",
+        "Facilitator Profile",
+        "Control the Sound:",
+        "Explore Regenerative Modes:",
+        "Contact me"
+      ],
+      "minTextLength": 4123
+    },
+    {
+      "url": "/lab/en/music-return-to-playing",
+      "headings": [
+        "Music, Abstraction, and the Return to Playing",
+        "References"
+      ],
+      "minTextLength": 2655
+    },
+    {
+      "url": "/lab/en/orbits-and-bodies",
+      "headings": [
+        "Introduction"
+      ],
+      "minTextLength": 694
+    },
+    {
+      "url": "/lab/en/shared-culture",
+      "headings": [
+        "When Cultural Capital Is Shared:",
+        "Music, Access, and the Human Mind"
+      ],
+      "minTextLength": 2002
+    },
+    {
+      "url": "/lab/es/cultura-compartida",
+      "headings": [
+        "Cuando el Capital Cultural es Compartido:",
+        "Música, Acceso y la Mente Humana"
+      ],
+      "minTextLength": 2243
+    },
+    {
+      "url": "/lab/es/dadada",
+      "headings": [
+        "Es posible desacelerar el tiempo?",
+        "Para lxs Dadadaistas"
+      ],
+      "minTextLength": 1059
+    },
+    {
+      "url": "/lab/es/helix-eac-montevideo-2025",
+      "headings": [
+        "HELIX",
+        "Documentación técnica de instalación",
+        "1. Descripción general",
+        "2. Requisitos de conexión a internet",
+        "3. Topología de red",
+        "4. Diagrama interactivo",
+        "5. Disposición física",
+        "6. Inventario base de equipamiento",
+        "Cómputo y red",
+        "Pantallas e interacción",
+        "Audio",
+        "7. Notas y lista de verificación"
+      ],
+      "minTextLength": 3433
+    },
+    {
+      "url": "/lab/es/ip-1",
+      "headings": [],
+      "minTextLength": 2140
+    },
+    {
+      "url": "/lab/es/ip-2",
+      "headings": [],
+      "minTextLength": 1542
+    },
+    {
+      "url": "/lab/es/ip-3",
+      "headings": [],
+      "minTextLength": 897
+    },
+    {
+      "url": "/lab/es/ip-orchestra-design",
+      "headings": [
+        "🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬",
+        "¿Qué?",
+        "¿Por qué?",
+        "¿Para qué?",
+        "¿ Que son los interplanetary Players?",
+        "Controla el Sonido:",
+        "Explora Modos Regenerativos:",
+        "Contáctame"
+      ],
+      "minTextLength": 2596
+    },
+    {
+      "url": "/lab/es/ip-orchestra",
+      "headings": [
+        "🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬",
+        "Invitación",
+        "Descripción del Taller",
+        "Programación",
+        "13 de septiembre 2024 7:00pm Concierto",
+        "Invitación Especial",
+        "Perfil de la Facilitadora",
+        "Controla el Sonido:",
+        "Explora Modos Regenerativos:",
+        "Contáctame"
+      ],
+      "minTextLength": 4431
+    },
+    {
+      "url": "/lab/es/musica-retorno-al-juego",
+      "headings": [
+        "Música, Abstracción y el Retorno al Juego",
+        "Referencias"
+      ],
+      "minTextLength": 3093
+    },
+    {
+      "url": "/lab/es/orbits-and-bodies",
+      "headings": [
+        "Introducción"
+      ],
+      "minTextLength": 777
+    },
+    {
+      "url": "/landings",
+      "headings": [
+        "Landings",
+        "Sonic events on planet earth"
+      ],
+      "minTextLength": 4731
+    },
+    {
+      "url": "/music",
+      "headings": [
+        "Music"
+      ],
+      "minTextLength": 154
+    },
+    {
+      "url": "/orbiters",
+      "headings": [
+        "Start your journey",
+        "Control the Sound:",
+        "Explore Regenerative Modes:",
+        "Innovative Tradition",
+        "An Extended Harmony of the Spheres"
+      ],
+      "minTextLength": 1156
+    },
+    {
+      "url": "/privacy",
+      "headings": [
+        "Privacy and Cookies Policy"
+      ],
+      "minTextLength": 1857
+    },
+    {
+      "url": "/radio",
+      "headings": [
+        "Radio",
+        "Collect",
+        "Join mail list"
+      ],
+      "minTextLength": 952
+    },
+    {
+      "url": "/resume",
+      "headings": [],
+      "minTextLength": 206
+    },
+    {
+      "url": "/revx000",
+      "headings": [
+        "Revolution X",
+        "Download"
+      ],
+      "minTextLength": 238
+    },
+    {
+      "url": "/rthw00",
+      "headings": [
+        "Rainbow technologies to heal war.",
+        "Download"
+      ],
+      "minTextLength": 247
+    },
+    {
+      "url": "/skyl0",
+      "headings": [
+        "Skylight.1",
+        "Download"
+      ],
+      "minTextLength": 294
+    },
+    {
+      "url": "/skyl00",
+      "headings": [
+        "Skylight.2",
+        "Download"
+      ],
+      "minTextLength": 302
+    },
+    {
+      "url": "/skyl000",
+      "headings": [
+        "Skylight.3",
+        "Download"
+      ],
+      "minTextLength": 279
+    },
+    {
+      "url": "/sphe0",
+      "headings": [
+        "Spherical Drops",
+        "Download"
+      ],
+      "minTextLength": 267
+    },
+    {
+      "url": "/subscribe",
+      "headings": [
+        "Join mail list"
+      ],
+      "minTextLength": 269
+    },
+    {
+      "url": "/tree",
+      "headings": [],
+      "minTextLength": 78
+    },
+    {
+      "url": "/tree/max-network-berlin",
+      "headings": [],
+      "minTextLength": 960
+    }
+  ]
+}

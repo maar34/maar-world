@@ -85,7 +85,7 @@ source: "maar.world/index.md"
     <div class="hero hero--center hero--dark hero-example--linear-gradient">
       <div class="hero__content">
         <h3>Play music cards with exoplanets</h3>
-        <p>Sky Sounds introduces the first-ever card collection that when scanned allows you to listen to their music and transform them based on the movement of the exoplanets they belong. <br> <br> <a class="button button--primary button--rounded button--xl" href="https://maar-world.bandcamp.com/merch"><span class="material-symbols-outlined">hearing </span> Collect</a></p>
+        <p>Sky Sounds introduces the first-ever card collection that when scanned allows you to listen to their music and transform them based on the movement of the exoplanets they belong. <br> <br> <a class="button button--primary button--rounded button--xl" href="https://maar-world.bandcamp.com/merch">Collect</a></p>
       </div>
     </div>
 </section>

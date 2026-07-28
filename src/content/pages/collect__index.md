@@ -24,7 +24,7 @@ description: "Explore a new musical dimension with Sky Sounds, a collection of c
     <div class="hero hero--center hero--dark hero-example--linear-gradient">
       <div class="hero__content">
         <h3>Play music cards with exoplanets</h3>
-        <p>Sky Sounds introduces the first-ever card collection that when scanned allows you to listen to their music and transform them based on the movement of the exoplanets they belong. <br> <br> <a class="button button--primary button--rounded button--xl" href="https://maar-world.bandcamp.com/merch"><span class="material-symbols-outlined">hearing </span> Collect</a></p>
+        <p>Sky Sounds introduces the first-ever card collection that when scanned allows you to listen to their music and transform them based on the movement of the exoplanets they belong. <br> <br> <a class="button button--primary button--rounded button--xl" href="https://maar-world.bandcamp.com/merch">Collect</a></p>
       </div>
     </div>
 
@@ -53,7 +53,7 @@ description: "Explore a new musical dimension with Sky Sounds, a collection of c
 
       <div class="hero hero--center hero--dark hero-example--linear-gradient">
         <div class="hero__content">
-           <a class="button button--primary button--rounded button--xl" href="https://maar.world/orbiters"><span class="material-symbols-outlined">music_note </span> What is an Orbiter?</a></p>
+           <a class="button button--primary button--rounded button--xl" href="https://maar.world/orbiters">What is an Orbiter?</a></p>
         </div>
       </div>
   
@@ -126,7 +126,7 @@ description: "Explore a new musical dimension with Sky Sounds, a collection of c
       <!-- <p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a href="https://www.youtube.com/embed/gpL2sTqXdrA" target="_blank" rel="noopener">watch this video on youtube</a></p> -->
       <div class="hero hero--center hero--dark hero-buy--linear-gradient">
         <div class="hero__content">
-          <p>This method is designed to be accessible and fun for everyone, from experienced musicians to complete beginners.<br><br><a class="button button--primary button--rounded button--xl" href="/collect/docs/tutorials.html"><span class="material-symbols-outlined">expand_content</span> Watch Tutorials</a></p>
+          <p>This method is designed to be accessible and fun for everyone, from experienced musicians to complete beginners.<br><br><a class="button button--primary button--rounded button--xl" href="/collect/docs/tutorials.html">Watch Tutorials</a></p>
         </div>
       </div>
     </div>

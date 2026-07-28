@@ -27,33 +27,33 @@ source: "tree.maar.world/collections/_pages/max-network-berlin.html"
     <div style="text-align: center;">
   
       <a class="button button--outline-success button--pill" href="https://plantasia.space" target="_blank">
-        <span class="material-symbols-outlined">eco</span> Become a plantasia.space Beta Tester
+        Become a plantasia.space Beta Tester
       </a>
       <br><br>
 
   
       <a class="button button--outline-success button--pill" href="https://maar.world/interplanetary-players" target="_blank">
-        <span class="material-symbols-outlined">travel_explore</span> Explore Interplanetary Players
+        Explore Interplanetary Players
       </a>
       <br><br>
   
       <a class="button button--outline-success button--pill" href="https://docs.maar.world" target="_blank">
-        <span class="material-symbols-outlined">menu_book</span> Explore Documentation
+        Explore Documentation
       </a>
       <br><br>
   
       <a class="button button--outline-success button--pill" href="https://github.com/maar34/interplanetary-players-rnbo" target="_blank">
-        <span class="material-symbols-outlined">code_blocks</span> Interplanetary Players RNBO (1 & 2)
+        Interplanetary Players RNBO (1 & 2)
       </a>
       <br><br>
   
       <a class="button button--outline-success button--pill" href="https://github.com/maar34/interplanetary-players-web" target="_blank">
-        <span class="material-symbols-outlined">code</span> Interplanetary Players Web (1.0)
+        Interplanetary Players Web (1.0)
       </a>
       <br><br>
   
       <a class="button button--outline-success button--pill" href="mailto:bruna@maar.world">
-        <span class="material-symbols-outlined">mail</span> Contact 𝐵𝓇𝓊𝓃𝒶
+        Contact 𝐵𝓇𝓊𝓃𝒶
       </a>
       <br>
       
