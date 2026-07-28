@@ -1,0 +1,219 @@
+/**
+ * Helix island — presentation.
+ *
+ * Every colour, length, radius and duration here is a token. The only numbers
+ * are SVG stroke widths and dash patterns, which live in the component because
+ * they are user units inside the viewBox, not CSS lengths.
+ *
+ * This file is imported by HelixIsland.astro, not by the .tsx, so it is a real
+ * stylesheet in <head> on the one page that uses it. Imported from the React
+ * component it would arrive only after hydration, and the diagram would flash
+ * unstyled — on the one route that is allowed to ship JavaScript, that would be
+ * the worst place to accept it.
+ */
+
+.helix {
+  --helix-maar: var(--c-maar);
+  --helix-collect: var(--c-collect);
+  --helix-tree: var(--c-tree);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+}
+
+/* ---- frame ------------------------------------------------------------- */
+
+.helix__frame {
+  background: var(--sf-raised);
+  border: var(--focus-w) solid var(--ink-hairline);
+  border-radius: var(--r-0);
+  padding: var(--s-3);
+  /* The diagram has a fixed aspect ratio and a lot of small type. Below the
+     measure it scrolls rather than shrinking past legibility. */
+  overflow-x: auto;
+}
+
+.helix__svg {
+  display: block;
+  width: 100%;
+  min-width: 40rem;
+  height: auto;
+}
+
+/* ---- wires ------------------------------------------------------------- */
+
+.helix-wire {
+  fill: none;
+  transition: opacity var(--m-fast) var(--ease);
+}
+
+/* Filtering moves opacity only — no blur, no colour animation. */
+.helix-wire--dim {
+  opacity: 0.12;
+}
+
+.helix-triangle {
+  fill: none;
+  stroke: var(--ink-hairline);
+  stroke-width: 1.2;
+  stroke-dasharray: 10 7;
+}
+
+/* ---- nodes and boxes --------------------------------------------------- */
+
+.helix-node,
+.helix-box {
+  transition: opacity var(--m-fast) var(--ease);
+}
+
+.helix-node {
+  cursor: pointer;
+}
+
+.helix-node__disc,
+.helix-box__plate,
+.helix-box__inner {
+  fill: var(--sf-sunken);
+  stroke: var(--ink-faint);
+  stroke-width: 1.5;
+}
+
+.helix-node__screen {
+  fill: none;
+  stroke: var(--ink-muted);
+  stroke-width: 1.5;
+}
+
+.helix-node__base {
+  fill: var(--ink-muted);
+}
+
+.helix-node__wave {
+  fill: none;
+  stroke: var(--ink-muted);
+  stroke-width: 1.2;
+}
+
+/* A selected station or an isolated layer is marked with a pigment field and a
+   heavier edge — a flat fill, never a glow.
+
+   `--helix-on` is set per group by the component to the pigment of the layer
+   being isolated, so filtering "audio" marks the amplifier in the audio
+   pigment rather than in the wayfinding blue. Station selection is wayfinding
+   and takes the fallback. */
+.helix-node--on .helix-node__disc,
+.helix-box--on .helix-box__plate {
+  fill: var(--helix-on, var(--helix-maar));
+  stroke: var(--helix-on, var(--helix-maar));
+  stroke-width: 2.5;
+}
+
+.helix-node--on .helix-node__screen,
+.helix-node--on .helix-node__wave {
+  stroke: var(--pigment-ink);
+}
+
+.helix-node--on .helix-node__base {
+  fill: var(--pigment-ink);
+}
+
+.helix-box--on .helix-box__inner {
+  fill: var(--sf-base);
+  stroke: var(--pigment-ink);
+}
+
+/* ---- labels ------------------------------------------------------------ */
+
+.helix-label {
+  font-family: var(--t-meta-face);
+  font-weight: var(--t-meta-weight);
+  letter-spacing: var(--t-meta-track);
+  fill: var(--ink-meta);
+}
+
+.helix-label--faint {
+  fill: var(--ink-faint);
+}
+
+/* A caption that sits outside its plate stays on the dark surface even when
+   the plate is filled — it just reads brighter. Inverting it, as an earlier
+   pass did, printed dark type on the dark surface and the caption vanished. */
+.helix-node--on .helix-label,
+.helix-box--on .helix-label {
+  fill: var(--ink);
+}
+
+/* Type on a pastel is always dark, on both surfaces. Only the captions drawn
+   *inside* a plate are on a pastel. */
+.helix-node--on .helix-label--on-plate,
+.helix-box--on .helix-label--on-plate {
+  fill: var(--pigment-ink);
+}
+
+/* ---- legend ------------------------------------------------------------ */
+
+.helix__legend {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.helix__legend legend {
+  color: var(--ink-meta);
+  padding: 0;
+  margin-bottom: var(--s-2);
+}
+
+.helix-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-1) var(--s-3);
+  background: var(--sf-raised);
+  color: var(--ink-muted);
+  border: 1px solid var(--ink-hairline);
+  border-radius: var(--r-1);
+  cursor: pointer;
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  letter-spacing: var(--t-meta-track);
+  transition: opacity var(--m-fast) var(--ease);
+}
+
+.helix-chip--on {
+  background: var(--sf-raised-2);
+  color: var(--ink);
+  border-color: var(--ink-faint);
+}
+
+.helix-chip__rule {
+  width: var(--s-6);
+  height: var(--s-2);
+  flex: none;
+}
+
+.helix__hint {
+  color: var(--ink-meta);
+  margin: 0;
+}
+
+/* Focus is a visible outline, never a shadow, never removed — including on the
+   SVG groups, which browsers do not outline by default in every engine. */
+.helix-node:focus-visible {
+  outline: var(--focus-w) solid var(--focus-c);
+  outline-offset: var(--focus-o);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .helix-wire,
+  .helix-node,
+  .helix-box,
+  .helix-chip {
+    transition: none;
+  }
+}

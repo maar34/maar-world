@@ -22,6 +22,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import GlyphRun from '../components/patterns/GlyphRun.astro';
+import HelixIsland from '../components/react/HelixIsland.astro';
 
 export async function getStaticPaths() {
   const pages = await getCollection('pages');
@@ -102,6 +103,13 @@ const isCard = d.kind === 'collect-card';
     <div class="legacy">
       <Content />
     </div>
+
+    {
+      /* The single approved island. Astro emits JavaScript only for pages that
+         mount one, so this branch is also the reason every other page in the
+         build ships none. */
+      d.island === 'helix' && <HelixIsland />
+    }
 
     {
       /* play.maar.world shares the registrable domain, so it is same-site even

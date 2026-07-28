@@ -536,13 +536,23 @@ const SPECIAL = {
     return '<p>redirecting to <a href="/orbiters">/orbiters</a>…</p>';
   },
 
-  // The interactive diagram is a React app loaded from unpkg — three
+  // The interactive diagram was a React app loaded from unpkg with
+  // @babel/standalone transpiling its JSX in the visitor's browser — three
   // third-party scripts on page load, which the no-cookie-banner gate forbids.
-  // MW-9 owns the Helix island; until then the URL resolves and says so.
-  'helix-diagram': () =>
-    '<h1>helix</h1>\n\n' +
-    '<p>the interactive helix routing diagram is being rebuilt as a self-hosted island. ' +
-    'it previously loaded react from a third-party cdn, which is no longer permitted on page load.</p>',
+  // MW-9 rebuilt it as the one approved React island; the body here is the
+  // prose around it, and `island` is what mounts it. The diagram itself is
+  // src/components/react/HelixDiagram.tsx and is not generated from source.
+  'helix-diagram': (rec) => {
+    rec.island = 'helix';
+    return (
+      '<h1>helix</h1>\n\n' +
+      '<p>the technical installation diagram for helix at the espacio de arte contemporáneo, ' +
+      'montevideo, 2025. three identical stations around a central router, with the cabling ' +
+      'and the wireless paths drawn separately so each can be isolated.</p>\n\n' +
+      '<p>choose a layer to show only that kind of connection, or a station to highlight it. ' +
+      'the written description below the diagram carries the same topology in words.</p>'
+    );
+  },
 };
 
 // ── 5. write the records ─────────────────────────────────────────────────

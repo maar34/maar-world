@@ -144,6 +144,15 @@ export const pageSchema = z
      */
     redirectTo: z.string().optional(),
 
+    /**
+     * The one page whose content is an application, and therefore the one page
+     * allowed to ship application JavaScript. This is an enum of exactly one
+     * value on purpose: a second island cannot be added by writing a string in
+     * a content file, only by changing this list — which makes it a decision,
+     * not a habit. `/helix-diagram.html` is the sole holder.
+     */
+    island: z.enum(['helix']).optional(),
+
     // Carried verbatim on the retired Collect card catalogue pages. Commerce
     // URLs are absent by design — noCommerceFields rejects them.
     suit_title: z.string().optional(),

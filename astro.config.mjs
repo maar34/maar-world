@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import react from '@astrojs/react';
 import { readFileSync } from 'node:fs';
 
 /**
@@ -52,6 +53,19 @@ export default defineConfig({
   prefetch: false,
   devToolbar: { enabled: false },
   integrations: [
+    /**
+     * React exists in this build for exactly one island: the Helix diagram at
+     * /helix-diagram.html. That page was React 18 + ReactDOM + @babel/standalone
+     * pulled from unpkg.com and transpiled in the visitor's browser — three
+     * third-party requests and a compiler, on page load. The island is built
+     * here instead, so the only page that ships application JavaScript is the
+     * one page whose content *is* an application.
+     *
+     * Astro ships zero JavaScript for a page with no island, so adding this
+     * integration does not put React on any other page. If a second island ever
+     * appears, that is a decision to take deliberately, not a side effect.
+     */
+    react(),
     sitemap({
       filter: (page) => {
         const path = new URL(page).pathname;
