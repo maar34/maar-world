@@ -31,7 +31,20 @@
   /* Type on any pastel is always dark, on both surfaces. */
   --pigment-ink: var(--c-dark);
 
-  /* ---- surface roles: dark shell (default) ---------------------------- */
+  /* ---- surface roles -------------------------------------------------- */
+  /**
+   * The spec's surface-roles table names four surfaces, so all four exist here
+   * under its own names. `--sf-paper` and `--sf-paper-raised` are the paper
+   * shell's constants; the [data-surface='paper'] block below swaps them into
+   * --sf-base / --sf-raised so every component keeps referring to one pair of
+   * role tokens and never branches on surface itself.
+   *
+   * Dark is not a theme toggle — it is the surface, and it is the default.
+   */
+  --sf-paper: #efe7da;
+  --sf-paper-raised: #f2ece2;
+
+  /* dark shell (default) */
   --sf-base: #100f14;
   --ink: #efe7da;
 
@@ -39,6 +52,19 @@
   --sf-raised-2: color-mix(in srgb, var(--ink) 12%, transparent);
   --sf-sunken: color-mix(in srgb, var(--ink) 4%, transparent);
 
+  /**
+   * The spec states this twice and disagrees with itself: the pigment-roles
+   * prose says "muted ink = ink at 60%", while the derived-colour-roles table
+   * says --ink-muted 75% and --ink-meta 60%.
+   *
+   * The table wins, and 75% is used here, for a reason rather than a coin toss:
+   * the table is introduced as "the full set a build consumes", and at 60% the
+   * muted and meta roles would be the same value — collapsing two roles the spec
+   * keeps distinct (excerpts and panel body vs meta lines and captions).
+   *
+   * Anyone re-syncing from the spec's prose will be tempted to flip this back.
+   * Don't, without resolving the conflict upstream first.
+   */
   --ink-muted: color-mix(in srgb, var(--ink) 75%, transparent);
   --ink-meta: color-mix(in srgb, var(--ink) 60%, transparent);
   --ink-faint: color-mix(in srgb, var(--ink) 40%, transparent);
@@ -146,11 +172,11 @@
 /* Document routes only — print, export, long-form reading. Same components,
    surface and ink swapped, pastels unchanged. */
 [data-surface='paper'] {
-  --sf-base: #efe7da;
+  --sf-base: var(--sf-paper);
   --ink: #100f14;
 
   /* Paper's raised steps are measured colours, not ink opacities. */
-  --sf-raised: #f2ece2;
+  --sf-raised: var(--sf-paper-raised);
   --sf-raised-2: #e8dfd0;
   --sf-sunken: #e3d9c8;
 
@@ -159,9 +185,9 @@
 
 @media print {
   :root {
-    --sf-base: #efe7da;
+    --sf-base: var(--sf-paper);
     --ink: #100f14;
-    --sf-raised: #f2ece2;
+    --sf-raised: var(--sf-paper-raised);
     --sf-raised-2: #e8dfd0;
     --sf-sunken: #e3d9c8;
     --focus-c: var(--ink);
