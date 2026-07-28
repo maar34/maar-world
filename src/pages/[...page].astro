@@ -85,20 +85,39 @@ const isCard = d.kind === 'collect-card';
   description={d.description ?? d.card_description}
   surface={d.surface}
   noindex={d.noindex}
+  area={d.area}
+  lang={d.lang}
   redirectTo={d.redirectTo}
 >
-  <main class="page">
+  {/* The shell owns <main>. This is the page family inside it. */}
+  <div class="page shell__inner measure">
     {
+      /* The label line, with no mark on it.
+         The rules-of-use table permits marks at h1 and card-cover level and
+         forbids them at body, ui, label and caption level — and this is a label
+         line. The glyph run that used to sit here now sits in the h1 below,
+         where up to two are allowed and where zero were being used. */
       isCard && (
         <p class="t-meta suit">
-          {d.suit_title}
-          <GlyphRun seed={d.outputPath} />
-          {d.card_title}
+          <span>{d.suit_title}</span>
+          <span>{d.card_title}</span>
         </p>
       )
     }
 
-    {isCard && <h1>{d.card_title}</h1>}
+    {
+      /* One mark, not two: the responsive table caps an h1 at one mark below
+         600px, and a single run satisfies every breakpoint without the heading
+         changing shape as the viewport does. aria-hidden inside the heading, so
+         the accessible name stays the card title alone. */
+      isCard && (
+        <h1>
+          {d.card_title}
+          {' '}
+          <GlyphRun seed={d.outputPath} />
+        </h1>
+      )
+    }
 
     {
       isCard && d.card_image && (
@@ -152,15 +171,16 @@ const isCard = d.kind === 'collect-card';
         </ul>
       )
     }
-  </main>
+  </div>
 </BaseLayout>
 
 <style>
-  /* Page family 03 — entry. Single measure. */
+  /* Page family 03 — entry. Single measure.
+     The measure is --measure (66ch), not 72ch: "prose measure never exceeds
+     66ch at any width". The horizontal padding is the shell's responsive
+     gutter, which .shell__inner supplies. */
   .page {
-    max-width: 72ch;
-    margin: 0 auto;
-    padding: var(--s-16) var(--s-6) var(--s-24);
+    padding-block: var(--s-16) var(--s-24);
     display: flex;
     flex-direction: column;
     /* Sibling groups use gap, never margins. Space is the primary separator. */

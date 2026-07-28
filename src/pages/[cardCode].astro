@@ -131,8 +131,11 @@ const downloads = [d.download, d.download2]
   .filter((x): x is { href: string; label: string } => x !== null);
 ---
 
-<BaseLayout title={cardName} description={d.card_description} noindex={true}>
-  <main class="card-page">
+{/* The 35 NFC cards are served from the maar.world root, so they are maar-area
+    pages. They carry no `lang`, and every one of them is English. */}
+<BaseLayout title={cardName} description={d.card_description} noindex={true} area="maar">
+  {/* The shell owns <main>. This is the page family inside it. */}
+  <div class="card-page shell__inner measure">
     {
       orbiterUrl && (
         <section class="orbiter" aria-label="now playing on Maar Orbiter">
@@ -157,13 +160,21 @@ const downloads = [d.download, d.download2]
       )
     }
 
+    {/* The label line, with no mark on it.
+        The rules-of-use table permits marks at h1 and card-cover level and
+        forbids them at body, ui, label and caption level — and this is a label
+        line. The glyph run that used to sit here now sits in the h1 below,
+        where up to two are allowed and where zero were being used. */}
     <p class="t-meta suit">
-      {d.suit_title}
-      <GlyphRun seed={d.permalink} />
-      {d.card_title}
+      <span>{d.suit_title}</span>
+      <span>{d.card_title}</span>
     </p>
 
-    <h1>{d.card_title}</h1>
+    {/* One mark, not two: the responsive table caps an h1 at one mark below
+        600px, and a single run satisfies every breakpoint without the heading
+        changing shape as the viewport does. aria-hidden inside the heading, so
+        the accessible name stays the card title alone. */}
+    <h1>{d.card_title}{' '}<GlyphRun seed={d.permalink} /></h1>
 
     <figure class="cover">
       <img src={d.card_image} alt={`${d.suit_title} ${d.card_title}`} loading="lazy" decoding="async" />
@@ -213,7 +224,7 @@ const downloads = [d.download, d.download2]
         </p>
       )
     }
-  </main>
+  </div>
 
   {
     orbiterUrl && (
@@ -228,11 +239,10 @@ const downloads = [d.download, d.download2]
 </BaseLayout>
 
 <style>
-  /* Page family 03 — entry. Single measure, 66ch max. */
+  /* Page family 03 — entry. Single measure, 66ch max — supplied by
+     .shell__inner.measure, along with the shell's responsive gutter. */
   .card-page {
-    max-width: 66ch;
-    margin: 0 auto;
-    padding: var(--s-16) var(--s-6) var(--s-24);
+    padding-block: var(--s-16) var(--s-24);
     display: flex;
     flex-direction: column;
     /* Sibling groups use gap, never margins. Space is the primary separator. */

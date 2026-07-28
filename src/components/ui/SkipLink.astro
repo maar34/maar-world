@@ -1,0 +1,14 @@
+---
+/**
+ * The first focusable thing on every page.
+ *
+ * Its target is the `<main id="content">` the shell itself renders, so the link
+ * cannot go stale when a page family changes — there is exactly one main and the
+ * shell owns it.
+ *
+ * Markup keeps normal capitalisation. The lowercase is a text-transform in
+ * styles/reset.css, so a screen reader is never handed "s k i p".
+ */
+---
+
+<a class="skip-link" href="#content">Skip to content</a>

@@ -166,6 +166,34 @@
   --focus-w: 2px;
   --focus-o: 3px;
   --focus-c: var(--c-maar);
+
+  /* ---- shell measures --------------------------------------------------- */
+  /**
+   * From the spec's responsive table. The shell itself is full-bleed at every
+   * breakpoint; these are what the shell's *inner* column is bounded by.
+   *
+   * Gutters are 20 / 32 / 48 / 64 across the four breakpoints. Three of those
+   * are already points on the spacing scale (--s-8, --s-12, --s-16); 20 is not,
+   * which is why it is spelled here as a raw value rather than approximated by
+   * --s-4 or --s-6. This file is the only place a raw value may exist, and
+   * styles/shell.css binds one of these four to --gutter per breakpoint.
+   */
+  --gutter-xs: 20px; /* < 600 */
+  --gutter-sm: var(--s-8); /* 600–899 */
+  --gutter-md: var(--s-12); /* 900–1279 */
+  --gutter-lg: var(--s-16); /* >= 1280 */
+
+  /* "content max 1180, prose measure still 66ch" — two different bounds. The
+     first bounds the shell's column, the second bounds a run of prose inside
+     it, and prose never exceeds it at any width. */
+  --content-max: 1180px;
+  --measure: 66ch;
+
+  /* "touch targets 44px minimum" — accessibility, not decoration. */
+  --hit-min: 44px;
+
+  /* "press is a 1px downward nudge, no scale." */
+  --press-nudge: 1px;
 }
 
 /* ---- surface roles: paper ---------------------------------------------- */

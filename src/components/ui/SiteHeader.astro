@@ -1,0 +1,145 @@
+---
+/**
+ * The header, and the navigation across the three merged areas.
+ *
+ * Three origins became one site. The thing that has to survive that merge is
+ * that Maar, Collect and Tree are still legible as distinct areas — so the area
+ * row is the primary navigation and each entry carries its area's own pigment
+ * role, taken from AREAS in src/config/site.ts and from nowhere else.
+ *
+ * A pigment field never carries meaning alone, so the current area is marked
+ * three ways: the field, an underline, and `aria-current` in the markup.
+ *
+ * NO APPLICATION JAVASCRIPT. The small-screen menu is a <details> disclosure —
+ * the browser's own control, no script. See styles/shell.css for why the wide
+ * navigation is a separate element rather than the same <details> forced open.
+ */
+import { AREAS, type AreaName } from '../../config/site';
+
+interface Props {
+  area?: AreaName;
+  /** 'en' on the chrome when the page itself is not English. */
+  chromeLang?: string;
+}
+
+const { area = 'maar', chromeLang } = Astro.props;
+
+const ORDER: readonly AreaName[] = ['maar', 'collect', 'tree'];
+
+/** An area's own root. Derived from AREAS.pathPrefix — never spelled twice. */
+const areaHome = (name: AreaName) => AREAS[name].pathPrefix || '/';
+
+/**
+ * The section links for each area.
+ *
+ * These are the legacy header of each origin, measured from the live sites and
+ * recorded in MIGRATION-LEDGER.md as `shell/legacy-nav-inventory`. They are a
+ * restoration, not an invention — nothing is here that a visitor could not
+ * already reach from that site's header.
+ *
+ * Two entries from that inventory are deliberately absent:
+ *   - the cross-origin "Collect" / "Maar World" / "Tree" links, which are now
+ *     the area row above rather than a link inside one area's sections;
+ *   - Collect's "Buy Now", a Bandcamp storefront. MW-1 and MW-6 both forbid
+ *     reintroducing commerce and COMMERCE.destinationUrl is null.
+ *
+ * The eventual source for this list is the `inNav` field on the page schema,
+ * which is false on all 95 migrated pages today. Moving it there is a content
+ * change, not a shell change.
+ */
+const SECTIONS: Record<AreaName, { href: string; label: string }[]> = {
+  maar: [
+    { href: '/orbiters', label: 'Orbiters' },
+    { href: '/lab', label: 'Lab' },
+    { href: '/landings', label: 'Landings' },
+    { href: '/bookings', label: 'Bookings' },
+    { href: '/about', label: 'About' },
+  ],
+  collect: [{ href: '/collect/documentation', label: 'Docs' }],
+  tree: [],
+};
+
+const sections = SECTIONS[area];
+
+/**
+ * Which entry is the page you are on.
+ *
+ * The build emits `about.html` for `/about` and `collect/index.html` for
+ * `/collect`, so both spellings are normalised back to the URL a visitor typed
+ * before comparing. Nothing is re-derived from a title or a slug.
+ */
+const here = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '') || '/';
+
+const areaCurrent = (name: AreaName) =>
+  here === areaHome(name) ? 'page' : name === area ? 'true' : undefined;
+---
+
+<header class="shell__header" lang={chromeLang}>
+  <div class="shell__inner shell__header-inner">
+    <a class="shell__brand" href="/">Maar World</a>
+
+    <nav class="nav-areas" aria-label="Areas">
+      <ul role="list" class="nav-list">
+        {
+          ORDER.map((name) => (
+            <li>
+              <a
+                class="nav-link"
+                href={areaHome(name)}
+                style={`--area-pigment: ${AREAS[name].pigment}`}
+                aria-current={areaCurrent(name)}
+              >
+                {AREAS[name].label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    {
+      sections.length > 0 && (
+        <Fragment>
+          {/* Wide: a plain list. Hidden below 900px, so never a second tab stop. */}
+          <nav class="nav-sections nav-sections--wide" aria-label={`${AREAS[area].label} pages`}>
+            <ul role="list" class="nav-list">
+              {sections.map((s) => (
+                <li>
+                  <a
+                    class="nav-link"
+                    href={s.href}
+                    style={`--area-pigment: ${AREAS[area].pigment}`}
+                    aria-current={here === s.href ? 'page' : undefined}
+                  >
+                    {s.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Compact: the browser's own disclosure. Hidden at 900px and above. */}
+          <details class="nav-sections nav-sections--compact">
+            <summary class="nav-disclosure">Menu</summary>
+            <nav class="nav-panel" aria-label={`${AREAS[area].label} pages`}>
+              <ul role="list" class="nav-list">
+                {sections.map((s) => (
+                  <li>
+                    <a
+                      class="nav-link"
+                      href={s.href}
+                      style={`--area-pigment: ${AREAS[area].pigment}`}
+                      aria-current={here === s.href ? 'page' : undefined}
+                    >
+                      {s.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </details>
+        </Fragment>
+      )
+    }
+  </div>
+</header>

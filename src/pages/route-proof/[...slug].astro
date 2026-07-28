@@ -22,8 +22,8 @@ const { slug } = Astro.params;
 ---
 
 <BaseLayout title="route shape proof — spaces" noindex={true}>
-  <main style="padding: var(--s-16);">
+  <div class="shell__inner measure" style="padding-block: var(--s-16);">
     <h1>space proof</h1>
     <p>slug: <code>{slug}</code></p>
-  </main>
+  </div>
 </BaseLayout>

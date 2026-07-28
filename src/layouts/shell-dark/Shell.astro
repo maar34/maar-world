@@ -1,0 +1,33 @@
+---
+/**
+ * shell-dark — the primary shell. Header, footer, all product routes.
+ *
+ * Dark is not a theme toggle: it is the surface, and it is the default. Every
+ * route in this build renders here except the document routes, which reach
+ * shell-paper instead.
+ *
+ * The landmarks are real ones — <header>, <nav>, <main>, <footer> — and <main>
+ * belongs to the shell rather than to each page family, so there is exactly one
+ * per document and the skip link's target can never go stale.
+ */
+import SkipLink from '../../components/ui/SkipLink.astro';
+import SiteHeader from '../../components/ui/SiteHeader.astro';
+import SiteFooter from '../../components/ui/SiteFooter.astro';
+import type { AreaName } from '../../config/site';
+
+interface Props {
+  area?: AreaName;
+  chromeLang?: string;
+}
+
+const { area, chromeLang } = Astro.props;
+---
+
+<div class="shell" data-shell="dark">
+  <SkipLink />
+  <SiteHeader area={area} chromeLang={chromeLang} />
+  <main id="content" class="shell__main">
+    <slot />
+  </main>
+  <SiteFooter chromeLang={chromeLang} />
+</div>

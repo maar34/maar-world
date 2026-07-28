@@ -1,0 +1,36 @@
+---
+/**
+ * shell-paper — the secondary shell. Documents, print, export.
+ *
+ * Reached only by document routes. It is the same shell with the surface and the
+ * ink swapped and the pastels unchanged — the swap happens entirely in
+ * styles/tokens.css under [data-surface='paper'], so no component here branches
+ * on which surface it is drawn on, and neither do the three chrome components it
+ * shares with shell-dark.
+ *
+ * The spec's folder map names shell-dark and shell-paper separately and says
+ * nothing about paper carrying different chrome, so it carries the same chrome.
+ * If the paper shell is later specified to drop the area navigation for print,
+ * that is a change here and nowhere else.
+ */
+import SkipLink from '../../components/ui/SkipLink.astro';
+import SiteHeader from '../../components/ui/SiteHeader.astro';
+import SiteFooter from '../../components/ui/SiteFooter.astro';
+import type { AreaName } from '../../config/site';
+
+interface Props {
+  area?: AreaName;
+  chromeLang?: string;
+}
+
+const { area, chromeLang } = Astro.props;
+---
+
+<div class="shell" data-shell="paper">
+  <SkipLink />
+  <SiteHeader area={area} chromeLang={chromeLang} />
+  <main id="content" class="shell__main">
+    <slot />
+  </main>
+  <SiteFooter chromeLang={chromeLang} />
+</div>

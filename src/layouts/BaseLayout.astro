@@ -23,8 +23,11 @@ import '@fontsource/dm-mono/400.css';
 import '../styles/tokens.css';
 import '../styles/reset.css';
 import '../styles/type.css';
+import '../styles/shell.css';
 
-import { SITE } from '../config/site';
+import { SITE, type AreaName } from '../config/site';
+import ShellDark from './shell-dark/Shell.astro';
+import ShellPaper from './shell-paper/Shell.astro';
 
 interface Props {
   title: string;
@@ -33,6 +36,22 @@ interface Props {
   noindex?: boolean;
   canonical?: string;
   /**
+   * Which of the three merged areas this page belongs to. Drives one pigment
+   * role in the navigation, so Maar, Collect and Tree stay legible as distinct
+   * areas inside a single site.
+   */
+  area?: AreaName;
+  /**
+   * The document's own language, from the page record's `lang`.
+   *
+   * This used to be hardcoded `en` on all 133 pages, including the 10 Spanish
+   * /lab/es/* articles. A screen reader given the wrong language reads Spanish
+   * with English phonemes, and a translation tool is told there is nothing to
+   * translate — so this is the difference between a page being readable and
+   * being unusable, not a metadata nicety.
+   */
+  lang?: string;
+  /**
    * A deprecated address that production serves as a 200 with a meta refresh,
    * not as an HTTP redirect. `/interplanetary-players` is the only one. Kept as
    * a meta refresh rather than JavaScript so it works with scripting disabled.
@@ -40,14 +59,40 @@ interface Props {
   redirectTo?: string;
 }
 
-const { title, description, surface = 'dark', noindex = false, canonical, redirectTo } = Astro.props;
+const {
+  title,
+  description,
+  surface = 'dark',
+  noindex = false,
+  canonical,
+  area = 'maar',
+  lang = 'en',
+  redirectTo,
+} = Astro.props;
+
 const canonicalUrl = canonical ?? (redirectTo
   ? new URL(redirectTo, SITE.origin).href
   : new URL(Astro.url.pathname, SITE.origin).href);
+
+/**
+ * The shell is written in English on every page, including the Spanish ones.
+ * Declaring the document `es` and leaving the chrome undeclared would hand a
+ * screen reader "Skip to content" and "Instagram" to pronounce as Spanish, which
+ * is the same defect one level down. So the chrome states its own language
+ * whenever it differs from the document's, and says nothing when it does not.
+ */
+const chromeLang = lang === 'en' ? undefined : 'en';
+
+/**
+ * Dark is the surface and the default; paper is reached only by document routes.
+ * The two shells are separate files because the spec's folder map names them
+ * separately; the surface swap itself is entirely in tokens.css.
+ */
+const Shell = surface === 'paper' ? ShellPaper : ShellDark;
 ---
 
 <!doctype html>
-<html lang="en" data-surface={surface}>
+<html lang={lang} data-surface={surface}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -58,6 +103,8 @@ const canonicalUrl = canonical ?? (redirectTo
     <link rel="canonical" href={canonicalUrl} />
   </head>
   <body>
-    <slot />
+    <Shell area={area} chromeLang={chromeLang}>
+      <slot />
+    </Shell>
   </body>
 </html>

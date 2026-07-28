@@ -1,0 +1,364 @@
+/**
+ * The shell — header, navigation, main, footer.
+ *
+ * Global rather than component-scoped on purpose: the same chrome is rendered by
+ * two shells (shell-dark, shell-paper) out of three components, and splitting the
+ * rules across four scoped <style> blocks would make the one thing that has to
+ * stay consistent the hardest thing to read.
+ *
+ * Every value here is a token. The spec's rule is that nothing in the build
+ * carries a raw hex, a raw pixel size or a raw duration; the only literals below
+ * are the breakpoints themselves, which a media query cannot read from a custom
+ * property.
+ *
+ * Two spec rules do most of the work and are worth stating before the code:
+ *
+ *   "the shell is full-bleed at every breakpoint" — the header, the main and the
+ *   footer are the full width of the viewport at every size. What is bounded is
+ *   the column inside them (--content-max), never the shell.
+ *
+ *   "a rule is permitted in exactly two places: under a page header, and above a
+ *   year group. list rows, panels, footers, figure captions, accordion items and
+ *   card edges carry none — space does that work." So there is no border under
+ *   the site header and none above the footer. The separation is space.
+ */
+
+/* ---- responsive gutters ------------------------------------------------- */
+/* One binding per breakpoint, from the spec's responsive table: 20 / 32 / 48 / 64. */
+:root {
+  --gutter: var(--gutter-xs);
+}
+
+@media (min-width: 600px) {
+  :root {
+    --gutter: var(--gutter-sm);
+  }
+}
+
+@media (min-width: 900px) {
+  :root {
+    --gutter: var(--gutter-md);
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --gutter: var(--gutter-lg);
+  }
+}
+
+/* ---- frame -------------------------------------------------------------- */
+
+.shell {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The footer sits at the bottom on short pages without being fixed to it. */
+.shell__main {
+  flex: 1 1 auto;
+}
+
+/**
+ * The bounded column. The element carrying this is always *inside* a full-bleed
+ * landmark, never the landmark itself — that is the whole distinction the
+ * "full-bleed at every breakpoint" rule is making.
+ */
+.shell__inner {
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/**
+ * Prose measure. "prose measure never exceeds 66ch at any width" — including at
+ * 1280 and above, where the column is wider than the measure and the measure
+ * wins. Page families that are not prose (the two-up collection grid, the place
+ * layout) bound themselves by --content-max instead.
+ */
+.measure {
+  max-width: var(--measure);
+}
+
+/* Composed with .shell__inner, the measure wins over the column bound. Stated at
+   two-class specificity rather than relying on source order, because which of
+   two equally specific max-widths applies is otherwise decided by the order the
+   bundler happens to emit them in. */
+.shell__inner.measure {
+  max-width: var(--measure);
+}
+
+/* ---- skip link ---------------------------------------------------------- */
+/**
+ * The first thing in the tab order on all 133 pages. Off-screen until focused,
+ * never display:none — a skip link that is not focusable is not a skip link.
+ */
+.skip-link {
+  position: absolute;
+  inset-block-start: var(--s-2);
+  inset-inline-start: var(--s-2);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--hit-min);
+  padding-inline: var(--s-4);
+  background: var(--action-invert);
+  color: var(--sf-base);
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: var(--t-meta-line);
+  letter-spacing: var(--t-meta-track);
+  text-decoration-line: none;
+  border-radius: var(--r-1);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+/* ---- header ------------------------------------------------------------- */
+
+.shell__header {
+  width: 100%;
+}
+
+.shell__header-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--s-6);
+  row-gap: var(--s-2);
+  padding-block: var(--s-4);
+}
+
+.shell__brand {
+  font-family: var(--t-h3-face);
+  font-weight: var(--t-h3-weight);
+  font-size: var(--t-h3-size);
+  line-height: var(--t-h3-line);
+  letter-spacing: var(--t-h3-track);
+  text-decoration-line: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--hit-min);
+}
+
+/* ---- navigation --------------------------------------------------------- */
+/**
+ * Two navs, and they are not the same nav twice.
+ *
+ *   nav-areas    the three merged areas — maar, collect, tree — each carrying
+ *                its own pigment role. This is how three sites that used to be
+ *                three origins stay legible as distinct areas inside one site.
+ *   nav-sections the current area's own pages, which is what the legacy header
+ *                of that origin carried.
+ */
+
+.nav-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  /* "touch targets 44px minimum" — applied at every pointer type rather than
+     only under (pointer: coarse), because a hit target is a hit target. */
+  min-height: var(--hit-min);
+  padding-inline: var(--s-2);
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: var(--t-meta-line);
+  letter-spacing: var(--t-meta-track);
+  color: var(--ink-muted);
+  text-decoration-line: none;
+  border-radius: var(--r-1);
+  transition: background var(--m-fast) var(--ease), color var(--m-fast) var(--ease);
+}
+
+/**
+ * "on dark, hover inverts to cream; on paper it inverts to ink. never a hue
+ * shift, never a lighten."
+ *
+ * Cream on dark and ink on paper are the same token — --ink — so one rule serves
+ * both surfaces, which is what --action-invert exists for. Nothing here changes
+ * hue and nothing lightens.
+ */
+.nav-link:hover,
+.shell__brand:hover,
+.shell__social:hover {
+  background: var(--action-invert);
+  color: var(--sf-base);
+}
+
+/* "press is a 1px downward nudge, no scale." */
+.nav-link:active,
+.shell__brand:active,
+.shell__social:active {
+  transform: translateY(var(--press-nudge));
+}
+
+/**
+ * Where you are.
+ *
+ * "a pigment field never carries meaning alone" — so the current entry is marked
+ * three ways: the pigment field, an underline, and aria-current in the markup.
+ * Remove the colour and it still reads; remove the CSS and it still reads.
+ */
+/* Longhand, not the `text-decoration` shorthand: the shorthand would reset the
+   thickness and offset that styles/type.css sets once for every anchor on the
+   site, and restating them here would put two raw pixel values outside
+   tokens.css. Suppressing only the line keeps that one treatment authoritative. */
+.nav-link[aria-current] {
+  background: var(--area-pigment, var(--ink-tint));
+  color: var(--pigment-ink);
+  text-decoration-line: underline;
+}
+
+/* Hover still inverts on the current entry — the pigment is state, not a lock. */
+.nav-link[aria-current]:hover {
+  background: var(--action-invert);
+  color: var(--sf-base);
+}
+
+/**
+ * The compact navigation, and why there is no JavaScript in it.
+ *
+ * No page on this site may gain application JavaScript, so the small-screen
+ * menu is a <details> disclosure — the browser's own, no script, no state to
+ * manage. The wide-screen navigation is NOT the same <details> forced open:
+ * whether a closed <details> can be re-shown by CSS depends on how a given
+ * engine implements the closed state, and the failure mode of getting that wrong
+ * is a navigation that is invisible AND has no control to open it.
+ *
+ * So the two are separate elements, and exactly one of them is display:none at
+ * any width. display:none removes an element from the accessibility tree and the
+ * tab order entirely, so there is never a second tab stop for the same link —
+ * and if every stylesheet failed to load, both would simply be visible, which is
+ * the failure mode you want.
+ */
+.nav-sections--compact {
+  margin-inline-start: auto;
+}
+
+.nav-sections--wide {
+  display: none;
+}
+
+.nav-disclosure {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--hit-min);
+  padding-inline: var(--s-2);
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: var(--t-meta-line);
+  letter-spacing: var(--t-meta-track);
+  color: var(--ink-muted);
+  cursor: pointer;
+  border-radius: var(--r-1);
+  list-style-position: inside;
+}
+
+.nav-disclosure:hover {
+  background: var(--action-invert);
+  color: var(--sf-base);
+}
+
+.nav-sections--compact[open] > .nav-disclosure {
+  background: var(--ink-tint);
+}
+
+/* The disclosure panel is a panel, and "panels carry no rule" — space only. */
+.nav-sections--compact > .nav-panel {
+  padding-block: var(--s-2) var(--s-4);
+}
+
+.nav-sections--compact .nav-list {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+@media (min-width: 900px) {
+  .nav-sections--compact {
+    display: none;
+  }
+
+  .nav-sections--wide {
+    display: block;
+    margin-inline-start: auto;
+  }
+}
+
+/* ---- footer ------------------------------------------------------------- */
+/**
+ * Three things, and only three: one Instagram link, a copyright line, and
+ * schema.org Person microdata. That is what the legacy footer carried on all
+ * three origins, measured from the live sites and from _includes/footer.html.
+ *
+ * There is no privacy link. The collect.maar.world/privacy URL that is absent
+ * from 128 migrated pages was never a footer link — it is the body of the legacy
+ * cookie-consent dialog, which MW-1 forbids reintroducing.
+ *
+ * There is no Bandcamp and no "Buy Now". MW-1 and MW-6 both forbid it and
+ * COMMERCE.destinationUrl is null.
+ *
+ * The Instagram glyph is an inline <svg>, never an <img>. That is not a
+ * preference: verify:content asserts an exact image count per page, and a
+ * chrome <img> on all 133 pages would move every one of those counts.
+ */
+.shell__footer {
+  width: 100%;
+}
+
+.shell__footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--s-6);
+  row-gap: var(--s-2);
+  /* Section rhythm is --s-24 top; the footer is separated by space, not a rule. */
+  padding-block: var(--s-24) var(--s-12);
+}
+
+.shell__social {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--hit-min);
+  padding-inline: var(--s-2);
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: var(--t-meta-line);
+  letter-spacing: var(--t-meta-track);
+  color: var(--ink-muted);
+  text-decoration-line: none;
+  border-radius: var(--r-1);
+  transition: background var(--m-fast) var(--ease), color var(--m-fast) var(--ease);
+}
+
+.shell__social-glyph {
+  flex: none;
+  width: var(--s-4);
+  height: var(--s-4);
+  fill: currentColor;
+}
+
+.shell__copyright {
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: var(--t-meta-line);
+  letter-spacing: var(--t-meta-track);
+  color: var(--ink-meta);
+  margin: 0;
+}

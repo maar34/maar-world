@@ -1,0 +1,74 @@
+---
+/**
+ * The footer. Exactly three things.
+ *
+ * Researched from the live maar.world, collect.maar.world and tree.maar.world
+ * and from the read-only `_includes/footer.html` + `author-links.html`, and
+ * recorded in MIGRATION-LEDGER.md as `shell/legacy-footer-inventory`:
+ *
+ *   1. one social link — instagram.com/maar_world_records — as an inline <svg>,
+ *      never an <img>, so it moves no per-page image count;
+ *   2. a copyright line;
+ *   3. schema.org Person microdata (name, url, description, sameAs).
+ *
+ * What is deliberately NOT here:
+ *
+ *   - No privacy link. The collect.maar.world/privacy URL missing from 128
+ *     migrated pages was never a footer or nav link — it is the body of the
+ *     legacy cookie-consent dialog. MW-1 forbids reintroducing a cookie banner,
+ *     so those 128 absences are a deliberate removal, not damage to repair.
+ *   - No Bandcamp, no "Buy Now". MW-1 and MW-6 forbid it and
+ *     COMMERCE.destinationUrl is null.
+ *   - No navigation. The legacy footer carried none.
+ *   - No rule above it. "list rows, panels, footers … carry none — space does
+ *     that work."
+ *   - No heading. "heading order strict — one h1 per page, no level skipped for
+ *     visual weight"; a footer h2 on all 133 pages would be a level introduced
+ *     for weight, not for structure.
+ */
+import { SITE } from '../../config/site';
+import InstagramMark from './InstagramMark.astro';
+
+interface Props {
+  /** 'en' on the chrome when the page itself is not English. */
+  chromeLang?: string;
+}
+
+const { chromeLang } = Astro.props;
+
+/**
+ * Author identity, from the legacy `_config.yml` `author:` block, which is
+ * identical across all three origins: name "Maar", bio "Home for regenerative
+ * music". The bio's decorative emoji are not carried into a microdata value.
+ */
+const AUTHOR = {
+  name: 'Maar',
+  description: 'Home for regenerative music',
+  instagram: 'https://www.instagram.com/maar_world_records/',
+} as const;
+
+/**
+ * The copyright year.
+ *
+ * Legacy rendered `© {{ site.title }} {{ COPYRIGHT_DATES }}` per origin —
+ * "MAAR WORLD 2023" and "COLLECT.MAAR.WORLD 2024". One merged site takes one
+ * line, and it takes the earliest of the three rather than the newest, because
+ * the claim is when publication began.
+ */
+const COPYRIGHT_FROM = '2023';
+---
+
+<footer class="shell__footer" lang={chromeLang}>
+  <div class="shell__inner shell__footer-inner" itemscope itemtype="https://schema.org/Person">
+    <meta itemprop="name" content={AUTHOR.name} />
+    <meta itemprop="url" content={SITE.origin} />
+    <meta itemprop="description" content={AUTHOR.description} />
+
+    <a class="shell__social" itemprop="sameAs" href={AUTHOR.instagram} rel="me noopener">
+      <InstagramMark />
+      Instagram
+    </a>
+
+    <p class="shell__copyright">© {SITE.title} {COPYRIGHT_FROM}</p>
+  </div>
+</footer>
