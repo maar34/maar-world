@@ -659,6 +659,19 @@ check('allowlisted scaffolding passes verify:routes and is printed', (root) => {
   return { ok, detail: ok ? 'exit 0, allowlist entry printed' : `expected exit 0 + printed list, got ${code}\n${out}` };
 });
 
+// --- F8: the policy/manifest join is checked in both directions ----------
+
+check('a policy for a route not in the manifest fails verify:routes', (root) => {
+  goodFixture(root);
+  const pPath = join(root, 'routes/policy.json');
+  const policy = readJson(pPath);
+  policy.routes.push({ url: '/invented', origin: 'maar.world', policy: 'drop', reason: 'never existed' });
+  writeJson(pPath, policy);
+  const { code, out } = run(root, 'verify-routes.mjs');
+  const ok = code === 1 && /refers to a route in the manifest/.test(out) && /\/invented/.test(out);
+  return { ok, detail: ok ? 'exit 1, orphaned policy reported' : `expected exit 1, got ${code}\n${out}` };
+});
+
 // --- Results ------------------------------------------------------------
 console.log('\nverify harness selftest\n');
 let failed = 0;

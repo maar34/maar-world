@@ -97,3 +97,4 @@ npm run ledger -- append MW-7 BLOCKED lab/es/dadada.html "reason: source referen
 2026-07-28T22:46Z  MW-3   DONE     ledger-history-guard                       append-only now verified across the file's whole git history; committing a deletion, amending, and empty or missing ledgers all fail
 2026-07-28T22:48Z  MW-3   DONE     third-party-gate-coverage                  verify:links now reads srcset, style attributes, style blocks, meta refresh, unquoted attrs, svg image/use and built CSS; 10 bypasses have cases
 2026-07-28T22:50Z  MW-3   DONE     extra-routes-pass                          verify:routes now reports pages no production route asks for; the three build-scaffolding pages are allowlisted in routes/scaffolding-allowlist.json and printed every run
+2026-07-28T22:51Z  MW-3   DONE     policy-manifest-join                       verify:routes now checks policy to manifest as well as manifest to policy; an orphaned decision fails

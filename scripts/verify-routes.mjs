@@ -72,6 +72,25 @@ export async function checkRoutes(report) {
     report.pass('every route has an explicit preserve/redirect/drop policy', `${routes.length} routes`);
   }
 
+  // The join is checked in both directions. Manifest -> policy catches a route
+  // nobody decided about; policy -> manifest catches a decision about a route
+  // that is not in the contract — an invented URL, or a stale decision left
+  // behind after the manifest moved. Only the first half was implemented, so a
+  // policy could describe a world the contract does not contain.
+  const routeKeys = new Set(routes.map(key));
+  const orphanPolicies = policies.filter((p) => !routeKeys.has(key(p)));
+  if (orphanPolicies.length) {
+    report.fail(
+      'every policy decision refers to a route in the manifest',
+      `${orphanPolicies.length} orphaned — first 5: ${orphanPolicies
+        .slice(0, 5)
+        .map((p) => `${p.origin}${p.url}`)
+        .join(', ')}`,
+    );
+  } else {
+    report.pass('every policy decision refers to a route in the manifest', `${policies.length} decisions`);
+  }
+
   const targetless = policies.filter((p) => p.policy === 'redirect' && !p.target);
   if (targetless.length) {
     report.fail('every redirect declares a target', `${targetless.length} without target, first: ${targetless[0].url}`);
