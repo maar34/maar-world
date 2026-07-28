@@ -32,7 +32,7 @@ style="width:100%;height:1400px;border:none;">
 <a href="/img/pdf/English-EPK_Bruna_Guarnieri.pdf">Download the EPK</a>.
 </p>
 </object>
-  <div class="pdf-fallback" aria-hidden="true" style="display:none;">
+<div class="pdf-fallback" aria-hidden="true" style="display:none;">
 <a class="button button--outline-info button--rounded" style="font-size:.75rem;" target="_blank" rel="noopener" href="/img/pdf/English-EPK_Bruna_Guarnieri.pdf">Open / Download EPK (PDF)</a>
 </div>
 </div>

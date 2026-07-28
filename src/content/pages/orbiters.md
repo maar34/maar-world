@@ -15,7 +15,7 @@ description: "Imagine turning your browser into a turntable from outer space."
 Imagine turning your browser into a turntable from outer space.
 
 <div class="p-4"></div>
-  <div class="grid">
+<div class="grid">
 <div class="cell cell--12">
 
 <div class="hero hero--center" style="background-color: #000000;">

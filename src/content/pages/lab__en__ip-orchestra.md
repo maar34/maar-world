@@ -114,6 +114,7 @@ We would like to invite students and professionals from various disciplines to j
 ### Facilitator Profile
 
 <br>
+
 <div style="text-align: left;">
 
 <p>Bruna Maar Guarneri Colasso (She/They), a sound artist and engineer based in Berlin, has worked on transdisciplinary creations at the intersection of art, science, and technology. With studies in Sound Design and Engineering in Montevideo and Santiago de Chile, Bruna Maar has collaborated on sound design and interaction in numerous large-scale installations across America and Europe. Among her notable achievements are the Hackathon award at the S+T+ARTS SONAR 2021 Music and AI Festival, sound design and experience for the Uruguayan Pavilion at the Venice Architecture Biennale in 2021 and 2018, and the Uruguayan and Chilean pavilions at Expo Milan 2015. She has also been a developer in artistic collectives such as Head Brothers, Exoplanetas, and Aventures Sonores. For more than a decade, she has been compiling a unique archive of soundscapes, poetry, testimonies, South American native songs, radio signals, and an eclectic selection of music to create experiences that connect people and cultures through sound.</p>

@@ -429,10 +429,80 @@ function defuseThirdParty(html, problems, where) {
   return out;
 }
 
-const BLOCK_TAG = /<(\/?)(div|section|article|header|footer|aside|nav|form|figure|table|ul|ol|main|details|blockquote|picture|video|object|label)\b[^>]*?(\/?)>/gi;
+/**
+ * Container tags whose open…close span is one raw HTML region.
+ *
+ * `p`, `li`, `td` and `iframe` are here because they are containers a legacy
+ * body genuinely nests things inside; leaving them out meant a `<p>` wrapping
+ * two indented lines was not seen as raw HTML at all. `br`, `img`, `hr` and the
+ * inline tags are deliberately absent — they are void or inline and open no
+ * region, which is the whole of the fix below.
+ */
+const BLOCK_TAG =
+  /<(\/?)(div|section|article|header|footer|aside|nav|form|figure|table|thead|tbody|tr|td|th|ul|ol|li|p|main|details|blockquote|picture|video|audio|object|label|iframe|fieldset|dl|dd|dt|pre)\b[^>]*?(\/?)>/gi;
+
+/** Tags that never contain anything, so a close for them is never expected. */
+const VOID_TAG = /^(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/i;
 
 /**
- * Un-indent raw HTML so CommonMark passes it through.
+ * Tag names that open a CommonMark *type 6* HTML block. Anything else on a line
+ * of its own opens a *type 7* block instead — and a type 7 block runs to the
+ * next blank line, passing everything in between through verbatim.
+ */
+const TYPE6_TAG = new Set(
+  ('address article aside base basefont blockquote body caption center col colgroup dd details dialog dir div dl ' +
+    'dt fieldset figcaption figure footer form frame frameset h1 h2 h3 h4 h5 h6 head header hr html iframe legend ' +
+    'li link main menu menuitem nav noframes ol optgroup option p param search section summary table tbody td ' +
+    'tfoot th thead title tr track ul').split(' '),
+);
+
+/**
+ * Where the raw-HTML run that starts at `from` stops.
+ *
+ * Blocks are the blank-line-separated units markdown itself works in. A run
+ * continues through every block that still carries markup and stops at the first
+ * that carries none — that block is prose or a list, and flattening it is the
+ * damage this bound exists to prevent.
+ */
+function htmlRunEnd(lines, from) {
+  let end = from;
+  let i = from;
+  while (i < lines.length) {
+    while (i < lines.length && !lines[i].trim()) i += 1; // skip the blank gap
+    const blockStart = i;
+    let hasMarkup = false;
+    while (i < lines.length && lines[i].trim()) {
+      if (/<\/?[a-z!][^>]*>/i.test(lines[i])) hasMarkup = true;
+      i += 1;
+    }
+    if (i === blockStart) break;
+    if (!hasMarkup) break;
+    end = i - 1;
+  }
+  return end;
+}
+
+/**
+ * A list marker followed by five or more spaces.
+ *
+ * CommonMark reads that as a list item whose first block is an *indented code
+ * block*, so `landings.md`'s `-     <a href="…">Tembey…</a>` shipped as a syntax-
+ * highlighted `<pre>` of its own source, taking the five bullets under it with
+ * it. Kramdown had no such rule and rendered an ordinary item. Four spaces is
+ * the most CommonMark accepts as plain content indent, so the run is clamped to
+ * four — the nested bullets under it keep sitting deeper than the content
+ * column, which is what makes them a sub-list rather than more code.
+ */
+function clampListMarkerIndent(body) {
+  return body
+    .split('\n')
+    .map((line) => line.replace(/^(\s*)([-*+]|\d+[.)])( {5,})(?=\S)/, (_, indent, marker) => `${indent}${marker}    `))
+    .join('\n');
+}
+
+/**
+ * Un-indent raw HTML so CommonMark passes it through, and stop a stray inline
+ * tag swallowing the markdown under it.
  *
  * Kramdown treated a `<div>` and everything to its matching close as one raw
  * HTML block. CommonMark ends an HTML block at the first blank line, so the
@@ -440,28 +510,104 @@ const BLOCK_TAG = /<(\/?)(div|section|article|header|footer|aside|nav|form|figur
  * that block an indented *code* block. The visible symptom is a page of legacy
  * markup rendered as escaped source inside `<pre>`.
  *
- * Dedenting inside open HTML fixes it without touching markdown: nested list
- * indentation at depth 0 is left exactly as written, and fenced code is skipped.
+ * Three rules keep the cure narrower than the disease.
+ *
+ * **A region ends where its HTML run ends.** The first version tracked a running
+ * `depth` and dedented every line while it was above zero. `depth` never came
+ * back down for an unclosed tag, so one stray `<div>` would flatten every
+ * indented line in the rest of the file — including markdown lists hundreds of
+ * lines later, which to a reader looks like a page whose nesting collapsed.
+ * Three legacy pages really do end on an unclosed `<div>` (`/collect/samples`,
+ * `/collect/documentation`, `/tree/max-network-berlin`), so refusing to dedent
+ * those is not an option either. Openings are matched to their closes; an
+ * opening with no close runs only to the end of its own HTML run — the last
+ * blank-line-separated block that still carries markup — and is reported.
+ *
+ * **Only a container may start one.** The first version also dedented any line
+ * whose first non-space character began a tag, at any depth, as long as it sat
+ * four columns in. `landings.md` carries `       <br>` seven spaces deep inside a
+ * list item. Flattened to column 0 a bare `<br>` is a CommonMark *type 7* HTML
+ * block, so it ran to the next blank line and passed everything between through
+ * verbatim — fourteen markdown bullets shipped to the page as literal
+ * `- <a href="…">Because</a>` text. An inline or void tag can no longer start a
+ * region, and an indented one is left exactly where its author put it, which is
+ * what kramdown did with it too.
+ *
+ * **A lone inline tag is a paragraph, not a block.** The same page carries seven
+ * more `<br>` lines that were *already* at column 0 in the legacy source, four of
+ * them directly above a markdown list. Kramdown rendered each as `<p><br /></p>`
+ * and carried on; CommonMark opens a type 7 block and eats the list. A blank line
+ * after the tag closes the block immediately, which is the only edit that makes
+ * CommonMark agree with what production shipped.
  */
-function dedentHtmlBlocks(body) {
+function dedentHtmlBlocks(body, problems = [], where = '') {
   const lines = body.split('\n');
-  const out = [];
-  let depth = 0;
+
+  // 1. Tokenise container tags, skipping fenced code.
+  const tokens = [];
   let fenced = false;
-
-  for (const line of lines) {
+  const fencedAt = new Set();
+  lines.forEach((line, i) => {
     if (/^\s{0,3}(```|~~~)/.test(line)) fenced = !fenced;
-    // Inside open HTML, or opening a new one: a tag four columns in becomes an
-    // indented code block and the markup ships as visible escaped source.
-    const opensHtml = /^\s{4,}<[a-z!/]/i.test(line);
-    out.push(!fenced && (depth > 0 || opensHtml) ? line.replace(/^\s+/, '') : line);
-    if (fenced) continue;
-
-    for (const m of line.matchAll(BLOCK_TAG)) {
-      if (m[1] === '/') depth = Math.max(0, depth - 1);
-      else if (m[3] !== '/') depth += 1;
+    if (fenced) {
+      fencedAt.add(i);
+      return;
     }
+    for (const m of line.matchAll(BLOCK_TAG)) {
+      const tag = m[2].toLowerCase();
+      if (VOID_TAG.test(tag)) continue;
+      tokens.push({ line: i, tag, close: m[1] === '/', selfClose: m[3] === '/', at: m.index });
+    }
+  });
+
+  // 2. Match opens to closes. A top-level pair becomes a raw-HTML region; an
+  //    opening left on the stack at the end matched nothing and opens nothing.
+  const stack = [];
+  const regions = [];
+  for (const t of tokens) {
+    if (t.selfClose) continue;
+    if (!t.close) {
+      stack.push(t);
+      continue;
+    }
+    const idx = stack.map((s) => s.tag).lastIndexOf(t.tag);
+    if (idx === -1) continue; // stray close — ignore it rather than unbalancing
+    const open = stack[idx];
+    stack.length = idx; // anything above it never closed; it is inside this region
+    if (stack.length === 0) regions.push([open.line, t.line, open]);
   }
+  for (const open of stack) {
+    const end = htmlRunEnd(lines, open.line);
+    problems.push(
+      `${where}: unclosed <${open.tag}> at line ${open.line + 1} — treated as raw HTML to line ${end + 1}, not to end of file`,
+    );
+    regions.push([open.line, end, open]);
+  }
+
+  // 3. A region only counts when its opening tag starts its own line. A `<div>`
+  //    in the middle of a sentence is inline markup, not a block to flatten.
+  const dedent = new Set();
+  for (const [from, to, open] of regions) {
+    if (!/^\s*$/.test(lines[from].slice(0, open.at))) continue;
+    for (let i = from; i <= to; i += 1) dedent.add(i);
+  }
+
+  // 4. Close a type 7 block the moment it opens. A line that is nothing but one
+  //    non-type-6 tag — `<br>`, a bare `<a …>` — would otherwise run to the next
+  //    blank line and pass the markdown under it through as visible source.
+  const out = [];
+  const LONE_TAG = /^\s{0,3}<\/?([a-z][a-z0-9]*)\b[^>]*>\s*$/i;
+  lines.forEach((line, i) => {
+    out.push(dedent.has(i) && !fencedAt.has(i) ? line.replace(/^\s+/, '') : line);
+    if (dedent.has(i) || fencedAt.has(i)) return;
+    const m = LONE_TAG.exec(out[out.length - 1]);
+    if (!m || TYPE6_TAG.has(m[1].toLowerCase())) return;
+    const next = lines[i + 1];
+    if (next === undefined || !next.trim()) return;
+    problems.push(`${where}: isolated lone <${m[1].toLowerCase()}> at line ${i + 1} — it was swallowing the block under it`);
+    out.push('');
+  });
+
   return out.join('\n');
 }
 
@@ -585,7 +731,7 @@ function transform(body, ctx) {
    */
   out = out.replace(/\{:[.#][^}\n]*\}/g, '');
 
-  out = dedentHtmlBlocks(out);
+  out = dedentHtmlBlocks(clampListMarkerIndent(out), problems, ctx.key);
 
   const leftover = out.match(/\{\{[\s\S]{0,80}?\}\}|\{%[\s\S]{0,80}?%\}|\{:[.#][^}\n]*\}/g);
   if (leftover) problems.push(`${ctx.key}: UNRESOLVED Liquid ${[...new Set(leftover)].slice(0, 3).join(' ')}`);

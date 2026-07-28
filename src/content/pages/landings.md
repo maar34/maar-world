@@ -86,6 +86,7 @@ ENT Worlds
   - <a href="https://www.youtube.com/watch?v=w-FEgGAZaLY" rel="Exoplanetas Hybrid" target="_blank">2015</a>
 
   <br>
+
 - <a href="https://vimeo.com/235986660" rel="IBM Watson" target="_blank">Watson Says.</a> Head Brothers, IBM, Juanita Fernandez, Sebastian Pereira. 
   - 05/08/2017 Music production with Watson Supercomputer. 📍 Montevideo, Uruguay
 
@@ -95,12 +96,14 @@ ENT Worlds
 </div>
 
   <br>
+
 - <a href="https://vimeo.com/135519258" rel="Luminiscencia" target="_blank">Luminiscencia, </a> Matias Romero Balado, Sebastián Segarra, Head Brothers. 
   - 16/06/2016 📍 Pestana Palace, Lisbon, Portugal. 
   - 16/09/2016 📍 Sala Camacuá, Montevideo, Uruguay. 
 
   <br>
--     <a href="https://vimeo.com/110938519" rel="Cruces Sonoros" target="_blank">Tembey Concierto Audiovisual</a>, Head Brothers
+
+-    <a href="https://vimeo.com/110938519" rel="Cruces Sonoros" target="_blank">Tembey Concierto Audiovisual</a>, Head Brothers
       - 06/16 2nd Festival of Audio and Acoustic Centroamerica, 📍 San José de Costa Rica.
       - 10/2014 International Seminar on Hyper / Text Narratives NHT, 📍 UdelaR, Montevideo
       -  4/9/14  LabLT, laboratory of cross-language languages. 📍 Montevideo, Uruguay
@@ -119,15 +122,17 @@ ENT Worlds
     - 19/05/2013 - Culturalmente Fair (ex Imaginateatro) 📍 Paysandú, Uruguay 
 
   <br>
+
 - <a href="http://www.truthandliesmusic.com/projects/2014/3/23/ox5wi8hue9l4p659afj4789efsoxxm" rel="VJ Set for Gilles Peterson" target="_blank">𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 VJ Set curated by Gilles Peterson</a> . 
     - 8/9/12  World Event of Young Artists Opening Party.  📍 Nottingham-Inglaterra.
 
-<br>
+       <br>
 - <a href="https://www.youtube.com/watch?v=OcP2sSbR5H4" rel="Because" target="_blank">Because</a>
   - 10/12 WEYA, Nottingham Contemporany, 📍 Nottingham, England.
   - 12/11/11 TSONAMI Festival of sound art, Palacio Cousiño, 📍 Valparaiso, Chile.  
 
   <br>
+
 - 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 Sound and experience design for the Uruguay Pavilion Venice Architecture Biennale. Head Brothers 
   - <a href="http://headbrothers.com/prison-to-prison" rel="2018" target="_blank">2018</a> 📍 Venice, Italy 
   - <a href="https://www.proximamente.uy/" rel="2021" target="_blank">2021</a> 📍 Venice, Italy 

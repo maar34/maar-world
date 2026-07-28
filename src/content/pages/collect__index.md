@@ -36,7 +36,7 @@ Explore a new musical dimension with Sky Sounds, a collection of cards that open
 </div>
 <div class="p-4"></div>
 <div class="padding: ($spacer * 6);"></div>
-  <div class="grid">
+<div class="grid">
 <div class="cell cell--bordered cell--12">
 
 <div class="hero hero--center hero--dark" style= 'background-image: url("/img/pages/433-suits.gif");'>
@@ -62,9 +62,9 @@ Explore a new musical dimension with Sky Sounds, a collection of cards that open
 </div>
 </div></div>
 
-  <div class="p-4"></div>
+<div class="p-4"></div>
 
-  <div class="grid">
+<div class="grid">
 <div class="cell cell--bordered cell--12">
 
 <div class="hero hero--center" style="background-color: #000000;">

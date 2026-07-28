@@ -123,6 +123,7 @@ Queremos invitar a estudiantes y profesionales de diversas disciplinas a unirse 
 ### Perfil de la Facilitadora
 
 <br>
+
 <div style="text-align: left;">
 
 <p>
