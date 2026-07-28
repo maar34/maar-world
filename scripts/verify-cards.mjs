@@ -62,19 +62,22 @@ export async function checkCards(report) {
   }
 
   // --- All 70 URL forms enumerated in the manifest, never redirected ------
-  if (!has('manifest')) {
+  if (!has('manifest') || !has('policy')) {
     report.skip('all 70 card URL forms enumerated + never redirected', ARTIFACTS.manifest.rel, ARTIFACTS.manifest.issue);
   } else {
     const routes = loadJson('manifest').routes || [];
-    const byUrl = new Map(routes.map((r) => [r.url, r]));
+    const policies = loadJson('policy').routes || [];
+    const liveOnMaar = new Set(routes.filter((r) => r.origin === 'maar.world' && r.status === 200).map((r) => r.url));
+    const policyByUrl = new Map(policies.filter((p) => p.origin === 'maar.world').map((p) => [p.url, p]));
     const missing = [];
     const redirected = [];
 
     for (const code of codes) {
       for (const url of cardUrlForms(code)) {
-        const route = byUrl.get(url);
-        if (!route) missing.push(url);
-        else if (route.policy !== 'preserve') redirected.push(`${url} -> ${route.policy}`);
+        const policy = policyByUrl.get(url);
+        if (!liveOnMaar.has(url) || !policy) missing.push(url);
+        else if (policy.policy !== 'preserve') redirected.push(`${url} -> ${policy.policy}`);
+        else if (policy.servedAt !== url) redirected.push(`${url} servedAt ${policy.servedAt}`);
       }
     }
 

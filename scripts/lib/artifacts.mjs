@@ -19,10 +19,16 @@ export const ROOT = process.env.MW_VERIFY_ROOT
 
 export const ARTIFACTS = {
   manifest: {
-    path: resolve(ROOT, 'routes/manifest.json'),
-    rel: 'routes/manifest.json',
+    path: resolve(ROOT, 'routes/manifest.production.json'),
+    rel: 'routes/manifest.production.json',
     issue: 'MW-4',
     what: 'frozen production route manifest',
+  },
+  policy: {
+    path: resolve(ROOT, 'routes/policy.json'),
+    rel: 'routes/policy.json',
+    issue: 'MW-4',
+    what: 'preserve/redirect/drop policy for every production route',
   },
   cards: {
     path: resolve(ROOT, 'routes/nfc-cards.json'),

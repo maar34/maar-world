@@ -1,0 +1,183 @@
+{
+  "note": "The 35 NFC card codes printed on physical cards. Each resolves as both /CODE and /CODE.html — 70 URLs — never redirected, byte-for-byte stable in spelling and casing. Changing anything here breaks physical objects already in people’s hands.",
+  "generatedFrom": "maar.world-site/collections/{_skysounds,_stoney_way} (read-only), verified against live HTTP",
+  "cardCount": 35,
+  "urlFormCount": 70,
+  "cards": [
+    {
+      "code": "AXP3732",
+      "source": "skysounds",
+      "permalink": "/AXP3732"
+    },
+    {
+      "code": "BCC4992",
+      "source": "skysounds",
+      "permalink": "/BCC4992"
+    },
+    {
+      "code": "BQA976",
+      "source": "skysounds",
+      "permalink": "/BQA976"
+    },
+    {
+      "code": "BWN1651",
+      "source": "skysounds",
+      "permalink": "/BWN1651"
+    },
+    {
+      "code": "BZD8282",
+      "source": "skysounds",
+      "permalink": "/BZD8282"
+    },
+    {
+      "code": "CRZ5922",
+      "source": "skysounds",
+      "permalink": "/CRZ5922"
+    },
+    {
+      "code": "CXX8705",
+      "source": "skysounds",
+      "permalink": "/CXX8705"
+    },
+    {
+      "code": "DJX9483",
+      "source": "skysounds",
+      "permalink": "/DJX9483"
+    },
+    {
+      "code": "DVG9370",
+      "source": "skysounds",
+      "permalink": "/DVG9370"
+    },
+    {
+      "code": "DWE1406",
+      "source": "skysounds",
+      "permalink": "/DWE1406"
+    },
+    {
+      "code": "EBT5599",
+      "source": "skysounds",
+      "permalink": "/EBT5599"
+    },
+    {
+      "code": "IBM5970",
+      "source": "skysounds",
+      "permalink": "/IBM5970"
+    },
+    {
+      "code": "IWG8041",
+      "source": "skysounds",
+      "permalink": "/IWG8041"
+    },
+    {
+      "code": "KME3578",
+      "source": "skysounds",
+      "permalink": "/KME3578"
+    },
+    {
+      "code": "KXQ7964",
+      "source": "skysounds",
+      "permalink": "/KXQ7964"
+    },
+    {
+      "code": "LAQ6106",
+      "source": "skysounds",
+      "permalink": "/LAQ6106"
+    },
+    {
+      "code": "LYN4636",
+      "source": "skysounds",
+      "permalink": "/LYN4636"
+    },
+    {
+      "code": "NTH7336",
+      "source": "skysounds",
+      "permalink": "/NTH7336"
+    },
+    {
+      "code": "PHR6198",
+      "source": "skysounds",
+      "permalink": "/PHR6198"
+    },
+    {
+      "code": "QUP1235",
+      "source": "skysounds",
+      "permalink": "/QUP1235"
+    },
+    {
+      "code": "ROH1693",
+      "source": "skysounds",
+      "permalink": "/ROH1693"
+    },
+    {
+      "code": "ROK6739",
+      "source": "skysounds",
+      "permalink": "/ROK6739"
+    },
+    {
+      "code": "SHF4580",
+      "source": "skysounds",
+      "permalink": "/SHF4580"
+    },
+    {
+      "code": "SIX7919",
+      "source": "skysounds",
+      "permalink": "/SIX7919"
+    },
+    {
+      "code": "STW3344",
+      "source": "stoney_way",
+      "permalink": "/STW3344"
+    },
+    {
+      "code": "SVA679",
+      "source": "skysounds",
+      "permalink": "/SVA679"
+    },
+    {
+      "code": "TMK694",
+      "source": "skysounds",
+      "permalink": "/TMK694"
+    },
+    {
+      "code": "TOP2071",
+      "source": "skysounds",
+      "permalink": "/TOP2071"
+    },
+    {
+      "code": "UMN2909",
+      "source": "skysounds",
+      "permalink": "/UMN2909"
+    },
+    {
+      "code": "VHQ3300",
+      "source": "skysounds",
+      "permalink": "/VHQ3300"
+    },
+    {
+      "code": "VKS9121",
+      "source": "skysounds",
+      "permalink": "/VKS9121"
+    },
+    {
+      "code": "XEW6454",
+      "source": "skysounds",
+      "permalink": "/XEW6454"
+    },
+    {
+      "code": "YAC2340",
+      "source": "skysounds",
+      "permalink": "/YAC2340"
+    },
+    {
+      "code": "ZHQ9392",
+      "source": "skysounds",
+      "permalink": "/ZHQ9392"
+    },
+    {
+      "code": "ZPH9206",
+      "source": "skysounds",
+      "permalink": "/ZPH9206"
+    }
+  ]
+}

@@ -46,8 +46,11 @@ These are not preferences. Work that can only pass by breaking one of these does
   resolves as both `/CODE` and `/CODE.html` — 70 URLs. Never redirected. Spelling and casing
   byte-for-byte stable. If something can only pass by changing one of these URLs, stop and
   report.
-- **Never modify the frozen route manifest.** It is a contract, not a working file. Later
-  work conforms to it; it never conforms to later work.
+- **Never modify the frozen route manifest.** `routes/manifest.production.json` and
+  `routes/policy.json` are contracts, not working files. Later work conforms to them; they
+  never conform to later work. Both are regenerable from their committed scripts
+  (`freeze-routes.mjs`, `author-policy.mjs`) — regenerating is fine, hand-editing to make a
+  check pass is not.
 - **Preserve URLs exactly.** No `.html` stripping, no slug normalising, no tidying — even
   where existing URLs are ugly or inconsistent. That is deliberate.
 - **Content files are `.md` by default.** Use `.mdx` only where a component is genuinely

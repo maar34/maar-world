@@ -43,3 +43,10 @@ npm run ledger -- append MW-7 BLOCKED lab/es/dadada.html "reason: source referen
 2026-07-28T21:32Z  MW-3   DONE     harness/verify-suite                       5 checks + selftest 10/10; exit code is source of truth
 2026-07-28T21:32Z  MW-3   DONE     harness/docs                               OPERATING-RULES.md, HANDOFF.md, MIGRATION-LEDGER.md format documented
 2026-07-28T21:32Z  MW-3   NOTE     repo/name                                  repo named maar-world per ARCHITECTURE-REVIEW 6/7; no git remote created (human-gated)
+2026-07-28T21:44Z  MW-4   DONE     routes/manifest.production.json            306 routes from live crawl; 305x200, 1x404 pre-existing
+2026-07-28T21:44Z  MW-4   DONE     routes/nfc-cards.json                      35 codes = 34 skysounds + 1 stoney_way; 70 forms all 200 with noindex
+2026-07-28T21:44Z  MW-4   DONE     routes/policy.json                         299 preserve, 5 drop, 2 redirect; every route classified
+2026-07-28T21:44Z  MW-4   DONE     verify/external-links-baseline.json        326 external URLs, 53 hosts; 11 already dead recorded
+2026-07-28T21:44Z  MW-4   NOTE     contract/dual-form                         every page live at BOTH /X and /X.html via host fallback, not just NFC codes; 97 twins added
+2026-07-28T21:44Z  MW-4   NOTE     contract/addendum-drift                    live collect cards already link Bandcamp; physical./digital.maar.world absent in production, addendum 5.1 stale vs live
+2026-07-28T21:44Z  MW-4   BLOCKED  collect/%20-card-urls                      are the 34 %20 Collect card URLs printed on physical material? defaulted to preserve; redirect option needs a human

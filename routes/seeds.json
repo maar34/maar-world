@@ -1,0 +1,594 @@
+{
+  "note": "Candidate URLs a link crawler cannot discover. Verified against live HTTP by freeze-routes.mjs — this file proposes, production disposes.",
+  "generatedFrom": [
+    "maar.world-site",
+    "collect.maar.world (read-only legacy checkouts)"
+  ],
+  "counts": {
+    "nfcCardCodes": 35,
+    "nfcUrlForms": 70,
+    "total": 116
+  },
+  "seeds": [
+    {
+      "origin": "maar.world",
+      "url": "/AXP3732",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/AXP3732.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/BCC4992",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/BCC4992.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/BQA976",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/BQA976.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/BWN1651",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/BWN1651.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/BZD8282",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/BZD8282.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/CRZ5922",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/CRZ5922.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/CXX8705",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/CXX8705.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/DJX9483",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/DJX9483.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/DVG9370",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/DVG9370.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/DWE1406",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/DWE1406.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/EBT5599",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/EBT5599.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/IBM5970",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/IBM5970.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/IWG8041",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/IWG8041.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/KME3578",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/KME3578.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/KXQ7964",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/KXQ7964.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/LAQ6106",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/LAQ6106.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/LYN4636",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/LYN4636.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/NTH7336",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/NTH7336.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/PHR6198",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/PHR6198.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/QUP1235",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/QUP1235.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/ROH1693",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/ROH1693.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/ROK6739",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/ROK6739.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/SHF4580",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/SHF4580.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/SIX7919",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/SIX7919.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/SVA679",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/SVA679.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/TMK694",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/TMK694.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/TOP2071",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/TOP2071.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/UMN2909",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/UMN2909.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/VHQ3300",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/VHQ3300.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/VKS9121",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/VKS9121.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/XEW6454",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/XEW6454.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/YAC2340",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/YAC2340.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/ZHQ9392",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/ZHQ9392.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/ZPH9206",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/ZPH9206.html",
+      "why": "nfc-card:skysounds"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/STW3344",
+      "why": "nfc-card:stoney_way"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/STW3344.html",
+      "why": "nfc-card:stoney_way"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/revx000",
+      "why": "genesis-code"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/rthw00",
+      "why": "genesis-code"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/skyl0",
+      "why": "genesis-code"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/skyl00",
+      "why": "genesis-code"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/skyl000",
+      "why": "genesis-code"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/sphe0",
+      "why": "genesis-code"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/pdf/02_Bruna-Resume.pdf",
+      "why": "pdf"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/pdf/03_Bruna-Portfolio.pdf",
+      "why": "pdf"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/pdf/English-EPK_Bruna_Guarnieri.pdf",
+      "why": "pdf"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/pdf/WAC25-Orbits-and-Bodies-Bruna-Gabriel.pdf",
+      "why": "pdf"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/resume",
+      "why": "unlinked-but-live"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/001_-maar-sky-sounds.1-card%20I.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/002_-maar-sky-sounds.1-card%20II.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/003_-maar-sky-sounds.1-card%20III.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/004_-maar-sky-sounds.1-card%20IV.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/005_-maar-sky-sounds.1-card%20V.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/006_-maar-sky-sounds.1-card%20VI.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/007_-maar-sky-sounds.1-card%20VII.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/008_-maar-sky-sounds.1-card%20VIII.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/009_-maar-sky-sounds.1-card%20IX.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/010_-maar-sky-sounds.1-card%20X.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/011_-maar-sky-sounds.1-card%20XI.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/012_-maar-sky-sounds.2-card%20I.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/013_-maar-sky-sounds.2-card%20II.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/014_-maar-sky-sounds.2-card%20III.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/015_-maar-sky-sounds.2-card%20IV.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/016_-maar-sky-sounds.2-card%20V.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/017_-maar-sky-sounds.2-card%20VI.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/018_-maar-sky-sounds.2-card%20VII.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/019_-maar-sky-sounds.2-card%20VIII.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/020_-maar-sky-sounds.2-card%20IX.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/021_-maar-sky-sounds.2-card%20X.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/022_-maar-sky-sounds.2-card%20XI.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/023_-maar-sky-sounds.3-card%20I.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/024_-maar-sky-sounds.3-card%20II.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/025_-maar-sky-sounds.3-card%20III.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/026_-maar-sky-sounds.3-card%20IV.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/027_-maar-sky-sounds.3-card%20V.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/028_-maar-sky-sounds.3-card%20VI.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/029_-maar-sky-sounds.3-card%20VII.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/030_-maar-sky-sounds.3-card%20VIII.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/031_-maar-sky-sounds.3-card%20IX.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/032_-maar-sky-sounds.3-card%20X%20.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/033_-maar-sky-sounds.3-card%20XI.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/cards/034_-maar-sky-sounds-wild-card.html",
+      "why": "collect-card"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/index.min.html",
+      "why": "orphan"
+    }
+  ]
+}

@@ -32,11 +32,15 @@ function goodFixture(root) {
   writeFileSync(join(root, 'routes/nfc-cards.json'), JSON.stringify({ cards }, null, 2));
 
   const routes = [];
+  const policies = [];
   for (const { code } of cards) {
-    routes.push({ url: `/${code}`, policy: 'preserve' });
-    routes.push({ url: `/${code}.html`, policy: 'preserve' });
+    for (const url of [`/${code}`, `/${code}.html`]) {
+      routes.push({ url, origin: 'maar.world', status: 200 });
+      policies.push({ url, origin: 'maar.world', policy: 'preserve', servedAt: url });
+    }
   }
-  writeFileSync(join(root, 'routes/manifest.json'), JSON.stringify({ routes }, null, 2));
+  writeFileSync(join(root, 'routes/manifest.production.json'), JSON.stringify({ routes }, null, 2));
+  writeFileSync(join(root, 'routes/policy.json'), JSON.stringify({ routes: policies }, null, 2));
 
   const page = (code) =>
     `<!doctype html><html><head><meta name="robots" content="noindex">` +
@@ -123,13 +127,13 @@ check('stripping noindex fails verify:cards', (root) => {
 // 6. Redirecting a card URL fails — the contract says never redirect.
 check('redirecting a card URL fails verify:cards', (root) => {
   goodFixture(root);
-  const manifest = JSON.parse(
-    spawnSync('cat', [join(root, 'routes/manifest.json')], { encoding: 'utf8' }).stdout,
+  const policy = JSON.parse(
+    spawnSync('cat', [join(root, 'routes/policy.json')], { encoding: 'utf8' }).stdout,
   );
-  const target = manifest.routes.find((r) => r.url === '/STW3344');
+  const target = policy.routes.find((r) => r.url === '/STW3344');
   target.policy = 'redirect';
   target.target = '/cards/stw3344';
-  writeFileSync(join(root, 'routes/manifest.json'), JSON.stringify(manifest, null, 2));
+  writeFileSync(join(root, 'routes/policy.json'), JSON.stringify(policy, null, 2));
   const { code, out } = run(root, 'verify-cards.mjs');
   const ok = code === 1 && /no card URL is redirected/.test(out);
   return { ok, detail: ok ? 'exit 1, redirect rejected' : `expected exit 1, got ${code}\n${out}` };
@@ -148,10 +152,10 @@ check('missing preserved route fails verify:routes', (root) => {
 check('route without a policy fails verify:routes', (root) => {
   goodFixture(root);
   const manifest = JSON.parse(
-    spawnSync('cat', [join(root, 'routes/manifest.json')], { encoding: 'utf8' }).stdout,
+    spawnSync('cat', [join(root, 'routes/manifest.production.json')], { encoding: 'utf8' }).stdout,
   );
-  manifest.routes.push({ url: '/unclassified' });
-  writeFileSync(join(root, 'routes/manifest.json'), JSON.stringify(manifest, null, 2));
+  manifest.routes.push({ url: '/unclassified', origin: 'maar.world', status: 200 });
+  writeFileSync(join(root, 'routes/manifest.production.json'), JSON.stringify(manifest, null, 2));
   const { code, out } = run(root, 'verify-routes.mjs');
   const ok = code === 1 && /explicit preserve\/redirect\/drop policy/.test(out);
   return { ok, detail: ok ? 'exit 1, unclassified route reported' : `expected exit 1, got ${code}\n${out}` };
