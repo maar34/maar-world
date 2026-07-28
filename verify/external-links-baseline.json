@@ -1,11 +1,11 @@
 {
   "note": "External links present in production at freeze time, with reference counts. Liveness is recorded separately by check-external-links.mjs — several of these are known to be dead already.",
-  "frozenAt": "2026-07-28T21:59:51.466Z",
-  "urlCount": 562,
+  "frozenAt": "2026-07-28T23:01:56.096Z",
+  "urlCount": 564,
   "byHost": {
     "play.maar.world": 113,
     "www.dropbox.com": 82,
-    "maar.world": 77,
+    "maar.world": 78,
     "dl.dropboxusercontent.com": 71,
     "collect.maar.world": 54,
     "orbiter.plantasia.space": 33,
@@ -17,10 +17,10 @@
     "img.shields.io": 5,
     "fonts.googleapis.com": 4,
     "headbrothers.com": 4,
+    "tree.maar.world": 4,
     "www.instagram.com": 3,
     "unpkg.com": 3,
     "vimeo.com": 3,
-    "tree.maar.world": 3,
     "plantasia.space": 2,
     "docs.google.com": 2,
     "disqus.com": 2,
@@ -245,6 +245,7 @@
     "https://leancloud.cn/",
     "https://maar-world.bandcamp.com/merch",
     "https://maar.world/",
+    "https://maar.world/404.html",
     "https://maar.world/AXP3732",
     "https://maar.world/BCC4992",
     "https://maar.world/BQA976",
@@ -517,6 +518,7 @@
     "https://tianqi.name/jekyll-TeXt-theme/test/",
     "https://travis-ci.org/kitian616/jekyll-TeXt-theme",
     "https://tree.maar.world/",
+    "https://tree.maar.world/404.html",
     "https://tree.maar.world/max-network-berlin",
     "https://tree.maar.world/z/README-zh.html",
     "https://unpkg.com/@babel/standalone/babel.min.js",
@@ -638,6 +640,7 @@
     "https://youtu.be/oqCx9AirINA",
     "https://youtu.be/riEIWUQ-OWQ"
   ],
+  "allowedNewNote": "Reviewed exceptions, carried forward across re-freezes. Never regenerated from the crawl — the crawl cannot see a form action or a consent-gated embed id.",
   "allowedNew": [
     "https://aventuresonores.us7.list-manage.com/subscribe/post?u=8cc5ff1d6fb14f3fdc831c40a&id=873fbbbbb9&f_id=00acc5e4f0",
     "https://formspree.io/f/mqkrdkde",
@@ -648,6 +651,5 @@
     "https://youtu.be/M5QpFRtg05Y",
     "https://youtu.be/Tp--LJcp_5o",
     "https://youtu.be/kdTQN2zn7Mo"
-  ],
-  "allowedNewNote": "Reviewed additions (MW-7/MW-8). Each was present in legacy source but invisible to the MW-4 crawl: form actions are not links, and the four YouTube/Vimeo ids only ever rendered inside a consent-gated include the crawler never accepted. Nothing here fires on page load — form actions fire on submit, the video urls are click-out embed facades."
+  ]
 }

@@ -13,7 +13,7 @@
  * freeze-routes.mjs. Source frontmatter proposes; production disposes.
  */
 
-import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { resolve, join } from 'node:path';
 import { ROOT } from './lib/artifacts.mjs';
@@ -21,6 +21,7 @@ import { ROOT } from './lib/artifacts.mjs';
 const LEGACY = resolve(ROOT, '..');
 const MAAR = join(LEGACY, 'maar.world-site');
 const COLLECT = join(LEGACY, 'collect.maar.world');
+const TREE = join(LEGACY, 'tree.maar.world');
 
 const seeds = [];
 const add = (origin, url, why) => seeds.push({ origin, url, why });
@@ -179,6 +180,54 @@ if (existsSync(cardsDir)) {
 // --- Tree orphan ---------------------------------------------------------
 add('tree.maar.world', '/index.min.html', 'orphan');
 
+// --- Static assets -------------------------------------------------------
+/**
+ * Every file under the legacy `img/` and `assets/` trees, as a candidate URL.
+ *
+ * A link crawler finds an asset only if some page still references it, so the
+ * crawl alone records the assets in use and silently omits the rest — the same
+ * blind spot that hid `/robots.txt`. GitHub Pages serves the whole repository
+ * root, so an image nothing links to any more is still a live URL that someone
+ * may have hotlinked, bookmarked or embedded elsewhere.
+ *
+ * Proposed here, disposed of by production: freeze-routes.mjs marks these
+ * `speculative` and records only the ones that actually answer, so a file that
+ * exists in a stale checkout but not on the live site never enters the
+ * contract. The checkouts are read-only source material and are trusted for
+ * nothing beyond "this filename is worth asking about".
+ */
+function filesUnder(dir, prefix = '') {
+  if (!existsSync(dir)) return [];
+  const out = [];
+  for (const name of readdirSync(dir).sort()) {
+    const full = join(dir, name);
+    let st;
+    try {
+      st = statSync(full);
+    } catch {
+      continue;
+    }
+    if (st.isDirectory()) out.push(...filesUnder(full, `${prefix}${name}/`));
+    else if (!name.startsWith('.')) out.push(`${prefix}${name}`);
+  }
+  return out;
+}
+
+const ASSET_ROOTS = ['img', 'assets'];
+const CHECKOUT = { 'maar.world': MAAR, 'collect.maar.world': COLLECT, 'tree.maar.world': TREE };
+let assetSeedCount = 0;
+for (const [origin, checkout] of Object.entries(CHECKOUT)) {
+  for (const root of ASSET_ROOTS) {
+    for (const rel of filesUnder(join(checkout, root))) {
+      // Preserve the spelling exactly; encode per segment so spaces and
+      // other literal characters survive as production spells them.
+      const url = `/${root}/${rel.split('/').map(encodeURIComponent).join('/')}`;
+      add(origin, url, 'legacy-asset');
+      assetSeedCount += 1;
+    }
+  }
+}
+
 // --- Write ---------------------------------------------------------------
 const seen = new Set();
 const unique = seeds.filter((s) => {
@@ -195,9 +244,15 @@ writeFileSync(
     {
       note: 'Candidate URLs a link crawler cannot discover. Verified against live HTTP by freeze-routes.mjs — this file proposes, production disposes.',
       generatedFrom: ['maar.world-site', 'collect.maar.world (read-only legacy checkouts)'],
+      speculativeReasons: ['legacy-asset'],
+      speculativeNote:
+        'Seeds with one of these reasons are candidates read out of a read-only legacy checkout, not observed URLs. ' +
+        'freeze-routes.mjs probes them and records only the ones production actually answers, so a file left behind ' +
+        'in a stale checkout can never enter the contract.',
       counts: {
         nfcCardCodes: skysounds.length + stoneyWay.length,
         nfcUrlForms: (skysounds.length + stoneyWay.length) * 2,
+        legacyAssetCandidates: assetSeedCount,
         total: unique.length,
       },
       seeds: unique,

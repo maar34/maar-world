@@ -4,10 +4,15 @@
     "maar.world-site",
     "collect.maar.world (read-only legacy checkouts)"
   ],
+  "speculativeReasons": [
+    "legacy-asset"
+  ],
+  "speculativeNote": "Seeds with one of these reasons are candidates read out of a read-only legacy checkout, not observed URLs. freeze-routes.mjs probes them and records only the ones production actually answers, so a file left behind in a stale checkout can never enter the contract.",
   "counts": {
     "nfcCardCodes": 35,
     "nfcUrlForms": 70,
-    "total": 116
+    "legacyAssetCandidates": 253,
+    "total": 365
   },
   "seeds": [
     {
@@ -589,6 +594,1251 @@
       "origin": "tree.maar.world",
       "url": "/index.min.html",
       "why": "orphan"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/4.sphe.Artboard.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/433.0.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/433.1.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/433.1b.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/433.2.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/433.3.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/433.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/5.rthw.Artboard.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/6.revx.Artboard.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/915bb7e3-9897-48ae-95eb-2cdba659d8c1.mp4",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/SL.1.Artboard.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/SL.2.Artboard.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/SL.3.Artboard.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/SmallStellatedDodecahedronMosaic.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/about/bruna-profile.webp",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/about/mw-logo-transparent.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/branch.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/2024_ss-1.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/2024_ss-10.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/2024_ss-11.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/2024_ss-12.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/2024_ss-2.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/2024_ss-3.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/2024_ss-4.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/2024_ss-5.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/2024_ss-6.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/2024_ss-7.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/2024_ss-8.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/2024_ss-9.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/433-mobile-cards.gif",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/Kepler_Space_Telescope.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/artists-community.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/cards-back.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/development-new-technologies.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/digital-1.mp4",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/digital-1.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/digital-2.mp4",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/digital-2.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/digital-3.mp4",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/digital-3.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/maar-world-banner-1.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/max-msp-proto.gif",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/mother-earth.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/collect-landing/platonic-solids.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/ether.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/interplanetary-players/00_modern-ancestry.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/interplanetary-players/04-vinyl-sphere.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/interplanetary-players/07_ip-card.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/interplanetary-players/08_ip-max-24.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/interplanetary-players/09_ip-immersive.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/interplanetary-players/10_ip-transit.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/interplanetary-players/433-decks.gif",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/interplanetary-players/Kepler_Space_Telescope.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/interplanetary-players/Planetary_Musical_Scales_from_Harmony_of_the_Worlds.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/interplanetary-players/maar-world-banner-ovni.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/kepler-polygons.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/lab/Interplanetary-Orchestra.ENG.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/lab/Interplanetary-Orchestra.ESP.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/lab/franquia-1.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/lab/franquia-2.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/lab/franquia-3.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/lab/franquia-4.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/lab/franquia-5.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/lab/genesis-lab.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/lab/nornas.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/lab/orbital-workshop-1.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/1_lab.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/1_lab.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/2_collect.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/2_collect.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/3_landing.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/3_landing.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/433-mw-index.gif",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/4_radio.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/4_radio.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/5_music.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/5_music.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/6_bookings.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/6_bookings.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/7_about.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/about.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/artists-community.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/development-new-technologies.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/ent.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/maar-world-banner-ovni.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/mother-earth.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/mw-cover-1qt-24.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/mw2-1qt-24.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/landing/plantasia-logo-transparent-background.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/maar-1.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/maar-18.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/maar-32.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/maar-8.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/maar-earth.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/maar-sun.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/mw1.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/mw2.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/radio/card-banner-1.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/radio/card-banner-2.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/radio/card-banner-3.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/radio/cards-back-collect.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/img/radio/radio-banner.gif",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/android-chrome-192x192.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/android-chrome-512x512.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/apple-touch-icon.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/browserconfig.xml",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/css/main.scss",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/favicon-16x16.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/favicon-32x32.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/favicon.ico",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/favicon.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/images/logo/logo.svg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/mstile-144x144.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/mstile-150x150.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/mstile-310x150.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/mstile-310x310.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/mstile-70x70.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/safari-pinned-tab.svg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/search.js",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "maar.world",
+      "url": "/assets/site.webmanifest",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/Maar_AI.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/contact.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/dev-cover.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/ecofriendly-papers-inks.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/ent-cards-cover.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/ent-cover.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/ent-release.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/ent-releases-cover.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/ent-space-cover.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/ent-worlds-cover.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/faquestions-cover.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/glossary-cover.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/how-to.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/information-cover.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/int-players-cover.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/nfc-cover.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/nfc.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/nft-cover.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/qr-technology.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/redistribution-cover.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/skysounds-cover.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/solar-power.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/sustainability-cover.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/terms-cover.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/covers/tutorials-cover.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/ent/00-ent-logo.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/ent/01-ent-model.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/ent/02-ent-model.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/ent/regenerative.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/ent-cards/01_card-front.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/ent-cards/02_card-back.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/ent-cards/03-sustainability.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/ent-cards/04-NFC.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/ent-cards/NFC-on-an-iPhone.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/ent-release/01_skysounds.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/ent-release/02-purchase-diagram.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/ent-space/01_ent-space.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/ent-space/02-space.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/ent-worlds/01_ecosystem.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/ent-worlds/02-ent-world-diagram.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/interplanetary-music-players.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/maar-world-max-msp-software.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/mw/01-info.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/orbiters/00_modern-ancestry.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/orbiters/01_int-player.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/orbiters/02_web-player.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/orbiters/03_int-development.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/orbiters/04-vinyl-sphere.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/orbiters/05_int-player-2024.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/orbiters/06_int-player-2024.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/orbiters/07_ip-card.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/orbiters/08_ip-max-24.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/orbiters/09_ip-immersive.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/orbiters/101_regen.svg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/orbiters/10_ip-transit.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/orbiters/Planetary_Musical_Scales_from_Harmony_of_the_Worlds.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/docs/orbiters/maar-world-banner-ovni.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/2024_ss-1.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/2024_ss-10.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/2024_ss-11.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/2024_ss-12.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/2024_ss-2.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/2024_ss-3.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/2024_ss-4.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/2024_ss-5.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/2024_ss-6.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/2024_ss-7.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/2024_ss-8.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/2024_ss-9.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/433-mobile-cards.gif",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/Kepler_Space_Telescope.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/artists-community.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/cards-back.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/development-new-technologies.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/digital-1.mp4",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/digital-1.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/digital-2.mp4",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/digital-2.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/digital-3.mp4",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/digital-3.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/maar-world-banner-1.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/max-msp-proto.gif",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/mother-earth.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/landing/platonic-solids.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/pages/433-cards.gif",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/pages/433-decks.gif",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/pages/433-suits.gif",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/img/sky-sounds/r01-sky-sounds-cover.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/android-chrome-192x192.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/android-chrome-512x512.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/apple-touch-icon.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/browserconfig.xml",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/css/main.scss",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/favicon-16x16.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/favicon-32x32.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/favicon.ico",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/favicon.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/images/logo/logo.svg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/mstile-144x144.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/mstile-150x150.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/mstile-310x150.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/mstile-310x310.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/mstile-70x70.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/safari-pinned-tab.svg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/search.js",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "collect.maar.world",
+      "url": "/assets/site.webmanifest",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/img/Small_Maar_Avatar-2023.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/img/cards.jpeg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/img/music-tree.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/img/sq-mw-logo-jpg-black.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/img/tree.jpg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/android-chrome-192x192.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/android-chrome-512x512.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/apple-touch-icon.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/browserconfig.xml",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/css/main.scss",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/favicon-16x16.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/favicon-32x32.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/favicon.ico",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/favicon.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/images/logo/logo.svg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/mstile-144x144.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/mstile-150x150.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/mstile-310x150.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/mstile-310x310.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/mstile-70x70.png",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/safari-pinned-tab.svg",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/search.js",
+      "why": "legacy-asset"
+    },
+    {
+      "origin": "tree.maar.world",
+      "url": "/assets/site.webmanifest",
+      "why": "legacy-asset"
     }
   ]
 }
