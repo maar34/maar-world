@@ -1,6 +1,6 @@
 {
   "note": "Integrity lock for the frozen route contract. Holds a SHA-256 of the canonical route set and of the policy decision set, so that neither hand-editing nor regeneration can quietly change what the contract says. Verified by npm run verify:contract. Changed only by npm run contract:relock, never by npm run freeze:routes.",
-  "lockedAt": "2026-07-28T22:39:30.400Z",
+  "lockedAt": "2026-07-28T22:54:41.278Z",
   "generator": "scripts/contract-lock.mjs",
   "relockCommand": "npm run contract:relock",
   "algorithm": "sha256",
@@ -17,10 +17,10 @@
     "routeCount": 306,
     "counts": {
       "preserve": 299,
-      "redirect": 2,
-      "drop": 5,
+      "redirect": 0,
+      "drop": 7,
       "other": 0
     },
-    "decisionSetSha256": "ffefa1ec2cfb2c78c87bf84031b4b34ab2ef988977f0de21fadd827f07f2d4f3"
+    "decisionSetSha256": "e9691d64fbf3d3a1b96751ba83358f0f8aa8b61493636f28f8bf98dd0a551da1"
   }
 }
