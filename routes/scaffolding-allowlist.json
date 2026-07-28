@@ -1,0 +1,16 @@
+{
+  "note": "Pages the build is allowed to emit that no production route asks for. verify:routes fails on any other unbacked page, and prints this list every run so it can never accumulate quietly. An entry here is a claim that the file is scaffolding for the migration itself and will not be part of the launched site.",
+  "issue": "MW-3",
+  "files": [
+    {
+      "path": "ZZZ0000.html",
+      "reason": "MW-4 route-shape proof: a synthetic card code proving the /CODE.html emit path, not a real NFC card. Never printed on a physical object."
+    }
+  ],
+  "prefixes": [
+    {
+      "path": "route-proof/",
+      "reason": "MW-4 URL-shape proofs: filenames with spaces and unusual punctuation, proving the build preserves awkward legacy URLs byte-for-byte."
+    }
+  ]
+}

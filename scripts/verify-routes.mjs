@@ -11,11 +11,31 @@
  * exist in the build is the `/collect/*` or `/tree/*` path, not the original.
  */
 
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { runStandalone } from './lib/report.mjs';
-import { ARTIFACTS, has, loadJson, indexDist } from './lib/artifacts.mjs';
+import { ARTIFACTS, ROOT, has, loadJson, indexDist } from './lib/artifacts.mjs';
 import { resolveRoute } from './lib/routes.mjs';
 
 const VALID_POLICIES = new Set(['preserve', 'redirect', 'drop']);
+
+const ALLOWLIST_REL = 'routes/scaffolding-allowlist.json';
+const ALLOWLIST_PATH = resolve(ROOT, ALLOWLIST_REL);
+
+/**
+ * Pages the build may emit that no production route asks for.
+ *
+ * Kept as committed data rather than a constant so the list is reviewable in a
+ * diff, and printed on every run so it cannot grow quietly into a hole.
+ */
+function loadScaffolding() {
+  if (!existsSync(ALLOWLIST_PATH)) return { files: [], prefixes: [] };
+  const raw = JSON.parse(readFileSync(ALLOWLIST_PATH, 'utf8'));
+  return {
+    files: (raw.files || []).map((f) => (typeof f === 'string' ? { path: f, reason: '' } : f)),
+    prefixes: (raw.prefixes || []).map((p) => (typeof p === 'string' ? { path: p, reason: '' } : p)),
+  };
+}
 
 export async function checkRoutes(report) {
   if (!has('manifest')) {
@@ -85,6 +105,59 @@ export async function checkRoutes(report) {
     );
   } else {
     report.pass('every preserved route exists in build output', `${wanted.length} distinct paths`);
+  }
+
+  // --- Extras: pages the build emits that no production route asks for -----
+  // MW-4's acceptance criterion is "reports missing/extra routes". Only the
+  // missing half existed, so dist/ could accumulate pages backed by nothing —
+  // and did: a synthetic ZZZ0000 card and two route-proof fixtures were being
+  // built and shipped with nothing to flag them.
+  const backed = new Set();
+  for (const p of policies) {
+    if (p.policy === 'preserve' && p.servedAt) {
+      const file = resolveRoute(p.servedAt, set);
+      if (file) backed.add(file);
+    }
+    if (p.policy === 'redirect' && p.target && !/^https?:/i.test(p.target)) {
+      const file = resolveRoute(p.target, set);
+      if (file) backed.add(file);
+    }
+  }
+
+  const scaffolding = loadScaffolding();
+  const allowedFiles = new Set(scaffolding.files.map((f) => f.path));
+  const allowedPrefixes = scaffolding.prefixes.map((p) => p.path);
+  const isScaffolding = (file) =>
+    allowedFiles.has(file) || allowedPrefixes.some((prefix) => file.startsWith(prefix));
+
+  const { files } = indexDist();
+  const emittedPages = files.filter((f) => f.endsWith('.html'));
+  const unbacked = emittedPages.filter((f) => !backed.has(f));
+  const scaffolded = unbacked.filter(isScaffolding);
+  const extras = unbacked.filter((f) => !isScaffolding(f));
+
+  // Always visible, pass or fail: an allowlist nobody reads is a hole.
+  const allowlistSummary = [
+    ...scaffolding.files.map((f) => `${f.path}${f.reason ? ` (${f.reason.split('.')[0]})` : ''}`),
+    ...scaffolding.prefixes.map((p) => `${p.path}*${p.reason ? ` (${p.reason.split('.')[0]})` : ''}`),
+  ];
+  const unused = [...allowedFiles, ...allowedPrefixes].filter(
+    (entry) => !scaffolded.some((f) => f === entry || f.startsWith(entry)),
+  );
+
+  if (extras.length) {
+    report.fail(
+      'no page is emitted that no production route asks for',
+      `${extras.length} extra of ${emittedPages.length} pages — first 5: ${extras.slice(0, 5).join(', ')}` +
+        ` (allowed scaffolding: ${allowlistSummary.length ? allowlistSummary.join('; ') : 'none'})`,
+    );
+  } else {
+    report.pass(
+      'no page is emitted that no production route asks for',
+      `${emittedPages.length} pages, ${scaffolded.length} allowed as scaffolding` +
+        (scaffolded.length ? ` [${scaffolded.join(', ')}]` : '') +
+        (unused.length ? ` — stale allowlist entries, delete them: ${unused.join(', ')}` : ''),
+    );
   }
 }
 

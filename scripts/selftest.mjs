@@ -248,13 +248,16 @@ check('deleting routes from the manifest fails verify:contract', (root) => {
 
   const routes = run(root, 'verify-routes.mjs');
   const contract = run(root, 'verify-contract.mjs');
+  // The bypass worked because a smaller contract is trivially satisfied: the
+  // missing-route assertion is still green against the untouched build.
+  const stillSatisfied = /PASS\s+every preserved route exists in build output/.test(routes.out);
   const ok =
-    routes.code === 0 && contract.code === 1 && /frozen route set matches|route count is unchanged/.test(contract.out);
+    stillSatisfied && contract.code === 1 && /frozen route set matches|route count is unchanged/.test(contract.out);
   return {
     ok,
     detail: ok
-      ? 'verify:routes still exits 0 (the bypass), verify:contract exits 1'
-      : `verify:routes ${routes.code}, verify:contract ${contract.code}\n${contract.out}`,
+      ? 'the shrunken contract is still satisfied by the build; verify:contract exits 1'
+      : `stillSatisfied=${stillSatisfied}, verify:contract ${contract.code}\n${contract.out}\n${routes.out}`,
   };
 });
 
@@ -623,6 +626,37 @@ check('an <a href> to a third party still passes verify:links', (root) => {
   const { code, out } = run(root, 'verify-links.mjs');
   const ok = code === 0;
   return { ok, detail: ok ? 'exit 0' : `expected exit 0, got ${code}\n${out}` };
+});
+
+// --- F5: extra routes are reported, not just missing ones -----------------
+
+// A page in dist/ that no production route asks for. dist/ held three of these
+// (a synthetic ZZZ0000 card and two route-proof fixtures) with nothing to flag
+// them, because only the "missing" half of MW-4's criterion was implemented.
+check('an unbacked page in dist fails verify:routes', (root) => {
+  goodFixture(root);
+  writeFileSync(
+    join(root, 'dist', 'leftover.html'),
+    '<!doctype html><html><head><title>leftover</title></head><body><p>orphan</p></body></html>',
+  );
+  const { code, out } = run(root, 'verify-routes.mjs');
+  const ok = code === 1 && /no production route asks for/.test(out) && /leftover\.html/.test(out);
+  return { ok, detail: ok ? 'exit 1, extra page reported by name' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// Scaffolding is allowed, but only from a committed list that gets printed.
+check('allowlisted scaffolding passes verify:routes and is printed', (root) => {
+  goodFixture(root);
+  writeFileSync(
+    join(root, 'dist', 'leftover.html'),
+    '<!doctype html><html><head><title>leftover</title></head><body><p>orphan</p></body></html>',
+  );
+  writeJson(join(root, 'routes/scaffolding-allowlist.json'), {
+    files: [{ path: 'leftover.html', reason: 'fixture scaffolding' }],
+  });
+  const { code, out } = run(root, 'verify-routes.mjs');
+  const ok = code === 0 && /leftover\.html/.test(out) && /allowed as scaffolding/.test(out);
+  return { ok, detail: ok ? 'exit 0, allowlist entry printed' : `expected exit 0 + printed list, got ${code}\n${out}` };
 });
 
 // --- Results ------------------------------------------------------------
