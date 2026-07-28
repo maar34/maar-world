@@ -94,3 +94,4 @@ npm run ledger -- append MW-7 BLOCKED lab/es/dadada.html "reason: source referen
 2026-07-28T22:42Z  MW-6   DONE     verify/cards-content                       verify:cards asserts each page carries ITS OWN title, description fingerprint, play.maar.world players and downloads from routes/nfc-cards.json; 20 assertions, 7 new ones proved to fail on a swapped card
 2026-07-28T22:43Z  MW-3   DONE     build-output-assertions                    verify:build now inspects emitted HTML: titles, body text, page count — a hollow dist that passed four of five checks now fails
 2026-07-28T22:44Z  MW-8   DONE     handoff/regenerated                        MW-7 and MW-8 complete; HANDOFF.md records the kramdown/commonmark trap, the material-symbols trap and 6 blocked items
+2026-07-28T22:46Z  MW-3   DONE     ledger-history-guard                       append-only now verified across the file's whole git history; committing a deletion, amending, and empty or missing ledgers all fail

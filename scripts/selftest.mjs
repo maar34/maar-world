@@ -391,6 +391,163 @@ check('a near-empty dist fails verify:build', (root) => {
   return { ok, detail: ok ? 'exit 1, page count reported' : `expected exit 1, got ${code}\n${out}` };
 });
 
+// --- F3: the ledger is append-only across its whole history --------------
+
+const LEDGER_HEADER = [
+  '# Migration ledger',
+  '',
+  'Append-only. Format:',
+  '',
+  '```',
+  '<UTC stamp>  <MW-n>  <DONE|BLOCKED|NOTE>  <unit>  <detail>',
+  '```',
+  '',
+];
+
+const ledgerLine = (n, issue, status, unit, detail) =>
+  [
+    `2026-07-2${Math.min(9, 1 + Math.floor(n / 10))}T${String(10 + (n % 10)).padStart(2, '0')}:00Z`.padEnd(18),
+    issue.padEnd(6),
+    status.padEnd(8),
+    unit.padEnd(42),
+    detail,
+  ]
+    .join(' ')
+    .trimEnd();
+
+/**
+ * A fixture ledger with real git history: two commits, one BLOCKED entry in the
+ * middle. Every tamper case below starts from this and then commits its damage,
+ * because committing the damage is exactly what defeated the old guard.
+ */
+function ledgerFixture(root) {
+  const first = [
+    ...LEDGER_HEADER,
+    ledgerLine(0, 'MW-3', 'DONE', 'harness', 'first unit'),
+    ledgerLine(1, 'MW-4', 'BLOCKED', 'route-freeze', 'needs a human decision'),
+    ledgerLine(2, 'MW-4', 'DONE', 'policy', 'authored'),
+    '',
+  ].join('\n');
+  writeFileSync(join(root, 'MIGRATION-LEDGER.md'), first);
+  git(root, ['init', '-q']);
+  git(root, ['add', '-A']);
+  git(root, ['commit', '-qm', 'ledger: first entries']);
+
+  writeFileSync(
+    join(root, 'MIGRATION-LEDGER.md'),
+    `${first + ledgerLine(3, 'MW-5', 'DONE', 'scaffold', 'astro up')}\n`,
+  );
+  git(root, ['add', '-A']);
+  git(root, ['commit', '-qm', 'ledger: fourth entry']);
+}
+
+const ledgerCheck = (root) => run(root, 'ledger.mjs', ['check']);
+const ledgerText = (root) => readFileSync(join(root, 'MIGRATION-LEDGER.md'), 'utf8');
+
+// 21. An honestly-grown ledger passes.
+check('an append-only ledger passes ledger:check', (root) => {
+  ledgerFixture(root);
+  const { code, out } = ledgerCheck(root);
+  return { ok: code === 0, detail: code === 0 ? 'exit 0' : `expected exit 0, got ${code}\n${out}` };
+});
+
+// 22. Deleting a middle entry AND COMMITTING IT. The old guard said "intact".
+check('deleting a middle entry and committing fails ledger:check', (root) => {
+  ledgerFixture(root);
+  const kept = ledgerText(root)
+    .split('\n')
+    .filter((l) => !l.includes('route-freeze'))
+    .join('\n');
+  writeFileSync(join(root, 'MIGRATION-LEDGER.md'), kept);
+  git(root, ['add', '-A']);
+  git(root, ['commit', '-qm', 'tidy']);
+  const { code, out } = ledgerCheck(root);
+  const ok = code === 1 && /not an append|went backwards/.test(out);
+  return { ok, detail: ok ? 'exit 1, deletion caught after commit' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 23. Deleting every BLOCKED line and committing — the record of what needs a
+//     human is the record an agent has the most incentive to lose.
+check('deleting every BLOCKED line and committing fails ledger:check', (root) => {
+  ledgerFixture(root);
+  const kept = ledgerText(root)
+    .split('\n')
+    .filter((l) => !/\bBLOCKED\b/.test(l))
+    .join('\n');
+  writeFileSync(join(root, 'MIGRATION-LEDGER.md'), kept);
+  git(root, ['add', '-A']);
+  git(root, ['commit', '-qm', 'clean up']);
+  const { code, out } = ledgerCheck(root);
+  const ok = code === 1 && /not an append|went backwards/.test(out);
+  return { ok, detail: ok ? 'exit 1, BLOCKED deletion caught' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 24. Rewriting the last commit instead of adding one.
+check('git commit --amend that drops an entry fails ledger:check', (root) => {
+  ledgerFixture(root);
+  const kept = ledgerText(root)
+    .split('\n')
+    .filter((l) => !l.includes('route-freeze'))
+    .join('\n');
+  writeFileSync(join(root, 'MIGRATION-LEDGER.md'), kept);
+  git(root, ['add', '-A']);
+  git(root, ['commit', '-q', '--amend', '-m', 'ledger: fourth entry']);
+  const { code, out } = ledgerCheck(root);
+  const ok = code === 1 && /not an append|went backwards/.test(out);
+  return { ok, detail: ok ? 'exit 1, amend caught' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 25. CI's case: the working copy IS HEAD. The old guard could never fire here.
+check('a tampered ledger fails ledger:check with a clean working tree', (root) => {
+  ledgerFixture(root);
+  const kept = ledgerText(root)
+    .split('\n')
+    .filter((l) => !l.includes('route-freeze'))
+    .join('\n');
+  writeFileSync(join(root, 'MIGRATION-LEDGER.md'), kept);
+  git(root, ['add', '-A']);
+  git(root, ['commit', '-qm', 'tidy']);
+  const status = git(root, ['status', '--porcelain']);
+  const { code, out } = ledgerCheck(root);
+  const ok = code === 1 && status.out.trim() === '';
+  return {
+    ok,
+    detail: ok ? 'exit 1 with nothing uncommitted — the CI case' : `status="${status.out.trim()}" exit=${code}\n${out}`,
+  };
+});
+
+// 26. A missing ledger is not a passing ledger.
+check('a missing ledger fails ledger:check', (root) => {
+  ledgerFixture(root);
+  rmSync(join(root, 'MIGRATION-LEDGER.md'));
+  const { code, out } = ledgerCheck(root);
+  const ok = code === 1 && /does not exist/.test(out) && !/append-only intact/.test(out);
+  return { ok, detail: ok ? 'exit 1, missing file reported' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 27. Neither is an empty one.
+check('an entry-less ledger fails ledger:check', (root) => {
+  writeFileSync(join(root, 'MIGRATION-LEDGER.md'), `${LEDGER_HEADER.join('\n')}\n`);
+  git(root, ['init', '-q']);
+  git(root, ['add', '-A']);
+  git(root, ['commit', '-qm', 'empty ledger']);
+  const { code, out } = ledgerCheck(root);
+  const ok = code === 1 && /no entries/.test(out);
+  return { ok, detail: ok ? 'exit 1, empty ledger rejected' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 28. An uncommitted ledger cannot prove anything about its own history.
+check('an uncommitted ledger fails ledger:check', (root) => {
+  writeFileSync(
+    join(root, 'MIGRATION-LEDGER.md'),
+    `${[...LEDGER_HEADER, ledgerLine(0, 'MW-3', 'DONE', 'harness', 'first unit')].join('\n')}\n`,
+  );
+  git(root, ['init', '-q']);
+  const { code, out } = ledgerCheck(root);
+  const ok = code === 1 && /no committed history/.test(out);
+  return { ok, detail: ok ? 'exit 1, no history reported' : `expected exit 1, got ${code}\n${out}` };
+});
+
 // --- Results ------------------------------------------------------------
 console.log('\nverify harness selftest\n');
 let failed = 0;
