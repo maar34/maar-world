@@ -1,442 +1,3903 @@
 {
-  "note": "Per-page content-presence assertions for the migrated pages (MW-7 / MW-8). Headings are taken from the legacy source, so they assert that migration preserved them. minTextLength is a regression floor at 90% of the build at authoring time. images is an exact count and must match: headings alone did not catch /collect/documentation.html shipping zero of its nine cover thumbnails. productionImages is the frozen manifest figure, carried for comparison only — verify:content does not read it. Regenerate with scripts/author-content-expectations.mjs after an intentional content change.",
-  "authoredAt": "2026-07-28T23:23:29.442Z",
-  "pageCount": 95,
-  "imagesAsserted": 122,
-  "pagesBelowProduction": 6,
+  "note": "Per-page content-presence assertions for the migrated pages (MW-7 / MW-8). Every figure here is derived from PRODUCTION — routes/manifest.production.json, refined by the read-only legacy _site builds that reproduce its textSha256 — and never from dist/. An earlier version filtered each candidate heading through the build and kept only the ones that survived, which made verify:content structurally incapable of failing; regenerating this file must never consult the build again. headings, images, embeds and links are what production serves, minus the legacy theme chrome named per page in excludedRegions and minus the per-page exclusions named in excludedPerPage. minTextLength is a fraction of PRODUCTION body text, not of the build. Regenerate with scripts/author-content-expectations.mjs.",
+  "authoredAt": "2026-07-28T23:45:47.647Z",
+  "derivedFrom": "routes/manifest.production.json",
+  "legacyBaseline": "the read-only _site builds in ../maar.world-site, ../collect.maar.world and ../tree.maar.world, used only where they reproduce the frozen production fingerprint; each page records which, under production.baseline",
+  "textFraction": 0.85,
+  "headingNormalisations": [
+    "material-symbols icon spans removed — they rendered as a glyph, and the font is banned here",
+    "markdown emphasis marks (* and `) removed",
+    "a single trailing colon removed"
+  ],
+  "chromeExcluded": [
+    {
+      "region": "site-header",
+      "reason": "site header and primary nav — BaseLayout ships no nav; the page shell is MW-11"
+    },
+    {
+      "region": "site-footer",
+      "reason": "site footer — same MW-11 shell decision"
+    },
+    {
+      "region": "sidebar-toc",
+      "reason": "theme sidebar table of contents — navigation, generated from the headings it lists"
+    },
+    {
+      "region": "sidebar-toggle",
+      "reason": "the sidebar open/close button — a control, and its label is a Material Symbols glyph"
+    },
+    {
+      "region": "aside-toc",
+      "reason": "in-article table of contents column — navigation generated from the headings"
+    },
+    {
+      "region": "disqus",
+      "reason": "Disqus comments mount — a third-party embed the on-load gate forbids"
+    },
+    {
+      "region": "cookie-banner",
+      "reason": "cookie banner and consent panel — their absence is the design (OPERATING-RULES invariant)"
+    },
+    {
+      "region": "search-modal",
+      "reason": "theme search modal — application JavaScript, allowed only in the helix island"
+    },
+    {
+      "region": "prev-next",
+      "reason": "previous/next article navigator — navigation chrome"
+    },
+    {
+      "region": "article-meta",
+      "reason": "the date and tag chips the theme printed under every title — theme metadata, not page content"
+    },
+    {
+      "region": "article-footer-div",
+      "reason": "the theme Learn_/Collect_ button pair printed under every article"
+    },
+    {
+      "region": "article-footer-el",
+      "reason": "the theme article footer element — licence and updated-at line"
+    },
+    {
+      "region": "hidden-elements",
+      "reason": "elements with an inline display:none — chiefly the theme's hidden Jekyll auto-title <h1>, which no reader ever saw"
+    },
+    {
+      "region": "html-comments",
+      "reason": "HTML comments. The theme shipped a commented-out <iframe> example on every page, which the whole-page manifest fingerprint counts as a real embed."
+    }
+  ],
+  "chromeExcludedNote": "Each page lists, under excludedRegions, which of these regions its production HTML actually carried and this file therefore does not assert.",
+  "ownPropertyLinkNote": "Links to *.maar.world are not asserted: the migration rewrote them to merged-site paths, so the production spelling cannot appear in the build. Every page records how many it had under ownPropertyLinksNotAsserted.",
+  "pageCount": 130,
+  "migratedPagesWithoutProduction": 0,
+  "baselines": {
+    "legacy-site-exact": 116,
+    "legacy-site-approximate": 14
+  },
+  "headingsAsserted": 429,
+  "imagesAsserted": 157,
+  "embedsAsserted": 160,
+  "linksAsserted": 223,
   "pages": [
     {
+      "url": "/",
+      "production": {
+        "origin": "maar.world",
+        "url": "/",
+        "baseline": "legacy-site-exact",
+        "textLength": 2174,
+        "textSha256": "8c92b193dbd706c1",
+        "bodyTextLength": 1771,
+        "headings": 2,
+        "bodyHeadings": 1,
+        "imageCount": 11,
+        "iframeCount": 1,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "Play music cards with exoplanets"
+      ],
+      "minTextLength": 1505,
+      "images": 11,
+      "embeds": 0,
+      "links": [
+        "https://maar-world.bandcamp.com/merch",
+        "https://plantasia.space"
+      ]
+    },
+    {
+      "url": "/AXP3732",
+      "production": {
+        "origin": "maar.world",
+        "url": "/AXP3732",
+        "baseline": "legacy-site-exact",
+        "textLength": 1594,
+        "textSha256": "e471a10b797a3d95",
+        "bodyTextLength": 1310,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-2-IV is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card IV",
+        "spoken word"
+      ],
+      "minTextLength": 1113,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/2k0d94c2f9bsfki/Skysounds-2-IV.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/fvu6x29gdyi5a61/015_-maar-sky-sounds.2-card_IV.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919d8fde01d8a7df9d0f5af"
+      ]
+    },
+    {
+      "url": "/BCC4992",
+      "production": {
+        "origin": "maar.world",
+        "url": "/BCC4992",
+        "baseline": "legacy-site-exact",
+        "textLength": 1644,
+        "textSha256": "47c8e6d96d771735",
+        "bodyTextLength": 1361,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-1-X is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card X",
+        "spoken word"
+      ],
+      "minTextLength": 1156,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/5f3n8unq16mfb34/010_-maar-sky-sounds.1-card_X.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/9rnue4mml09x2zm/Skysounds-1-X.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919cfdfe01d8a7df9d0f17a"
+      ]
+    },
+    {
+      "url": "/BQA976",
+      "production": {
+        "origin": "maar.world",
+        "url": "/BQA976",
+        "baseline": "legacy-site-exact",
+        "textLength": 1389,
+        "textSha256": "a40513526037f886",
+        "bodyTextLength": 1104,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-3-VII is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card VII",
+        "spoken word"
+      ],
+      "minTextLength": 938,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/fft1ivnurox687b/029_-maar-sky-sounds.3-card_VII.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/qdtb390070h9dsh/Skysounds-3-VII.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919dd7fe01d8a7df9d0fa0c"
+      ]
+    },
+    {
+      "url": "/BWN1651",
+      "production": {
+        "origin": "maar.world",
+        "url": "/BWN1651",
+        "baseline": "legacy-site-exact",
+        "textLength": 1395,
+        "textSha256": "8558ac50ede7e3b8",
+        "bodyTextLength": 1112,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-3-X is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card X",
+        "spoken word"
+      ],
+      "minTextLength": 945,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/084sw6mcmagtt80/032_-maar-sky-sounds.3-card_X.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/6gii643d1t04ud6/Skysounds-3-X.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919dd83e01d8a7df9d0fa3f"
+      ]
+    },
+    {
+      "url": "/BZD8282",
+      "production": {
+        "origin": "maar.world",
+        "url": "/BZD8282",
+        "baseline": "legacy-site-exact",
+        "textLength": 1306,
+        "textSha256": "1310bc4259c63ee6",
+        "bodyTextLength": 1021,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-2-III is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card III",
+        "spoken word"
+      ],
+      "minTextLength": 867,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/4uvyituu65mdtlo/Skysounds-2-III.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/xjpbpxxfw56icia/014_-maar-sky-sounds.2-card_III.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919d8fce01d8a7df9d0f59e"
+      ]
+    },
+    {
+      "url": "/CRZ5922",
+      "production": {
+        "origin": "maar.world",
+        "url": "/CRZ5922",
+        "baseline": "legacy-site-exact",
+        "textLength": 1480,
+        "textSha256": "d32e71684daeb80b",
+        "bodyTextLength": 1196,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-1-VI is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card VI",
+        "spoken word"
+      ],
+      "minTextLength": 1016,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/8xd3rc58hm8wu26/006_-maar-sky-sounds.1-card_VI.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/qfsfjauoixft6mz/Skysounds-1-VI.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919cfd1e01d8a7df9d0f13e"
+      ]
+    },
+    {
+      "url": "/CXX8705",
+      "production": {
+        "origin": "maar.world",
+        "url": "/CXX8705",
+        "baseline": "legacy-site-exact",
+        "textLength": 1513,
+        "textSha256": "d65e13e6fc4d1b95",
+        "bodyTextLength": 1230,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-3-V is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card V",
+        "spoken word"
+      ],
+      "minTextLength": 1045,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/hoovxkv6cfwm4ll/027_-maar-sky-sounds.3-card_V.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/svmpyjziinhhf1z/Skysounds-3-V.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919dd7ce01d8a7df9d0f9ea"
+      ]
+    },
+    {
+      "url": "/DJX9483",
+      "production": {
+        "origin": "maar.world",
+        "url": "/DJX9483",
+        "baseline": "legacy-site-exact",
+        "textLength": 1352,
+        "textSha256": "492c78f28d6ee34d",
+        "bodyTextLength": 1068,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-1-II is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card II",
+        "spoken word"
+      ],
+      "minTextLength": 907,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/mkntnqnpi3kw9de/Skysounds-1-II.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/smdc9tmtr2ueku7/002_-maar-sky-sounds.1-card_II.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919aa50a1def2d77f51bcb5"
+      ]
+    },
+    {
+      "url": "/DVG9370",
+      "production": {
+        "origin": "maar.world",
+        "url": "/DVG9370",
+        "baseline": "legacy-site-exact",
+        "textLength": 1642,
+        "textSha256": "3c4dee34988930ee",
+        "bodyTextLength": 1358,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-1-XI is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card XI",
+        "spoken word"
+      ],
+      "minTextLength": 1154,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/a5npi0birs2no3n/011_-maar-sky-sounds.1-card_XI.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/vx4gzp6o93yghak/Skysounds-1-XI.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919cfe2e01d8a7df9d0f188"
+      ]
+    },
+    {
+      "url": "/DWE1406",
+      "production": {
+        "origin": "maar.world",
+        "url": "/DWE1406",
+        "baseline": "legacy-site-exact",
+        "textLength": 3027,
+        "textSha256": "3d9bfbe390520da8",
+        "bodyTextLength": 2730,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 1,
+        "outboundLinks": 37
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "article-meta",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 33,
+      "headings": [
+        "WildCard",
+        "SkySounds.1",
+        "SkySounds.2",
+        "SkySounds.3"
+      ],
+      "minTextLength": 2320,
+      "images": 1,
+      "embeds": 0,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/2e3d9z4b5mc0u9s/SkySounds.2.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/gekbu45br6radwj/SkySounds.3.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/wuspumq20nie54q/SkySounds.1.wav?raw=1"
+      ]
+    },
+    {
+      "url": "/EBT5599",
+      "production": {
+        "origin": "maar.world",
+        "url": "/EBT5599",
+        "baseline": "legacy-site-exact",
+        "textLength": 1745,
+        "textSha256": "2cf318065ea732c7",
+        "bodyTextLength": 1462,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-1-I is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card I",
+        "spoken word"
+      ],
+      "minTextLength": 1242,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/7vvphjxg3u4520a/Skysounds-1-I.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/l5llaqx8bu6yltq/001_-maar-sky-sounds.1-card_I.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919a2fad44c12045386f4c7"
+      ]
+    },
+    {
+      "url": "/IBM5970",
+      "production": {
+        "origin": "maar.world",
+        "url": "/IBM5970",
+        "baseline": "legacy-site-exact",
+        "textLength": 1539,
+        "textSha256": "99b506ef285cdefc",
+        "bodyTextLength": 1255,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-3-VI is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card VI",
+        "spoken word"
+      ],
+      "minTextLength": 1066,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/l8c6bbrnwesyalz/028_-maar-sky-sounds.3-card_VI.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/zhhlg97xhsubyuy/Skysounds-3-VI.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919dd7ee01d8a7df9d0f9fb"
+      ]
+    },
+    {
+      "url": "/IWG8041",
+      "production": {
+        "origin": "maar.world",
+        "url": "/IWG8041",
+        "baseline": "legacy-site-exact",
+        "textLength": 1678,
+        "textSha256": "2ed19063b11ef4ef",
+        "bodyTextLength": 1394,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-3-II is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card II",
+        "spoken word"
+      ],
+      "minTextLength": 1184,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/0h0wu809sck6g57/024_-maar-sky-sounds.3-card_II.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/75mua0w7ocdzruf/Skysounds-3-II.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919dd78e01d8a7df9d0f9b7"
+      ]
+    },
+    {
+      "url": "/KME3578",
+      "production": {
+        "origin": "maar.world",
+        "url": "/KME3578",
+        "baseline": "legacy-site-exact",
+        "textLength": 1729,
+        "textSha256": "e54e264f9c5e786c",
+        "bodyTextLength": 1445,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-1-IX is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card IX",
+        "spoken word"
+      ],
+      "minTextLength": 1228,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/pdb6uzs87bk0iwp/Skysounds-1-IX.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/qj1bvmhqq82ixdu/009_-maar-sky-sounds.1-card_IX.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919cfdde01d8a7df9d0f16c"
+      ]
+    },
+    {
+      "url": "/KXQ7964",
+      "production": {
+        "origin": "maar.world",
+        "url": "/KXQ7964",
+        "baseline": "legacy-site-exact",
+        "textLength": 1524,
+        "textSha256": "573df8e959e45a5b",
+        "bodyTextLength": 1241,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-2-V is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card V",
+        "spoken word"
+      ],
+      "minTextLength": 1054,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/3vumx0257pxjjwu/Skysounds-2-V.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/fbj6l9fv8pwzjur/016_-maar-sky-sounds.2-card_V.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919d8fee01d8a7df9d0f5c0"
+      ]
+    },
+    {
+      "url": "/LAQ6106",
+      "production": {
+        "origin": "maar.world",
+        "url": "/LAQ6106",
+        "baseline": "legacy-site-exact",
+        "textLength": 1488,
+        "textSha256": "059299b07b2f439e",
+        "bodyTextLength": 1202,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-1-VIII is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card VIII",
+        "spoken word"
+      ],
+      "minTextLength": 1021,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/qb2jovlb64wbuxs/008_-maar-sky-sounds.1-card_VIII.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/vhg23iy3z84brjd/Skysounds-1-VIII.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919cfd9e01d8a7df9d0f15e"
+      ]
+    },
+    {
+      "url": "/LYN4636",
+      "production": {
+        "origin": "maar.world",
+        "url": "/LYN4636",
+        "baseline": "legacy-site-exact",
+        "textLength": 1493,
+        "textSha256": "75213dc2cc988ea2",
+        "bodyTextLength": 1210,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-2-I is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card I",
+        "spoken word"
+      ],
+      "minTextLength": 1028,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/6s22rjw2o45ium1/012_-maar-sky-sounds.2-card_I.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/yzrn57rjww2r2b0/Skysounds-2-I.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919d95ce01d8a7df9d0f6d7"
+      ]
+    },
+    {
+      "url": "/NTH7336",
+      "production": {
+        "origin": "maar.world",
+        "url": "/NTH7336",
+        "baseline": "legacy-site-exact",
+        "textLength": 1583,
+        "textSha256": "75225b764025fa1c",
+        "bodyTextLength": 1299,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-3-XI is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card XI",
+        "spoken word"
+      ],
+      "minTextLength": 1104,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/k6wr3ha2siqb0al/Skysounds-3-XI.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/r1iks6lz589gu90/033_-maar-sky-sounds.3-card_XI.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919dd84e01d8a7df9d0fa50"
+      ]
+    },
+    {
+      "url": "/PHR6198",
+      "production": {
+        "origin": "maar.world",
+        "url": "/PHR6198",
+        "baseline": "legacy-site-exact",
+        "textLength": 1470,
+        "textSha256": "01b12c68dfe9a7aa",
+        "bodyTextLength": 1186,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-2-XI is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card XI",
+        "spoken word"
+      ],
+      "minTextLength": 1008,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/g2sr0hrjd4ze6mf/Skysounds-2-XI.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/l1x3qz287gs94kd/022_-maar-sky-sounds.2-card_XI.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919d903e01d8a7df9d0f604"
+      ]
+    },
+    {
+      "url": "/QUP1235",
+      "production": {
+        "origin": "maar.world",
+        "url": "/QUP1235",
+        "baseline": "legacy-site-exact",
+        "textLength": 1410,
+        "textSha256": "788f66c37ca4e066",
+        "bodyTextLength": 1126,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-3-IV is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card IV",
+        "spoken word"
+      ],
+      "minTextLength": 957,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/liybw1s9az8k6lz/Skysounds-3-IV.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/wkc1uqexo6yiecf/026_-maar-sky-sounds.3-card_IV.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919dd7be01d8a7df9d0f9d9"
+      ]
+    },
+    {
+      "url": "/ROH1693",
+      "production": {
+        "origin": "maar.world",
+        "url": "/ROH1693",
+        "baseline": "legacy-site-exact",
+        "textLength": 1768,
+        "textSha256": "25988450c0daf7e8",
+        "bodyTextLength": 1484,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-2-II is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card II",
+        "spoken word"
+      ],
+      "minTextLength": 1261,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/grdze0hv4a7c8h9/Skysounds-2-II.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/qikessotragwces/013_-maar-sky-sounds.2-card_II.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919d8f0e01d8a7df9d0f58f"
+      ]
+    },
+    {
+      "url": "/ROK6739",
+      "production": {
+        "origin": "maar.world",
+        "url": "/ROK6739",
+        "baseline": "legacy-site-exact",
+        "textLength": 1627,
+        "textSha256": "01881caf42d52819",
+        "bodyTextLength": 1342,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-2-VII is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card VII",
+        "spoken word"
+      ],
+      "minTextLength": 1140,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/407yi56evj5gpfj/Skysounds-2-VII.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/up6pgo6buqv1aet/018_-maar-sky-sounds.2-card_VII.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919d900e01d8a7df9d0f5d1"
+      ]
+    },
+    {
+      "url": "/SHF4580",
+      "production": {
+        "origin": "maar.world",
+        "url": "/SHF4580",
+        "baseline": "legacy-site-exact",
+        "textLength": 1286,
+        "textSha256": "b36f3df68086453a",
+        "bodyTextLength": 1001,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-3-III is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card III",
+        "spoken word"
+      ],
+      "minTextLength": 850,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/9omv3ree25ahxyj/Skysounds-3-III.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/v69wzj43fgczpo2/025_-maar-sky-sounds.3-card_III.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919dd7ae01d8a7df9d0f9c8"
+      ]
+    },
+    {
+      "url": "/SIX7919",
+      "production": {
+        "origin": "maar.world",
+        "url": "/SIX7919",
+        "baseline": "legacy-site-exact",
+        "textLength": 1500,
+        "textSha256": "8037114477624aac",
+        "bodyTextLength": 1216,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-2-IX is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card IX",
+        "spoken word"
+      ],
+      "minTextLength": 1033,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/2awf63pk82g2ibu/020_-maar-sky-sounds.2-card_IX.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/qwcllsago12b50m/Skysounds-2-IX.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919d906e01d8a7df9d0f626"
+      ]
+    },
+    {
+      "url": "/STW3344",
+      "production": {
+        "origin": "maar.world",
+        "url": "/STW3344",
+        "baseline": "legacy-site-exact",
+        "textLength": 631,
+        "textSha256": "1354d40a0f261ffe",
+        "bodyTextLength": 356,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "Stoney_Way",
+        "music",
+        "Card I"
+      ],
+      "minTextLength": 302,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://dl.dropboxusercontent.com/scl/fi/alp4e8enp7ku5j3030uuk/Stoney_Way_Mix-10-09-22.wav?rlkey=7qr7x5pfuz0ou6sb30bkm7pgj&raw=1",
+        "https://dl.dropboxusercontent.com/scl/fi/xp7ew10ihkpg6xd6amumg/Stoney_Way_Mix-10-09-22.mp3?rlkey=b8s5c3mg2n89stv5xzou4tpln&raw=1",
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/SVA679",
+      "production": {
+        "origin": "maar.world",
+        "url": "/SVA679",
+        "baseline": "legacy-site-exact",
+        "textLength": 1523,
+        "textSha256": "297e47b9d8973897",
+        "bodyTextLength": 1240,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-1-V is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card V",
+        "spoken word"
+      ],
+      "minTextLength": 1054,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/qbbnu7p78lfny90/005_-maar-sky-sounds.1-card_V.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/rdlzvcf63dt3nos/Skysounds-1-V.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919cfcbe01d8a7df9d0f122"
+      ]
+    },
+    {
+      "url": "/TMK694",
+      "production": {
+        "origin": "maar.world",
+        "url": "/TMK694",
+        "baseline": "legacy-site-exact",
+        "textLength": 1529,
+        "textSha256": "ce2441f2b72168db",
+        "bodyTextLength": 1245,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-1-IV is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card IV",
+        "spoken word"
+      ],
+      "minTextLength": 1058,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/jqt9j2v3dq2n6fv/004_-maar-sky-sounds.1-card_IV.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/mxnv43pplrr4n83/Skysounds-1-IV.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919cfcee01d8a7df9d0f130"
+      ]
+    },
+    {
+      "url": "/TOP2071",
+      "production": {
+        "origin": "maar.world",
+        "url": "/TOP2071",
+        "baseline": "legacy-site-exact",
+        "textLength": 1605,
+        "textSha256": "9ee38b8571f570dc",
+        "bodyTextLength": 1320,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-1-VII is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card VII",
+        "spoken word"
+      ],
+      "minTextLength": 1122,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/l8vruhb17t0itfp/007_-maar-sky-sounds.1-card_VII.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/rdjhq4nuiiqo2hu/Skysounds-1-VII.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919cfd5e01d8a7df9d0f150"
+      ]
+    },
+    {
+      "url": "/UMN2909",
+      "production": {
+        "origin": "maar.world",
+        "url": "/UMN2909",
+        "baseline": "legacy-site-exact",
+        "textLength": 1389,
+        "textSha256": "62303a2a752ee244",
+        "bodyTextLength": 1104,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-1-III is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card III",
+        "spoken word"
+      ],
+      "minTextLength": 938,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/gdytfbf7vzk9drq/Skysounds-1-III.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/jv4u26ss2mcdmwn/003_-maar-sky-sounds.1-card_III.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919cfc0e01d8a7df9d0f064"
+      ]
+    },
+    {
+      "url": "/VHQ3300",
+      "production": {
+        "origin": "maar.world",
+        "url": "/VHQ3300",
+        "baseline": "legacy-site-exact",
+        "textLength": 1504,
+        "textSha256": "ffa2f7c2845035d7",
+        "bodyTextLength": 1221,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-3-I is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card I",
+        "spoken word"
+      ],
+      "minTextLength": 1037,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/4qvms86bvjjhg6e/023_-maar-sky-sounds.3-card_I.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/dxmsyjjpmuirijf/Skysounds-3-I.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919dd6ee01d8a7df9d0f9a8"
+      ]
+    },
+    {
+      "url": "/VKS9121",
+      "production": {
+        "origin": "maar.world",
+        "url": "/VKS9121",
+        "baseline": "legacy-site-exact",
+        "textLength": 1526,
+        "textSha256": "f8013fbeb28abfa4",
+        "bodyTextLength": 1243,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-2-X is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card X",
+        "spoken word"
+      ],
+      "minTextLength": 1056,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/34g5cz08nkli08f/Skysounds-2-X.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/4ufpy229vduo5mn/021_-maar-sky-sounds.2-card_X.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919d902e01d8a7df9d0f5f3"
+      ]
+    },
+    {
+      "url": "/XEW6454",
+      "production": {
+        "origin": "maar.world",
+        "url": "/XEW6454",
+        "baseline": "legacy-site-exact",
+        "textLength": 1497,
+        "textSha256": "858a6b665c75e3c0",
+        "bodyTextLength": 1213,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-3-IX is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card IX",
+        "spoken word"
+      ],
+      "minTextLength": 1031,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/1a61ebzyr42qg1a/Skysounds-3-IX.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/l5z639m68f72tsr/031_-maar-sky-sounds.3-card_IX.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919dd81e01d8a7df9d0fa2e"
+      ]
+    },
+    {
+      "url": "/YAC2340",
+      "production": {
+        "origin": "maar.world",
+        "url": "/YAC2340",
+        "baseline": "legacy-site-exact",
+        "textLength": 1492,
+        "textSha256": "64321d9f5a6fe818",
+        "bodyTextLength": 1206,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-3-VIII is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card VIII",
+        "spoken word"
+      ],
+      "minTextLength": 1025,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/fbtn2hm3to6yyh0/Skysounds-3-VIII.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/og2ekrz6wasr35a/030_-maar-sky-sounds.3-card_VIII.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919dd80e01d8a7df9d0fa1d"
+      ]
+    },
+    {
+      "url": "/ZHQ9392",
+      "production": {
+        "origin": "maar.world",
+        "url": "/ZHQ9392",
+        "baseline": "legacy-site-exact",
+        "textLength": 1587,
+        "textSha256": "5a043fb52ffba38c",
+        "bodyTextLength": 1303,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-2-VI is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card VI",
+        "spoken word"
+      ],
+      "minTextLength": 1107,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/1itolp9s99h3oww/Skysounds-2-VI.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/xmuhnzhz51v7ga3/017_-maar-sky-sounds.2-card_VI.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919f23fe01d8a7df9d105c7"
+      ]
+    },
+    {
+      "url": "/ZPH9206",
+      "production": {
+        "origin": "maar.world",
+        "url": "/ZPH9206",
+        "baseline": "legacy-site-exact",
+        "textLength": 1444,
+        "textSha256": "6a30bc6d23e397aa",
+        "bodyTextLength": 1158,
+        "headings": 5,
+        "bodyHeadings": 4,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "Skysounds-2-VIII is now playing on Maar Orbiter",
+        "soundscapes & music",
+        "Card VIII",
+        "spoken word"
+      ],
+      "minTextLength": 984,
+      "images": 1,
+      "embeds": 2,
+      "links": [
+        "https://dl.dropboxusercontent.com/s/im7w7z5qfdx7idr/019_-maar-sky-sounds.2-card_VIII.wav?raw=1",
+        "https://dl.dropboxusercontent.com/s/l4vqp62qhj8l4sh/Skysounds-2-VIII.wav?raw=1",
+        "https://orbiter.plantasia.space/?trackId=6919d901e01d8a7df9d0f5e2"
+      ]
+    },
+    {
       "url": "/about",
+      "production": {
+        "origin": "maar.world",
+        "url": "/about",
+        "baseline": "legacy-site-exact",
+        "textLength": 1518,
+        "textSha256": "e2e6dca1188025bd",
+        "bodyTextLength": 1120,
+        "headings": 2,
+        "bodyHeadings": 1,
+        "imageCount": 1,
+        "iframeCount": 1,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "About"
       ],
-      "minTextLength": 987,
+      "minTextLength": 952,
       "images": 1,
-      "productionImages": 1
+      "embeds": 0,
+      "links": [
+        "http://headbrothers.com",
+        "http://headbrothers.com/exoplanetas"
+      ]
     },
     {
       "url": "/bookings",
+      "production": {
+        "origin": "maar.world",
+        "url": "/bookings",
+        "baseline": "legacy-site-exact",
+        "textLength": 1492,
+        "textSha256": "5c23bc75f1ae86d9",
+        "bodyTextLength": 1036,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 0,
+        "iframeCount": 2,
+        "outboundLinks": 3
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-el",
+        "hidden-elements x3"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Bookings",
         "Hybrid (Live + DJ) sets",
         "Contact"
       ],
-      "minTextLength": 931,
+      "minTextLength": 880,
       "images": 0,
-      "productionImages": 0
+      "embeds": 1,
+      "links": []
     },
     {
       "url": "/calendar",
+      "production": {
+        "origin": "maar.world",
+        "url": "/calendar",
+        "baseline": "legacy-site-exact",
+        "textLength": 422,
+        "textSha256": "4ca6588980b91b87",
+        "bodyTextLength": 21,
+        "headings": 1,
+        "bodyHeadings": 0,
+        "imageCount": 0,
+        "iframeCount": 2,
+        "outboundLinks": 3
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [],
-      "minTextLength": 144,
+      "minTextLength": 17,
       "images": 0,
-      "productionImages": 0
-    },
-    {
-      "url": "/collect/about",
-      "headings": [
-        "About"
-      ],
-      "minTextLength": 9,
-      "images": 0,
-      "productionImages": 0
-    },
-    {
-      "url": "/collect/cards",
-      "headings": [],
-      "minTextLength": 284,
-      "images": 0,
-      "productionImages": 34
-    },
-    {
-      "url": "/collect/cards/001_-maar-sky-sounds.1-card I",
-      "headings": [],
-      "minTextLength": 913,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/002_-maar-sky-sounds.1-card II",
-      "headings": [],
-      "minTextLength": 560,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/003_-maar-sky-sounds.1-card III",
-      "headings": [],
-      "minTextLength": 593,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/004_-maar-sky-sounds.1-card IV",
-      "headings": [],
-      "minTextLength": 719,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/005_-maar-sky-sounds.1-card V",
-      "headings": [],
-      "minTextLength": 709,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/006_-maar-sky-sounds.1-card VI",
-      "headings": [],
-      "minTextLength": 675,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/007_-maar-sky-sounds.1-card VII",
-      "headings": [],
-      "minTextLength": 787,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/008_-maar-sky-sounds.1-card VIII",
-      "headings": [],
-      "minTextLength": 680,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/009_-maar-sky-sounds.1-card IX",
-      "headings": [],
-      "minTextLength": 899,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/010_-maar-sky-sounds.1-card X",
-      "headings": [],
-      "minTextLength": 822,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/011_-maar-sky-sounds.1-card XI",
-      "headings": [],
-      "minTextLength": 821,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/012_-maar-sky-sounds.2-card I",
-      "headings": [],
-      "minTextLength": 687,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/013_-maar-sky-sounds.2-card II",
-      "headings": [],
-      "minTextLength": 935,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/014_-maar-sky-sounds.2-card III",
-      "headings": [],
-      "minTextLength": 518,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/015_-maar-sky-sounds.2-card IV",
-      "headings": [],
-      "minTextLength": 776,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/016_-maar-sky-sounds.2-card V",
-      "headings": [],
-      "minTextLength": 716,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/017_-maar-sky-sounds.2-card VI",
-      "headings": [],
-      "minTextLength": 771,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/018_-maar-sky-sounds.2-card VII",
-      "headings": [],
-      "minTextLength": 807,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/019_-maar-sky-sounds.2-card VIII",
-      "headings": [],
-      "minTextLength": 640,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/020_-maar-sky-sounds.2-card IX",
-      "headings": [],
-      "minTextLength": 693,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/021_-maar-sky-sounds.2-card X",
-      "headings": [],
-      "minTextLength": 717,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/022_-maar-sky-sounds.2-card XI",
-      "headings": [],
-      "minTextLength": 666,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/023_-maar-sky-sounds.3-card I",
-      "headings": [],
-      "minTextLength": 698,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/024_-maar-sky-sounds.3-card II",
-      "headings": [],
-      "minTextLength": 852,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/025_-maar-sky-sounds.3-card III",
-      "headings": [],
-      "minTextLength": 499,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/026_-maar-sky-sounds.3-card IV",
-      "headings": [],
-      "minTextLength": 611,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/027_-maar-sky-sounds.3-card V",
-      "headings": [],
-      "minTextLength": 704,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/028_-maar-sky-sounds.3-card VI",
-      "headings": [],
-      "minTextLength": 728,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/029_-maar-sky-sounds.3-card VII",
-      "headings": [],
-      "minTextLength": 593,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/030_-maar-sky-sounds.3-card VIII",
-      "headings": [],
-      "minTextLength": 684,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/031_-maar-sky-sounds.3-card IX",
-      "headings": [],
-      "minTextLength": 689,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/032_-maar-sky-sounds.3-card X ",
-      "headings": [],
-      "minTextLength": 598,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/033_-maar-sky-sounds.3-card XI",
-      "headings": [],
-      "minTextLength": 768,
-      "images": 1
-    },
-    {
-      "url": "/collect/cards/034_-maar-sky-sounds-wild-card",
-      "headings": [],
-      "minTextLength": 833,
-      "images": 1,
-      "productionImages": 1
-    },
-    {
-      "url": "/collect/decks",
-      "headings": [],
-      "minTextLength": 40,
-      "images": 0,
-      "productionImages": 0
-    },
-    {
-      "url": "/collect/docs/ent-cards",
-      "headings": [
-        "ENT Cards"
-      ],
-      "minTextLength": 865,
-      "images": 3,
-      "productionImages": 3
-    },
-    {
-      "url": "/collect/docs/ent-cards/nfc",
-      "headings": [
-        "Each ENT Card includes an NFC Chip."
-      ],
-      "minTextLength": 2332,
-      "images": 2,
-      "productionImages": 2
-    },
-    {
-      "url": "/collect/docs/ent-cards/sustainability",
-      "headings": [
-        "Human-Centered Technology."
-      ],
-      "minTextLength": 2135,
-      "images": 1,
-      "productionImages": 1
-    },
-    {
-      "url": "/collect/docs/mw",
-      "headings": [],
-      "minTextLength": 2761,
-      "images": 1,
-      "productionImages": 1
-    },
-    {
-      "url": "/collect/docs/mw/terms",
-      "headings": [
-        "Terms and Conditions"
-      ],
-      "minTextLength": 924,
-      "images": 0,
-      "productionImages": 0
-    },
-    {
-      "url": "/collect/docs/orbiters/development",
-      "headings": [],
-      "minTextLength": 1401,
-      "images": 2,
-      "productionImages": 2
-    },
-    {
-      "url": "/collect/docs/orbiters/how-to-use",
-      "headings": [
-        "A Planet is a Vinyl + One dimension"
-      ],
-      "minTextLength": 2601,
-      "images": 3,
-      "productionImages": 3
-    },
-    {
-      "url": "/collect/docs/releases/skysounds",
-      "headings": [
-        "Formation"
-      ],
-      "minTextLength": 489,
-      "images": 1,
-      "productionImages": 1
-    },
-    {
-      "url": "/collect/docs/tutorials",
-      "headings": [],
-      "minTextLength": 356,
-      "images": 0,
-      "productionImages": 0
-    },
-    {
-      "url": "/collect/documentation",
-      "headings": [
-        "Documentation"
-      ],
-      "minTextLength": 123,
-      "images": 10,
-      "productionImages": 10
+      "embeds": 1,
+      "links": []
     },
     {
       "url": "/collect",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/",
+        "baseline": "legacy-site-approximate",
+        "textLength": 1796,
+        "textSha256": "a5067325f4ab6c51",
+        "legacySiteTextLength": 1792,
+        "bodyTextLength": 1420,
+        "headings": 9,
+        "bodyHeadings": 9,
+        "imageCount": 6,
+        "iframeCount": 3,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 1,
       "headings": [
+        "Sky Sounds",
         "Play music cards with exoplanets",
         "Start your journey",
+        "I",
+        "II",
+        "III",
+        "IV",
+        "V",
         "Contact us"
       ],
-      "minTextLength": 1415,
+      "minTextLength": 1207,
       "images": 6,
-      "productionImages": 6
+      "embeds": 1,
+      "links": [
+        "https://maar-world.bandcamp.com/merch"
+      ]
     },
     {
-      "url": "/collect/privacy",
-      "headings": [
-        "Privacy and Cookies Policy"
+      "url": "/collect/about",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/about",
+        "baseline": "legacy-site-exact",
+        "textLength": 453,
+        "textSha256": "ce4e52d68d037e13",
+        "bodyTextLength": 32,
+        "headings": 2,
+        "bodyHeadings": 1,
+        "imageCount": 0,
+        "iframeCount": 1,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
       ],
-      "minTextLength": 1857,
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "About"
+      ],
+      "minTextLength": 27,
       "images": 0,
-      "productionImages": 0
+      "embeds": 0,
+      "links": []
     },
     {
-      "url": "/collect/samples",
+      "url": "/collect/cards",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards",
+        "baseline": "legacy-site-exact",
+        "textLength": 1486,
+        "textSha256": "4d6618102628e9dc",
+        "bodyTextLength": 1118,
+        "headings": 1,
+        "bodyHeadings": 1,
+        "imageCount": 34,
+        "iframeCount": 1,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "images",
+          "count": 34,
+          "reason": "production renders 34 card thumbnails and every one is a www.dropbox.com URL. Restoring them takes the on-load third-party reference count verify:links reports from 75 to 109. Ledger MW-8 collect/cards-covers (BLOCKED): self-host the 34 thumbnails or accept the exception."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "Cards"
+      ],
+      "minTextLength": 950,
+      "images": 0,
+      "embeds": 0,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/001_-maar-sky-sounds.1-card I",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/001_-maar-sky-sounds.1-card%20I",
+        "baseline": "legacy-site-exact",
+        "textLength": 1747,
+        "textSha256": "4bf1c20c6abf9626",
+        "bodyTextLength": 1266,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.1",
+        "Card I",
+        "Snippet"
+      ],
+      "minTextLength": 1076,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/002_-maar-sky-sounds.1-card II",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/002_-maar-sky-sounds.1-card%20II",
+        "baseline": "legacy-site-exact",
+        "textLength": 1393,
+        "textSha256": "b407002b60885622",
+        "bodyTextLength": 871,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.1",
+        "Card II",
+        "Snippet"
+      ],
+      "minTextLength": 740,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/003_-maar-sky-sounds.1-card III",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/003_-maar-sky-sounds.1-card%20III",
+        "baseline": "legacy-site-exact",
+        "textLength": 1429,
+        "textSha256": "d7fa42988df9b74f",
+        "bodyTextLength": 906,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.1",
+        "Card III",
+        "Snippet"
+      ],
+      "minTextLength": 770,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/004_-maar-sky-sounds.1-card IV",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/004_-maar-sky-sounds.1-card%20IV",
+        "baseline": "legacy-site-exact",
+        "textLength": 1570,
+        "textSha256": "3b17d36c139af53b",
+        "bodyTextLength": 1048,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.1",
+        "Card IV",
+        "Snippet"
+      ],
+      "minTextLength": 890,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/005_-maar-sky-sounds.1-card V",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/005_-maar-sky-sounds.1-card%20V",
+        "baseline": "legacy-site-exact",
+        "textLength": 1558,
+        "textSha256": "67de938bbd3740d8",
+        "bodyTextLength": 1037,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.1",
+        "Card V",
+        "Snippet"
+      ],
+      "minTextLength": 881,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/006_-maar-sky-sounds.1-card VI",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/006_-maar-sky-sounds.1-card%20VI",
+        "baseline": "legacy-site-exact",
+        "textLength": 1521,
+        "textSha256": "66ae6c140d0a5348",
+        "bodyTextLength": 999,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.1",
+        "Card VI",
+        "Snippet"
+      ],
+      "minTextLength": 849,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/007_-maar-sky-sounds.1-card VII",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/007_-maar-sky-sounds.1-card%20VII",
+        "baseline": "legacy-site-exact",
+        "textLength": 1647,
+        "textSha256": "fbc48d79cf0648d6",
+        "bodyTextLength": 1122,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.1",
+        "Card VII",
+        "Snippet"
+      ],
+      "minTextLength": 953,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/008_-maar-sky-sounds.1-card VIII",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/008_-maar-sky-sounds.1-card%20VIII",
+        "baseline": "legacy-site-exact",
+        "textLength": 1528,
+        "textSha256": "ea7dd95952f11850",
+        "bodyTextLength": 1003,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.1",
+        "Card VIII",
+        "Snippet"
+      ],
+      "minTextLength": 852,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/009_-maar-sky-sounds.1-card IX",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/009_-maar-sky-sounds.1-card%20IX",
+        "baseline": "legacy-site-exact",
+        "textLength": 1771,
+        "textSha256": "aac046bea55ade4b",
+        "bodyTextLength": 1248,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.1",
+        "Card IX",
+        "Snippet"
+      ],
+      "minTextLength": 1060,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/010_-maar-sky-sounds.1-card X",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/010_-maar-sky-sounds.1-card%20X",
+        "baseline": "legacy-site-exact",
+        "textLength": 1686,
+        "textSha256": "cf768ee3e7179a38",
+        "bodyTextLength": 1165,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.1",
+        "Card X",
+        "Snippet"
+      ],
+      "minTextLength": 990,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/011_-maar-sky-sounds.1-card XI",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/011_-maar-sky-sounds.1-card%20XI",
+        "baseline": "legacy-site-exact",
+        "textLength": 1681,
+        "textSha256": "ba4088f515016890",
+        "bodyTextLength": 1161,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.1",
+        "Card XI",
+        "Snippet"
+      ],
+      "minTextLength": 986,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/012_-maar-sky-sounds.2-card I",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/012_-maar-sky-sounds.2-card%20I",
+        "baseline": "legacy-site-exact",
+        "textLength": 1535,
+        "textSha256": "32c2459b80568ebc",
+        "bodyTextLength": 1014,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.2",
+        "Card I",
+        "Snippet"
+      ],
+      "minTextLength": 861,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/013_-maar-sky-sounds.2-card II",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/013_-maar-sky-sounds.2-card%20II",
+        "baseline": "legacy-site-exact",
+        "textLength": 1809,
+        "textSha256": "1e36cc4ce57c7399",
+        "bodyTextLength": 1287,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.2",
+        "Card II",
+        "Snippet"
+      ],
+      "minTextLength": 1093,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/014_-maar-sky-sounds.2-card III",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/014_-maar-sky-sounds.2-card%20III",
+        "baseline": "legacy-site-exact",
+        "textLength": 1346,
+        "textSha256": "f8c948fa2f04632b",
+        "bodyTextLength": 823,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.2",
+        "Card III",
+        "Snippet"
+      ],
+      "minTextLength": 699,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/015_-maar-sky-sounds.2-card IV",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/015_-maar-sky-sounds.2-card%20IV",
+        "baseline": "legacy-site-exact",
+        "textLength": 1635,
+        "textSha256": "c2b1ee2a486ca839",
+        "bodyTextLength": 1113,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.2",
+        "Card IV",
+        "Snippet"
+      ],
+      "minTextLength": 946,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/016_-maar-sky-sounds.2-card V",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/016_-maar-sky-sounds.2-card%20V",
+        "baseline": "legacy-site-exact",
+        "textLength": 1566,
+        "textSha256": "fd29a34f86ddaacc",
+        "bodyTextLength": 1045,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.2",
+        "Card V",
+        "Snippet"
+      ],
+      "minTextLength": 888,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/017_-maar-sky-sounds.2-card VI",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/017_-maar-sky-sounds.2-card%20VI",
+        "baseline": "legacy-site-exact",
+        "textLength": 1628,
+        "textSha256": "415665acbb21066e",
+        "bodyTextLength": 1106,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.2",
+        "Card VI",
+        "Snippet"
+      ],
+      "minTextLength": 940,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/018_-maar-sky-sounds.2-card VII",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/018_-maar-sky-sounds.2-card%20VII",
+        "baseline": "legacy-site-exact",
+        "textLength": 1669,
+        "textSha256": "906ac09942bd1932",
+        "bodyTextLength": 1144,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.2",
+        "Card VII",
+        "Snippet"
+      ],
+      "minTextLength": 972,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/019_-maar-sky-sounds.2-card VIII",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/019_-maar-sky-sounds.2-card%20VIII",
+        "baseline": "legacy-site-exact",
+        "textLength": 1483,
+        "textSha256": "0a76e5bca1d4c37b",
+        "bodyTextLength": 958,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.2",
+        "Card VIII",
+        "Snippet"
+      ],
+      "minTextLength": 814,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/020_-maar-sky-sounds.2-card IX",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/020_-maar-sky-sounds.2-card%20IX",
+        "baseline": "legacy-site-exact",
+        "textLength": 1542,
+        "textSha256": "74e03dc64234a6be",
+        "bodyTextLength": 1019,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.2",
+        "Card IX",
+        "Snippet"
+      ],
+      "minTextLength": 866,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/021_-maar-sky-sounds.2-card X",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/021_-maar-sky-sounds.2-card%20X",
+        "baseline": "legacy-site-exact",
+        "textLength": 1568,
+        "textSha256": "bb7a310080b1db69",
+        "bodyTextLength": 1047,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.2",
+        "Card X",
+        "Snippet"
+      ],
+      "minTextLength": 889,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/022_-maar-sky-sounds.2-card XI",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/022_-maar-sky-sounds.2-card%20XI",
+        "baseline": "legacy-site-exact",
+        "textLength": 1509,
+        "textSha256": "154711222696d038",
+        "bodyTextLength": 989,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.2",
+        "Card XI",
+        "Snippet"
+      ],
+      "minTextLength": 840,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/023_-maar-sky-sounds.3-card I",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/023_-maar-sky-sounds.3-card%20I",
+        "baseline": "legacy-site-exact",
+        "textLength": 1546,
+        "textSha256": "947462199719b0c5",
+        "bodyTextLength": 1025,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.3",
+        "Card I",
+        "Snippet"
+      ],
+      "minTextLength": 871,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/024_-maar-sky-sounds.3-card II",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/024_-maar-sky-sounds.3-card%20II",
+        "baseline": "legacy-site-exact",
+        "textLength": 1719,
+        "textSha256": "aedbcfe5e77724be",
+        "bodyTextLength": 1197,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.3",
+        "Card II",
+        "Snippet"
+      ],
+      "minTextLength": 1017,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/025_-maar-sky-sounds.3-card III",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/025_-maar-sky-sounds.3-card%20III",
+        "baseline": "legacy-site-exact",
+        "textLength": 1326,
+        "textSha256": "212dbb176f32ea20",
+        "bodyTextLength": 803,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.3",
+        "Card III",
+        "Snippet"
+      ],
+      "minTextLength": 682,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/026_-maar-sky-sounds.3-card IV",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/026_-maar-sky-sounds.3-card%20IV",
+        "baseline": "legacy-site-exact",
+        "textLength": 1451,
+        "textSha256": "5d28501e86bedbae",
+        "bodyTextLength": 929,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.3",
+        "Card IV",
+        "Snippet"
+      ],
+      "minTextLength": 789,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/027_-maar-sky-sounds.3-card V",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/027_-maar-sky-sounds.3-card%20V",
+        "baseline": "legacy-site-exact",
+        "textLength": 1555,
+        "textSha256": "06c35ca4743796b4",
+        "bodyTextLength": 1034,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.3",
+        "Card V",
+        "Snippet"
+      ],
+      "minTextLength": 878,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/028_-maar-sky-sounds.3-card VI",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/028_-maar-sky-sounds.3-card%20VI",
+        "baseline": "legacy-site-exact",
+        "textLength": 1580,
+        "textSha256": "be28ea1d01a01fa5",
+        "bodyTextLength": 1058,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.3",
+        "Card VI",
+        "Snippet"
+      ],
+      "minTextLength": 899,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/029_-maar-sky-sounds.3-card VII",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/029_-maar-sky-sounds.3-card%20VII",
+        "baseline": "legacy-site-exact",
+        "textLength": 1431,
+        "textSha256": "4461361f1d3cbc04",
+        "bodyTextLength": 906,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.3",
+        "Card VII",
+        "Snippet"
+      ],
+      "minTextLength": 770,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/030_-maar-sky-sounds.3-card VIII",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/030_-maar-sky-sounds.3-card%20VIII",
+        "baseline": "legacy-site-exact",
+        "textLength": 1532,
+        "textSha256": "b113509dacd0a3de",
+        "bodyTextLength": 1007,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.3",
+        "Card VIII",
+        "Snippet"
+      ],
+      "minTextLength": 855,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/031_-maar-sky-sounds.3-card IX",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/031_-maar-sky-sounds.3-card%20IX",
+        "baseline": "legacy-site-exact",
+        "textLength": 1539,
+        "textSha256": "5d80ee42274866cd",
+        "bodyTextLength": 1016,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.3",
+        "Card IX",
+        "Snippet"
+      ],
+      "minTextLength": 863,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/032_-maar-sky-sounds.3-card X ",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/032_-maar-sky-sounds.3-card%20X%20",
+        "baseline": "legacy-site-exact",
+        "textLength": 1437,
+        "textSha256": "11120f614988f4b8",
+        "bodyTextLength": 916,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds.3",
+        "Card X",
+        "Snippet"
+      ],
+      "minTextLength": 778,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/033_-maar-sky-sounds.3-card XI",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/033_-maar-sky-sounds.3-card%20XI",
+        "baseline": "legacy-site-exact",
+        "textLength": 1623,
+        "textSha256": "9a09a3e9db38d965",
+        "bodyTextLength": 1102,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds 3",
+        "Card XI",
+        "Snippet"
+      ],
+      "minTextLength": 936,
+      "images": 1,
+      "embeds": 1,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/cards/034_-maar-sky-sounds-wild-card",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/034_-maar-sky-sounds-wild-card",
+        "baseline": "legacy-site-exact",
+        "textLength": 1658,
+        "textSha256": "5de03a599bf47539",
+        "bodyTextLength": 1172,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "embeds",
+          "count": 1,
+          "reason": "production's only iframe on the wild card is <iframe src=\"\"> — an empty player that loads nothing. There is no embed to preserve."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "SkySounds",
+        "WildCard",
+        "Snippet"
+      ],
+      "minTextLength": 996,
+      "images": 1,
+      "embeds": 0,
+      "links": [
+        "https://support.apple.com/en-gb/HT208353"
+      ]
+    },
+    {
+      "url": "/collect/decks",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/decks",
+        "baseline": "legacy-site-exact",
+        "textLength": 434,
+        "textSha256": "e298c1b2ea928545",
+        "bodyTextLength": 66,
+        "headings": 1,
+        "bodyHeadings": 1,
+        "imageCount": 0,
+        "iframeCount": 1,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "Decks"
+      ],
+      "minTextLength": 56,
+      "images": 0,
+      "embeds": 0,
+      "links": []
+    },
+    {
+      "url": "/collect/docs/ent-cards",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/docs/ent-cards",
+        "baseline": "legacy-site-approximate",
+        "textLength": 1571,
+        "textSha256": "cc637adc84913dcc",
+        "legacySiteTextLength": 1571,
+        "bodyTextLength": 983,
+        "headings": 2,
+        "bodyHeadings": 1,
+        "imageCount": 3,
+        "iframeCount": 1,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "sidebar-toc",
+        "sidebar-toggle",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "ENT Cards"
+      ],
+      "minTextLength": 835,
+      "images": 3,
+      "embeds": 0,
+      "links": []
+    },
+    {
+      "url": "/collect/docs/ent-cards/nfc",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/docs/ent-cards/nfc",
+        "baseline": "legacy-site-approximate",
+        "textLength": 3225,
+        "textSha256": "d3dd456190afabcf",
+        "legacySiteTextLength": 3225,
+        "bodyTextLength": 2620,
+        "headings": 2,
+        "bodyHeadings": 2,
+        "imageCount": 2,
+        "iframeCount": 1,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "sidebar-toc",
+        "sidebar-toggle",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "NFC",
+        "Each ENT Card includes an NFC Chip."
+      ],
+      "minTextLength": 2227,
+      "images": 2,
+      "embeds": 0,
+      "links": [
+        "https://en.wikipedia.org/wiki/List_of_NFC-enabled_mobile_devices",
+        "https://www.wakdev.com/en/apps.html"
+      ]
+    },
+    {
+      "url": "/collect/docs/ent-cards/sustainability",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/docs/ent-cards/sustainability",
+        "baseline": "legacy-site-approximate",
+        "textLength": 2983,
+        "textSha256": "b4ad845043a6164a",
+        "legacySiteTextLength": 2983,
+        "bodyTextLength": 2394,
+        "headings": 2,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 1,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "sidebar-toc",
+        "sidebar-toggle",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "Sustainability",
+        "Human-Centered Technology."
+      ],
+      "minTextLength": 2034,
+      "images": 1,
+      "embeds": 0,
+      "links": []
+    },
+    {
+      "url": "/collect/docs/mw",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/docs/mw",
+        "baseline": "legacy-site-approximate",
+        "textLength": 3590,
+        "textSha256": "26cadef015ccefcd",
+        "legacySiteTextLength": 3590,
+        "bodyTextLength": 3002,
+        "headings": 1,
+        "bodyHeadings": 1,
+        "imageCount": 1,
+        "iframeCount": 1,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "sidebar-toc",
+        "sidebar-toggle",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "Information"
+      ],
+      "minTextLength": 2551,
+      "images": 1,
+      "embeds": 0,
+      "links": []
+    },
+    {
+      "url": "/collect/docs/mw/terms",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/docs/mw/terms",
+        "baseline": "legacy-site-approximate",
+        "textLength": 1654,
+        "textSha256": "8e8f02dc33330a96",
+        "legacySiteTextLength": 1654,
+        "bodyTextLength": 1073,
+        "headings": 2,
+        "bodyHeadings": 2,
+        "imageCount": 0,
+        "iframeCount": 1,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "sidebar-toc",
+        "sidebar-toggle",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "TERMS AND CONDITIONS",
+        "Terms and Conditions"
+      ],
+      "minTextLength": 912,
+      "images": 0,
+      "embeds": 0,
+      "links": []
+    },
+    {
+      "url": "/collect/docs/orbiters/development",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/docs/orbiters/development",
+        "baseline": "legacy-site-approximate",
+        "textLength": 2187,
+        "textSha256": "5087bd603999e33e",
+        "legacySiteTextLength": 2187,
+        "bodyTextLength": 1578,
+        "headings": 1,
+        "bodyHeadings": 1,
+        "imageCount": 2,
+        "iframeCount": 1,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "sidebar-toc",
+        "sidebar-toggle",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "Development"
+      ],
+      "minTextLength": 1341,
+      "images": 2,
+      "embeds": 0,
+      "links": [
+        "https://p5js.org",
+        "https://rnbo.cycling74.com"
+      ]
+    },
+    {
+      "url": "/collect/docs/orbiters/how-to-use",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/docs/orbiters/how-to-use",
+        "baseline": "legacy-site-approximate",
+        "textLength": 3504,
+        "textSha256": "1421aa51b4fb2c05",
+        "legacySiteTextLength": 3504,
+        "bodyTextLength": 2914,
+        "headings": 2,
+        "bodyHeadings": 2,
+        "imageCount": 3,
+        "iframeCount": 1,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "sidebar-toc",
+        "sidebar-toggle",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "How to use",
+        "A Planet is a Vinyl + One dimension"
+      ],
+      "minTextLength": 2476,
+      "images": 3,
+      "embeds": 0,
+      "links": []
+    },
+    {
+      "url": "/collect/docs/releases/skysounds",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/docs/releases/skysounds",
+        "baseline": "legacy-site-approximate",
+        "textLength": 1107,
+        "textSha256": "e7937732d39ee253",
+        "legacySiteTextLength": 1107,
+        "bodyTextLength": 527,
+        "headings": 2,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 1,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "sidebar-toc",
+        "sidebar-toggle",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "Sky Sounds",
+        "Formation"
+      ],
+      "minTextLength": 447,
+      "images": 1,
+      "embeds": 0,
+      "links": [
+        "http://vrglit.ch",
+        "https://vigliensoni.com/"
+      ]
+    },
+    {
+      "url": "/collect/docs/tutorials",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/docs/tutorials",
+        "baseline": "legacy-site-approximate",
+        "textLength": 777,
+        "textSha256": "968f61eec44a9a07",
+        "legacySiteTextLength": 777,
+        "bodyTextLength": 189,
+        "headings": 1,
+        "bodyHeadings": 1,
+        "imageCount": 0,
+        "iframeCount": 3,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "sidebar-toc",
+        "sidebar-toggle",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "Tutorials"
+      ],
+      "minTextLength": 160,
+      "images": 0,
+      "embeds": 2,
+      "links": []
+    },
+    {
+      "url": "/collect/documentation",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/documentation",
+        "baseline": "legacy-site-approximate",
+        "textLength": 746,
+        "textSha256": "25c025f1f441e597",
+        "legacySiteTextLength": 746,
+        "bodyTextLength": 153,
+        "headings": 2,
+        "bodyHeadings": 1,
+        "imageCount": 10,
+        "iframeCount": 1,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "sidebar-toc",
+        "sidebar-toggle",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Documentation"
       ],
-      "minTextLength": 414,
+      "minTextLength": 130,
+      "images": 10,
+      "embeds": 0,
+      "links": []
+    },
+    {
+      "url": "/collect/privacy",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/privacy",
+        "baseline": "legacy-site-approximate",
+        "textLength": 2681,
+        "textSha256": "11230c3206483392",
+        "legacySiteTextLength": 2681,
+        "bodyTextLength": 2093,
+        "headings": 2,
+        "bodyHeadings": 2,
+        "imageCount": 0,
+        "iframeCount": 1,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "sidebar-toc",
+        "sidebar-toggle",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "Privacy",
+        "Privacy and Cookies Policy"
+      ],
+      "minTextLength": 1779,
       "images": 0,
-      "productionImages": 0
+      "embeds": 0,
+      "links": []
+    },
+    {
+      "url": "/collect/samples",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/samples",
+        "baseline": "legacy-site-exact",
+        "textLength": 1056,
+        "textSha256": "a53419774a7f9f3d",
+        "bodyTextLength": 481,
+        "headings": 2,
+        "bodyHeadings": 2,
+        "imageCount": 0,
+        "iframeCount": 1,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "sidebar-toc",
+        "sidebar-toggle",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "Entangled World Docs",
+        "Documentation"
+      ],
+      "minTextLength": 408,
+      "images": 0,
+      "embeds": 0,
+      "links": []
     },
     {
       "url": "/collect/suits",
-      "headings": [],
-      "minTextLength": 36,
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/suits",
+        "baseline": "legacy-site-exact",
+        "textLength": 429,
+        "textSha256": "254a57c5b57685ed",
+        "bodyTextLength": 61,
+        "headings": 1,
+        "bodyHeadings": 1,
+        "imageCount": 0,
+        "iframeCount": 1,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "Suits"
+      ],
+      "minTextLength": 51,
       "images": 0,
-      "productionImages": 0
+      "embeds": 0,
+      "links": []
     },
     {
       "url": "/eng-feedback",
+      "production": {
+        "origin": "maar.world",
+        "url": "/eng-feedback",
+        "baseline": "legacy-site-exact",
+        "textLength": 457,
+        "textSha256": "c43fbe337bfc1eb8",
+        "bodyTextLength": 37,
+        "headings": 1,
+        "bodyHeadings": 0,
+        "imageCount": 0,
+        "iframeCount": 2,
+        "outboundLinks": 3
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "article-meta",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [],
-      "minTextLength": 134,
+      "minTextLength": 31,
       "images": 0,
-      "productionImages": 0
+      "embeds": 1,
+      "links": []
     },
     {
       "url": "/esp-feedback",
+      "production": {
+        "origin": "maar.world",
+        "url": "/esp-feedback",
+        "baseline": "legacy-site-exact",
+        "textLength": 457,
+        "textSha256": "cf651ec1141c1e72",
+        "bodyTextLength": 37,
+        "headings": 1,
+        "bodyHeadings": 0,
+        "imageCount": 0,
+        "iframeCount": 2,
+        "outboundLinks": 3
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "article-meta",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [],
-      "minTextLength": 134,
+      "minTextLength": 31,
       "images": 0,
-      "productionImages": 0
+      "embeds": 1,
+      "links": []
     },
     {
       "url": "/helix-diagram",
+      "production": {
+        "origin": "maar.world",
+        "url": "/helix-diagram",
+        "baseline": "legacy-site-exact",
+        "textLength": 13,
+        "textSha256": "3cb87d45578951f9",
+        "bodyTextLength": 13,
+        "headings": 0,
+        "bodyHeadings": 0,
+        "imageCount": 0,
+        "iframeCount": 0,
+        "outboundLinks": 0
+      },
+      "excludedRegions": [],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [],
-      "minTextLength": 887,
+      "minTextLength": 11,
       "images": 0,
-      "productionImages": 0
-    },
-    {
-      "url": "/",
-      "headings": [
-        "Play music cards with exoplanets"
-      ],
-      "minTextLength": 1581,
-      "images": 11,
-      "productionImages": 11
+      "embeds": 0,
+      "links": []
     },
     {
       "url": "/interplanetary-players",
+      "production": {
+        "origin": "maar.world",
+        "url": "/interplanetary-players",
+        "baseline": "legacy-site-exact",
+        "textLength": 148,
+        "textSha256": "ef004ab0519d26c0",
+        "bodyTextLength": 148,
+        "headings": 0,
+        "bodyHeadings": 0,
+        "imageCount": 0,
+        "iframeCount": 0,
+        "outboundLinks": 0
+      },
+      "excludedRegions": [],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [],
-      "minTextLength": 44,
+      "minTextLength": 125,
       "images": 0,
-      "productionImages": 0
+      "embeds": 0,
+      "links": []
     },
     {
       "url": "/lab",
-      "headings": [],
-      "minTextLength": 918,
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab",
+        "baseline": "legacy-site-exact",
+        "textLength": 6237,
+        "textSha256": "8f79afce5abee974",
+        "bodyTextLength": 5809,
+        "headings": 26,
+        "bodyHeadings": 25,
+        "imageCount": 0,
+        "iframeCount": 1,
+        "outboundLinks": 3
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "Lab",
+        "2026",
+        "Helix — Requisitos técnicos",
+        "Helix — Technical Requirements",
+        "Música, Abstracción y el Retorno al Juego",
+        "Music, Abstraction, and the Return to Playing",
+        "Música, Acceso y la Mente Humana",
+        "Music, Access, and the Human Mind",
+        "2025",
+        "Órbitas y Cuerpos",
+        "Orbits and Bodies",
+        "2024",
+        "Taller de creación orbital",
+        "Orbital Creation Workshop",
+        "Taller de creación orbital: Orbiters Orchestra (ES)",
+        "Orbital Creation Workshop: Orbiters Orchestra (EN)",
+        "2023",
+        "Dadada (ES)",
+        "Dadada (EN)",
+        "Ancestros interplanetarios 3-3 (ES)",
+        "Ancestros interplanetarios 2-3 (ES)",
+        "Ancestros interplanetarios 1-3 (ES)",
+        "Interplanetary ancestors 3-3 (EN)",
+        "Interplanetary ancestors 2-3 (EN)",
+        "Interplanetary ancestors 1-3 (EN)"
+      ],
+      "minTextLength": 4937,
       "images": 0,
-      "productionImages": 0
+      "embeds": 0,
+      "links": []
     },
     {
       "url": "/lab/en/dadada",
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/en/dadada",
+        "baseline": "legacy-site-exact",
+        "textLength": 1626,
+        "textSha256": "677b16e7fe63af61",
+        "bodyTextLength": 1158,
+        "headings": 3,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 7
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 1,
       "headings": [
+        "Dadada (EN)",
         "Is it possible to slow down time?",
         "4 the dadadaistS"
       ],
-      "minTextLength": 1118,
+      "minTextLength": 984,
       "images": 1,
-      "productionImages": 1
+      "embeds": 2,
+      "links": [
+        "https://disqus.com/?ref_noscript",
+        "https://soundcloud.com/maarworld",
+        "https://soundcloud.com/maarworld/episode-42-season-1-maar-live-set-dadada/s-LAlb1xhIGLz"
+      ]
     },
     {
       "url": "/lab/en/helix-technical-requirements",
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/en/helix-technical-requirements",
+        "baseline": "legacy-site-exact",
+        "textLength": 4112,
+        "textSha256": "0b3635bcd41847af",
+        "bodyTextLength": 3569,
+        "headings": 13,
+        "bodyHeadings": 13,
+        "imageCount": 0,
+        "iframeCount": 2,
+        "outboundLinks": 3
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
+        "Helix — Technical Requirements",
         "HELIX",
         "Technical installation documentation",
         "1. General description",
@@ -450,117 +3911,468 @@
         "Audio",
         "7. Notes and checklist"
       ],
-      "minTextLength": 3159,
+      "minTextLength": 3033,
       "images": 0,
-      "productionImages": 0
+      "embeds": 1,
+      "links": []
     },
     {
       "url": "/lab/en/ip-1",
-      "headings": [],
-      "minTextLength": 2086,
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/en/ip-1",
+        "baseline": "legacy-site-exact",
+        "textLength": 2776,
+        "textSha256": "faf2acafe325be14",
+        "bodyTextLength": 2331,
+        "headings": 1,
+        "bodyHeadings": 1,
+        "imageCount": 0,
+        "iframeCount": 5,
+        "outboundLinks": 9
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 5,
+      "headings": [
+        "Interplanetary ancestors 1-3 (EN)"
+      ],
+      "minTextLength": 1981,
       "images": 0,
-      "productionImages": 0
+      "embeds": 4,
+      "links": [
+        "https://disqus.com/?ref_noscript"
+      ]
     },
     {
       "url": "/lab/en/ip-2",
-      "headings": [],
-      "minTextLength": 1522,
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/en/ip-2",
+        "baseline": "legacy-site-exact",
+        "textLength": 2196,
+        "textSha256": "6a4969e3ca199d79",
+        "bodyTextLength": 1708,
+        "headings": 1,
+        "bodyHeadings": 1,
+        "imageCount": 0,
+        "iframeCount": 6,
+        "outboundLinks": 12
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 6,
+      "headings": [
+        "Interplanetary ancestors 2-3 (EN)"
+      ],
+      "minTextLength": 1451,
       "images": 0,
-      "productionImages": 0
+      "embeds": 5,
+      "links": [
+        "https://disqus.com/?ref_noscript",
+        "https://melissahyattfoss.com",
+        "https://shikashika.bandcamp.com/album/sample-pack-sonido-de-las-am-ricas"
+      ]
     },
     {
       "url": "/lab/en/ip-3",
-      "headings": [],
-      "minTextLength": 868,
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/en/ip-3",
+        "baseline": "legacy-site-exact",
+        "textLength": 1468,
+        "textSha256": "37e04807a414cac4",
+        "bodyTextLength": 978,
+        "headings": 1,
+        "bodyHeadings": 1,
+        "imageCount": 0,
+        "iframeCount": 5,
+        "outboundLinks": 10
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 4,
+      "headings": [
+        "Interplanetary ancestors 3-3 (EN)"
+      ],
+      "minTextLength": 831,
       "images": 0,
-      "productionImages": 0
+      "embeds": 4,
+      "links": [
+        "https://disqus.com/?ref_noscript",
+        "https://github.com/maar34/interplanetary-players-rnbo",
+        "https://github.com/maar34/interplanetary-players-web"
+      ]
+    },
+    {
+      "url": "/lab/en/ip-orchestra",
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/en/ip-orchestra",
+        "baseline": "legacy-site-exact",
+        "textLength": 5131,
+        "textSha256": "f49a5b644f64cc2c",
+        "bodyTextLength": 4650,
+        "headings": 14,
+        "bodyHeadings": 14,
+        "imageCount": 12,
+        "iframeCount": 3,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "images",
+          "count": 1,
+          "reason": "/img/about/Bruna.jpeg is referenced by production and exists in no read-only checkout — it is a broken image in production too. Ledger MW-7 pages/dead-legacy-img."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "Orbital Creation Workshop: Orbiters Orchestra (EN)",
+        "🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬",
+        "Invitation",
+        "Workshop Description",
+        "I",
+        "II",
+        "III",
+        "Schedule",
+        "Concert September 13 7:00pm",
+        "Special Invitation",
+        "Control the Sound",
+        "Explore Regenerative Modes",
+        "Facilitator Profile",
+        "Contact me"
+      ],
+      "minTextLength": 3952,
+      "images": 11,
+      "embeds": 2,
+      "links": [
+        "https://www.uartes.edu.ec",
+        "https://www.uartes.edu.ec/sitio/"
+      ]
     },
     {
       "url": "/lab/en/ip-orchestra-design",
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/en/ip-orchestra-design",
+        "baseline": "legacy-site-exact",
+        "textLength": 3115,
+        "textSha256": "d2f4e675e0416f2b",
+        "bodyTextLength": 2619,
+        "headings": 9,
+        "bodyHeadings": 9,
+        "imageCount": 1,
+        "iframeCount": 4,
+        "outboundLinks": 3
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
+        "Orbital Creation Workshop",
         "🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬",
         "What?",
         "Why?",
         "For what purpose?",
         "What are the Orbiters?",
-        "Control the Sound:",
-        "Explore Regenerative Modes:",
+        "Control the Sound",
+        "Explore Regenerative Modes",
         "Contact me"
       ],
-      "minTextLength": 2443,
+      "minTextLength": 2226,
       "images": 1,
-      "productionImages": 1
-    },
-    {
-      "url": "/lab/en/ip-orchestra",
-      "headings": [
-        "🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬",
-        "Invitation",
-        "Workshop Description",
-        "Schedule",
-        "Concert September 13 7:00pm",
-        "Special Invitation",
-        "Facilitator Profile",
-        "Control the Sound:",
-        "Explore Regenerative Modes:",
-        "Contact me"
-      ],
-      "minTextLength": 4171,
-      "images": 11,
-      "productionImages": 12
+      "embeds": 3,
+      "links": []
     },
     {
       "url": "/lab/en/music-return-to-playing",
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/en/music-return-to-playing",
+        "baseline": "legacy-site-exact",
+        "textLength": 3554,
+        "textSha256": "256b51d64734324e",
+        "bodyTextLength": 3010,
+        "headings": 3,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 1,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Music, Abstraction, and the Return to Playing",
         "References"
       ],
-      "minTextLength": 2697,
+      "minTextLength": 2558,
       "images": 1,
-      "productionImages": 1
+      "embeds": 0,
+      "links": [
+        "https://med.stanford.edu/news/all-news/2007/07/music-moves-brain-to-pay-attention-stanford-study-finds.html",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC7001657/",
+        "https://posgrado.unam.mx/musica/lecturas/etno/complementarias/Merriam%20Alan-The_Anthropology_of_Music-1.pdf"
+      ]
     },
     {
       "url": "/lab/en/orbits-and-bodies",
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/en/orbits-and-bodies",
+        "baseline": "legacy-site-exact",
+        "textLength": 1275,
+        "textSha256": "8e5abc58a66ab6da",
+        "bodyTextLength": 755,
+        "headings": 2,
+        "bodyHeadings": 2,
+        "imageCount": 0,
+        "iframeCount": 2,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
+        "Orbits and Bodies",
         "Introduction"
       ],
-      "minTextLength": 785,
+      "minTextLength": 641,
       "images": 0,
-      "productionImages": 0
+      "embeds": 1,
+      "links": [
+        "https://vigliensoni.com/"
+      ]
     },
     {
       "url": "/lab/en/shared-culture",
-      "headings": [
-        "When Cultural Capital Is Shared:",
-        "Music, Access, and the Human Mind"
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/en/shared-culture",
+        "baseline": "legacy-site-exact",
+        "textLength": 2769,
+        "textSha256": "bff4c4bdb05e5876",
+        "bodyTextLength": 2272,
+        "headings": 3,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 1,
+        "outboundLinks": 3
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
       ],
-      "minTextLength": 2033,
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "Music, Access, and the Human Mind",
+        "When Cultural Capital Is Shared"
+      ],
+      "minTextLength": 1931,
       "images": 1,
-      "productionImages": 1
+      "embeds": 0,
+      "links": []
     },
     {
       "url": "/lab/es/cultura-compartida",
-      "headings": [
-        "Cuando el Capital Cultural es Compartido:",
-        "Música, Acceso y la Mente Humana"
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/es/cultura-compartida",
+        "baseline": "legacy-site-exact",
+        "textLength": 3075,
+        "textSha256": "d1ec337eed9f27a9",
+        "bodyTextLength": 2539,
+        "headings": 3,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 1,
+        "outboundLinks": 3
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
       ],
-      "minTextLength": 2273,
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "Música, Acceso y la Mente Humana",
+        "Cuando el Capital Cultural es Compartido"
+      ],
+      "minTextLength": 2158,
       "images": 1,
-      "productionImages": 1
+      "embeds": 0,
+      "links": []
     },
     {
       "url": "/lab/es/dadada",
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/es/dadada",
+        "baseline": "legacy-site-exact",
+        "textLength": 1657,
+        "textSha256": "0f6965c9e2ca371e",
+        "bodyTextLength": 1169,
+        "headings": 3,
+        "bodyHeadings": 3,
+        "imageCount": 1,
+        "iframeCount": 3,
+        "outboundLinks": 7
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 1,
       "headings": [
+        "Dadada (ES)",
         "Es posible desacelerar el tiempo?",
         "Para lxs Dadadaistas"
       ],
-      "minTextLength": 1128,
+      "minTextLength": 993,
       "images": 1,
-      "productionImages": 1
+      "embeds": 2,
+      "links": [
+        "https://disqus.com/?ref_noscript",
+        "https://soundcloud.com/maarworld",
+        "https://soundcloud.com/maarworld/episode-42-season-1-maar-live-set-dadada/s-LAlb1xhIGLz"
+      ]
     },
     {
       "url": "/lab/es/helix-eac-montevideo-2025",
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/es/helix-eac-montevideo-2025",
+        "baseline": "legacy-site-exact",
+        "textLength": 4395,
+        "textSha256": "f49436a63066d2ba",
+        "bodyTextLength": 3901,
+        "headings": 13,
+        "bodyHeadings": 13,
+        "imageCount": 0,
+        "iframeCount": 2,
+        "outboundLinks": 3
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
+        "Helix — Requisitos técnicos",
         "HELIX",
         "Documentación técnica de instalación",
         "1. Descripción general",
@@ -574,225 +4386,928 @@
         "Audio",
         "7. Notas y lista de verificación"
       ],
-      "minTextLength": 3458,
+      "minTextLength": 3315,
       "images": 0,
-      "productionImages": 0
+      "embeds": 1,
+      "links": []
     },
     {
       "url": "/lab/es/ip-1",
-      "headings": [],
-      "minTextLength": 2120,
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/es/ip-1",
+        "baseline": "legacy-site-exact",
+        "textLength": 2864,
+        "textSha256": "51205e0179986748",
+        "bodyTextLength": 2369,
+        "headings": 1,
+        "bodyHeadings": 1,
+        "imageCount": 0,
+        "iframeCount": 5,
+        "outboundLinks": 9
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 5,
+      "headings": [
+        "Ancestros interplanetarios 1-3 (ES)"
+      ],
+      "minTextLength": 2013,
       "images": 0,
-      "productionImages": 0
+      "embeds": 4,
+      "links": [
+        "https://disqus.com/?ref_noscript"
+      ]
     },
     {
       "url": "/lab/es/ip-2",
-      "headings": [],
-      "minTextLength": 1521,
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/es/ip-2",
+        "baseline": "legacy-site-exact",
+        "textLength": 2203,
+        "textSha256": "58c3ba7f3330d1a8",
+        "bodyTextLength": 1706,
+        "headings": 1,
+        "bodyHeadings": 1,
+        "imageCount": 0,
+        "iframeCount": 6,
+        "outboundLinks": 12
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 6,
+      "headings": [
+        "Ancestros interplanetarios 2-3 (ES)"
+      ],
+      "minTextLength": 1450,
       "images": 0,
-      "productionImages": 0
+      "embeds": 5,
+      "links": [
+        "https://disqus.com/?ref_noscript",
+        "https://melissahyattfoss.com",
+        "https://shikashika.bandcamp.com/album/sample-pack-sonido-de-las-am-ricas"
+      ]
     },
     {
       "url": "/lab/es/ip-3",
-      "headings": [],
-      "minTextLength": 886,
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/es/ip-3",
+        "baseline": "legacy-site-exact",
+        "textLength": 1471,
+        "textSha256": "e2d5db1202d32743",
+        "bodyTextLength": 998,
+        "headings": 1,
+        "bodyHeadings": 1,
+        "imageCount": 0,
+        "iframeCount": 5,
+        "outboundLinks": 10
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 4,
+      "headings": [
+        "Ancestros interplanetarios 3-3 (ES)"
+      ],
+      "minTextLength": 848,
       "images": 0,
-      "productionImages": 0
+      "embeds": 4,
+      "links": [
+        "https://disqus.com/?ref_noscript",
+        "https://github.com/maar34/interplanetary-players-rnbo",
+        "https://github.com/maar34/interplanetary-players-web"
+      ]
+    },
+    {
+      "url": "/lab/es/ip-orchestra",
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/es/ip-orchestra",
+        "baseline": "legacy-site-exact",
+        "textLength": 5492,
+        "textSha256": "9aeb8375985b4092",
+        "bodyTextLength": 4993,
+        "headings": 14,
+        "bodyHeadings": 14,
+        "imageCount": 12,
+        "iframeCount": 3,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "images",
+          "count": 1,
+          "reason": "/img/about/Bruna.jpeg is referenced by production and exists in no read-only checkout — it is a broken image in production too. Ledger MW-7 pages/dead-legacy-img."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [
+        "Taller de creación orbital: Orbiters Orchestra (ES)",
+        "🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬",
+        "Invitación",
+        "Descripción del Taller",
+        "I",
+        "II",
+        "III",
+        "Programación",
+        "13 de septiembre 2024 7:00pm Concierto",
+        "Invitación Especial",
+        "Controla el Sonido",
+        "Explora Modos Regenerativos",
+        "Perfil de la Facilitadora",
+        "Contáctame"
+      ],
+      "minTextLength": 4244,
+      "images": 11,
+      "embeds": 2,
+      "links": [
+        "https://www.uartes.edu.ec"
+      ]
     },
     {
       "url": "/lab/es/ip-orchestra-design",
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/es/ip-orchestra-design",
+        "baseline": "legacy-site-exact",
+        "textLength": 3367,
+        "textSha256": "d4ae9a8227afe22b",
+        "bodyTextLength": 2901,
+        "headings": 9,
+        "bodyHeadings": 9,
+        "imageCount": 1,
+        "iframeCount": 4,
+        "outboundLinks": 3
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
+        "Taller de creación orbital",
         "🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬",
         "¿Qué?",
         "¿Por qué?",
         "¿Para qué?",
         "¿ Que son los interplanetary Players?",
-        "Controla el Sonido:",
-        "Explora Modos Regenerativos:",
+        "Controla el Sonido",
+        "Explora Modos Regenerativos",
         "Contáctame"
       ],
-      "minTextLength": 2697,
+      "minTextLength": 2465,
       "images": 1,
-      "productionImages": 1
-    },
-    {
-      "url": "/lab/es/ip-orchestra",
-      "headings": [
-        "🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬",
-        "Invitación",
-        "Descripción del Taller",
-        "Programación",
-        "13 de septiembre 2024 7:00pm Concierto",
-        "Invitación Especial",
-        "Perfil de la Facilitadora",
-        "Controla el Sonido:",
-        "Explora Modos Regenerativos:",
-        "Contáctame"
-      ],
-      "minTextLength": 4480,
-      "images": 11,
-      "productionImages": 12
+      "embeds": 3,
+      "links": []
     },
     {
       "url": "/lab/es/musica-retorno-al-juego",
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/es/musica-retorno-al-juego",
+        "baseline": "legacy-site-exact",
+        "textLength": 4045,
+        "textSha256": "14f706edb84feafb",
+        "bodyTextLength": 3492,
+        "headings": 3,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 1,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Música, Abstracción y el Retorno al Juego",
         "Referencias"
       ],
-      "minTextLength": 3131,
+      "minTextLength": 2968,
       "images": 1,
-      "productionImages": 1
+      "embeds": 0,
+      "links": [
+        "https://med.stanford.edu/news/all-news/2007/07/music-moves-brain-to-pay-attention-stanford-study-finds.html",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC7001657/",
+        "https://posgrado.unam.mx/musica/lecturas/etno/complementarias/Merriam%20Alan-The_Anthropology_of_Music-1.pdf"
+      ]
     },
     {
       "url": "/lab/es/orbits-and-bodies",
+      "production": {
+        "origin": "maar.world",
+        "url": "/lab/es/orbits-and-bodies",
+        "baseline": "legacy-site-exact",
+        "textLength": 1380,
+        "textSha256": "7ed28d620e1f4288",
+        "bodyTextLength": 845,
+        "headings": 2,
+        "bodyHeadings": 2,
+        "imageCount": 0,
+        "iframeCount": 2,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-meta",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
+        "Órbitas y Cuerpos",
         "Introducción"
       ],
-      "minTextLength": 868,
+      "minTextLength": 718,
       "images": 0,
-      "productionImages": 0
+      "embeds": 1,
+      "links": [
+        "https://vigliensoni.com/"
+      ]
     },
     {
       "url": "/landings",
+      "production": {
+        "origin": "maar.world",
+        "url": "/landings",
+        "baseline": "legacy-site-exact",
+        "textLength": 5594,
+        "textSha256": "1856913d3ca23117",
+        "bodyTextLength": 5169,
+        "headings": 3,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 5,
+        "outboundLinks": 19
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Landings",
         "Sonic events on planet earth"
       ],
-      "minTextLength": 5033,
+      "minTextLength": 4393,
       "images": 1,
-      "productionImages": 1
+      "embeds": 4,
+      "links": [
+        "http://headbrothers.com/idm2018/",
+        "http://headbrothers.com/prison-to-prison",
+        "http://www.truthandliesmusic.com/projects/2014/3/23/ox5wi8hue9l4p659afj4789efsoxxm",
+        "https://vimeo.com/110938519",
+        "https://vimeo.com/135519258",
+        "https://vimeo.com/235986660",
+        "https://www.instagram.com/aventuresonores/",
+        "https://www.proximamente.uy/",
+        "https://www.youtube.com/watch?v=HSOOaRpHp4s",
+        "https://www.youtube.com/watch?v=OcP2sSbR5H4",
+        "https://www.youtube.com/watch?v=w-FEgGAZaLY",
+        "https://youtu.be/GYhV2qAPZ6w",
+        "https://youtu.be/geiH3eAzo2c",
+        "https://youtu.be/m_ALtO6uhE0",
+        "https://youtu.be/oqCx9AirINA",
+        "https://youtu.be/riEIWUQ-OWQ"
+      ]
     },
     {
       "url": "/music",
+      "production": {
+        "origin": "maar.world",
+        "url": "/music",
+        "baseline": "legacy-site-exact",
+        "textLength": 605,
+        "textSha256": "dbb386ca46873130",
+        "bodyTextLength": 175,
+        "headings": 2,
+        "bodyHeadings": 1,
+        "imageCount": 0,
+        "iframeCount": 2,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 1,
       "headings": [
         "Music"
       ],
-      "minTextLength": 133,
+      "minTextLength": 148,
       "images": 0,
-      "productionImages": 0
+      "embeds": 1,
+      "links": []
     },
     {
       "url": "/orbiters",
+      "production": {
+        "origin": "maar.world",
+        "url": "/orbiters",
+        "baseline": "legacy-site-exact",
+        "textLength": 1760,
+        "textSha256": "25559f84b4c7c7ae",
+        "bodyTextLength": 1368,
+        "headings": 9,
+        "bodyHeadings": 9,
+        "imageCount": 6,
+        "iframeCount": 3,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "hidden-elements x1"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 1,
       "headings": [
+        "Orbiters",
         "Start your journey",
-        "Control the Sound:",
-        "Explore Regenerative Modes:",
+        "I",
+        "II",
+        "III",
+        "Control the Sound",
+        "Explore Regenerative Modes",
         "Innovative Tradition",
         "An Extended Harmony of the Spheres"
       ],
-      "minTextLength": 1219,
+      "minTextLength": 1162,
       "images": 6,
-      "productionImages": 6
+      "embeds": 2,
+      "links": []
     },
     {
       "url": "/privacy",
+      "production": {
+        "origin": "maar.world",
+        "url": "/privacy",
+        "baseline": "legacy-site-exact",
+        "textLength": 2477,
+        "textSha256": "43ed11e385ac3861",
+        "bodyTextLength": 2077,
+        "headings": 2,
+        "bodyHeadings": 1,
+        "imageCount": 0,
+        "iframeCount": 1,
+        "outboundLinks": 3
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "sidebar-toc",
+        "sidebar-toggle",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Privacy and Cookies Policy"
       ],
-      "minTextLength": 1857,
+      "minTextLength": 1765,
       "images": 0,
-      "productionImages": 0
+      "embeds": 0,
+      "links": []
     },
     {
       "url": "/radio",
+      "production": {
+        "origin": "maar.world",
+        "url": "/radio",
+        "baseline": "legacy-site-exact",
+        "textLength": 1440,
+        "textSha256": "9230bd9f6ad35428",
+        "bodyTextLength": 1042,
+        "headings": 4,
+        "bodyHeadings": 3,
+        "imageCount": 4,
+        "iframeCount": 3,
+        "outboundLinks": 6
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "hidden-elements x4"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "images",
+          "count": 1,
+          "reason": "the Mailchimp eep.io logo. Serving it fires a third-party request on page load, which the no-analytics / no-cookie-banner invariant forbids."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
       "headings": [
         "Radio",
         "Collect",
         "Join mail list"
       ],
-      "minTextLength": 1032,
+      "minTextLength": 885,
       "images": 3,
-      "productionImages": 4
+      "embeds": 2,
+      "links": [
+        "http://eepurl.com/if7emL",
+        "https://maarworld.gumroad.com"
+      ]
     },
     {
       "url": "/resume",
+      "production": {
+        "origin": "maar.world",
+        "url": "/resume",
+        "baseline": "legacy-site-exact",
+        "textLength": 641,
+        "textSha256": "6170608f191f368b",
+        "bodyTextLength": 181,
+        "headings": 1,
+        "bodyHeadings": 0,
+        "imageCount": 0,
+        "iframeCount": 1,
+        "outboundLinks": 3
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "hidden-elements x3"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [],
-      "minTextLength": 212,
+      "minTextLength": 153,
       "images": 0,
-      "productionImages": 0
+      "embeds": 0,
+      "links": []
     },
     {
       "url": "/revx000",
+      "production": {
+        "origin": "maar.world",
+        "url": "/revx000",
+        "baseline": "legacy-site-exact",
+        "textLength": 664,
+        "textSha256": "bb45adf68287aac4",
+        "bodyTextLength": 252,
+        "headings": 3,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 1,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Revolution X",
         "Download"
       ],
-      "minTextLength": 215,
+      "minTextLength": 214,
       "images": 1,
-      "productionImages": 1
+      "embeds": 0,
+      "links": [
+        "https://www.dropbox.com/s/49n12aysvla2sml/06%20RevolutionX.aif?dl=0",
+        "https://www.dropbox.com/s/wbp47dj78aj8jm4/06%20RevolutionX.mp3?dl=0"
+      ]
     },
     {
       "url": "/rthw00",
+      "production": {
+        "origin": "maar.world",
+        "url": "/rthw00",
+        "baseline": "legacy-site-exact",
+        "textLength": 689,
+        "textSha256": "946bb6150c73721a",
+        "bodyTextLength": 262,
+        "headings": 3,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 1,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Rainbow technologies to heal war.",
         "Download"
       ],
-      "minTextLength": 224,
+      "minTextLength": 222,
       "images": 1,
-      "productionImages": 1
+      "embeds": 0,
+      "links": [
+        "https://www.dropbox.com/s/iixq0bda0legqx9/05%20RTHW.aif?dl=0",
+        "https://www.dropbox.com/s/xenzgz8dirgg1z9/05%20RTHW.mp3?dl=0"
+      ]
     },
     {
       "url": "/skyl0",
+      "production": {
+        "origin": "maar.world",
+        "url": "/skyl0",
+        "baseline": "legacy-site-exact",
+        "textLength": 740,
+        "textSha256": "96e760939ae42ce2",
+        "bodyTextLength": 314,
+        "headings": 3,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 1,
+        "outboundLinks": 7
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Skylight.1",
         "Download"
       ],
-      "minTextLength": 270,
+      "minTextLength": 266,
       "images": 1,
-      "productionImages": 1
+      "embeds": 0,
+      "links": [
+        "http://vrglit.ch/",
+        "https://www.dropbox.com/s/jm32r10gcsokoxa/Skylight.1.wav?dl=0",
+        "https://www.dropbox.com/s/kcshhpb9sv8xcsp/01%20Skylight.1.mp3?dl=0",
+        "https://www.facebook.com/IO-Estudios-256499521035781/"
+      ]
     },
     {
       "url": "/skyl00",
+      "production": {
+        "origin": "maar.world",
+        "url": "/skyl00",
+        "baseline": "legacy-site-exact",
+        "textLength": 750,
+        "textSha256": "2f87587cc74af16e",
+        "bodyTextLength": 323,
+        "headings": 3,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 1,
+        "outboundLinks": 7
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Skylight.2",
         "Download"
       ],
-      "minTextLength": 279,
+      "minTextLength": 274,
       "images": 1,
-      "productionImages": 1
+      "embeds": 0,
+      "links": [
+        "http://vrglit.ch/",
+        "https://www.dropbox.com/s/avos4w7arjnyo8i/02%20Skylight.2.mp3?dl=0",
+        "https://www.dropbox.com/s/csxilvusxti7rjg/Skylight.2.wav?dl=0",
+        "https://www.facebook.com/IO-Estudios-256499521035781/"
+      ]
     },
     {
       "url": "/skyl000",
+      "production": {
+        "origin": "maar.world",
+        "url": "/skyl000",
+        "baseline": "legacy-site-exact",
+        "textLength": 725,
+        "textSha256": "222107ca307f813b",
+        "bodyTextLength": 298,
+        "headings": 3,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 1,
+        "outboundLinks": 7
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Skylight.3",
         "Download"
       ],
-      "minTextLength": 256,
+      "minTextLength": 253,
       "images": 1,
-      "productionImages": 1
+      "embeds": 0,
+      "links": [
+        "http://vrglit.ch/",
+        "https://www.dropbox.com/s/ohkhaaqnic6p047/Skylight.3.wav?dl=0",
+        "https://www.dropbox.com/s/ozs99n3qzi432er/03%20Skylight.3.mp3?dl=0",
+        "https://www.facebook.com/IO-Estudios-256499521035781/"
+      ]
     },
     {
       "url": "/sphe0",
+      "production": {
+        "origin": "maar.world",
+        "url": "/sphe0",
+        "baseline": "legacy-site-exact",
+        "textLength": 699,
+        "textSha256": "e28912326637aa43",
+        "bodyTextLength": 284,
+        "headings": 3,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 1,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Spherical Drops",
         "Download"
       ],
-      "minTextLength": 243,
+      "minTextLength": 241,
       "images": 1,
-      "productionImages": 1
+      "embeds": 0,
+      "links": [
+        "https://www.dropbox.com/s/1bshn54yctys8a5/04%20Spherical%20Drops.mp3?dl=0",
+        "https://www.dropbox.com/s/7svj2q5qwip4ztn/04%20Spherical%20Drops.aif?dl=0"
+      ]
     },
     {
       "url": "/subscribe",
+      "production": {
+        "origin": "maar.world",
+        "url": "/subscribe",
+        "baseline": "legacy-site-exact",
+        "textLength": 714,
+        "textSha256": "e3916d14b4383258",
+        "bodyTextLength": 312,
+        "headings": 2,
+        "bodyHeadings": 1,
+        "imageCount": 1,
+        "iframeCount": 1,
+        "outboundLinks": 4
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "hidden-elements x4"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "images",
+          "count": 1,
+          "reason": "the Mailchimp eep.io logo. Serving it fires a third-party request on page load, which the no-analytics / no-cookie-banner invariant forbids."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Join mail list"
       ],
-      "minTextLength": 269,
+      "minTextLength": 265,
       "images": 0,
-      "productionImages": 1
+      "embeds": 0,
+      "links": [
+        "http://eepurl.com/if7emL"
+      ]
     },
     {
       "url": "/tree",
+      "production": {
+        "origin": "tree.maar.world",
+        "url": "/",
+        "baseline": "legacy-site-approximate",
+        "textLength": 354,
+        "textSha256": "3654dc4b507e95ae",
+        "legacySiteTextLength": 398,
+        "bodyTextLength": 178,
+        "headings": 0,
+        "bodyHeadings": 0,
+        "imageCount": 1,
+        "iframeCount": 0,
+        "outboundLinks": 7
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "search-modal"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "images",
+          "count": 1,
+          "reason": "the Tree hub image is hotlinked from herbarium.plantasia.space — a third-party request on page load — and the asset is in no read-only checkout, so it cannot be self-hosted here. Ledger MW-8 tree/sunflower-image (BLOCKED): needs the file or an exception."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 3,
       "headings": [],
-      "minTextLength": 82,
+      "minTextLength": 151,
       "images": 0,
-      "productionImages": 1
+      "embeds": 0,
+      "links": [
+        "https://maar-world.bandcamp.com/merch",
+        "https://soundcloud.com/maarworld"
+      ]
     },
     {
       "url": "/tree/max-network-berlin",
-      "headings": [],
-      "minTextLength": 288,
+      "production": {
+        "origin": "tree.maar.world",
+        "url": "/max-network-berlin",
+        "baseline": "legacy-site-approximate",
+        "textLength": 622,
+        "textSha256": "bbebcd146e4ab62f",
+        "legacySiteTextLength": 622,
+        "bodyTextLength": 389,
+        "headings": 1,
+        "bodyHeadings": 1,
+        "imageCount": 1,
+        "iframeCount": 0,
+        "outboundLinks": 8
+      },
+      "excludedRegions": [
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "search-modal",
+        "article-meta"
+      ],
+      "excludedPerPage": [],
+      "ownPropertyLinksNotAsserted": 2,
+      "headings": [
+        "MAX BERLIN NETWORK"
+      ],
+      "minTextLength": 330,
       "images": 1,
-      "productionImages": 1
+      "embeds": 0,
+      "links": [
+        "https://github.com/maar34/interplanetary-players-rnbo",
+        "https://github.com/maar34/interplanetary-players-web",
+        "https://plantasia.space"
+      ]
     }
   ]
 }
