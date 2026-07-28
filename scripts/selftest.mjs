@@ -548,6 +548,83 @@ check('an uncommitted ledger fails ledger:check', (root) => {
   return { ok, detail: ok ? 'exit 1, no history reported' : `expected exit 1, got ${code}\n${out}` };
 });
 
+// --- F4: the third-party on-load gate, one case per demonstrated bypass ---
+
+/**
+ * Each of these is a confirmed miss of the previous scanner: it read only
+ * `.html`, only quoted `href|src|action|data`, and only thirteen tag names.
+ * Every one of them fires a third-party request before a visitor has chosen
+ * anything, which is precisely what shipping with no cookie banner rests on.
+ */
+const ON_LOAD_BYPASSES = [
+  ['<img srcset> fetches on load', '<img srcset="https://cdn.example.com/a.jpg 1x, https://cdn.example.com/b.jpg 2x">'],
+  ['<source srcset> fetches on load', '<picture><source srcset="https://cdn.example.com/a.webp"><img src="/a.jpg"></picture>'],
+  [
+    '@font-face in a <style> block fetches on load',
+    '<style>@font-face{font-family:X;src:url(https://fonts.gstatic.com/s/x/v1/x.woff2) format("woff2")}</style>',
+  ],
+  [
+    'background-image in a style attribute fetches on load',
+    '<div style="background-image:url(&#x22;https://cdn.example.com/bg.png&#x22;)">x</div>',
+  ],
+  [
+    '<meta http-equiv=refresh> navigates on load',
+    '<meta http-equiv="refresh" content="0; url=https://tracker.example.com/land">',
+  ],
+  ['an unquoted <iframe src> fetches on load', '<iframe src=https://www.youtube.com/embed/abc></iframe>'],
+  ['<svg><image href> fetches on load', '<svg><image href="https://cdn.example.com/x.svg" /></svg>'],
+  ['@import in a <style> block fetches on load', '<style>@import url("https://unpkg.com/thing/x.css");</style>'],
+];
+
+for (const [name, markup] of ON_LOAD_BYPASSES) {
+  check(`${name} — fails verify:links`, (root) => {
+    goodFixture(root);
+    writeFileSync(
+      join(root, 'dist', 'leak.html'),
+      `<!doctype html><html><head><title>leak</title></head><body>${markup}<p>${'text '.repeat(40)}</p></body></html>`,
+    );
+    const { code, out } = run(root, 'verify-links.mjs');
+    const ok = code === 1 && /third-party request fires on page load/.test(out);
+    return { ok, detail: ok ? 'exit 1, on-load fetch reported' : `expected exit 1, got ${code}\n${out}` };
+  });
+}
+
+// A third-party font inside a built stylesheet — previously 100% invisible,
+// because verify:links only ever opened .html files.
+check('url() in a built CSS file fails verify:links', (root) => {
+  goodFixture(root);
+  mkdirSync(join(root, 'dist', '_assets'), { recursive: true });
+  writeFileSync(
+    join(root, 'dist', '_assets', 'site.css'),
+    '@font-face{font-family:Inter;src:url(https://fonts.gstatic.com/s/inter/v1/a.woff2) format("woff2")}\n',
+  );
+  const { code, out } = run(root, 'verify-links.mjs');
+  const ok = code === 1 && /third-party request fires on page load/.test(out) && /fonts\.gstatic\.com/.test(out);
+  return { ok, detail: ok ? 'exit 1, CSS font fetch reported' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// The gate must not over-fire: a link a person chooses to follow is consent,
+// and self-hosted CSS assets are first-party.
+check('an <a href> to a third party still passes verify:links', (root) => {
+  goodFixture(root);
+  mkdirSync(join(root, 'dist', '_assets'), { recursive: true });
+  writeFileSync(
+    join(root, 'dist', '_assets', 'site.css'),
+    '@font-face{font-family:Inter;src:url(/_assets/inter.woff2) format("woff2")}\n' +
+      '.hero{background-image:url("../img/hero.jpg")}\n',
+  );
+  writeFileSync(
+    join(root, 'dist', 'links.html'),
+    '<!doctype html><html><head><title>links</title></head><body>' +
+      '<a href="https://www.youtube.com/watch?v=abc">watch</a>' +
+      '<form action="https://formspree.io/f/x"><button>send</button></form>' +
+      `<p>${'text '.repeat(40)}</p></body></html>`,
+  );
+  const { code, out } = run(root, 'verify-links.mjs');
+  const ok = code === 0;
+  return { ok, detail: ok ? 'exit 0' : `expected exit 0, got ${code}\n${out}` };
+});
+
 // --- Results ------------------------------------------------------------
 console.log('\nverify harness selftest\n');
 let failed = 0;
