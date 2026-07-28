@@ -48,13 +48,14 @@ access to those checkouts to build.
 MW-9's own work is committed and nothing of it is half-applied. Two things a fresh session
 will meet immediately:
 
-- **`npm run verify` at the MW-9 stopping point reported `verify:contract` and
-  `verify:routes` red, and neither is MW-9's.** A concurrent session had an *uncommitted*
-  re-freeze in the working tree: `routes/manifest.production.json` had grown from the locked
-  306 routes to 611, so the contract lock and the policy join both failed. Run against the
-  committed `routes/` with the same `dist/`, both are fully green (`verify:contract` 3/3,
-  `verify:routes` 7/7). No MW-9 commit touches `routes/`. If those two are still red, look at
-  the manifest's `routeCount` before looking anywhere else.
+- **`npm run verify` at the MW-9 stopping point reported `verify:contract` red, and it is
+  not MW-9's.** A concurrent session had an *uncommitted* re-freeze in the working tree:
+  `routes/manifest.production.json` had grown from the locked 306 routes to 611, and
+  `routes/policy.json` from 299/0/7 to 355/0/256, so all three contract-lock assertions
+  failed. Run against the committed `routes/` with the same `dist/`, `verify:contract` is
+  3/3 and `verify:routes` 7/7. No MW-9 commit touches `routes/`. That re-freeze needs
+  `npm run contract:relock`, which is a deliberate human decision in its own commit — see
+  OPERATING-RULES. If contract is still red, look at the manifest's `routeCount` first.
 - **After any change under `src/content/`, the next `astro build` warns.** The incremental
   content-layer store in `.astro/` emits one `[glob-loader] Duplicate id` warning per changed
   file, and `verify:build` fails on warnings above zero. It is stale cache, not a content
