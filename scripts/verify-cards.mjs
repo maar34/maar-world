@@ -58,6 +58,23 @@ function decodeEntities(s) {
 const fingerprint = (text) => createHash('sha256').update(text, 'utf8').digest('hex').slice(0, 32);
 const uniqueSorted = (xs) => [...new Set(xs)].sort();
 const sameSet = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]);
+const onlyIn = (a, b) => a.filter((x) => !b.includes(x));
+
+/**
+ * Does `haystack` carry `needle` as a whole title, allowing a site-name suffix
+ * or prefix around it?
+ *
+ * A plain `includes` is not enough here and the failure is silent: "SkySounds.1
+ * Card II" contains "SkySounds.1 Card I", so a card showing its neighbour's
+ * title would pass. Requiring a non-alphanumeric boundary on both sides keeps
+ * the check tolerant of " — Maar World" decoration and intolerant of roman
+ * numerals that nest.
+ */
+function carriesTitle(haystack, needle) {
+  if (haystack === needle) return true;
+  const escaped = needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(^|[^\\p{L}\\p{N}])${escaped}([^\\p{L}\\p{N}]|$)`, 'u').test(haystack);
+}
 
 export async function checkCards(report) {
   if (!has('cards')) {
@@ -265,8 +282,15 @@ export async function checkCards(report) {
   // legacy source and confirmed against live production. This asserts the built
   // page against its OWN frozen record.
   const withExpectations = cards.filter((c) => c.expect);
+  const haveExpectations = withExpectations.length > 0;
 
-  if (withExpectations.length !== cards.length) {
+  if (!haveExpectations) {
+    report.skip(
+      'every card has frozen content expectations',
+      `${ARTIFACTS.cards.rel} carries no per-card "expect" block (regenerate: node scripts/collect-seeds.mjs)`,
+      ARTIFACTS.cards.issue,
+    );
+  } else if (withExpectations.length !== cards.length) {
     report.fail(
       'every card has frozen content expectations',
       `${cards.length - withExpectations.length} without — regenerate with node scripts/collect-seeds.mjs`,
@@ -283,7 +307,7 @@ export async function checkCards(report) {
   const labelsNotDistinct = [];
   const builtTitles = new Map();
 
-  for (const card of withExpectations) {
+  for (const card of cards) {
     const file = `${card.code}.html`;
     if (!set.has(file)) continue;
     let raw = '';
@@ -293,16 +317,15 @@ export async function checkCards(report) {
       continue;
     }
     const html = decodeEntities(raw);
-    const expect = card.expect;
+    const expect = card.expect || {};
 
-    // Title. Compared with `includes` rather than equality so a later change to
-    // the shared layout's title suffix does not turn this into a false alarm —
-    // the assertion that matters is that THIS card's name is on THIS page, and
-    // that no two cards share a title.
+    // Title. Not compared for equality, so a later change to the shared
+    // layout's site-name decoration does not turn this into a false alarm — but
+    // matched on word boundaries, so "Card II" never satisfies "Card I".
     const titleMatch = TITLE_RE.exec(html);
     const builtTitle = titleMatch ? titleMatch[1].trim() : '';
     builtTitles.set(card.code, builtTitle);
-    if (expect.title && !builtTitle.includes(expect.title)) {
+    if (expect.title && !carriesTitle(builtTitle, expect.title)) {
       titleWrong.push(`${card.code}: "${builtTitle}" does not carry "${expect.title}"`);
     }
 
@@ -315,17 +338,19 @@ export async function checkCards(report) {
 
     // play.maar.world players — MW-6's "matches the frozen manifest baseline".
     const builtPlayers = uniqueSorted(html.match(PLAYER_URL_RE) || []);
-    if (!sameSet(builtPlayers, uniqueSorted(expect.players || []))) {
-      playersWrong.push(
-        `${card.code}: [${builtPlayers.join(' ')}] != [${uniqueSorted(expect.players || []).join(' ')}]`,
-      );
+    const frozenPlayers = uniqueSorted(expect.players || []);
+    if (expect.players && !sameSet(builtPlayers, frozenPlayers)) {
+      playersWrong.push(`${card.code}: [${builtPlayers.join(' ')}] != [${frozenPlayers.join(' ')}]`);
     }
 
     // Downloads.
     const builtDownloads = uniqueSorted(html.match(DOWNLOAD_URL_RE) || []);
-    if (!sameSet(builtDownloads, uniqueSorted(expect.downloads || []))) {
+    const frozenDownloads = uniqueSorted(expect.downloads || []);
+    if (expect.downloads && !sameSet(builtDownloads, frozenDownloads)) {
+      const extra = onlyIn(builtDownloads, frozenDownloads);
+      const absent = onlyIn(frozenDownloads, builtDownloads);
       downloadsWrong.push(
-        `${card.code}: ${builtDownloads.length} link(s) != ${uniqueSorted(expect.downloads || []).length} frozen`,
+        `${card.code}: ${extra.length ? `unexpected ${extra.join(' ')}` : ''}${extra.length && absent.length ? ' / ' : ''}${absent.length ? `missing ${absent.join(' ')}` : ''}`,
       );
     }
 
@@ -359,17 +384,33 @@ export async function checkCards(report) {
     }
   }
 
-  const reportSet = (label, wrong, detailPrefix, sample = 3) => {
-    if (wrong.length) report.fail(label, `${wrong.length} ${detailPrefix}: ${wrong.slice(0, sample).join('; ')}`);
-    else report.pass(label, `${withExpectations.length} cards`);
+  // An assertion that cannot see a frozen expectation has not run. It reports
+  // SKIP naming the artifact, never PASS — a green run must never be mistaken
+  // for a complete one.
+  const reportFrozen = (label, wrong, detailPrefix, sample = 3) => {
+    if (!haveExpectations) {
+      report.skip(label, `${ARTIFACTS.cards.rel} carries no per-card "expect" block`, ARTIFACTS.cards.issue);
+    } else if (wrong.length) {
+      report.fail(label, `${wrong.length} ${detailPrefix}: ${wrong.slice(0, sample).join('; ')}`);
+    } else {
+      report.pass(label, `${withExpectations.length} cards`);
+    }
   };
 
-  reportSet('every card page carries its own title', titleWrong, 'wrong');
-  reportSet('every card page carries its own description', descWrong, 'wrong', 5);
-  reportSet('every card page links its own play.maar.world players', playersWrong, 'wrong');
-  reportSet('every card page links its own downloads', downloadsWrong, 'wrong');
-  reportSet('every forwarding card offers a no-JavaScript route to the Orbiter', noJsMissing, 'without', 5);
-  reportSet('player and download labels are distinct within a card page', labelsNotDistinct, 'ambiguous');
+  const reportBuilt = (label, wrong, detailPrefix, sample = 3) => {
+    if (wrong.length) report.fail(label, `${wrong.length} ${detailPrefix}: ${wrong.slice(0, sample).join('; ')}`);
+    else report.pass(label, `${cards.length} cards`);
+  };
+
+  reportFrozen('every card page carries its own title', titleWrong, 'wrong');
+  reportFrozen('every card page carries its own description', descWrong, 'wrong', 5);
+  reportFrozen('every card page links its own play.maar.world players', playersWrong, 'wrong');
+  reportFrozen('every card page links its own downloads', downloadsWrong, 'wrong');
+
+  // These two read the built page alone, so they run with or without a frozen
+  // baseline.
+  reportBuilt('every forwarding card offers a no-JavaScript route to the Orbiter', noJsMissing, 'without', 5);
+  reportBuilt('player and download labels are distinct within a card page', labelsNotDistinct, 'ambiguous');
 
   const titleValues = [...builtTitles.values()];
   const dupeTitles = titleValues.filter((t, i) => titleValues.indexOf(t) !== i);
