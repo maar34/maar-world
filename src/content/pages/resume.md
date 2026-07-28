@@ -9,6 +9,8 @@ tags: []
 source: "maar.world/collections/_pages/resume.md"
 ---
 
+# Resume
+
 <br>
 
 <a href="/img/pdf/02_Bruna-Resume.pdf" rel="resume" target="_blank">DOWNLOAD RESUME </a> <br>

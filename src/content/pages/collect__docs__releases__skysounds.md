@@ -9,6 +9,8 @@ tags: []
 source: "collect.maar.world/collections/_documentation/02-ent-releases/01-skysounds.md"
 ---
 
+# Sky Sounds
+
 ### Formation
 
 ![Image](/img/docs/ent-release/01_skysounds.png "Sky Sounds formation")

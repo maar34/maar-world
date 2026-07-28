@@ -10,6 +10,8 @@ source: "maar.world/collections/_lab/es/2023-08-25-01_IP2.md"
 lang: "es"
 ---
 
+# Ancestros interplanetarios 2-3 (ES)
+
 #### Sample Pack: Sonido de las Am​é​ricas by Shika Shika
 "Los instrumentos musicales nos han ayudado a comunicarnos y expresarnos desde los albores de la humanidad y las formas, escalas y sonidos de estos artefactos nos dan una idea de las extraordinarias culturas que los crearon.
 

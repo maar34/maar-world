@@ -1,6 +1,6 @@
 {
   "note": "Per-page content-presence assertions for the migrated pages (MW-7 / MW-8). Headings are taken from the legacy source, so they assert that migration preserved them. minTextLength is a regression floor at 90% of the build at authoring time. Regenerate with scripts/author-content-expectations.mjs after an intentional content change.",
-  "authoredAt": "2026-07-28T22:39:16.189Z",
+  "authoredAt": "2026-07-28T22:40:53.731Z",
   "pageCount": 95,
   "pages": [
     {
@@ -22,7 +22,7 @@
     {
       "url": "/calendar",
       "headings": [],
-      "minTextLength": 47
+      "minTextLength": 55
     },
     {
       "url": "/collect/about",
@@ -34,7 +34,7 @@
     {
       "url": "/collect/cards",
       "headings": [],
-      "minTextLength": 255
+      "minTextLength": 284
     },
     {
       "url": "/collect/cards/001_-maar-sky-sounds.1-card I",
@@ -209,33 +209,33 @@
     {
       "url": "/collect/decks",
       "headings": [],
-      "minTextLength": 7
+      "minTextLength": 40
     },
     {
       "url": "/collect/docs/ent-cards",
       "headings": [
         "ENT Cards"
       ],
-      "minTextLength": 856
+      "minTextLength": 865
     },
     {
       "url": "/collect/docs/ent-cards/nfc",
       "headings": [
         "Each ENT Card includes an NFC Chip."
       ],
-      "minTextLength": 2329
+      "minTextLength": 2332
     },
     {
       "url": "/collect/docs/ent-cards/sustainability",
       "headings": [
         "Human-Centered Technology."
       ],
-      "minTextLength": 2122
+      "minTextLength": 2135
     },
     {
       "url": "/collect/docs/mw",
       "headings": [],
-      "minTextLength": 2750
+      "minTextLength": 2761
     },
     {
       "url": "/collect/docs/mw/terms",
@@ -247,33 +247,33 @@
     {
       "url": "/collect/docs/orbiters/development",
       "headings": [],
-      "minTextLength": 1390
+      "minTextLength": 1401
     },
     {
       "url": "/collect/docs/orbiters/how-to-use",
       "headings": [
         "A Planet is a Vinyl + One dimension"
       ],
-      "minTextLength": 2591
+      "minTextLength": 2601
     },
     {
       "url": "/collect/docs/releases/skysounds",
       "headings": [
         "Formation"
       ],
-      "minTextLength": 479
+      "minTextLength": 489
     },
     {
       "url": "/collect/docs/tutorials",
       "headings": [],
-      "minTextLength": 198
+      "minTextLength": 207
     },
     {
       "url": "/collect/documentation",
       "headings": [
         "Documentation"
       ],
-      "minTextLength": 111
+      "minTextLength": 116
     },
     {
       "url": "/collect",
@@ -282,7 +282,7 @@
         "Start your journey",
         "Contact us"
       ],
-      "minTextLength": 1142
+      "minTextLength": 1266
     },
     {
       "url": "/collect/privacy",
@@ -296,22 +296,22 @@
       "headings": [
         "Documentation"
       ],
-      "minTextLength": 395
+      "minTextLength": 414
     },
     {
       "url": "/collect/suits",
       "headings": [],
-      "minTextLength": 7
+      "minTextLength": 36
     },
     {
       "url": "/eng-feedback",
       "headings": [],
-      "minTextLength": 38
+      "minTextLength": 50
     },
     {
       "url": "/esp-feedback",
       "headings": [],
-      "minTextLength": 38
+      "minTextLength": 50
     },
     {
       "url": "/helix-diagram",
@@ -323,7 +323,7 @@
       "headings": [
         "Play music cards with exoplanets"
       ],
-      "minTextLength": 1571
+      "minTextLength": 1581
     },
     {
       "url": "/interplanetary-players",
@@ -359,22 +359,22 @@
         "Audio",
         "7. Notes and checklist"
       ],
-      "minTextLength": 3132
+      "minTextLength": 3159
     },
     {
       "url": "/lab/en/ip-1",
       "headings": [],
-      "minTextLength": 2055
+      "minTextLength": 2086
     },
     {
       "url": "/lab/en/ip-2",
       "headings": [],
-      "minTextLength": 1492
+      "minTextLength": 1522
     },
     {
       "url": "/lab/en/ip-3",
       "headings": [],
-      "minTextLength": 837
+      "minTextLength": 868
     },
     {
       "url": "/lab/en/ip-orchestra-design",
@@ -388,7 +388,7 @@
         "Explore Regenerative Modes:",
         "Contact me"
       ],
-      "minTextLength": 2343
+      "minTextLength": 2368
     },
     {
       "url": "/lab/en/ip-orchestra",
@@ -404,7 +404,7 @@
         "Explore Regenerative Modes:",
         "Contact me"
       ],
-      "minTextLength": 4123
+      "minTextLength": 4171
     },
     {
       "url": "/lab/en/music-return-to-playing",
@@ -412,14 +412,14 @@
         "Music, Abstraction, and the Return to Playing",
         "References"
       ],
-      "minTextLength": 2655
+      "minTextLength": 2697
     },
     {
       "url": "/lab/en/orbits-and-bodies",
       "headings": [
         "Introduction"
       ],
-      "minTextLength": 694
+      "minTextLength": 711
     },
     {
       "url": "/lab/en/shared-culture",
@@ -427,7 +427,7 @@
         "When Cultural Capital Is Shared:",
         "Music, Access, and the Human Mind"
       ],
-      "minTextLength": 2002
+      "minTextLength": 2033
     },
     {
       "url": "/lab/es/cultura-compartida",
@@ -435,7 +435,7 @@
         "Cuando el Capital Cultural es Compartido:",
         "Música, Acceso y la Mente Humana"
       ],
-      "minTextLength": 2243
+      "minTextLength": 2273
     },
     {
       "url": "/lab/es/dadada",
@@ -461,22 +461,22 @@
         "Audio",
         "7. Notas y lista de verificación"
       ],
-      "minTextLength": 3433
+      "minTextLength": 3458
     },
     {
       "url": "/lab/es/ip-1",
       "headings": [],
-      "minTextLength": 2088
+      "minTextLength": 2120
     },
     {
       "url": "/lab/es/ip-2",
       "headings": [],
-      "minTextLength": 1488
+      "minTextLength": 1521
     },
     {
       "url": "/lab/es/ip-3",
       "headings": [],
-      "minTextLength": 854
+      "minTextLength": 886
     },
     {
       "url": "/lab/es/ip-orchestra-design",
@@ -490,7 +490,7 @@
         "Explora Modos Regenerativos:",
         "Contáctame"
       ],
-      "minTextLength": 2596
+      "minTextLength": 2622
     },
     {
       "url": "/lab/es/ip-orchestra",
@@ -506,7 +506,7 @@
         "Explora Modos Regenerativos:",
         "Contáctame"
       ],
-      "minTextLength": 4431
+      "minTextLength": 4480
     },
     {
       "url": "/lab/es/musica-retorno-al-juego",
@@ -514,14 +514,14 @@
         "Música, Abstracción y el Retorno al Juego",
         "Referencias"
       ],
-      "minTextLength": 3093
+      "minTextLength": 3131
     },
     {
       "url": "/lab/es/orbits-and-bodies",
       "headings": [
         "Introducción"
       ],
-      "minTextLength": 777
+      "minTextLength": 793
     },
     {
       "url": "/landings",
@@ -547,7 +547,7 @@
         "Innovative Tradition",
         "An Extended Harmony of the Spheres"
       ],
-      "minTextLength": 1156
+      "minTextLength": 1219
     },
     {
       "url": "/privacy",
@@ -568,7 +568,7 @@
     {
       "url": "/resume",
       "headings": [],
-      "minTextLength": 206
+      "minTextLength": 212
     },
     {
       "url": "/revx000",
@@ -628,12 +628,12 @@
     {
       "url": "/tree",
       "headings": [],
-      "minTextLength": 78
+      "minTextLength": 82
     },
     {
       "url": "/tree/max-network-berlin",
       "headings": [],
-      "minTextLength": 270
+      "minTextLength": 288
     }
   ]
 }

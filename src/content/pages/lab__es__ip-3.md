@@ -10,6 +10,8 @@ source: "maar.world/collections/_lab/es/2023-08-25-01_IP3.md"
 lang: "es"
 ---
 
+# Ancestros interplanetarios 3-3 (ES)
+
 Inspirada en Tacuabé con su instrumento musical y la librería de instrumentos de Shika Shika, abre el Lab de Maar World, un terreno abierto para la exploración de nuevos formatos de creación y difusión sonora, una bitácora de experimentos de todos los tiempos unidos por la escucha cómo leitmotif.
 
 #### Gracias 

@@ -9,6 +9,8 @@ tags: []
 source: "maar.world/index.md"
 ---
 
+# Maar World
+
 <!-- HERO (single rotating line, smooth slide+fade every 1.5s) -->
 <div class="hero hero--center hero--statement rotating-hero single-line">
 <div class="hero__content">

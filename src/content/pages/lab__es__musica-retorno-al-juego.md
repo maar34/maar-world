@@ -11,6 +11,8 @@ lang: "es"
 date: "2026-01-20"
 ---
 
+# Música, Abstracción y el Retorno al Juego
+
 ![](/img/lab/orbital-workshop-1.jpg)
 
 ## Música, Abstracción y el Retorno al Juego

@@ -9,6 +9,8 @@ tags: []
 source: "collect.maar.world/collections/_documentation/04-orbiters/01-how-to-use.md"
 ---
 
+# How to use
+
 ### A Planet is a Vinyl + One dimension
 
 ![Image](/img/docs/orbiters/04-vinyl-sphere.png "Vinyl and Planet Player")

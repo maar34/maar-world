@@ -11,6 +11,8 @@ lang: "en"
 date: "2026-01-20"
 ---
 
+# Music, Abstraction, and the Return to Playing
+
 ![](/img/lab/orbital-workshop-1.jpg)
 
 ## Music, Abstraction, and the Return to Playing

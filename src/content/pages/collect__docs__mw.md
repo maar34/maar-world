@@ -9,6 +9,8 @@ tags: []
 source: "collect.maar.world/collections/_documentation/07-mw.md"
 ---
 
+# Information
+
 Maar World is an exoplanet located in the Cygnus constellation. It has four moons and two suns. The inhabitants of this planet are mainly eternal children, innocent, happy, kind, generous, loving, organic beings. They are also imperfect, and they have a lot of work to do to improve themselves.
 
 The inhabitants have adopted a trinary logic aproach, that has enabled them to survive and thrive on their planet. They believe that by acknowledging and learning from their mistakes, they can reconcile different perspectives and find common ground. This inclusive and holistic approach has led to a quantum stage where multiple truths can coexist without conflict.

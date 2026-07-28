@@ -10,6 +10,8 @@ source: "maar.world/collections/_lab/es/2023-08-25-01_IP1.md"
 lang: "es"
 ---
 
+# Ancestros interplanetarios 1-3 (ES)
+
 *¿Pueden los sonidos desempeñar un papel en la recuperación de nuestra memoria? 
 ¿Es posible llamar a la memoria de culturas históricamente reprimidas?*
 

@@ -11,6 +11,8 @@ lang: "es"
 date: "2026-01-07"
 ---
 
+# Música, Acceso y la Mente Humana
+
 ![](/img/lab/orbital-workshop-1.jpg)
 
 ## Cuando el Capital Cultural es Compartido:

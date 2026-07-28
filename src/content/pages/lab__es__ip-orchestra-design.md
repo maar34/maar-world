@@ -10,6 +10,8 @@ source: "maar.world/collections/_lab/es/2024-09-01-Taller de creación orbital.m
 lang: "es"
 ---
 
+# "Taller de creación orbital"
+
 ### 🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬
 
 <img src="/img/lab/Interplanetary-Orchestra.ESP.png" alt="Interplanetary Orchestra GIF">

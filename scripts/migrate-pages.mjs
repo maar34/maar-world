@@ -109,11 +109,25 @@ function parse(raw) {
   const m = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/.exec(raw);
   if (!m) return { data: {}, body: raw.trim() };
   const data = {};
-  for (const line of m[1].split('\n')) {
+  const lines = m[1].split('\n');
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i];
     if (!line.trim() || /^\s/.test(line) || line.trim().startsWith('#')) continue;
     const kv = /^([A-Za-z_0-9-]+)\s*:\s*(.*)$/.exec(line);
     if (!kv) continue;
     let v = kv[2].trim().replace(/\s+#.*$/, '');
+
+    // Folded and literal block scalars — `excerpt: >` with the text indented
+    // underneath. Several Collect pages carry their whole lead paragraph there.
+    if (v === '>' || v === '|' || v === '>-' || v === '|-') {
+      const block = [];
+      while (i + 1 < lines.length && (/^\s+\S/.test(lines[i + 1]) || !lines[i + 1].trim())) {
+        i += 1;
+        if (lines[i].trim()) block.push(lines[i].trim());
+      }
+      v = block.join(' ');
+    }
+
     if (v === 'true') v = true;
     else if (v === 'false') v = false;
     data[kv[1]] = v;
@@ -609,6 +623,21 @@ for (const m of matched) {
   }
 
   let finalBody = t.body;
+
+  /**
+   * Jekyll's layouts rendered `title` and `excerpt` above the body whenever a
+   * page did not open with its own heading — which is why `/collect/decks` and
+   * `/collect/suits` are not blank in production despite having empty bodies.
+   * Astro has no such layout, so the heading is materialised here rather than
+   * shipping a page whose only visible text is a browser tab title.
+   */
+  // Collect card pages get their heading from the route, off the card fields.
+  if (kind !== 'collect-card' && !/^#\s|<h1\b/im.test(finalBody)) {
+    const lead = [`# ${data.title || record.title}`];
+    if (record.description) lead.push('', record.description);
+    finalBody = `${lead.join('\n')}\n\n${finalBody}`.trim();
+  }
+
   if (SPECIAL[m.key]) finalBody = SPECIAL[m.key](record);
 
   const parsed = SCHEMAS.pages.safeParse(record);

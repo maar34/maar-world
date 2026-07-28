@@ -10,6 +10,8 @@ source: "maar.world/collections/_lab/en/2024-08-30-IP_Orchestra.md"
 lang: "en"
 ---
 
+# "Orbital Creation Workshop: Orbiters Orchestra (EN)"
+
 ### 🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬
 
 ### Invitation

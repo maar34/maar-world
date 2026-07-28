@@ -9,6 +9,8 @@ tags: []
 source: "collect.maar.world/collections/_documentation/03-ent-cards/01-sustainability.md"
 ---
 
+# Sustainability
+
 ![Image](/img/docs/ent-cards/03-sustainability.png "Sustainability")
 
 ### Human-Centered Technology.

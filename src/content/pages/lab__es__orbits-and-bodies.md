@@ -10,6 +10,8 @@ source: "maar.world/collections/_lab/es/2025-08-24-01-Orbit-and-Bodies.md"
 lang: "es"
 ---
 
+# Órbitas y Cuerpos
+
 Una performance que conecta gestos humanos, datos orbitales y sistemas audiovisuales en tiempo real.
 
 **𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 𝒞𝑜𝓁𝒶𝓈𝓈𝑜** – Maar World, Berlín  

@@ -11,6 +11,8 @@ lang: "es"
 date: "2026-03-24"
 ---
 
+# Helix — Requisitos técnicos
+
 ## HELIX
 
 ### Documentación técnica de instalación
