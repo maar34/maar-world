@@ -29,6 +29,25 @@ const FIRST_PARTY = /(^|\.)maar\.world$/i;
 const TAG_RE = /<(a|script|link|iframe|img|source|video|audio|embed|object|track|form)\b([^>]*)>/gi;
 const ATTR_RE = /\b(?:href|src|action|data)\s*=\s*["']([^"']+)["']/i;
 
+/**
+ * Decode HTML entities in attribute values.
+ *
+ * Astro emits `&#x26;` for `&` inside markdown-derived HTML, so a URL written
+ * `?rlkey=…&raw=1` appears in the build as `?rlkey=…&#x26;raw=1`. The route
+ * freeze decodes the same way, and without this the two sides disagree about
+ * what is the same URL — which reads as "a new external link was introduced"
+ * when nothing changed.
+ */
+const decodeEntities = (s) =>
+  s
+    .replace(/&(?:amp|AMP);/g, '&')
+    .replace(/&(?:lt|LT);/g, '<')
+    .replace(/&(?:gt|GT);/g, '>')
+    .replace(/&(?:quot|QUOT);/g, '"')
+    .replace(/&(?:apos|#0?39);/g, "'")
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(Number(dec)));
+
 const isExternal = (u) => /^(?:https?:)?\/\//i.test(u);
 const isIgnorable = (u) =>
   !u ||
@@ -66,7 +85,7 @@ export async function checkLinks(report) {
       const attrMatch = ATTR_RE.exec(attrs);
       if (!attrMatch) continue;
 
-      const raw = attrMatch[1].trim();
+      const raw = decodeEntities(attrMatch[1].trim());
       if (isIgnorable(raw)) continue;
 
       if (isExternal(raw)) {

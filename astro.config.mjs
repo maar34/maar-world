@@ -1,5 +1,21 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
+import { readFileSync } from 'node:fs';
+
+/**
+ * Pages carrying noindex must never appear in the sitemap.
+ *
+ * Production today is self-contradictory: all 34 Sky Sounds card pages emit
+ * <meta name="robots" content="noindex"> AND are listed in sitemap.xml. The
+ * card codes are read from the frozen inventory so this filter cannot drift
+ * away from the cards it is meant to exclude.
+ */
+const NOINDEX = new Set([
+  ...JSON.parse(readFileSync(new URL('./routes/nfc-cards.json', import.meta.url), 'utf8'))
+    .cards.flatMap(({ code }) => [`/${code}`, `/${code}.html`]),
+  '/ZZZ0000', '/ZZZ0000.html',
+]);
 
 /**
  * Two settings here are not negotiable, because 35 physical NFC cards depend
@@ -30,4 +46,15 @@ export default defineConfig({
   // No analytics, no third-party anything. Prefetch is same-origin only.
   prefetch: false,
   devToolbar: { enabled: false },
+  integrations: [
+    sitemap({
+      filter: (page) => {
+        const path = new URL(page).pathname;
+        if (NOINDEX.has(path)) return false;
+        // Route-shape proofs are build scaffolding, not content.
+        if (path.startsWith('/route-proof/')) return false;
+        return true;
+      },
+    }),
+  ],
 });

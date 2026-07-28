@@ -1,0 +1,171 @@
+---
+/**
+ * The NFC card pages — the hardest contract in the programme.
+ *
+ * 35 codes are printed on physical cards already in people's hands. This route
+ * emits `CODE.html` at the output root for each; the extensionless `/CODE` is
+ * then served by the host's `.html` fallback. Both forms must return 200, never
+ * redirect, and stay byte-for-byte stable in spelling and casing.
+ *
+ * `getStaticPaths` returns exactly the 35 codes from the typed collection, so
+ * this dynamic route cannot accidentally claim any other URL. Static routes take
+ * priority in Astro, so later pages (/about, /lab…) are unaffected.
+ *
+ * Layout is page family 03 (entry): single measure, 66ch max, h1 may carry
+ * marks and nothing below it does.
+ *
+ * There is deliberately no commerce link. MW-6 and MW-1 both say no Bandcamp,
+ * storefront or checkout integration is introduced; the destination is the
+ * Artizen project page once its URL exists, read from one config value. That URL
+ * does not exist yet, so no destination renders at all — see BLOCKED in the
+ * migration ledger.
+ */
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GlyphRun from '../components/patterns/GlyphRun.astro';
+import { COMMERCE } from '../config/site';
+
+export async function getStaticPaths() {
+  const cards = await getCollection('cards');
+  return cards.map((card) => ({
+    // The param IS the printed code. Never transform, normalise or re-case it.
+    params: { cardCode: card.data.permalink.replace(/^\//, '') },
+    props: { card },
+  }));
+}
+
+const { card } = Astro.props;
+const d = card.data;
+const { Content } = await render(card);
+
+const title = d.titles?.en ?? `${d.suit_title} — ${d.card_title}`;
+const players = [d.player, d.player2, d.snip_player].filter(Boolean) as string[];
+const downloads = [d.download, d.download2].filter(Boolean) as string[];
+---
+
+<BaseLayout title={title} description={d.card_description} noindex={true}>
+  <main class="card-page">
+    <p class="t-meta suit">
+      {d.suit_title}
+      <GlyphRun seed={d.permalink} />
+      {d.card_title}
+    </p>
+
+    <h1>{d.card_title}</h1>
+
+    <figure class="cover">
+      <img src={d.card_image} alt={`${d.suit_title} ${d.card_title}`} loading="lazy" decoding="async" />
+    </figure>
+
+    <p class="description">{d.card_description}</p>
+
+    <Content />
+
+    {
+      players.length > 0 && (
+        <section class="players" aria-label="player">
+          {players.map((src) => (
+            <iframe
+              src={src}
+              title={`${d.suit_title} ${d.card_title} player`}
+              loading="lazy"
+              class="player"
+            />
+          ))}
+        </section>
+      )
+    }
+
+    {
+      downloads.length > 0 && (
+        <section class="downloads" aria-label="downloads">
+          <p class="t-meta">download</p>
+          <ul role="list" class="download-list">
+            {downloads.map((href, i) => (
+              <li>
+                <a href={href}>
+                  {href.toLowerCase().includes('.wav') ? 'wav' : href.toLowerCase().includes('.mp3') ? 'mp3' : `file ${i + 1}`}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      COMMERCE.destinationUrl && (
+        <p class="destination">
+          <a href={COMMERCE.destinationUrl}>{COMMERCE.destinationName}</a>
+        </p>
+      )
+    }
+  </main>
+</BaseLayout>
+
+<style>
+  /* Page family 03 — entry. Single measure, 66ch max. */
+  .card-page {
+    max-width: 66ch;
+    margin: 0 auto;
+    padding: var(--s-16) var(--s-6) var(--s-24);
+    display: flex;
+    flex-direction: column;
+    /* Sibling groups use gap, never margins. Space is the primary separator. */
+    gap: var(--s-6);
+  }
+
+  .suit {
+    color: var(--ink-meta);
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    margin: 0;
+  }
+
+  /* Cover ratio is 3:2 everywhere except card.compact and card.place. */
+  .cover {
+    margin: 0;
+    background: var(--sf-raised);
+    border-radius: var(--r-0);
+  }
+
+  .cover img {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+
+  .description {
+    color: var(--ink-muted);
+  }
+
+  .players {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+  }
+
+  /* play.maar.world shares the registrable domain, so it is same-site even
+     inside an iframe and needs no click-to-load facade. Third-party embeds do. */
+  .player {
+    width: 100%;
+    min-height: 220px;
+    border: 0;
+    background: var(--sf-sunken);
+    border-radius: var(--r-0);
+  }
+
+  .downloads .t-meta {
+    color: var(--ink-meta);
+    margin: 0 0 var(--s-2);
+  }
+
+  .download-list {
+    display: flex;
+    gap: var(--s-4);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+</style>

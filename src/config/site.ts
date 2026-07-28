@@ -18,16 +18,33 @@ export const SITE = {
 } as const;
 
 /**
- * The live storefront. Gumroad (`maarworld.gumroad.com`) and the never-existing
- * `physical.maar.world` / `digital.maar.world` are deprecated — see
- * ARCHITECTURE-REVIEW-ADDENDUM §5. Bandcamp is where buyers actually go.
+ * The single configurable card destination.
  *
- * To move to Artizen later: change `storeUrl` and nothing else.
+ * Deliberately null. MW-1 and MW-6 both rule that no Bandcamp, storefront,
+ * checkout or commerce integration is introduced by this rebuild, and that card
+ * pages link to one configurable destination — the Artizen project page — once
+ * its URL exists. It does not exist yet, so card pages render no destination
+ * link at all rather than resurrecting a storefront.
+ *
+ * (ARCHITECTURE-REVIEW-ADDENDUM §5 recommended repointing everything at
+ * Bandcamp. The issues supersede it, and they are explicit.)
+ *
+ * The old destinations are all dead and are NOT migrated:
+ *   physical.maar.world     no DNS record
+ *   digital.maar.world      no DNS record
+ *   maarworld.gumroad.com   404, store gone
+ *
+ * When the Artizen URL exists, set `destinationUrl` here — one line, one place.
+ * The content schemas reject per-record commerce fields precisely so this stays
+ * true; 183 links died at once because every card carried its own copy.
  */
-export const COMMERCE = {
-  storeUrl: 'https://maar-world.bandcamp.com/merch',
-  storeName: 'bandcamp',
-} as const;
+export const COMMERCE: {
+  destinationUrl: string | null;
+  destinationName: string;
+} = {
+  destinationUrl: null,
+  destinationName: 'artizen',
+};
 
 /**
  * The three merged areas. One pigment role each — this is how Maar, Collect and

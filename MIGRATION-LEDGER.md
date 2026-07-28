@@ -60,3 +60,12 @@ npm run ledger -- append MW-7 BLOCKED lab/es/dadada.html "reason: source referen
 2026-07-28T21:52Z  MW-5   DONE     scripts/assemble-public.mjs                media/shared + per-area layering; errors on differing collisions
 2026-07-28T21:52Z  MW-5   DONE     ci/verify.yml                              selftest + schemas + verify + ledger:check on PR and main
 2026-07-28T21:52Z  MW-5   NOTE     verify/expected-red                        verify:routes and verify:cards fail by design until MW-6/7/8 migrate content; 262 of 264 paths outstanding
+2026-07-28T22:02Z  MW-6   DONE     content/cards                              35 records migrated, schema-validated; 34 skysounds + STW3344
+2026-07-28T22:02Z  MW-6   DONE     content/cards                              35 records migrated, schema-validated; 34 skysounds + STW3344
+2026-07-28T22:02Z  MW-6   DONE     pages/cardCode-route                       emits 35 CODE.html at output root; page family 03 entry
+2026-07-28T22:02Z  MW-6   DONE     cards/liquid-resolved                      DWE1406+STW3344 bodies had unrendered page.* Liquid; substituted from frontmatter as Jekyll did
+2026-07-28T22:02Z  MW-6   DONE     cards/sitemap-excluded                     all 35 noindex cards absent from sitemap; production had them noindex AND listed
+2026-07-28T22:02Z  MW-6   DONE     verify/cards-green                         verify:cards 11 assertions pass; 70 forms, casing stable, noindex intact
+2026-07-28T22:02Z  MW-6   NOTE     verify/baseline-completed                  external baseline now records on-load resources too (326->562 urls); route set byte-identical
+2026-07-28T22:02Z  MW-6   BLOCKED  cards/dropbox-third-party                  MW-6 says keep Dropbox card art; MW-1 gate forbids third-party request on page load. 37 img refs to www.dropbox.com. Needs a human: self-host the art, or accept the exception
+2026-07-28T22:02Z  MW-6   BLOCKED  cards/artizen-destination                  COMMERCE.destinationUrl is null - Artizen project URL does not exist yet, so card pages render no destination link

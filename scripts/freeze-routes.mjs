@@ -83,10 +83,28 @@ function fingerprint(html) {
     if (/^https?:\/\//i.test(href)) outbound.add(href.split("#")[0]);
   }
 
+  /**
+   * URLs production fetches when the page loads — image, iframe, script and
+   * stylesheet sources, as distinct from anchor hrefs.
+   *
+   * These matter for two separate reasons: they are the third-party requests
+   * that decide whether a cookie banner is legally required, and without them
+   * the external-link baseline is incomplete, so re-hosting the same card art
+   * would look like a newly introduced external link.
+   */
+  const resources = new Set();
+  for (const m of html.matchAll(/<(script|link|iframe|img|source|video|audio|embed|object|track)\b([^>]*)>/gi)) {
+    const a = /\b(?:src|href)\s*=\s*["']([^"']+)["']/i.exec(m[2] || '');
+    if (!a) continue;
+    const raw = decodeEntities(a[1].trim());
+    if (/^https?:\/\//i.test(raw)) resources.add(raw.split('#')[0]);
+  }
+
   const body = text(html);
 
   return {
     title: titleMatch ? text(titleMatch[1]) : null,
+    resourceLinks: [...resources].sort(),
     canonical: canonicalTag ? attr(canonicalTag[0], 'href') : null,
     robots: robotsTag ? attr(robotsTag[0], 'content') : null,
     headings,
@@ -340,7 +358,7 @@ writeFileSync(
 // existing rot is never later blamed on the migration.
 const externals = new Map();
 for (const r of allRoutes) {
-  for (const link of r.outboundLinks || []) {
+  for (const link of [...(r.outboundLinks || []), ...(r.resourceLinks || [])]) {
     if (!externals.has(link)) externals.set(link, []);
     externals.get(link).push(r.url);
   }

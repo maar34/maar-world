@@ -1,0 +1,46 @@
+---
+/**
+ * mark.glyphs — the decorative separator.
+ *
+ * Replaces every `·` separator. A run of 2–4 glyphs drawn from the fixed set,
+ * chosen at render and then frozen, always aria-hidden.
+ *
+ * "Frozen" is the load-bearing word: the spec requires that a run must not
+ * reshuffle on re-render or on navigating back. So the run is derived
+ * deterministically from a seed (the card code, the article slug) rather than
+ * from Math.random — same seed, same glyphs, forever, with no state to persist.
+ */
+
+const GLYPHS = ['⌁', '⋄', '⎔', '⌗', '⏣', '⍜'] as const;
+
+interface Props {
+  seed: string;
+}
+
+const { seed } = Astro.props;
+
+// FNV-1a — small, stable, and not sensitive to the platform's string hashing.
+function hash(input: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < input.length; i += 1) {
+    h ^= input.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h;
+}
+
+const h = hash(seed);
+const length = 2 + (h % 3); // 2–4 glyphs
+const run = Array.from({ length }, (_, i) => GLYPHS[(hash(`${seed}:${i}`) >>> 3) % GLYPHS.length]);
+---
+
+<span aria-hidden="true" class="glyph-run">{run.join('')}</span>
+
+<style>
+  .glyph-run {
+    font-family: var(--t-meta-face);
+    color: var(--ink-faint);
+    letter-spacing: 0.18em;
+    user-select: none;
+  }
+</style>
