@@ -3,7 +3,7 @@
 Regenerated at every stop. A fresh agent should need nothing but this file,
 `MIGRATION-LEDGER.md`, `docs/agent/OPERATING-RULES.md` and the Linear issue.
 
-**Last updated:** 2026-07-28T23:05Z
+**Last updated:** 2026-07-28T23:20Z
 **Last issue worked:** MW-6 (build + verification complete; human sign-off outstanding)
 **Next action:** MW-7 — migrate Maar pages, 6 genesis codes and 20 Lab articles (en/es).
 
@@ -75,7 +75,15 @@ Nothing. MW-6 finished cleanly; only its human sign-off remains.
 - **Tree merges to `/tree/*`, not a single `/tree` page.** Tree has two real pages, so
   collapsing everything onto one path would lose `/max-network-berlin`.
 
-## Two things production told us that the decision records did not
+## Three things production told us that the decision records did not
+
+0. **Card pages forward to Orbiter, and a crawler cannot see it.** `/EBT5599` returns 200 and
+   then runs `window.location.href = "https://orbiter.plantasia.space/?trackId=<track_v2_id>"`
+   300ms later. That is what a physical card scan actually does. Exactly the 33 cards with a
+   `track_v2_id` forward; `DWE1406` and `STW3344` do not. `verify:cards` asserts it per card
+   against the frozen `orbiterTrackId`. **Any future crawl-based check is blind to JavaScript
+   behaviour — do not assume the manifest captures everything a visitor experiences.**
+
 
 1. **The dual-form property is site-wide.** Every page is live at both `/X` and `/X.html`
    via the host's `.html` fallback — not just the 35 card codes. The crawl probes the twin of
@@ -118,6 +126,10 @@ npm run ledger -- status summary, including every BLOCKED item
 
 ## Reminders that are easy to get wrong
 
+- Design references have an order of authority — see `docs/agent/DESIGN-REFERENCES.md`.
+  The live spec wins over `Maar World 4a.dc.html`, which is a direction mockup whose gradient
+  washes, blur and off-palette colours the spec forbids. Take its cut-word/echo mechanics,
+  take every value from the spec.
 - The design system project is **actively edited**. Re-read it live before implementing any
   component; never cache its values into this repo. Token values in `src/styles/tokens.css`
   were transcribed from spec version **1.1** — re-check them against the live spec before
