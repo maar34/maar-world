@@ -728,6 +728,186 @@ check('a recorded removal passes verify:links', (root) => {
   return { ok, detail: ok ? 'exit 0, recorded removal accepted' : `expected exit 0, got ${code}\n${out}` };
 });
 
+// --- F8: verify:content could not fail ----------------------------------
+//
+// scripts/author-content-expectations.mjs used to filter every candidate
+// heading through the build — `if (builtText.includes(h)) headings.push(h)` —
+// so a heading the migration lost was simply left out of the expectation file.
+// 55 of 95 pages ended up asserting zero headings, `images`, `embeds` and
+// `links` were written on no page at all, and `minTextLength` was 90% of the
+// *build*, a floor under the migrated page rather than the production one.
+// verify:content reported PASS on a build that had lost 82% of /lab's body.
+//
+// These cases build an expectation file the way the fixed script does — from a
+// production fingerprint — and then break the build one way at a time.
+
+/** Production's fingerprint of the one fixture page, chrome already excluded. */
+const CONTENT_PROD = {
+  headings: ['Orbits and Bodies', 'Interplanetary ancestors 1-3 (EN)'],
+  bodyTextLength: 400,
+  images: 2,
+  embeds: 1,
+  links: ['https://support.apple.com/en-gb/HT208353'],
+};
+
+const CONTENT_FRACTION = 0.85;
+
+/**
+ * A page that satisfies CONTENT_PROD. Every argument defaults to the intact
+ * value, so each case names exactly the one thing it breaks.
+ */
+function contentPage({
+  headings = CONTENT_PROD.headings,
+  body = 'Body text for the content fixture. '.repeat(12),
+  images = CONTENT_PROD.images,
+  embeds = CONTENT_PROD.embeds,
+  links = CONTENT_PROD.links,
+} = {}) {
+  return (
+    '<!doctype html><html><head><title>Orbits</title></head><body>' +
+    headings.map((h) => `<h2>${h}</h2>`).join('') +
+    '<img src="/a.png">'.repeat(images) +
+    '<iframe src="https://play.maar.world/?g=1"></iframe>'.repeat(embeds) +
+    links.map((l) => `<a href="${l}">note</a>`).join('') +
+    `<p>${body}</p></body></html>`
+  );
+}
+
+/**
+ * Write the fixture's expectations exactly as the authoring script writes them:
+ * from the production figures above, never from the page on disk.
+ */
+function contentFixture(root, overrides = {}) {
+  mkdirSync(join(root, 'verify'), { recursive: true });
+  mkdirSync(join(root, 'dist'), { recursive: true });
+  writeFileSync(join(root, 'dist/orbits.html'), contentPage(overrides.page || {}));
+
+  const page = {
+    url: '/orbits',
+    production: {
+      origin: 'maar.world',
+      url: '/orbits',
+      baseline: 'legacy-site-exact',
+      textLength: 900,
+      textSha256: 'deadbeefdeadbeef',
+      bodyTextLength: CONTENT_PROD.bodyTextLength,
+      headings: 3,
+      bodyHeadings: CONTENT_PROD.headings.length,
+      imageCount: 2,
+      iframeCount: 1,
+      outboundLinks: 1,
+    },
+    excludedRegions: ['site-header', 'site-footer'],
+    excludedPerPage: [],
+    headings: CONTENT_PROD.headings,
+    minTextLength: Math.floor(CONTENT_PROD.bodyTextLength * CONTENT_FRACTION),
+    images: CONTENT_PROD.images,
+    embeds: CONTENT_PROD.embeds,
+    links: CONTENT_PROD.links,
+    ...(overrides.page_ || {}),
+  };
+
+  writeJson(join(root, 'verify/content-expectations.json'), {
+    derivedFrom: 'routes/manifest.production.json',
+    textFraction: CONTENT_FRACTION,
+    pageCount: 1,
+    pages: [page],
+    ...(overrides.file || {}),
+  });
+}
+
+// 46. The intact fixture passes, so a failure below means the break was caught.
+check('an intact page passes verify:content', (root) => {
+  contentFixture(root);
+  const { code, out } = run(root, 'verify-content.mjs');
+  return { ok: code === 0, detail: code === 0 ? 'exit 0' : `expected exit 0, got ${code}\n${out}` };
+});
+
+// 47. A page that lost one of production's headings.
+check('a page missing a production heading fails verify:content', (root) => {
+  contentFixture(root, { page: { headings: [CONTENT_PROD.headings[0]] } });
+  const { code, out } = run(root, 'verify-content.mjs');
+  const ok = code === 1 && /missing heading "Interplanetary ancestors 1-3 \(EN\)"/.test(out);
+  return { ok, detail: ok ? 'exit 1, lost heading named' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 48. A page that renders fewer images than production. This is the loss that
+//     /collect/documentation.html shipped with every heading assertion passing.
+check('a page with fewer images than production fails verify:content', (root) => {
+  contentFixture(root, { page: { images: 1 } });
+  const { code, out } = run(root, 'verify-content.mjs');
+  const ok = code === 1 && /1 images, expected 2/.test(out);
+  return { ok, detail: ok ? 'exit 1, image shortfall reported' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 49. A page whose body collapsed but whose headings all survived — /lab kept
+//     its title and lost 82% of what was under it.
+check('a page whose body text collapsed fails verify:content', (root) => {
+  contentFixture(root, { page: { body: 'One line survived.' } });
+  const { code, out } = run(root, 'verify-content.mjs');
+  const ok = code === 1 && /chars < expected 340/.test(out);
+  return { ok, detail: ok ? 'exit 1, text floor breached' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 50. A page that dropped an external link production served.
+check('a page missing a production link fails verify:content', (root) => {
+  contentFixture(root, { page: { links: [] } });
+  const { code, out } = run(root, 'verify-content.mjs');
+  const ok = code === 1 && /missing link https:\/\/support\.apple\.com/.test(out);
+  return { ok, detail: ok ? 'exit 1, lost link named' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 51. A page that dropped production's embed.
+check('a page missing a production embed fails verify:content', (root) => {
+  contentFixture(root, { page: { embeds: 0 } });
+  const { code, out } = run(root, 'verify-content.mjs');
+  const ok = code === 1 && /0 embeds, expected 1/.test(out);
+  return { ok, detail: ok ? 'exit 1, embed shortfall reported' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 52. The defect itself: an expectation file whose heading list was filtered
+//     down to what the build already had. The build satisfies every assertion
+//     that is written, which is exactly why the old file passed.
+check('an expectation file with filtered-out headings fails verify:content', (root) => {
+  contentFixture(root, {
+    page: { headings: [CONTENT_PROD.headings[0]] },
+    page_: { headings: [CONTENT_PROD.headings[0]] },
+  });
+  const { code, out } = run(root, 'verify-content.mjs');
+  const ok = code === 1 && /every production body heading is asserted/.test(out) && /asserts 1 of 2/.test(out);
+  return { ok, detail: ok ? 'exit 1, hollowed expectation caught' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 53. The other half of the defect: minTextLength taken from the build instead
+//     of from production. It looked like a regression floor and was one only
+//     under whatever the migration happened to emit.
+check('a minTextLength taken from the build fails verify:content', (root) => {
+  contentFixture(root, {
+    page: { body: 'Short.' },
+    page_: { minTextLength: 40 },
+  });
+  const { code, out } = run(root, 'verify-content.mjs');
+  const ok = code === 1 && /minTextLength is a fraction of production body text/.test(out);
+  return { ok, detail: ok ? 'exit 1, build-derived floor caught' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 54. An expectation file that does not say it came from production.
+check('expectations not derived from production fail verify:content', (root) => {
+  contentFixture(root, { file: { derivedFrom: 'dist/' } });
+  const { code, out } = run(root, 'verify-content.mjs');
+  const ok = code === 1 && /expectations derive from production/.test(out);
+  return { ok, detail: ok ? 'exit 1, provenance rejected' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 55. A page with no production baseline asserts nothing, so it must not pass
+//     quietly — that is how 55 pages asserted zero headings and read as green.
+check('a page with no production baseline fails verify:content', (root) => {
+  contentFixture(root, { page_: { production: null } });
+  const { code, out } = run(root, 'verify-content.mjs');
+  const ok = code === 1 && /every page has a production baseline/.test(out);
+  return { ok, detail: ok ? 'exit 1, baseline-less page caught' : `expected exit 1, got ${code}\n${out}` };
+});
+
 // --- F7: the documented source of truth is the strongest command ---------
 
 // OPERATING-RULES designates `npm run verify` as the command whose exit code
