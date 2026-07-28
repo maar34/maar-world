@@ -12,8 +12,8 @@ description: ">"
 ---
 
 <div class="layout--articles">
-  <section class="my-5">
-    <header><h2 id="page-layout"></h2></header>
-    
-  </section>
+<section class="my-5">
+<header><h2 id="page-layout"></h2></header>
+
+</section>
 </div>

@@ -18,6 +18,8 @@
  *     exact directory listing instead.
  */
 
+import { createHash } from 'node:crypto';
+
 import { runStandalone } from './lib/report.mjs';
 import { ARTIFACTS, has, loadJson, indexDist, readDistFile } from './lib/artifacts.mjs';
 import { cardUrlForms } from './lib/routes.mjs';
@@ -25,6 +27,37 @@ import { cardUrlForms } from './lib/routes.mjs';
 const EXPECTED_TOTAL = 35;
 const EXPECTED_BY_SOURCE = { skysounds: 34, stoney_way: 1 };
 const NOINDEX_RE = /<meta[^>]+name=["']robots["'][^>]*content=["'][^"']*noindex/i;
+
+const PLAYER_URL_RE = /https:\/\/play\.maar\.world\/[^\s"'<>)]+/g;
+const DOWNLOAD_URL_RE = /https:\/\/dl\.dropboxusercontent\.com\/[^\s"'<>)]+/g;
+const TITLE_RE = /<title>([\s\S]*?)<\/title>/i;
+const DESCRIPTION_RE = /<p class="description"[^>]*>([\s\S]*?)<\/p>/i;
+const IFRAME_TITLE_RE = /<iframe[^>]*\stitle="([^"]*)"/gi;
+const DOWNLOAD_LIST_RE = /<ul[^>]*class="download-list"[^>]*>([\s\S]*?)<\/ul>/i;
+const ANCHOR_TEXT_RE = /<a[^>]*>([\s\S]*?)<\/a>/gi;
+
+/**
+ * HTML entity decode, enough for built markup.
+ *
+ * Astro escapes `&` in URLs as `&#38;` in attributes and `&amp;` in text, so a
+ * frozen `?g=334&s=0&c=1` never matches the raw page byte-for-byte. Decoding
+ * first is what makes the frozen baseline comparable to what is served.
+ * `&amp;` must be last, or `&amp;#38;` would double-decode.
+ */
+function decodeEntities(s) {
+  return s
+    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&');
+}
+
+const fingerprint = (text) => createHash('sha256').update(text, 'utf8').digest('hex').slice(0, 32);
+const uniqueSorted = (xs) => [...new Set(xs)].sort();
+const sameSet = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]);
 
 export async function checkCards(report) {
   if (!has('cards')) {
@@ -219,6 +252,134 @@ export async function checkCards(report) {
       `${expectedForwards} card pages forward to the correct Orbiter track`,
       `${cards.length - expectedForwards} correctly do not forward (no track)`,
     );
+  }
+
+  // --- Per-card content: each page carries ITS OWN card -------------------
+  // "Not empty" is not a content check. 35 pages of plausible size, all with
+  // noindex, would stay green if two cards' descriptions were swapped or if
+  // every page shipped EBT5599's player. These URLs are printed on physical
+  // objects: a card that plays another card's track cannot be recalled.
+  //
+  // routes/nfc-cards.json freezes, per code, the title, a description
+  // fingerprint, the play.maar.world players and the downloads, taken from the
+  // legacy source and confirmed against live production. This asserts the built
+  // page against its OWN frozen record.
+  const withExpectations = cards.filter((c) => c.expect);
+
+  if (withExpectations.length !== cards.length) {
+    report.fail(
+      'every card has frozen content expectations',
+      `${cards.length - withExpectations.length} without — regenerate with node scripts/collect-seeds.mjs`,
+    );
+  } else {
+    report.pass('every card has frozen content expectations', `${withExpectations.length} cards`);
+  }
+
+  const titleWrong = [];
+  const descWrong = [];
+  const playersWrong = [];
+  const downloadsWrong = [];
+  const noJsMissing = [];
+  const labelsNotDistinct = [];
+  const builtTitles = new Map();
+
+  for (const card of withExpectations) {
+    const file = `${card.code}.html`;
+    if (!set.has(file)) continue;
+    let raw = '';
+    try {
+      raw = readDistFile(file);
+    } catch {
+      continue;
+    }
+    const html = decodeEntities(raw);
+    const expect = card.expect;
+
+    // Title. Compared with `includes` rather than equality so a later change to
+    // the shared layout's title suffix does not turn this into a false alarm —
+    // the assertion that matters is that THIS card's name is on THIS page, and
+    // that no two cards share a title.
+    const titleMatch = TITLE_RE.exec(html);
+    const builtTitle = titleMatch ? titleMatch[1].trim() : '';
+    builtTitles.set(card.code, builtTitle);
+    if (expect.title && !builtTitle.includes(expect.title)) {
+      titleWrong.push(`${card.code}: "${builtTitle}" does not carry "${expect.title}"`);
+    }
+
+    // Description.
+    const descMatch = DESCRIPTION_RE.exec(html);
+    const builtDesc = descMatch ? descMatch[1].trim() : '';
+    if (expect.descriptionSha256 && fingerprint(builtDesc) !== expect.descriptionSha256) {
+      descWrong.push(card.code);
+    }
+
+    // play.maar.world players — MW-6's "matches the frozen manifest baseline".
+    const builtPlayers = uniqueSorted(html.match(PLAYER_URL_RE) || []);
+    if (!sameSet(builtPlayers, uniqueSorted(expect.players || []))) {
+      playersWrong.push(
+        `${card.code}: [${builtPlayers.join(' ')}] != [${uniqueSorted(expect.players || []).join(' ')}]`,
+      );
+    }
+
+    // Downloads.
+    const builtDownloads = uniqueSorted(html.match(DOWNLOAD_URL_RE) || []);
+    if (!sameSet(builtDownloads, uniqueSorted(expect.downloads || []))) {
+      downloadsWrong.push(
+        `${card.code}: ${builtDownloads.length} link(s) != ${uniqueSorted(expect.downloads || []).length} frozen`,
+      );
+    }
+
+    // The no-JavaScript route to the Orbiter. The 300ms forward is only half of
+    // production's behaviour: it also renders a real anchor and a <noscript>
+    // note, which is the ONLY route to the track when JavaScript is restricted
+    // (Lockdown Mode, a locked-down in-app webview, a content blocker). A card
+    // that forwards must also offer that anchor.
+    if (card.orbiterTrackId) {
+      const anchor = `href="https://orbiter.plantasia.space/?trackId=${card.orbiterTrackId}"`;
+      const reasons = [];
+      if (!html.includes(anchor)) reasons.push('no anchor');
+      if (!/<noscript>/i.test(html)) reasons.push('no <noscript>');
+      if (reasons.length) noJsMissing.push(`${card.code} (${reasons.join(', ')})`);
+    }
+
+    // Player and download labels must tell one thing from another. Two iframes
+    // sharing a title, or two links both reading "wav", are indistinguishable
+    // to a sighted reader and a screen reader alike.
+    const iframeTitles = [...html.matchAll(IFRAME_TITLE_RE)].map((m) => m[1].trim());
+    if (new Set(iframeTitles).size !== iframeTitles.length) {
+      labelsNotDistinct.push(`${card.code}: duplicate iframe titles`);
+    }
+    const list = DOWNLOAD_LIST_RE.exec(html);
+    if (list) {
+      const labels = [...list[1].matchAll(ANCHOR_TEXT_RE)].map((m) => m[1].replace(/<[^>]*>/g, '').trim());
+      if (labels.some((l) => !l)) labelsNotDistinct.push(`${card.code}: an unlabelled download`);
+      else if (new Set(labels).size !== labels.length) {
+        labelsNotDistinct.push(`${card.code}: duplicate download labels (${labels.join(', ')})`);
+      }
+    }
+  }
+
+  const reportSet = (label, wrong, detailPrefix, sample = 3) => {
+    if (wrong.length) report.fail(label, `${wrong.length} ${detailPrefix}: ${wrong.slice(0, sample).join('; ')}`);
+    else report.pass(label, `${withExpectations.length} cards`);
+  };
+
+  reportSet('every card page carries its own title', titleWrong, 'wrong');
+  reportSet('every card page carries its own description', descWrong, 'wrong', 5);
+  reportSet('every card page links its own play.maar.world players', playersWrong, 'wrong');
+  reportSet('every card page links its own downloads', downloadsWrong, 'wrong');
+  reportSet('every forwarding card offers a no-JavaScript route to the Orbiter', noJsMissing, 'without', 5);
+  reportSet('player and download labels are distinct within a card page', labelsNotDistinct, 'ambiguous');
+
+  const titleValues = [...builtTitles.values()];
+  const dupeTitles = titleValues.filter((t, i) => titleValues.indexOf(t) !== i);
+  if (dupeTitles.length) {
+    report.fail(
+      'all 35 card titles are distinct',
+      `shared by more than one card: ${[...new Set(dupeTitles)].slice(0, 3).join(' | ')}`,
+    );
+  } else {
+    report.pass('all 35 card titles are distinct', `${titleValues.length} titles`);
   }
 
   // --- Host fallback -----------------------------------------------------

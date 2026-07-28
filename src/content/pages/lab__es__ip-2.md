@@ -24,43 +24,42 @@ Todos los instrumentos musicales construidos y grabados por <a href="https://mel
 <a href="https://maar.world/lab/es/ip-3.html " rel="Ancestros interplanetarios 3-3"> Continuar leyendo</a> 
 
 5.Vasija Silbadora Vicus
-{:.success}
+
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=7" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=7" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=7 " rel="Maar World Player" target="_blank"> Play full screen</a> 
 
 6.
 Flauta Doble de Jalisco
-{:.success}
+
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=8" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=8" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=8 " rel="Maar World Player" target="_blank"> Play full screen</a> 
 
 7.Sonajero Calabaza Mochica
-{:.success}
 
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=9" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=9" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=9 " rel="Maar World Player" target="_blank"> Play full screen</a> 
 
 8.Zumbador Guaraní
-{:.success}
+
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=10" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=10" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=10 " rel="Maar World Player" target="_blank"> Play full screen</a> 
 
 9.Sonajero San Pedro
-{:.success}
+
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=11" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=11" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=11 " rel="Maar World Player" target="_blank"> Play full screen</a> 

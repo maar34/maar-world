@@ -23,14 +23,14 @@ Orbits and Bodies explores the entanglement of embodied gesture, astronomical da
 ---
 
 <div class="pdf-embed pdf-preview">
-  <object data="/img/pdf/WAC25-Orbits-and-Bodies-Bruna-Gabriel.pdf#toolbar=0" type="application/pdf" width="100%" height="1000px" aria-label="Orbits and Bodies PDF">
-    <p>Your browser does not display embedded PDFs. <a href="/img/pdf/WAC25-Orbits-and-Bodies-Bruna-Gabriel.pdf" target="_blank" rel="noopener">Open / Download PDF</a>.</p>
-  </object>
-  <div class="pdf-fallback" aria-hidden="true" style="display:none; text-align:center; margin:.75rem 0 1.25rem;">
-    <a class="button button--outline-info button--rounded" style="font-size:.75rem;" href="/img/pdf/WAC25-Orbits-and-Bodies-Bruna-Gabriel.pdf" target="_blank" rel="noopener">Open / Download PDF</a>
-  </div>
+<object data="/img/pdf/WAC25-Orbits-and-Bodies-Bruna-Gabriel.pdf#toolbar=0" type="application/pdf" width="100%" height="1000px" aria-label="Orbits and Bodies PDF">
+<p>Your browser does not display embedded PDFs. <a href="/img/pdf/WAC25-Orbits-and-Bodies-Bruna-Gabriel.pdf" target="_blank" rel="noopener">Open / Download PDF</a>.</p>
+</object>
+<div class="pdf-fallback" aria-hidden="true" style="display:none; text-align:center; margin:.75rem 0 1.25rem;">
+<a class="button button--outline-info button--rounded" style="font-size:.75rem;" href="/img/pdf/WAC25-Orbits-and-Bodies-Bruna-Gabriel.pdf" target="_blank" rel="noopener">Open / Download PDF</a>
+</div>
 </div>
 
 <div class="media-frame ratio-169">
-  <p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a href="https://youtu.be/Tp--LJcp_5o" target="_blank" rel="noopener">watch this video on youtube</a></p>
+<p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a href="https://youtu.be/Tp--LJcp_5o" target="_blank" rel="noopener">watch this video on youtube</a></p>
 </div>

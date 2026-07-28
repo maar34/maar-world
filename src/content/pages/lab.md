@@ -13,7 +13,7 @@ indexOf: "lab"
 # Lab
 
 <div class="hero hero--dark" style='height:200px; background-image:url("/img/lab/genesis-lab.jpg");'>
-  <div class="hero__content"></div>
+<div class="hero__content"></div>
 </div>
 
 #### Step into a time lab.

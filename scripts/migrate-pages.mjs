@@ -344,6 +344,42 @@ function defuseThirdParty(html, problems, where) {
   return out;
 }
 
+const BLOCK_TAG = /<(\/?)(div|section|article|header|footer|aside|nav|form|figure|table|ul|ol|main|details|blockquote|picture|video|object|label)\b[^>]*?(\/?)>/gi;
+
+/**
+ * Un-indent raw HTML so CommonMark passes it through.
+ *
+ * Kramdown treated a `<div>` and everything to its matching close as one raw
+ * HTML block. CommonMark ends an HTML block at the first blank line, so the
+ * next indented line starts a fresh block — and four spaces of indentation make
+ * that block an indented *code* block. The visible symptom is a page of legacy
+ * markup rendered as escaped source inside `<pre>`.
+ *
+ * Dedenting inside open HTML fixes it without touching markdown: nested list
+ * indentation at depth 0 is left exactly as written, and fenced code is skipped.
+ */
+function dedentHtmlBlocks(body) {
+  const lines = body.split('\n');
+  const out = [];
+  let depth = 0;
+  let fenced = false;
+
+  for (const line of lines) {
+    if (/^\s{0,3}(```|~~~)/.test(line)) fenced = !fenced;
+    // Inside open HTML, or opening a new one: a tag four columns in becomes an
+    // indented code block and the markup ships as visible escaped source.
+    const opensHtml = /^\s{4,}<[a-z!/]/i.test(line);
+    out.push(!fenced && (depth > 0 || opensHtml) ? line.replace(/^\s+/, '') : line);
+    if (fenced) continue;
+
+    for (const m of line.matchAll(BLOCK_TAG)) {
+      if (m[1] === '/') depth = Math.max(0, depth - 1);
+      else if (m[3] !== '/') depth += 1;
+    }
+  }
+  return out.join('\n');
+}
+
 function transform(body, ctx) {
   const problems = [];
   let out = body;
@@ -457,7 +493,16 @@ function transform(body, ctx) {
     return '';
   });
 
-  const leftover = out.match(/\{\{[\s\S]{0,80}?\}\}|\{%[\s\S]{0,80}?%\}/g);
+  /**
+   * Kramdown inline attribute lists — `{:.success}`, `{:.border.rounded}`. They
+   * attached classes from the dead theme, and every markdown engine other than
+   * kramdown renders them as literal text. They carry no content.
+   */
+  out = out.replace(/\{:[.#][^}\n]*\}/g, '');
+
+  out = dedentHtmlBlocks(out);
+
+  const leftover = out.match(/\{\{[\s\S]{0,80}?\}\}|\{%[\s\S]{0,80}?%\}|\{:[.#][^}\n]*\}/g);
   if (leftover) problems.push(`${ctx.key}: UNRESOLVED Liquid ${[...new Set(leftover)].slice(0, 3).join(' ')}`);
 
   return { body: out.replace(/\n{3,}/g, '\n\n').trim(), problems, wantsIndex };

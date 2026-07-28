@@ -12,7 +12,6 @@ lang: "es"
 
 *¿Pueden los sonidos desempeñar un papel en la recuperación de nuestra memoria? 
 ¿Es posible llamar a la memoria de culturas históricamente reprimidas?*
-{:.error}
 
 #### Del arco de Tacuabé a la creacion con nuevos mundos.
 
@@ -23,33 +22,33 @@ Estudios recientes en el terreno de la Arqueoastronomía, indican que las comuni
 <a href="https://maar.world/lab/es/ip-2.html " rel="Ancestros interplanetarios 2-3">  Continuar leyendo</a> 
 
 1.Trompeta Mochica.
-{:.success}
+
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=3" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=3" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=3 " rel="Maar World Player" target="_blank"> Play full screen</a> 
 
 2.Vasija Silbadora Mochica
-{:.success}
+
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=4" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=4" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=4 " rel="Maar World Player" target="_blank"> Play full screen</a> 
 
 3.Turú
-{:.success}
+
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=5" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=5" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=5 " rel="Maar World Player" target="_blank"> Play full screen</a> 
 
 4.Silbato Doble Azteca
-{:.success}
+
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=6" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=6" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=6 " rel="Maar World Player" target="_blank"> Play full screen</a> 

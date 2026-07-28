@@ -14,7 +14,7 @@ Welcome to Entangled Worlds, an initiative that explores the intersection of dig
 A worldbuilding project inspired by history, science fiction, visual arts, music making. A proof of concept for the development of new tools in a creator-owned economy. This may be the first of many entangled worlds.
 
 <div class="layout--articles">
-  <section class="my-5">
-    <header><h2 id="page-layout">Documentation</h2></header>
-    
-  </section>
+<section class="my-5">
+<header><h2 id="page-layout">Documentation</h2></header>
+
+</section>

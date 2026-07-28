@@ -25,4 +25,4 @@ Thanks for purchasing this composition, hope you enjoy it.
 <a href="https://www.dropbox.com/s/49n12aysvla2sml/06%20RevolutionX.aif?dl=0" rel="wav" target="_blank">uncompressed wav</a> <br>
 <br>
  
-![Image](/img/6.revx.Artboard.png){:.border.rounded.shadow}
+![Image](/img/6.revx.Artboard.png)

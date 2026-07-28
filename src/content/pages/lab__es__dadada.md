@@ -43,9 +43,9 @@ Lo hicimos con Fede Percibal and Bonish
 Gracias Gustavo Bravetti y Arturia por invitarme a disfrutar los sonidos de todos los tiempos con sus plug-ins. Arturia está haciendo productos realmente sorprendentes. Check them out. 
 
 104.Dadada Live set Intro 4 orbiter
-{:.success}
+
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=20" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=20" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=20 " rel="Maar World Player" target="_blank"> Play full screen</a> 

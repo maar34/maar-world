@@ -12,6 +12,7 @@
     "build": "node scripts/assemble-public.mjs && astro build",
     "preview": "astro preview",
     "verify": "node scripts/verify.mjs",
+    "verify:contract": "node scripts/verify-contract.mjs",
     "verify:routes": "node scripts/verify-routes.mjs",
     "verify:cards": "node scripts/verify-cards.mjs",
     "verify:content": "node scripts/verify-content.mjs",
@@ -22,6 +23,7 @@
     "ledger:check": "node scripts/ledger.mjs check",
     "verify:schemas": "node scripts/check-schemas.mjs",
     "freeze:routes": "node scripts/collect-seeds.mjs && node scripts/freeze-routes.mjs && node scripts/author-policy.mjs",
+    "contract:relock": "node scripts/contract-lock.mjs relock",
     "check:links": "node scripts/check-external-links.mjs"
   },
   "dependencies": {

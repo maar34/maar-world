@@ -25,4 +25,4 @@ Thanks for purchasing this composition, hope you enjoy it.
 <a href="https://www.dropbox.com/s/iixq0bda0legqx9/05%20RTHW.aif?dl=0" rel="wav" target="_blank">uncompressed wav</a> <br>
 <br>
  
-![Image](/img/5.rthw.Artboard.png){:.border.rounded.shadow}
+![Image](/img/5.rthw.Artboard.png)

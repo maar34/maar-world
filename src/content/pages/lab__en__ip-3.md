@@ -19,37 +19,33 @@ My eternal gratitude to my family, for their unconditional love. To Head Brother
 This project is made with love, <a href="https://github.com/maar34/interplanetary-players-web" rel="Maar World Player" target="_blank"> p5.js </a> and  <a href="https://github.com/maar34/interplanetary-players-rnbo" rel="Maar World Player" target="_blank"> RNBO</a>. Published under the General Public License Version 3 (GPLv3). 
 
 10.Flauta Flor Azteca
-{:.success}
 
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=12" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=12" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=12 " rel="Maar World Player" target="_blank"> Play full screen</a> 
 
 11.Flauta Poliglobular Maya
-{:.success}
 
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=13" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=13" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=13 " rel="Maar World Player" target="_blank"> Play full screen</a> 
 
 12.Antara Nazca
-{:.success}
 
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=14" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=14" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=14 " rel="Maar World Player" target="_blank"> Play full screen</a> 
 
 13.Silbato de la Muerte Azteca
-{:.success}
 
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=15" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=15" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=15 " rel="Maar World Player" target="_blank"> Play full screen</a> 

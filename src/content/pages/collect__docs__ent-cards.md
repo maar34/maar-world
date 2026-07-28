@@ -33,15 +33,15 @@ On the back side of the card, you'll find:
 ![Image](/img/docs/ent-cards/02_card-back.png "Card Back Diagram")
 
 <div class="card-columns">
-  <div class="card-border">
-    <div class="card__image">
-      <img class="image" src="/img/docs/covers/qr-technology.jpg"/>
-    </div>
-    <div class="card__content">
-      <div class="card__header">
-        <h6>QR Code. <br><br><br> </h6>
-      </div>
-      <p> <br> <br> <br> QR code can be added up on special request. <br><br><br><br> </p>
-   </div>
-  </div>
+<div class="card-border">
+<div class="card__image">
+<img class="image" src="/img/docs/covers/qr-technology.jpg"/>
+</div>
+<div class="card__content">
+<div class="card__header">
+<h6>QR Code. <br><br><br> </h6>
+</div>
+<p> <br> <br> <br> QR code can be added up on special request. <br><br><br><br> </p>
+</div>
+</div>
 </div>

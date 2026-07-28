@@ -639,14 +639,15 @@
     "https://youtu.be/riEIWUQ-OWQ"
   ],
   "allowedNew": [
+    "https://aventuresonores.us7.list-manage.com/subscribe/post?u=8cc5ff1d6fb14f3fdc831c40a&id=873fbbbbb9&f_id=00acc5e4f0",
     "https://formspree.io/f/mqkrdkde",
     "https://formspree.io/f/xjvneyen",
-    "https://aventuresonores.us7.list-manage.com/subscribe/post?u=8cc5ff1d6fb14f3fdc831c40a&id=873fbbbbb9&f_id=00acc5e4f0",
+    "https://vimeo.com/252728417",
     "https://youtu.be/3FYGWpvH8Gs",
+    "https://youtu.be/AhYAywwaVHM",
     "https://youtu.be/M5QpFRtg05Y",
     "https://youtu.be/Tp--LJcp_5o",
-    "https://youtu.be/kdTQN2zn7Mo",
-    "https://vimeo.com/252728417"
+    "https://youtu.be/kdTQN2zn7Mo"
   ],
   "allowedNewNote": "Reviewed additions (MW-7/MW-8). Each was present in legacy source but invisible to the MW-4 crawl: form actions are not links, and the four YouTube/Vimeo ids only ever rendered inside a consent-gated include the crawler never accepted. Nothing here fires on page load — form actions fire on submit, the video urls are click-out embed facades."
 }

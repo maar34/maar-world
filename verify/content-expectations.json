@@ -1,6 +1,6 @@
 {
   "note": "Per-page content-presence assertions for the migrated pages (MW-7 / MW-8). Headings are taken from the legacy source, so they assert that migration preserved them. minTextLength is a regression floor at 90% of the build at authoring time. Regenerate with scripts/author-content-expectations.mjs after an intentional content change.",
-  "authoredAt": "2026-07-28T22:36:30.191Z",
+  "authoredAt": "2026-07-28T22:39:16.189Z",
   "pageCount": 95,
   "pages": [
     {
@@ -8,7 +8,7 @@
       "headings": [
         "About"
       ],
-      "minTextLength": 1148
+      "minTextLength": 987
     },
     {
       "url": "/bookings",
@@ -266,7 +266,7 @@
     {
       "url": "/collect/docs/tutorials",
       "headings": [],
-      "minTextLength": 260
+      "minTextLength": 198
     },
     {
       "url": "/collect/documentation",
@@ -282,7 +282,7 @@
         "Start your journey",
         "Contact us"
       ],
-      "minTextLength": 2280
+      "minTextLength": 1142
     },
     {
       "url": "/collect/privacy",
@@ -323,7 +323,7 @@
       "headings": [
         "Play music cards with exoplanets"
       ],
-      "minTextLength": 1797
+      "minTextLength": 1571
     },
     {
       "url": "/interplanetary-players",
@@ -341,7 +341,7 @@
         "Is it possible to slow down time?",
         "4 the dadadaistS"
       ],
-      "minTextLength": 1049
+      "minTextLength": 1038
     },
     {
       "url": "/lab/en/helix-technical-requirements",
@@ -364,17 +364,17 @@
     {
       "url": "/lab/en/ip-1",
       "headings": [],
-      "minTextLength": 2107
+      "minTextLength": 2055
     },
     {
       "url": "/lab/en/ip-2",
       "headings": [],
-      "minTextLength": 1546
+      "minTextLength": 1492
     },
     {
       "url": "/lab/en/ip-3",
       "headings": [],
-      "minTextLength": 881
+      "minTextLength": 837
     },
     {
       "url": "/lab/en/ip-orchestra-design",
@@ -443,7 +443,7 @@
         "Es posible desacelerar el tiempo?",
         "Para lxs Dadadaistas"
       ],
-      "minTextLength": 1059
+      "minTextLength": 1048
     },
     {
       "url": "/lab/es/helix-eac-montevideo-2025",
@@ -466,17 +466,17 @@
     {
       "url": "/lab/es/ip-1",
       "headings": [],
-      "minTextLength": 2140
+      "minTextLength": 2088
     },
     {
       "url": "/lab/es/ip-2",
       "headings": [],
-      "minTextLength": 1542
+      "minTextLength": 1488
     },
     {
       "url": "/lab/es/ip-3",
       "headings": [],
-      "minTextLength": 897
+      "minTextLength": 854
     },
     {
       "url": "/lab/es/ip-orchestra-design",
@@ -529,14 +529,14 @@
         "Landings",
         "Sonic events on planet earth"
       ],
-      "minTextLength": 4731
+      "minTextLength": 4742
     },
     {
       "url": "/music",
       "headings": [
         "Music"
       ],
-      "minTextLength": 154
+      "minTextLength": 133
     },
     {
       "url": "/orbiters",
@@ -576,7 +576,7 @@
         "Revolution X",
         "Download"
       ],
-      "minTextLength": 238
+      "minTextLength": 215
     },
     {
       "url": "/rthw00",
@@ -584,7 +584,7 @@
         "Rainbow technologies to heal war.",
         "Download"
       ],
-      "minTextLength": 247
+      "minTextLength": 224
     },
     {
       "url": "/skyl0",
@@ -592,7 +592,7 @@
         "Skylight.1",
         "Download"
       ],
-      "minTextLength": 294
+      "minTextLength": 270
     },
     {
       "url": "/skyl00",
@@ -600,7 +600,7 @@
         "Skylight.2",
         "Download"
       ],
-      "minTextLength": 302
+      "minTextLength": 279
     },
     {
       "url": "/skyl000",
@@ -608,7 +608,7 @@
         "Skylight.3",
         "Download"
       ],
-      "minTextLength": 279
+      "minTextLength": 256
     },
     {
       "url": "/sphe0",
@@ -616,7 +616,7 @@
         "Spherical Drops",
         "Download"
       ],
-      "minTextLength": 267
+      "minTextLength": 243
     },
     {
       "url": "/subscribe",
@@ -633,7 +633,7 @@
     {
       "url": "/tree/max-network-berlin",
       "headings": [],
-      "minTextLength": 960
+      "minTextLength": 270
     }
   ]
 }

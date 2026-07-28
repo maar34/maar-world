@@ -25,4 +25,4 @@ Thanks for purchasing this composition, hope you enjoy it.
 
 <a href="https://www.dropbox.com/s/csxilvusxti7rjg/Skylight.2.wav?dl=0" rel="wav" target="_blank">uncompressed wav</a> <br>
 
-![Image](/img/SL.2.Artboard.png){:.border.rounded.shadow}
+![Image](/img/SL.2.Artboard.png)

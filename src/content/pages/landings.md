@@ -48,8 +48,8 @@ ENT Worlds
 
 <a href="https://youtu.be/GYhV2qAPZ6w" rel="Trappist Live" target="_blank">TRAPPIST - 01 LIVE AV Head Brothers</a>
 <div class="hero hero--center hero--dark" style="margin:.75rem 0 1rem;">
-  <p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a href="https://youtu.be/GYhV2qAPZ6w" target="_blank" rel="noopener">watch this video on youtube</a></p>
-  <p style="text-align:center;font-size:.85rem;opacity:.85;margin:.35rem 0 0;">TRAPPIST - 01 live AV (Head Brothers)</p>
+<p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a href="https://youtu.be/GYhV2qAPZ6w" target="_blank" rel="noopener">watch this video on youtube</a></p>
+<p style="text-align:center;font-size:.85rem;opacity:.85;margin:.35rem 0 0;">TRAPPIST - 01 live AV (Head Brothers)</p>
 </div>
 
 - 18 / 12 / 2019 El Hangar - 📍 Buenos Aires Argentina
@@ -68,14 +68,14 @@ ENT Worlds
   - 21/7/18 📍 Villa serrana SERRANA, MINAS Uruguay
 
 <div class="hero hero--center hero--dark" style="margin:.75rem 0 0;">
-  <p class="embed-facade" data-embed-facade data-embed-provider="vimeo"><a href="https://vimeo.com/252728417" target="_blank" rel="noopener">watch this video on vimeo</a></p>
-  <p style="text-align:center;font-size:.85rem;opacity:.85;margin:.35rem 0 0;">Exoplanetas — Hybrid set (excerpt, Vimeo)</p>
+<p class="embed-facade" data-embed-facade data-embed-provider="vimeo"><a href="https://vimeo.com/252728417" target="_blank" rel="noopener">watch this video on vimeo</a></p>
+<p style="text-align:center;font-size:.85rem;opacity:.85;margin:.35rem 0 0;">Exoplanetas — Hybrid set (excerpt, Vimeo)</p>
 </div>
 
 <a href="https://youtu.be/riEIWUQ-OWQ" rel="Exoplanetas Hybrid" target="_blank">🙏🏼</a>
 <div class="hero hero--center hero--dark" style="margin:.5rem 0 1rem;">
-  <p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a href="https://youtu.be/riEIWUQ-OWQ" target="_blank" rel="noopener">watch this video on youtube</a></p>
-  <p style="text-align:center;font-size:.85rem;opacity:.85;margin:.35rem 0 0;">Exoplanetas — additional excerpt</p>
+<p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a href="https://youtu.be/riEIWUQ-OWQ" target="_blank" rel="noopener">watch this video on youtube</a></p>
+<p style="text-align:center;font-size:.85rem;opacity:.85;margin:.35rem 0 0;">Exoplanetas — additional excerpt</p>
 </div>
 
 - <a href="http://headbrothers.com/idm2018/" rel="2018" target="_blank">Immersive experiences</a> for the closing FING Ingeniería Demuestra. Head Brothers + MEDIALAB  📍 Montevideo, Uruguay
@@ -90,8 +90,8 @@ ENT Worlds
   - 05/08/2017 Music production with Watson Supercomputer. 📍 Montevideo, Uruguay
 
 <div class="hero hero--center hero--dark" style="margin:.75rem 0 1rem;">
-  <p class="embed-facade" data-embed-facade data-embed-provider="vimeo"><a href="https://vimeo.com/235986660" target="_blank" rel="noopener">watch this video on vimeo</a></p>
-  <p style="text-align:center;font-size:.85rem;opacity:.85;margin:.35rem 0 0;">Watson Says. (Vimeo)</p>
+<p class="embed-facade" data-embed-facade data-embed-provider="vimeo"><a href="https://vimeo.com/235986660" target="_blank" rel="noopener">watch this video on vimeo</a></p>
+<p style="text-align:center;font-size:.85rem;opacity:.85;margin:.35rem 0 0;">Watson Says. (Vimeo)</p>
 </div>
 
   <br>
@@ -122,7 +122,7 @@ ENT Worlds
 - <a href="http://www.truthandliesmusic.com/projects/2014/3/23/ox5wi8hue9l4p659afj4789efsoxxm" rel="VJ Set for Gilles Peterson" target="_blank">𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 VJ Set curated by Gilles Peterson</a> . 
     - 8/9/12  World Event of Young Artists Opening Party.  📍 Nottingham-Inglaterra.
 
-       <br>
+<br>
 - <a href="https://www.youtube.com/watch?v=OcP2sSbR5H4" rel="Because" target="_blank">Because</a>
   - 10/12 WEYA, Nottingham Contemporany, 📍 Nottingham, England.
   - 12/11/11 TSONAMI Festival of sound art, Palacio Cousiño, 📍 Valparaiso, Chile.  

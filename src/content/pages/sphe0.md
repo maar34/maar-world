@@ -25,4 +25,4 @@ Thanks for purchasing this composition, hope you enjoy it.
 <a href="https://www.dropbox.com/s/7svj2q5qwip4ztn/04%20Spherical%20Drops.aif?dl=0" rel="wav" target="_blank">uncompressed wav</a> <br>
 <br>
  
-![Image](/img/4.sphe.Artboard.png){:.border.rounded.shadow}
+![Image](/img/4.sphe.Artboard.png)

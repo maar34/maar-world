@@ -11,7 +11,6 @@ lang: "en"
 ---
 
 *Can sounds and musical instruments play a role in the recovery of hidden memories? Is it possible to call forth the memory of historically repressed cultures?*
-{:.error}
 
 #### From the musical bow of Tacuabé to the creation of new worlds.
 
@@ -22,33 +21,33 @@ Recent studies in the field of Archaeoastronomy indicate that Charrúa communiti
 <a href="https://maar.world/lab/en/ip-2.html " rel="Interplanetary ancestors 2-3"> Continue reading</a> 
 
 1.Trompeta Mochica.
-{:.success}
+
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=3" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=3" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=3 " rel="Maar World Player" target="_blank"> Play full screen</a> 
 
 2.Vasija Silbadora Mochica
-{:.success}
+
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=4" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=4" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=4 " rel="Maar World Player" target="_blank"> Play full screen</a> 
 
 3.Turú
-{:.success}
+
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=5" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=5" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=5 " rel="Maar World Player" target="_blank"> Play full screen</a> 
 
 4.Silbato Doble Azteca
-{:.success}
+
 <div class="container">
-  <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=6" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=6" style="border: 0" ></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=6 " rel="Maar World Player" target="_blank"> Play full screen</a> 

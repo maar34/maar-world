@@ -31,53 +31,53 @@ Resumen de presentación del primer taller de creación orbital, Universidad de 
 
 <!-- Nueva sección para "Controla el Sonido:" -->
 <section class="grid">
-  <article class="cell cell--bordered cell--12">
-    <div class="hero hero--center hero--light" style='background-color: #white;'>
-      <div class="hero__content">
-        <h3>Controla el Sonido:</h3>
-        <div class="container">
-          <iframe src="https://play.maar.world/?g=335&s=1&c=2" class="responsive-iframe" title="Interactivo Controla el Sonido" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        </div>
-        <p>Por favor, desactiva el silencio de tu dispositivo y presiona el botón de ON 🔛 & PLAY ▶️. Ajusta el sonido moviendo los KNOBS XYZ hacia arriba o hacia abajo hasta que te guste lo que escuchas. Si deseas volver al sonido original, presiona los botones hexagonales ⬢ para restablecer los KNOBS en su equilibrio.</p>
-      </div>
-    </div>
-    <div class="hero hero--center hero--light" style='background-color: #white;'>
-      <div class="hero__content">
-        <h3>Explora Modos Regenerativos:</h3>
-        <div class="container">
-          <iframe src="https://play.maar.world/?g=8&s=0&c=21" class="responsive-iframe" title="Interactivo Explora Modos Regenerativos" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        </div>
-        <p>Experimenta con 7 modos únicos, creando con datos reales de exoplanetas y sus tránsitos y órbitas a lo largo de diferentes escalas de tiempo. Mantén el botón presionado para obtener pistas sobre estos parámetros.</p>
-      </div>
-    </div>
-  </article>
+<article class="cell cell--bordered cell--12">
+<div class="hero hero--center hero--light" style='background-color: #white;'>
+<div class="hero__content">
+<h3>Controla el Sonido:</h3>
+<div class="container">
+<iframe src="https://play.maar.world/?g=335&s=1&c=2" class="responsive-iframe" title="Interactivo Controla el Sonido" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
+<p>Por favor, desactiva el silencio de tu dispositivo y presiona el botón de ON 🔛 & PLAY ▶️. Ajusta el sonido moviendo los KNOBS XYZ hacia arriba o hacia abajo hasta que te guste lo que escuchas. Si deseas volver al sonido original, presiona los botones hexagonales ⬢ para restablecer los KNOBS en su equilibrio.</p>
+</div>
+</div>
+<div class="hero hero--center hero--light" style='background-color: #white;'>
+<div class="hero__content">
+<h3>Explora Modos Regenerativos:</h3>
+<div class="container">
+<iframe src="https://play.maar.world/?g=8&s=0&c=21" class="responsive-iframe" title="Interactivo Explora Modos Regenerativos" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
+<p>Experimenta con 7 modos únicos, creando con datos reales de exoplanetas y sus tránsitos y órbitas a lo largo de diferentes escalas de tiempo. Mantén el botón presionado para obtener pistas sobre estos parámetros.</p>
+</div>
+</div>
+</article>
 </section>
 
 <br><br><br>
 
 <div class="form-container">
-  <h3>Contáctame</h3>
-  <p>Gracias por tu interés en nuestros talleres. Si necesitas información adicional, no dudes en ponerte en contacto.</p>
-  
-  <form
-    action="https://formspree.io/f/mqkrdkde"
-    method="POST"
-    class="contact-form"
-  >
-    <label>
-      Tu nombre:
-      <input type="text" name="name" required>
-    </label>
-    <label>
-      Tu correo electrónico:
-      <input type="email" name="email" required>
-    </label>
-    <label>
-      Tu mensaje:
-      <textarea name="message" required></textarea>
-    </label>
-    <button type="submit">Enviar</button>
-  </form>
+<h3>Contáctame</h3>
+<p>Gracias por tu interés en nuestros talleres. Si necesitas información adicional, no dudes en ponerte en contacto.</p>
+
+<form
+action="https://formspree.io/f/mqkrdkde"
+method="POST"
+class="contact-form"
+>
+<label>
+Tu nombre:
+<input type="text" name="name" required>
+</label>
+<label>
+Tu correo electrónico:
+<input type="email" name="email" required>
+</label>
+<label>
+Tu mensaje:
+<textarea name="message" required></textarea>
+</label>
+<button type="submit">Enviar</button>
+</form>
 </div>
 
 <div class="p-5"></div>

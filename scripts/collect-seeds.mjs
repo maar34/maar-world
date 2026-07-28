@@ -14,6 +14,7 @@
  */
 
 import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { resolve, join } from 'node:path';
 import { ROOT } from './lib/artifacts.mjs';
 
@@ -54,6 +55,81 @@ function trackIdsIn(dir) {
     const t = /^track_v2_id:\s*(\S+)\s*$/m.exec(raw);
     if (p && t) out.set(p[1], t[1]);
   }
+  return out;
+}
+
+/**
+ * Per-card content expectations, frozen from the legacy source.
+ *
+ * Emitting 35 files with `noindex` and a plausible byte count proves nothing
+ * about WHICH card is on which URL. Swapping two cards' descriptions, or
+ * pointing EBT5599 at DJX9483's player, is invisible to a size check — and a
+ * card page whose media belongs to another card is exactly the failure a
+ * physical, unchangeable URL cannot recover from.
+ *
+ * So freeze, per code:
+ *
+ *  - `title`        `suit_title` + `card_title`. Jekyll derived the document
+ *                   title from the filename ("001_ Maar Sky Sounds.1 Card_i"),
+ *                   which is ugly but distinct per card; this is the same
+ *                   distinction in readable form. Deliberately NOT `titles.en`,
+ *                   which _stoney_way carries as a copy of EBT5599's.
+ *  - `players`      every play.maar.world URL in the source file, deduped.
+ *  - `downloads`    every dl.dropboxusercontent.com URL in the source file.
+ *  - `descriptionSha256`  a fingerprint of `card_description`, so the text can
+ *                   be asserted without duplicating a 1200-character paragraph
+ *                   into a route contract.
+ *
+ * URLs are scanned across the WHOLE file, not just frontmatter: most records
+ * are rendered by `_layouts/card.html` from frontmatter, but the wild card and
+ * the Stoney Way card carry literal media links in their bodies. Scanning the
+ * whole file captures what the page actually renders in both shapes.
+ *
+ * MW-6's acceptance criterion — "every card's play.maar.world link matches the
+ * frozen manifest baseline" — is this file plus the assertions in
+ * verify-cards.mjs that read it.
+ */
+const MEDIA_URL_RE = /https:\/\/(?:play\.maar\.world|dl\.dropboxusercontent\.com)\/[^\s"'<>)]+/g;
+
+function fingerprint(text) {
+  return createHash('sha256').update(text, 'utf8').digest('hex').slice(0, 32);
+}
+
+function cardExpectationsIn(dir) {
+  const out = new Map();
+  if (!existsSync(dir)) return out;
+
+  for (const file of readdirSync(dir)) {
+    if (!file.endsWith('.md')) continue;
+    const raw = readFileSync(join(dir, file), 'utf8');
+
+    const fm = /^---\r?\n([\s\S]*?)\r?\n---/.exec(raw);
+    const head = fm ? fm[1] : '';
+    // Single-line scalars, unquoted, sometimes with stray trailing whitespace
+    // (`player: https://play.maar.world/?g=400&s=0&c=0 `). Take the rest of the
+    // line and trim; an empty value means the field is absent, which is how
+    // the wild card spells "no download".
+    const field = (key) => {
+      const m = new RegExp(`^${key}:[ \\t]*(.*?)[ \\t]*$`, 'm').exec(head);
+      return m && m[1] ? m[1] : undefined;
+    };
+
+    const permalink = field('permalink');
+    if (!permalink) continue;
+
+    const urls = [...new Set(raw.match(MEDIA_URL_RE) || [])];
+    const suit = field('suit_title');
+    const cardTitle = field('card_title');
+    const description = field('card_description');
+
+    out.set(permalink, {
+      title: suit && cardTitle ? `${suit} ${cardTitle}` : undefined,
+      descriptionSha256: description ? fingerprint(description) : undefined,
+      players: urls.filter((u) => u.startsWith('https://play.maar.world/')).sort(),
+      downloads: urls.filter((u) => u.startsWith('https://dl.dropboxusercontent.com/')).sort(),
+    });
+  }
+
   return out;
 }
 
@@ -140,12 +216,23 @@ const trackIds = new Map([
   ...trackIdsIn(join(MAAR, 'collections/_stoney_way')),
 ]);
 
+const expectations = new Map([
+  ...cardExpectationsIn(join(MAAR, 'collections/_skysounds')),
+  ...cardExpectationsIn(join(MAAR, 'collections/_stoney_way')),
+]);
+
 const cardRecords = [
   ...skysounds.map((p) => ({ code: p.slice(1), source: 'skysounds', permalink: p })),
   ...stoneyWay.map((p) => ({ code: p.slice(1), source: 'stoney_way', permalink: p })),
 ]
   .map((c) => (trackIds.has(c.permalink) ? { ...c, orbiterTrackId: trackIds.get(c.permalink) } : c))
+  .map((c) => (expectations.has(c.permalink) ? { ...c, expect: expectations.get(c.permalink) } : c))
   .sort((a, b) => a.code.localeCompare(b.code));
+
+// A frozen expectation that is identical for two codes cannot detect a swap
+// between them — the whole point of freezing. Titles must be distinct.
+const frozenTitles = cardRecords.map((c) => c.expect?.title).filter(Boolean);
+const duplicateTitles = frozenTitles.filter((t, i) => frozenTitles.indexOf(t) !== i);
 
 writeFileSync(
   resolve(ROOT, 'routes/nfc-cards.json'),
@@ -156,6 +243,8 @@ writeFileSync(
       cardCount: cardRecords.length,
       orbiterForwardCount: cardRecords.filter((c) => c.orbiterTrackId).length,
       urlFormCount: cardRecords.length * 2,
+      expectNote:
+        'Per-card content frozen from the legacy source so verify:cards can assert that each built page carries ITS OWN card — its title, its description, its play.maar.world players and its downloads — not merely that some content exists. descriptionSha256 is sha256(card_description) truncated to 32 hex chars.',
       cards: cardRecords,
     },
     null,
@@ -168,7 +257,20 @@ console.log(`  nfc codes: ${skysounds.length} skysounds + ${stoneyWay.length} st
 console.log(`  nfc url forms: ${(skysounds.length + stoneyWay.length) * 2}`);
 console.log(`  written to routes/seeds.json`);
 
+console.log(`  nfc expectations: ${cardRecords.filter((c) => c.expect).length} cards with frozen content`);
+
 if (skysounds.length + stoneyWay.length !== 35) {
   console.error(`\nREFUSING: expected 35 NFC codes, found ${skysounds.length + stoneyWay.length}`);
+  process.exit(1);
+}
+
+if (cardRecords.some((c) => !c.expect?.title || !c.expect?.descriptionSha256)) {
+  const bad = cardRecords.filter((c) => !c.expect?.title || !c.expect?.descriptionSha256);
+  console.error(`\nREFUSING: ${bad.length} card(s) have no frozen title/description: ${bad.map((c) => c.code).join(', ')}`);
+  process.exit(1);
+}
+
+if (duplicateTitles.length) {
+  console.error(`\nREFUSING: frozen card titles are not distinct: ${[...new Set(duplicateTitles)].join(', ')}`);
   process.exit(1);
 }

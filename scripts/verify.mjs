@@ -14,6 +14,7 @@
 
 import { Report } from './lib/report.mjs';
 import { checkBuild } from './verify-build.mjs';
+import { checkContract } from './verify-contract.mjs';
 import { checkRoutes } from './verify-routes.mjs';
 import { checkCards } from './verify-cards.mjs';
 import { checkContent } from './verify-content.mjs';
@@ -21,6 +22,7 @@ import { checkLinks } from './verify-links.mjs';
 
 const CHECKS = [
   ['verify:build', checkBuild],
+  ['verify:contract', checkContract],
   ['verify:routes', checkRoutes],
   ['verify:cards', checkCards],
   ['verify:content', checkContent],
