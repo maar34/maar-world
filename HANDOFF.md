@@ -3,9 +3,9 @@
 Regenerated at every stop. A fresh agent should need nothing but this file,
 `MIGRATION-LEDGER.md`, `docs/agent/OPERATING-RULES.md` and the Linear issue.
 
-**Last updated:** 2026-07-28T22:47Z
-**Last issue worked:** MW-7 and MW-8 (content migration complete; `verify:routes` green)
-**Next action:** MW-9 — embed facades, self-hosted fonts, the Helix island.
+**Last updated:** 2026-07-28T23:05Z
+**Last issue worked:** MW-9 (Helix island built, embeds facaded, fonts confirmed self-hosted)
+**Next action:** MW-11 — full verification + a11y/responsive sign-off. Do not start MW-10/MW-12.
 
 ---
 
@@ -19,7 +19,7 @@ Regenerated at every stop. A fresh agent should need nothing but this file,
 | MW-6 | 35 NFC card records, 70 immutable URLs | **build done, in review** — human must review 35 pages + scan 3 cards |
 | MW-7 | Maar pages, genesis codes, Lab articles | **done** — 95 pages, `verify:content` green |
 | MW-8 | Collect → `/collect/*`, Tree → `/tree` | **done** — `routes/redirects.map`, 111 lines |
-| MW-9 | Embed facades, self-hosted fonts, Helix island | not started ← **next** |
+| MW-9 | Embed facades, self-hosted fonts, Helix island | **build done** — 3 items handed to an owner, see below |
 | MW-11 | Full verification + a11y/responsive sign-off | not started |
 | MW-10, MW-12 | Cutover, stabilise | **human-gated — do not start** |
 
@@ -45,8 +45,41 @@ access to those checkouts to build.
 
 ## In flight
 
-Nothing. MW-7 and MW-8 finished with `verify:routes`, `verify:content`, `verify:contract`
-and the internal half of `verify:links` all green.
+MW-9's own work is committed and nothing of it is half-applied. Two things a fresh session
+will meet immediately:
+
+- **`npm run verify` at the MW-9 stopping point reported `verify:contract` and
+  `verify:routes` red, and neither is MW-9's.** A concurrent session had an *uncommitted*
+  re-freeze in the working tree: `routes/manifest.production.json` had grown from the locked
+  306 routes to 611, so the contract lock and the policy join both failed. Run against the
+  committed `routes/` with the same `dist/`, both are fully green (`verify:contract` 3/3,
+  `verify:routes` 7/7). No MW-9 commit touches `routes/`. If those two are still red, look at
+  the manifest's `routeCount` before looking anywhere else.
+- **After any change under `src/content/`, the next `astro build` warns.** The incremental
+  content-layer store in `.astro/` emits one `[glob-loader] Duplicate id` warning per changed
+  file, and `verify:build` fails on warnings above zero. It is stale cache, not a content
+  defect — a fresh clone and CI never see it. Delete `.astro/` and rebuild.
+
+## What MW-9 changed
+
+- `/helix-diagram.html` is the one approved React island: `src/components/react/`
+  `HelixDiagram.tsx` + `HelixIsland.astro` + `HelixDiagram.css`, mounted `client:only="react"`
+  from `island: "helix"` in the content record. The schema restricts `island` to that single
+  literal, so a second island cannot be added by writing a string in a content file.
+  `@astrojs/react` is in `astro.config.mjs` for this and nothing else.
+- 18 third-party embeds across 13 pages carry a titled, keyboard-operable facade with a
+  provider chip and a plain sentence about what is and is not requested. `play.maar.world`
+  and `radio.maar.world` remain plain iframes — same registrable domain.
+- Fonts confirmed self-hosted and not regressed by the island: 18 `woff2` under `/_assets`,
+  zero `fonts.googleapis.com` / `gstatic` / `unpkg` / `cdnjs` / analytics / `@babel/standalone`
+  anywhere in `dist/`, and every `url()` in every built stylesheet is relative.
+- Exactly **1** of 133 emitted pages references a JavaScript asset. The 34 pages with an
+  inline `<script>` are MW-6's 33 Orbiter forwards plus the island's own bootstrap.
+
+**The DesignSync MCP was not reachable during MW-9**, so `Maar World Design System.dc.html`
+could not be re-read live. Every value in the island and the facades comes from
+`src/styles/tokens.css`; no raw hex, pixel size or duration was introduced. Re-check both
+against the live spec when the MCP is available.
 
 ## Blocked — needs a human
 
@@ -70,11 +103,21 @@ and the internal half of `verify:links` all green.
 4. **Should `/resume` be `noindex`?** (`MW-7`, ledger `resume/noindex`). MW-7 calls this an
    open owner decision and says mark it rather than guess. It is currently crawlable and in
    the sitemap, exactly as production. One flag in `src/content/pages/resume.md`.
-5. **The Helix diagram is a placeholder** (`MW-7`, ledger `helix-diagram.html`).
-   `/helix-diagram.html` resolves and explains itself, but the interactive React diagram is
-   not there: it loaded React, ReactDOM and Babel from `unpkg.com` on page load. **MW-9 owns
-   the Helix island** — this is a handover, not an unknown.
-6. **The Tree hub image is gone** (`MW-8`, ledger `tree/sunflower-image`).
+5. ~~**The Helix diagram is a placeholder**~~ — **resolved by MW-9.** `/helix-diagram.html` is
+   now `src/components/react/HelixDiagram.tsx`, mounted `client:only="react"`. No unpkg, no
+   runtime Babel, route unchanged. It is the only page in `dist/` that references a
+   JavaScript asset.
+6. **Embeds click *out*, not *in*** (`MW-9`, ledger `embeds/click-out-not-load`).
+   All 18 third-party embeds are facades that link to the provider rather than loading a
+   player in place. An in-page player has to be injected by script, which would put
+   application JavaScript on 13 pages — and MW-9 says the Helix island is the only page
+   allowed to ship any. Both cannot hold. Nothing third-party is requested until the visitor
+   chooses; what changed is that a visitor now leaves the site to play the media.
+7. **5 assets are still over 2 MB** (`MW-9`, ledger `media/assets-over-2mb`).
+   MW-9's acceptance criterion is "largest served asset under 2 MB". The 8.8 MB landing GIF
+   is already gone; `2024_ss-5/6/7.jpeg` (2.6–2.75 MB) and `433-suits.gif` (2.48 MB) are not.
+   Re-encoding needs `sharp`/`ffmpeg` and changes what a visitor sees.
+8. **The Tree hub image is gone** (`MW-8`, ledger `tree/sunflower-image`).
    `/tree` had one image, hotlinked from `herbarium.plantasia.space` — a different
    registrable domain, so a third-party request on page load. The file is in no read-only
    checkout, so it cannot be self-hosted from here. Needs the asset, or an exception.
