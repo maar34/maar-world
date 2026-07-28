@@ -882,6 +882,38 @@ function transform(body, ctx) {
 }
 
 /**
+ * The tail of the legacy `card.collect` layout.
+ *
+ * The 34 Collect card records are frontmatter and nothing else — every visible
+ * word on those pages came from the layout — so the migration, which reads
+ * sources and not layouts, emitted 34 pages with an empty body and lost the
+ * whole tail: the "Snippet" heading, the note about what collecting the card
+ * unlocks, and the player instructions with their `support.apple.com` NFC help
+ * link. That link was the single outbound link on all 34 pages.
+ *
+ * The commerce block that sat in the middle of the same tail — a `<select>` of
+ * `maar-world.bandcamp.com/merch` and a Buy button driven by a `<script>` — is
+ * *not* restored. MW-8 retires the storefronts and MW-7 forbids the script;
+ * dropping it was right and it stays dropped. None of the text below is
+ * commerce.
+ *
+ * It sits above the player rather than below it, because the route renders the
+ * body before the `snip_player` iframe and the route is not this session's to
+ * reorder. An instruction for the player reads at least as well immediately
+ * above it.
+ *
+ * Production's own copy reads "Please ---- unmute your device"; the four dashes
+ * are a placeholder left in the layout and are not carried.
+ */
+const CARD_TAIL = [
+  '<p class="card-unlock">Collect this card to unlock access to the<br /> Orbiter and download high-quality audio files.</p>',
+  '',
+  '<h2 class="card-snippet">Snippet</h2>',
+  '',
+  '<p class="card-player-note">Please <a href="https://support.apple.com/en-gb/HT208353" target="_blank" rel="noopener noreferrer">unmute</a> your device and press PLAY ▶️ button.<br /> Player optimized for Chrome and Firefox browsers</p>',
+].join('\n');
+
+/**
  * Three pages cannot come out of the generic pipeline, and each says why.
  * Everything else in all three sites goes through `transform` untouched by hand.
  */
@@ -1276,6 +1308,8 @@ for (const m of matched) {
     if (record.description) lead.push('', record.description);
     finalBody = `${lead.join('\n')}\n\n${finalBody}`.trim();
   }
+
+  if (kind === 'collect-card') finalBody = `${finalBody}\n\n${CARD_TAIL}\n`.trim();
 
   if (ownIndex) finalBody = `${finalBody}\n\n${ownIndex}\n`;
 

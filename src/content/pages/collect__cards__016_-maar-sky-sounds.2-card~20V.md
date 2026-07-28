@@ -17,4 +17,8 @@ card_description: "Rainforests pulse with life, a symphony of creatures singing 
 snip_player: "https://play.maar.world/?g=333&s=1&c=5"
 ---
 
+<p class="card-unlock">Collect this card to unlock access to the<br /> Orbiter and download high-quality audio files.</p>
 
+<h2 class="card-snippet">Snippet</h2>
+
+<p class="card-player-note">Please <a href="https://support.apple.com/en-gb/HT208353" target="_blank" rel="noopener noreferrer">unmute</a> your device and press PLAY ▶️ button.<br /> Player optimized for Chrome and Firefox browsers</p>
