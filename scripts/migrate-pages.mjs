@@ -483,6 +483,117 @@ function htmlRunEnd(lines, from) {
 }
 
 /**
+ * Kramdown pipe tables that GFM refuses to see as tables at all.
+ *
+ * Kramdown needs no header row and does not care whether a row's cell count
+ * matches the separator's; GFM requires both. `/collect/docs/mw` opens with a
+ * one-cell header-less table and then a table whose header row has one cell
+ * against a two-column separator, and `/collect/docs/releases/skysounds` writes
+ * its whole Credits block header-less. GFM renders none of it: production served
+ * clean `<table>`s and the build shipped `<p>| Solar System parameters |` and
+ * eight more rows of raw pipe characters, plus a Credits block as one paragraph
+ * of `|Idea | Maar| |Music | Maar|…`.
+ *
+ * Every run of pipe lines is parsed the way kramdown parsed it and emitted as
+ * HTML, so no cell can be lost to a dialect difference. A run that GFM would
+ * already render correctly is left as markdown — inline markdown inside its
+ * cells keeps working, and there is nothing to fix.
+ *
+ * Fenced blocks are skipped: the two Lab pages whose bodies are full of pipes
+ * are mermaid diagrams, and they are correct as they stand.
+ */
+const PIPE_ROW = /^\s{0,3}\|/;
+const PIPE_SEPARATOR = /^\s{0,3}\|?[\s:+|-]*-[\s:+|-]*$/;
+
+/** Split a kramdown row into cells, honouring `\|` and the optional outer pipes. */
+function pipeCells(line) {
+  let s = line.trim();
+  if (s.startsWith('|')) s = s.slice(1);
+  if (/(^|[^\\])\|$/.test(s)) s = s.slice(0, -1);
+  return s
+    .split(/(?<!\\)\|/)
+    .map((c) => c.replace(/\\\|/g, '|').trim());
+}
+
+function convertPipeTables(body, problems = [], where = '') {
+  const lines = body.split('\n');
+  const out = [];
+  let fenced = false;
+
+  for (let i = 0; i < lines.length; i += 1) {
+    if (/^\s{0,3}(```|~~~)/.test(lines[i])) fenced = !fenced;
+    if (fenced || !PIPE_ROW.test(lines[i])) {
+      out.push(lines[i]);
+      continue;
+    }
+
+    let end = i;
+    while (end + 1 < lines.length && PIPE_ROW.test(lines[end + 1])) end += 1;
+    const run = lines.slice(i, end + 1);
+    i = end;
+
+    // A well-formed GFM table needs no help, and rewriting it would cost the
+    // cells their inline markdown.
+    const gfm =
+      run.length >= 2 &&
+      PIPE_SEPARATOR.test(run[1]) &&
+      pipeCells(run[1]).length === pipeCells(run[0]).length &&
+      !run.slice(2).some((l) => PIPE_SEPARATOR.test(l));
+    if (gfm) {
+      out.push(...run);
+      continue;
+    }
+
+    // Kramdown: the first separator makes everything above it the header, and
+    // every later separator opens another <tbody>.
+    const sections = [];
+    let current = [];
+    let headerRows = null;
+    for (const line of run) {
+      if (!PIPE_SEPARATOR.test(line)) {
+        current.push(pipeCells(line));
+        continue;
+      }
+      if (headerRows === null) headerRows = current;
+      else sections.push(current);
+      current = [];
+    }
+    if (headerRows === null) sections.push(current);
+    else if (current.length) sections.push(current);
+
+    const width = Math.max(
+      ...[...(headerRows || []), ...sections.flat()].map((r) => r.length),
+      1,
+    );
+    const pad = (row) => Array.from({ length: width }, (_, n) => row[n] ?? '');
+    const cell = (tag, v) => `<${tag}>${v}</${tag}>`;
+    const rowHtml = (row, tag) => `<tr>${pad(row).map((v) => cell(tag, v)).join('')}</tr>`;
+
+    const html = ['<table>'];
+    if (headerRows?.length) html.push(`<thead>${headerRows.map((r) => rowHtml(r, 'th')).join('')}</thead>`);
+    for (const rows of sections) {
+      if (rows.length) html.push(`<tbody>${rows.map((r) => rowHtml(r, 'td')).join('')}</tbody>`);
+    }
+    html.push('</table>');
+
+    const cells = [...(headerRows || []), ...sections.flat()].flat();
+    problems.push(
+      `${where}: kramdown pipe table at line ${end - run.length + 2} emitted as HTML ` +
+        `(${cells.length} cells, ${width} columns) — GFM would have shipped it as literal pipes`,
+    );
+    for (const c of cells) {
+      if (/\[[^\]]*\]\([^)]*\)|(\*\*|__).+?\1/.test(c)) {
+        problems.push(`${where}: pipe-table cell carries markdown that HTML will not render: ${c.slice(0, 60)}`);
+      }
+    }
+
+    out.push('', ...html, '');
+  }
+
+  return out.join('\n');
+}
+
+/**
  * A list marker followed by five or more spaces.
  *
  * CommonMark reads that as a list item whose first block is an *indented code
@@ -731,6 +842,7 @@ function transform(body, ctx) {
    */
   out = out.replace(/\{:[.#][^}\n]*\}/g, '');
 
+  out = convertPipeTables(out, problems, ctx.key);
   out = dedentHtmlBlocks(clampListMarkerIndent(out), problems, ctx.key);
 
   const leftover = out.match(/\{\{[\s\S]{0,80}?\}\}|\{%[\s\S]{0,80}?%\}|\{:[.#][^}\n]*\}/g);
