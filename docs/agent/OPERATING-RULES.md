@@ -48,9 +48,28 @@ These are not preferences. Work that can only pass by breaking one of these does
   report.
 - **Never modify the frozen route manifest.** `routes/manifest.production.json` and
   `routes/policy.json` are contracts, not working files. Later work conforms to them; they
-  never conform to later work. Both are regenerable from their committed scripts
-  (`freeze-routes.mjs`, `author-policy.mjs`) — regenerating is fine, hand-editing to make a
-  check pass is not.
+  never conform to later work.
+
+  Both are regenerable from their committed scripts (`freeze-routes.mjs`,
+  `author-policy.mjs`), and that used to be stated as "regenerating is fine, hand-editing to
+  make a check pass is not". That was wrong, and it blessed a working bypass: deleting 235 of
+  306 routes and re-running `npm run freeze:routes` flipped `verify:routes` from FAIL to PASS,
+  because a smaller contract is trivially satisfied by the same build. **What matters is not
+  how the file changed, but whether the contract changed.** Regenerating it is a change.
+
+  So: `routes/contract.lock.json` holds a SHA-256 of the canonical route set and of the policy
+  decision set. `npm run verify:contract` fails the moment either moves — by hand or by
+  regeneration. Re-locking is a separate, deliberate command that prints exactly what changed
+  and **refuses route removals unless they are stated explicitly**:
+
+  ```
+  npm run contract:relock                        # prints the diff
+  npm run contract:relock -- --accept-removals   # required when routes leave the contract
+  ```
+
+  `npm run freeze:routes` never re-locks. If a re-lock is what makes a check pass, that is not
+  a fix — append `BLOCKED` and report it. Re-locking is a human decision with a reason, and it
+  belongs in its own commit.
 - **Preserve URLs exactly.** No `.html` stripping, no slug normalising, no tidying — even
   where existing URLs are ugly or inconsistent. That is deliberate.
 - **Content files are `.md` by default.** Use `.mdx` only where a component is genuinely
