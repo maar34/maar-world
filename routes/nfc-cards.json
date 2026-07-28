@@ -2,52 +2,62 @@
   "note": "The 35 NFC card codes printed on physical cards. Each resolves as both /CODE and /CODE.html — 70 URLs — never redirected, byte-for-byte stable in spelling and casing. Changing anything here breaks physical objects already in people’s hands.",
   "generatedFrom": "maar.world-site/collections/{_skysounds,_stoney_way} (read-only), verified against live HTTP",
   "cardCount": 35,
+  "orbiterForwardCount": 33,
   "urlFormCount": 70,
   "cards": [
     {
       "code": "AXP3732",
       "source": "skysounds",
-      "permalink": "/AXP3732"
+      "permalink": "/AXP3732",
+      "orbiterTrackId": "6919d8fde01d8a7df9d0f5af"
     },
     {
       "code": "BCC4992",
       "source": "skysounds",
-      "permalink": "/BCC4992"
+      "permalink": "/BCC4992",
+      "orbiterTrackId": "6919cfdfe01d8a7df9d0f17a"
     },
     {
       "code": "BQA976",
       "source": "skysounds",
-      "permalink": "/BQA976"
+      "permalink": "/BQA976",
+      "orbiterTrackId": "6919dd7fe01d8a7df9d0fa0c"
     },
     {
       "code": "BWN1651",
       "source": "skysounds",
-      "permalink": "/BWN1651"
+      "permalink": "/BWN1651",
+      "orbiterTrackId": "6919dd83e01d8a7df9d0fa3f"
     },
     {
       "code": "BZD8282",
       "source": "skysounds",
-      "permalink": "/BZD8282"
+      "permalink": "/BZD8282",
+      "orbiterTrackId": "6919d8fce01d8a7df9d0f59e"
     },
     {
       "code": "CRZ5922",
       "source": "skysounds",
-      "permalink": "/CRZ5922"
+      "permalink": "/CRZ5922",
+      "orbiterTrackId": "6919cfd1e01d8a7df9d0f13e"
     },
     {
       "code": "CXX8705",
       "source": "skysounds",
-      "permalink": "/CXX8705"
+      "permalink": "/CXX8705",
+      "orbiterTrackId": "6919dd7ce01d8a7df9d0f9ea"
     },
     {
       "code": "DJX9483",
       "source": "skysounds",
-      "permalink": "/DJX9483"
+      "permalink": "/DJX9483",
+      "orbiterTrackId": "6919aa50a1def2d77f51bcb5"
     },
     {
       "code": "DVG9370",
       "source": "skysounds",
-      "permalink": "/DVG9370"
+      "permalink": "/DVG9370",
+      "orbiterTrackId": "6919cfe2e01d8a7df9d0f188"
     },
     {
       "code": "DWE1406",
@@ -57,72 +67,86 @@
     {
       "code": "EBT5599",
       "source": "skysounds",
-      "permalink": "/EBT5599"
+      "permalink": "/EBT5599",
+      "orbiterTrackId": "6919a2fad44c12045386f4c7"
     },
     {
       "code": "IBM5970",
       "source": "skysounds",
-      "permalink": "/IBM5970"
+      "permalink": "/IBM5970",
+      "orbiterTrackId": "6919dd7ee01d8a7df9d0f9fb"
     },
     {
       "code": "IWG8041",
       "source": "skysounds",
-      "permalink": "/IWG8041"
+      "permalink": "/IWG8041",
+      "orbiterTrackId": "6919dd78e01d8a7df9d0f9b7"
     },
     {
       "code": "KME3578",
       "source": "skysounds",
-      "permalink": "/KME3578"
+      "permalink": "/KME3578",
+      "orbiterTrackId": "6919cfdde01d8a7df9d0f16c"
     },
     {
       "code": "KXQ7964",
       "source": "skysounds",
-      "permalink": "/KXQ7964"
+      "permalink": "/KXQ7964",
+      "orbiterTrackId": "6919d8fee01d8a7df9d0f5c0"
     },
     {
       "code": "LAQ6106",
       "source": "skysounds",
-      "permalink": "/LAQ6106"
+      "permalink": "/LAQ6106",
+      "orbiterTrackId": "6919cfd9e01d8a7df9d0f15e"
     },
     {
       "code": "LYN4636",
       "source": "skysounds",
-      "permalink": "/LYN4636"
+      "permalink": "/LYN4636",
+      "orbiterTrackId": "6919d95ce01d8a7df9d0f6d7"
     },
     {
       "code": "NTH7336",
       "source": "skysounds",
-      "permalink": "/NTH7336"
+      "permalink": "/NTH7336",
+      "orbiterTrackId": "6919dd84e01d8a7df9d0fa50"
     },
     {
       "code": "PHR6198",
       "source": "skysounds",
-      "permalink": "/PHR6198"
+      "permalink": "/PHR6198",
+      "orbiterTrackId": "6919d903e01d8a7df9d0f604"
     },
     {
       "code": "QUP1235",
       "source": "skysounds",
-      "permalink": "/QUP1235"
+      "permalink": "/QUP1235",
+      "orbiterTrackId": "6919dd7be01d8a7df9d0f9d9"
     },
     {
       "code": "ROH1693",
       "source": "skysounds",
-      "permalink": "/ROH1693"
+      "permalink": "/ROH1693",
+      "orbiterTrackId": "6919d8f0e01d8a7df9d0f58f"
     },
     {
       "code": "ROK6739",
       "source": "skysounds",
-      "permalink": "/ROK6739"
+      "permalink": "/ROK6739",
+      "orbiterTrackId": "6919d900e01d8a7df9d0f5d1"
     },
     {
       "code": "SHF4580",
       "source": "skysounds",
-      "permalink": "/SHF4580"
+      "permalink": "/SHF4580",
+      "orbiterTrackId": "6919dd7ae01d8a7df9d0f9c8"
     },
     {
       "code": "SIX7919",
       "source": "skysounds",
-      "permalink": "/SIX7919"
+      "permalink": "/SIX7919",
+      "orbiterTrackId": "6919d906e01d8a7df9d0f626"
     },
     {
       "code": "STW3344",
@@ -132,52 +156,62 @@
     {
       "code": "SVA679",
       "source": "skysounds",
-      "permalink": "/SVA679"
+      "permalink": "/SVA679",
+      "orbiterTrackId": "6919cfcbe01d8a7df9d0f122"
     },
     {
       "code": "TMK694",
       "source": "skysounds",
-      "permalink": "/TMK694"
+      "permalink": "/TMK694",
+      "orbiterTrackId": "6919cfcee01d8a7df9d0f130"
     },
     {
       "code": "TOP2071",
       "source": "skysounds",
-      "permalink": "/TOP2071"
+      "permalink": "/TOP2071",
+      "orbiterTrackId": "6919cfd5e01d8a7df9d0f150"
     },
     {
       "code": "UMN2909",
       "source": "skysounds",
-      "permalink": "/UMN2909"
+      "permalink": "/UMN2909",
+      "orbiterTrackId": "6919cfc0e01d8a7df9d0f064"
     },
     {
       "code": "VHQ3300",
       "source": "skysounds",
-      "permalink": "/VHQ3300"
+      "permalink": "/VHQ3300",
+      "orbiterTrackId": "6919dd6ee01d8a7df9d0f9a8"
     },
     {
       "code": "VKS9121",
       "source": "skysounds",
-      "permalink": "/VKS9121"
+      "permalink": "/VKS9121",
+      "orbiterTrackId": "6919d902e01d8a7df9d0f5f3"
     },
     {
       "code": "XEW6454",
       "source": "skysounds",
-      "permalink": "/XEW6454"
+      "permalink": "/XEW6454",
+      "orbiterTrackId": "6919dd81e01d8a7df9d0fa2e"
     },
     {
       "code": "YAC2340",
       "source": "skysounds",
-      "permalink": "/YAC2340"
+      "permalink": "/YAC2340",
+      "orbiterTrackId": "6919dd80e01d8a7df9d0fa1d"
     },
     {
       "code": "ZHQ9392",
       "source": "skysounds",
-      "permalink": "/ZHQ9392"
+      "permalink": "/ZHQ9392",
+      "orbiterTrackId": "6919f23fe01d8a7df9d105c7"
     },
     {
       "code": "ZPH9206",
       "source": "skysounds",
-      "permalink": "/ZPH9206"
+      "permalink": "/ZPH9206",
+      "orbiterTrackId": "6919d901e01d8a7df9d0f5e2"
     }
   ]
 }

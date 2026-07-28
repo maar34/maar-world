@@ -35,6 +35,28 @@ function permalinksIn(dir) {
   return out.sort();
 }
 
+/**
+ * `track_v2_id` per permalink.
+ *
+ * This is what drives the Orbiter forward: production card pages return 200 and
+ * then send the visitor to `orbiter.plantasia.space/?trackId=<track_v2_id>`.
+ * Exactly the cards carrying a track id forward; the wild card and STW3344 do
+ * not. Freezing the ids here makes that behaviour checkable against the build
+ * instead of trusted.
+ */
+function trackIdsIn(dir) {
+  const out = new Map();
+  if (!existsSync(dir)) return out;
+  for (const file of readdirSync(dir)) {
+    if (!file.endsWith('.md')) continue;
+    const raw = readFileSync(join(dir, file), 'utf8');
+    const p = /^permalink:\s*(\S+)\s*$/m.exec(raw);
+    const t = /^track_v2_id:\s*(\S+)\s*$/m.exec(raw);
+    if (p && t) out.set(p[1], t[1]);
+  }
+  return out;
+}
+
 // --- NFC card codes ------------------------------------------------------
 // 34 from _skysounds plus ONE from _stoney_way. An inventory built by reading
 // only _skysounds/ silently drops a real card that is printed and in use.
@@ -113,10 +135,17 @@ writeFileSync(
 // The canonical list of physical-card codes, with the collection each came from.
 // verify:cards asserts the 34 + 1 split explicitly, because an inventory built
 // from _skysounds alone silently drops STW3344 — a real card, already printed.
+const trackIds = new Map([
+  ...trackIdsIn(join(MAAR, 'collections/_skysounds')),
+  ...trackIdsIn(join(MAAR, 'collections/_stoney_way')),
+]);
+
 const cardRecords = [
   ...skysounds.map((p) => ({ code: p.slice(1), source: 'skysounds', permalink: p })),
   ...stoneyWay.map((p) => ({ code: p.slice(1), source: 'stoney_way', permalink: p })),
-].sort((a, b) => a.code.localeCompare(b.code));
+]
+  .map((c) => (trackIds.has(c.permalink) ? { ...c, orbiterTrackId: trackIds.get(c.permalink) } : c))
+  .sort((a, b) => a.code.localeCompare(b.code));
 
 writeFileSync(
   resolve(ROOT, 'routes/nfc-cards.json'),
@@ -125,6 +154,7 @@ writeFileSync(
       note: 'The 35 NFC card codes printed on physical cards. Each resolves as both /CODE and /CODE.html — 70 URLs — never redirected, byte-for-byte stable in spelling and casing. Changing anything here breaks physical objects already in people’s hands.',
       generatedFrom: 'maar.world-site/collections/{_skysounds,_stoney_way} (read-only), verified against live HTTP',
       cardCount: cardRecords.length,
+      orbiterForwardCount: cardRecords.filter((c) => c.orbiterTrackId).length,
       urlFormCount: cardRecords.length * 2,
       cards: cardRecords,
     },

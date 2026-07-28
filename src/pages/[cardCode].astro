@@ -38,6 +38,26 @@ const { card } = Astro.props;
 const d = card.data;
 const { Content } = await render(card);
 
+/**
+ * The Orbiter forward.
+ *
+ * Production card pages return 200 and then forward to the Orbiter listening
+ * experience 300ms later, via `window.location.href`. This is what actually
+ * happens when someone taps a physical card, and it is part of the production
+ * contract — a crawler never sees it because it does not run JavaScript.
+ *
+ * Exactly the 33 cards carrying `track_v2_id` forward; the wild card (DWE1406)
+ * and STW3344 have no track and do not, which is verified against production.
+ * So the presence of `track_v2_id` is the condition, not a flag of its own.
+ *
+ * This is NOT an HTTP redirect. The URL still returns 200 and never 3xx, which
+ * is what the physical-card contract requires. The rendered card below remains
+ * the no-JavaScript fallback, exactly as it is today.
+ */
+const orbiterUrl = d.track_v2_id
+  ? `https://orbiter.plantasia.space/?trackId=${d.track_v2_id}`
+  : null;
+
 const title = d.titles?.en ?? `${d.suit_title} — ${d.card_title}`;
 const players = [d.player, d.player2, d.snip_player].filter(Boolean) as string[];
 const downloads = [d.download, d.download2].filter(Boolean) as string[];
@@ -101,6 +121,17 @@ const downloads = [d.download, d.download2].filter(Boolean) as string[];
       )
     }
   </main>
+
+  {
+    orbiterUrl && (
+      <script is:inline set:html={`(function () {
+  var redirectUrl = ${JSON.stringify(orbiterUrl)};
+  window.setTimeout(function () {
+    window.location.href = redirectUrl;
+  }, 300);
+})();`} />
+    )
+  }
 </BaseLayout>
 
 <style>

@@ -170,6 +170,57 @@ export async function checkCards(report) {
     report.pass('every card page keeps <meta name="robots" content="noindex">');
   }
 
+  // --- Orbiter forward ---------------------------------------------------
+  // Production card pages return 200 and then forward to the Orbiter listening
+  // experience via window.location. That is what a physical card scan actually
+  // does, and a crawler never sees it because it does not run JavaScript.
+  // Exactly the cards carrying a track id forward.
+  const forwardWrong = [];
+  const forwardMissing = [];
+  const forwardUnexpected = [];
+
+  for (const card of cards) {
+    const file = `${card.code}.html`;
+    if (!set.has(file)) continue;
+    let html = '';
+    try {
+      html = readDistFile(file);
+    } catch {
+      continue;
+    }
+
+    const found = /https:\/\/orbiter\.plantasia\.space\/\?trackId=([a-z0-9]+)/i.exec(html);
+
+    if (card.orbiterTrackId) {
+      if (!found) forwardMissing.push(card.code);
+      else if (found[1] !== card.orbiterTrackId) {
+        forwardWrong.push(`${card.code}: ${found[1]} != ${card.orbiterTrackId}`);
+      }
+    } else if (found) {
+      forwardUnexpected.push(`${card.code} forwards but has no track id`);
+    }
+  }
+
+  const expectedForwards = cards.filter((c) => c.orbiterTrackId).length;
+
+  if (forwardMissing.length || forwardWrong.length || forwardUnexpected.length) {
+    report.fail(
+      `${expectedForwards} card pages forward to the correct Orbiter track`,
+      [
+        forwardMissing.length ? `${forwardMissing.length} missing (${forwardMissing.slice(0, 4).join(', ')})` : '',
+        forwardWrong.length ? `${forwardWrong.length} wrong id (${forwardWrong.slice(0, 3).join('; ')})` : '',
+        forwardUnexpected.length ? `${forwardUnexpected.length} unexpected (${forwardUnexpected.slice(0, 3).join('; ')})` : '',
+      ]
+        .filter(Boolean)
+        .join(' — '),
+    );
+  } else {
+    report.pass(
+      `${expectedForwards} card pages forward to the correct Orbiter track`,
+      `${cards.length - expectedForwards} correctly do not forward (no track)`,
+    );
+  }
+
   // --- Host fallback -----------------------------------------------------
   // format:'file' emits only CODE.html. The extensionless form is served by the
   // host, so it cannot be proved from build output alone — only by a canary

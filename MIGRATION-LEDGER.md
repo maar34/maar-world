@@ -69,3 +69,6 @@ npm run ledger -- append MW-7 BLOCKED lab/es/dadada.html "reason: source referen
 2026-07-28T22:02Z  MW-6   NOTE     verify/baseline-completed                  external baseline now records on-load resources too (326->562 urls); route set byte-identical
 2026-07-28T22:02Z  MW-6   BLOCKED  cards/dropbox-third-party                  MW-6 says keep Dropbox card art; MW-1 gate forbids third-party request on page load. 37 img refs to www.dropbox.com. Needs a human: self-host the art, or accept the exception
 2026-07-28T22:02Z  MW-6   BLOCKED  cards/artizen-destination                  COMMERCE.destinationUrl is null - Artizen project URL does not exist yet, so card pages render no destination link
+2026-07-28T22:12Z  MW-6   DONE     cards/orbiter-forward                      33 of 35 cards forward to orbiter.plantasia.space/?trackId=<track_v2_id> after 300ms, matching production; DWE1406+STW3344 correctly do not
+2026-07-28T22:12Z  MW-6   NOTE     cards/forward-was-missed                   crawler does not run JS so the forward was invisible in MW-4; found via planning README. verify:cards now asserts it (12 assertions)
+2026-07-28T22:12Z  MW-6   NOTE     design/reference-4a                        Maar World 4a.dc.html is a direction mockup: cut-word+echo mechanics useful, but its blur/gradient washes and off-palette colours are forbidden by the spec. Spec wins.
