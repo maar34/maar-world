@@ -323,6 +323,74 @@ check('contract:relock refuses silent route removals', (root) => {
   };
 });
 
+// --- F2: a hollow build is a failed build --------------------------------
+
+/**
+ * Make a fixture buildable by verify:build without installing Astro: the check
+ * looks for an astro config, node_modules and `npm run build`. The stub build
+ * leaves the fixture's dist/ exactly as the case set it up, which is the point —
+ * what is under test is the inspection of the output, not the bundler.
+ */
+function buildableFixture(root) {
+  writeFileSync(join(root, 'astro.config.mjs'), 'export default {};\n');
+  mkdirSync(join(root, 'node_modules'), { recursive: true });
+  writeJson(join(root, 'package.json'), {
+    name: 'mw-selftest-fixture',
+    private: true,
+    type: 'module',
+    scripts: { build: 'node --eval "process.exit(0)"' },
+  });
+}
+
+const HOLLOW_PAGE = '<!doctype html><html><head></head><body></body></html>';
+
+// 17. A fixture with real pages passes verify:build.
+check('build with real pages passes verify:build', (root) => {
+  goodFixture(root);
+  buildableFixture(root);
+  const { code, out } = run(root, 'verify-build.mjs');
+  return { ok: code === 0, detail: code === 0 ? 'exit 0' : `expected exit 0, got ${code}\n${out}` };
+});
+
+// 18. The demonstrated hollow site: every page empty, build still exits 0.
+//     routes and cards were happy with this; verify:build must not be.
+check('a hollow dist fails verify:build', (root) => {
+  const cards = goodFixture(root);
+  buildableFixture(root);
+  for (const { code } of cards) writeFileSync(join(root, 'dist', `${code}.html`), HOLLOW_PAGE);
+  const { code, out } = run(root, 'verify-build.mjs');
+  const ok = code === 1 && /no emitted page is hollow/.test(out) && /non-empty <title>/.test(out);
+  return {
+    ok,
+    detail: ok ? 'exit 1, hollow pages and missing titles reported' : `expected exit 1, got ${code}\n${out}`,
+  };
+});
+
+// 19. Pages that exist but say almost nothing are hollow too.
+check('pages with near-zero text fail verify:build', (root) => {
+  const cards = goodFixture(root);
+  buildableFixture(root);
+  for (const { code } of cards) {
+    writeFileSync(
+      join(root, 'dist', `${code}.html`),
+      `<!doctype html><html><head><title>${code}</title></head><body><p>.</p></body></html>`,
+    );
+  }
+  const { code, out } = run(root, 'verify-build.mjs');
+  const ok = code === 1 && /substantive amount of text/.test(out);
+  return { ok, detail: ok ? 'exit 1, thin pages reported' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 20. A build that emits a handful of pages for a 70-route contract is not a build.
+check('a near-empty dist fails verify:build', (root) => {
+  const cards = goodFixture(root);
+  buildableFixture(root);
+  for (const { code } of cards.slice(5)) rmSync(join(root, 'dist', `${code}.html`));
+  const { code, out } = run(root, 'verify-build.mjs');
+  const ok = code === 1 && /plausible number of pages/.test(out);
+  return { ok, detail: ok ? 'exit 1, page count reported' : `expected exit 1, got ${code}\n${out}` };
+});
+
 // --- Results ------------------------------------------------------------
 console.log('\nverify harness selftest\n');
 let failed = 0;
