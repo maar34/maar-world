@@ -15,6 +15,19 @@
  *
  * `minTextLength` is the one figure taken from the build, at 90%: it is a
  * regression floor for later work, not a claim about the migration.
+ *
+ * `images` is an exact count, and it is here because headings alone did not
+ * catch the failure this file exists for. `/collect/documentation.html` renders
+ * nine cover thumbnails in production; the migrated page kept both its headings
+ * and shipped **zero images**, because the raw HTML block carrying them was
+ * stripped. Every heading assertion passed. A count that has to match exactly
+ * fails on the next such loss instead of a session later.
+ *
+ * Each page also carries `productionImages`, read from the frozen manifest.
+ * verify:content ignores it — it is there so the file states, per page, whether
+ * the count it asserts equals what production serves, and `imageGap` names every
+ * page where it does not. A deliberate gap (a third-party image the on-load gate
+ * forbids) stays visible rather than being rounded away.
  */
 
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -60,9 +73,37 @@ function headingsOf(source) {
     .filter((h) => h.length >= 4 && !/^[\d\W]+$/.test(h) && !/\{\{|\{%/.test(h));
 }
 
+/**
+ * Merged-site URL -> the image count the frozen manifest recorded in production.
+ *
+ * Joined through the policy's `servedAt`, which is the only field that states
+ * where a legacy URL is answered from now. Both spellings of a URL describe the
+ * same page, so the higher count wins — a twin that the crawl reached by a
+ * different route is the same document, not a smaller one.
+ */
+function productionImageCounts() {
+  const manifest = JSON.parse(readFileSync(join(ROOT, 'routes/manifest.production.json'), 'utf8'));
+  const policy = JSON.parse(readFileSync(join(ROOT, 'routes/policy.json'), 'utf8'));
+  const byRoute = new Map(manifest.routes.map((r) => [`${r.origin}${r.url}`, r]));
+  const out = new Map();
+
+  for (const r of policy.routes) {
+    if (r.policy !== 'preserve' || !r.servedAt) continue;
+    const prod = byRoute.get(`${r.origin}${r.url}`);
+    if (!prod || prod.kind !== 'page' || typeof prod.imageCount !== 'number') continue;
+    const url = r.servedAt.replace(/\.html$/i, '').replace(/\/index$/, '') || '/';
+    out.set(url, Math.max(out.get(url) ?? 0, prod.imageCount));
+  }
+  return out;
+}
+
+const prodImages = productionImageCounts();
+const countMatches = (html, re) => (html.match(re) || []).length;
+
 const { set } = indexDist();
 const pages = [];
 const missed = [];
+const imageGap = [];
 let noBuild = 0;
 
 for (const name of readdirSync(PAGES).sort()) {
@@ -80,7 +121,8 @@ for (const name of readdirSync(PAGES).sort()) {
     console.log(`  ! ${url}: not in build output`);
     continue;
   }
-  const builtText = stripTags(readDistFile(file));
+  const builtHtml = readDistFile(file);
+  const builtText = stripTags(builtHtml);
 
   let candidates = [];
   if (source) {
@@ -100,10 +142,18 @@ for (const name of readdirSync(PAGES).sort()) {
     else missed.push(`${url}: "${h.slice(0, 70)}"`);
   }
 
+  const images = countMatches(builtHtml, /<img\b/gi);
+  const production = prodImages.get(url);
+  if (typeof production === 'number' && images < production) {
+    imageGap.push(`${url}: ${images} images, production serves ${production}`);
+  }
+
   pages.push({
     url,
     headings: headings.slice(0, 12),
     minTextLength: Math.floor(builtText.length * 0.9),
+    images,
+    ...(typeof production === 'number' ? { productionImages: production } : {}),
   });
 }
 
@@ -115,9 +165,15 @@ writeFileSync(
         'Per-page content-presence assertions for the migrated pages (MW-7 / MW-8). ' +
         'Headings are taken from the legacy source, so they assert that migration preserved them. ' +
         'minTextLength is a regression floor at 90% of the build at authoring time. ' +
+        'images is an exact count and must match: headings alone did not catch ' +
+        '/collect/documentation.html shipping zero of its nine cover thumbnails. ' +
+        'productionImages is the frozen manifest figure, carried for comparison only — ' +
+        'verify:content does not read it. ' +
         'Regenerate with scripts/author-content-expectations.mjs after an intentional content change.',
       authoredAt: new Date().toISOString(),
       pageCount: pages.length,
+      imagesAsserted: pages.reduce((n, p) => n + p.images, 0),
+      pagesBelowProduction: imageGap.length,
       pages,
     },
     null,
@@ -126,8 +182,15 @@ writeFileSync(
 );
 
 const asserted = pages.reduce((n, p) => n + p.headings.length, 0);
-console.log(`content-expectations: ${pages.length} pages, ${asserted} headings asserted`);
+const images = pages.reduce((n, p) => n + p.images, 0);
+console.log(
+  `content-expectations: ${pages.length} pages, ${asserted} headings and ${images} images asserted`,
+);
 if (noBuild) console.log(`${noBuild} page(s) absent from the build`);
+if (imageGap.length) {
+  console.log(`\nFEWER IMAGES THAN PRODUCTION (${imageGap.length}) — each needs a reason or a fix:`);
+  for (const g of imageGap) console.log(`  ${g}`);
+}
 if (missed.length) {
   console.log(`\nMISSED — legacy headings not found in the build (${missed.length}):`);
   for (const m of missed) console.log(`  ${m}`);
