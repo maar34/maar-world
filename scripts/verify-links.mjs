@@ -31,9 +31,20 @@
  * below, and every one has a selftest case.
  */
 
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { runStandalone } from './lib/report.mjs';
-import { ARTIFACTS, has, loadJson, indexDist, readDistFile } from './lib/artifacts.mjs';
+import { ARTIFACTS, ROOT, has, loadJson, indexDist, readDistFile } from './lib/artifacts.mjs';
 import { resolveRoute, decodePath } from './lib/routes.mjs';
+
+/** Reviewed disappearances: which baseline links are allowed to be gone. */
+export const REMOVALS_REL = 'routes/external-link-removals.json';
+export const REMOVALS_PATH = resolve(ROOT, REMOVALS_REL);
+
+export function loadReviewedRemovals() {
+  if (!existsSync(REMOVALS_PATH)) return null;
+  return JSON.parse(readFileSync(REMOVALS_PATH, 'utf8'));
+}
 
 /**
  * Tags whose URL attribute causes a fetch when the page loads.
@@ -205,11 +216,12 @@ export function referencesInCss(css) {
     .filter((r) => !isIgnorable(r.url));
 }
 
-export async function checkLinks(report) {
-  if (!has('dist')) {
-    return report.skip('internal links resolve', ARTIFACTS.dist.rel, ARTIFACTS.dist.issue);
-  }
-
+/**
+ * Walk the whole build once and collect what every link assertion needs.
+ * Exported so `npm run links:review-removals` sees exactly the same set of
+ * external URLs that the check does — two implementations would drift.
+ */
+export function scanBuild() {
   const { set, files } = indexDist();
   const htmlFiles = files.filter((f) => f.endsWith('.html'));
   const cssFiles = files.filter((f) => f.endsWith('.css'));
@@ -259,6 +271,24 @@ export async function checkLinks(report) {
     for (const ref of referencesInCss(readDistFile(file))) classify(ref, file);
   }
 
+  return { broken, external, thirdPartyOnLoad, htmlFiles, cssFiles };
+}
+
+/** Third-party URLs only: first-party absolute URLs are not external links. */
+export function thirdPartyOnly(urls) {
+  return urls.filter((u) => {
+    const host = hostOf(u);
+    return host && !FIRST_PARTY.test(host);
+  });
+}
+
+export async function checkLinks(report) {
+  if (!has('dist')) {
+    return report.skip('internal links resolve', ARTIFACTS.dist.rel, ARTIFACTS.dist.issue);
+  }
+
+  const { broken, external, thirdPartyOnLoad, htmlFiles, cssFiles } = scanBuild();
+
   if (broken.length) {
     report.fail(
       'internal links resolve',
@@ -298,6 +328,48 @@ export async function checkLinks(report) {
     );
   } else {
     report.pass('no unreviewed external links introduced', `${external.size} external URLs, all in baseline`);
+  }
+
+  // --- The other direction ------------------------------------------------
+  // Only `introduced` was computed, which made the baseline a one-way ratchet:
+  // a build with ZERO external links reported "PASS — no unreviewed external
+  // links introduced". Deleting every outbound link on the site was invisible,
+  // and outbound links are content — the storefront, the label, the papers.
+  //
+  // Removals are legitimate (the Google Fonts and analytics links are supposed
+  // to disappear), so they are reviewed once, recorded per URL in
+  // routes/external-link-removals.json by `npm run links:review-removals`, and
+  // anything that vanishes without being on that list fails.
+  const baselineThirdParty = thirdPartyOnly(baseline.urls || []);
+  const disappeared = baselineThirdParty.filter((u) => !external.has(u));
+
+  const reviewed = loadReviewedRemovals() || { removed: [] };
+  const blessed = new Set(reviewed.removed || []);
+  const unreviewed = disappeared.filter((u) => !blessed.has(u));
+  const returned = [...blessed].filter((u) => external.has(u));
+
+  if (unreviewed.length) {
+    const hosts = [...new Set(unreviewed.map(hostOf))];
+    report.fail(
+      'no external link disappears unreviewed',
+      `${unreviewed.length} baseline links vanished without review across ${hosts.length} hosts ` +
+        `(${hosts.slice(0, 6).join(', ')}) — first 3: ${unreviewed.slice(0, 3).join(', ')}. ` +
+        `If the removals are intended, record them in ${REMOVALS_REL} with npm run links:review-removals`,
+    );
+  } else {
+    // Recorded is not the same as settled: the hosts that carry content are
+    // named on every run so their absence never becomes background noise.
+    const pending = reviewed.pendingHumanReview || {};
+    const pendingHosts = Object.keys(pending);
+    const pendingCount = Object.values(pending).reduce((a, b) => a + b, 0);
+    report.pass(
+      'no external link disappears unreviewed',
+      `${disappeared.length} of ${baselineThirdParty.length} baseline third-party links absent, all recorded` +
+        (pendingCount
+          ? `; ${pendingCount} on content-bearing hosts still awaiting MW-9 confirmation (${pendingHosts.slice(0, 5).join(', ')})`
+          : '') +
+        (returned.length ? `; ${returned.length} recorded removal(s) are back in the build` : ''),
+    );
   }
 }
 

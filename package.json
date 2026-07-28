@@ -25,16 +25,22 @@
     "freeze:routes": "node scripts/collect-seeds.mjs && node scripts/freeze-routes.mjs && node scripts/author-policy.mjs",
     "contract:relock": "node scripts/contract-lock.mjs relock",
     "check:links": "node scripts/check-external-links.mjs",
+    "links:review-removals": "node scripts/review-link-removals.mjs",
     "migrate:pages": "node scripts/migrate-pages.mjs && node scripts/collect-media.mjs",
     "author:redirects": "node scripts/author-redirects.mjs",
     "author:content-expectations": "node scripts/author-content-expectations.mjs"
   },
   "dependencies": {
+    "@astrojs/react": "^5.0.0",
     "@astrojs/sitemap": "^3.7.3",
     "@fontsource/archivo": "^5.3.0",
     "@fontsource/bodoni-moda": "^5.3.0",
     "@fontsource/dm-mono": "^5.3.0",
     "@fontsource/libre-franklin": "^5.3.0",
-    "astro": "^5.18.2"
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "astro": "^5.18.2",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   }
 }

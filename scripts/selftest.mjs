@@ -672,6 +672,60 @@ check('a policy for a route not in the manifest fails verify:routes', (root) => 
   return { ok, detail: ok ? 'exit 1, orphaned policy reported' : `expected exit 1, got ${code}\n${out}` };
 });
 
+// --- F6: the external-link baseline ratchets both ways -------------------
+
+const BASELINE_LINKS = ['https://maar-world.bandcamp.com/merch', 'https://www.instagram.com/maar_world_records'];
+
+/** A fixture page carrying a chosen subset of the baseline's outbound links. */
+function linkPage(root, urls) {
+  mkdirSync(join(root, 'verify'), { recursive: true });
+  writeJson(join(root, 'verify/external-links-baseline.json'), { urls: BASELINE_LINKS, allowedNew: [] });
+  writeFileSync(
+    join(root, 'dist', 'outbound.html'),
+    '<!doctype html><html><head><title>outbound</title></head><body>' +
+      urls.map((u) => `<a href="${u}">link</a>`).join('') +
+      `<p>${'text '.repeat(40)}</p></body></html>`,
+  );
+}
+
+// 42. Every baseline link still present: nothing to report.
+check('a build carrying its baseline links passes verify:links', (root) => {
+  goodFixture(root);
+  linkPage(root, BASELINE_LINKS);
+  const { code, out } = run(root, 'verify-links.mjs');
+  return { ok: code === 0, detail: code === 0 ? 'exit 0' : `expected exit 0, got ${code}\n${out}` };
+});
+
+// 43. The demonstrated hole: a build with the outbound links deleted reported
+//     "PASS — no unreviewed external links introduced", because only additions
+//     were ever compared against the baseline.
+check('deleting an external link fails verify:links', (root) => {
+  goodFixture(root);
+  linkPage(root, [BASELINE_LINKS[0]]);
+  const { code, out } = run(root, 'verify-links.mjs');
+  const ok = code === 1 && /disappears unreviewed/.test(out) && /instagram/.test(out);
+  return { ok, detail: ok ? 'exit 1, vanished link reported' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 44. Deleting every external link — the strongest form of the same bypass.
+check('a build with no external links at all fails verify:links', (root) => {
+  goodFixture(root);
+  linkPage(root, []);
+  const { code, out } = run(root, 'verify-links.mjs');
+  const ok = code === 1 && /2 baseline links vanished/.test(out);
+  return { ok, detail: ok ? 'exit 1, both losses reported' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 45. A removal that has been recorded deliberately is allowed through.
+check('a recorded removal passes verify:links', (root) => {
+  goodFixture(root);
+  linkPage(root, [BASELINE_LINKS[0]]);
+  writeJson(join(root, 'routes/external-link-removals.json'), { removed: [BASELINE_LINKS[1]] });
+  const { code, out } = run(root, 'verify-links.mjs');
+  const ok = code === 0 && /all recorded/.test(out);
+  return { ok, detail: ok ? 'exit 0, recorded removal accepted' : `expected exit 0, got ${code}\n${out}` };
+});
+
 // --- Results ------------------------------------------------------------
 console.log('\nverify harness selftest\n');
 let failed = 0;
