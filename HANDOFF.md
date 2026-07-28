@@ -3,9 +3,9 @@
 Regenerated at every stop. A fresh agent should need nothing but this file,
 `MIGRATION-LEDGER.md`, `docs/agent/OPERATING-RULES.md` and the Linear issue.
 
-**Last updated:** 2026-07-28T23:20Z
-**Last issue worked:** MW-6 (build + verification complete; human sign-off outstanding)
-**Next action:** MW-7 — migrate Maar pages, 6 genesis codes and 20 Lab articles (en/es).
+**Last updated:** 2026-07-28T22:47Z
+**Last issue worked:** MW-7 and MW-8 (content migration complete; `verify:routes` green)
+**Next action:** MW-9 — embed facades, self-hosted fonts, the Helix island.
 
 ---
 
@@ -17,36 +17,43 @@ Regenerated at every stop. A fresh agent should need nothing but this file,
 | MW-4 | Freeze the production route manifest | **done** — 306 routes frozen |
 | MW-5 | Repository, Astro scaffold, content schemas | **done** |
 | MW-6 | 35 NFC card records, 70 immutable URLs | **build done, in review** — human must review 35 pages + scan 3 cards |
-| MW-7 | Maar pages, genesis codes, Lab articles | not started ← **next** |
-| MW-8 | Collect → `/collect/*`, Tree → `/tree` | not started |
-| MW-9 | Embed facades, self-hosted fonts, Helix island | not started |
+| MW-7 | Maar pages, genesis codes, Lab articles | **done** — 95 pages, `verify:content` green |
+| MW-8 | Collect → `/collect/*`, Tree → `/tree` | **done** — `routes/redirects.map`, 111 lines |
+| MW-9 | Embed facades, self-hosted fonts, Helix island | not started ← **next** |
 | MW-11 | Full verification + a11y/responsive sign-off | not started |
 | MW-10, MW-12 | Cutover, stabilise | **human-gated — do not start** |
 
 ## Read this before trusting a green run
 
-`npm run verify` is **expected to exit non-zero until MW-8 finishes.** That is the
-harness working, not a defect: `verify:routes` compares the build against 264 distinct
-preserved paths and content migration has not happened yet. Use the *missing count* as the
-progress metric — it should fall monotonically:
+The route contract is now **fully satisfied**. The missing-count metric has landed:
 
 | Checkpoint | preserved paths missing |
 |---|---|
 | after MW-5 | 262 of 264 |
-| after MW-6 | **192 of 264** — dropped by exactly the 70 card forms |
-| after MW-8 | must be 0 |
+| after MW-6 | 192 of 264 — dropped by exactly the 70 card forms |
+| after MW-8 | **0 of 264** ✔ |
 
-`verify:build`, `verify:links` and the non-build half of `verify:cards` pass **now** and
-must stay passing. A regression there is real.
+`npm run verify` still exits non-zero, and there is now exactly **one** reason:
+`verify:links` → *no third-party request fires on page load*, 75 on-load references to
+`www.dropbox.com`. That is MW-6's card art, blocked on a human decision since MW-6, and
+the count grew because the 34 retired Collect card pages carry the same URLs. **Every
+other check passes.** If a future run sees anything else red, it is a regression.
+
+`npm run migrate:pages` regenerates `src/content/pages/` and `media/` from the read-only
+legacy checkouts. It is idempotent and its output is committed, so a fresh clone needs no
+access to those checkouts to build.
 
 ## In flight
 
-Nothing. MW-6 finished cleanly; only its human sign-off remains.
+Nothing. MW-7 and MW-8 finished with `verify:routes`, `verify:content`, `verify:contract`
+and the internal half of `verify:links` all green.
 
 ## Blocked — needs a human
 
 1. **Card art is hotlinked from Dropbox** (`MW-6`, ledger `cards/dropbox-third-party`).
-   37 `<img src>` references to `www.dropbox.com`. MW-6 says keep those URLs and that
+   **75** `<img src>` references to `www.dropbox.com` — 37 on the canonical card pages plus
+   34 on the retired `/collect/cards/*` twins and 4 in Lab articles, all the same URLs and
+   the same decision. MW-6 says keep those URLs and that
    migrating them is out of scope; the MW-1 quality gate says no third-party request may fire
    on page load. **Both cannot hold.** `verify:links` fails on this deliberately — the check
    was not weakened to make the build pass. Either self-host the card art (needs approval) or
@@ -60,6 +67,17 @@ Nothing. MW-6 finished cleanly; only its human sign-off remains.
    printed on any card, sleeve or packaging? Every one currently defaults to `preserve`,
    because preserving keeps both options open and redirecting does not. 66 routes carry
    this open decision in `routes/policy.json`.
+4. **Should `/resume` be `noindex`?** (`MW-7`, ledger `resume/noindex`). MW-7 calls this an
+   open owner decision and says mark it rather than guess. It is currently crawlable and in
+   the sitemap, exactly as production. One flag in `src/content/pages/resume.md`.
+5. **The Helix diagram is a placeholder** (`MW-7`, ledger `helix-diagram.html`).
+   `/helix-diagram.html` resolves and explains itself, but the interactive React diagram is
+   not there: it loaded React, ReactDOM and Babel from `unpkg.com` on page load. **MW-9 owns
+   the Helix island** — this is a handover, not an unknown.
+6. **The Tree hub image is gone** (`MW-8`, ledger `tree/sunflower-image`).
+   `/tree` had one image, hotlinked from `herbarium.plantasia.space` — a different
+   registrable domain, so a third-party request on page load. The file is in no read-only
+   checkout, so it cannot be self-hosted from here. Needs the asset, or an exception.
 
 ## Decisions taken that a human should confirm
 
@@ -93,6 +111,20 @@ Nothing. MW-6 finished cleanly; only its human sign-off remains.
    dead storefronts. The live Collect card pages already link to
    `maar-world.bandcamp.com/merch`; `physical.maar.world` and `digital.maar.world` appear
    nowhere in the crawl. Trust the manifest, not the addendum, on commerce links.
+3. **Kramdown is not CommonMark, and the difference is visible.** Kramdown kept a `<div>`
+   and everything to its matching close as one raw HTML block. CommonMark ends an HTML block
+   at the first blank line, so the next indented line becomes an indented *code* block —
+   93 of 95 pages initially shipped their own markup as escaped source inside `<pre>`.
+   `migrate-pages.mjs` dedents raw HTML while it is open. **Any further legacy content
+   arriving as `.md` needs the same treatment**, along with kramdown's `{:.class}` inline
+   attribute lists, which every other engine renders as literal text.
+4. **Jekyll's layouts rendered `title` and `excerpt`, and nothing in Astro does.**
+   `/collect/decks` and `/collect/suits` have literally empty bodies; without the layout
+   they render blank. The migration materialises a heading for any page whose body has none.
+5. **`<span class="material-symbols-outlined">speaker_group</span>` is not an icon here.**
+   The glyph came from `fonts.googleapis.com`, which the self-hosted-fonts rule forbids, so
+   without the font the span degrades to the literal ligature name in the heading. All 18
+   were dropped. Do not reintroduce that class.
 
 ## State of the repo
 
@@ -101,11 +133,20 @@ routes/manifest.production.json   306 routes, frozen — CONTRACT, do not edit
 routes/policy.json                299 preserve / 5 drop / 2 redirect — CONTRACT
 routes/nfc-cards.json             the 35 codes (34 skysounds + STW3344)
 routes/seeds.json                 URLs a crawler cannot discover
-verify/external-links-*.json      562 external URLs (incl. on-load resources), 11 already dead
+routes/redirects.map              111 explicit collect/tree 301s — MW-11 configures the host
+verify/external-links-*.json      562 external URLs + 9 reviewed allowedNew, 11 already dead
+verify/content-expectations.json  95 pages, 117 headings taken from the legacy sources
 src/styles/tokens.css             design tokens, framework-neutral
 src/content/schemas.mjs           zod schemas (testable without a build)
 src/config/site.ts                COMMERCE.destinationUrl — the ONLY destination URL (null)
+src/content/pages/               95 migrated pages; filename encodes outputPath, `/`→`__`
+src/pages/[...page].astro         the catch-all; params come from outputPath, verbatim
 ```
+
+**`outputPath` is the load-bearing field.** It is the dist-relative path with no `.html`,
+derived from the policy's `servedAt`, and the route uses it as the param without touching
+it. `collect/cards/032_-maar-sky-sounds.3-card X ` keeps its internal space *and* its
+trailing space. Never slugify, trim or re-case it.
 
 Route-shape proofs live at `src/pages/ZZZ0000.astro` and
 `src/pages/route-proof/[...slug].astro`. They prove `CODE.html` emits at the output root and
@@ -121,6 +162,9 @@ npm run verify:cards     the physical-card contract, cheapest useful check
 npm run verify:selftest  proves the suite still fails on broken builds (10/10)
 npm run verify:schemas   proves the schemas still reject bad records (12/12)
 npm run freeze:routes    re-crawl production (only if the contract must be re-frozen)
+npm run migrate:pages    re-derive src/content/pages/ + media/ from the legacy checkouts
+npm run author:redirects           regenerate routes/redirects.map from the policy
+npm run author:content-expectations  re-record the per-page assertions after a content change
 npm run ledger -- status summary, including every BLOCKED item
 ```
 

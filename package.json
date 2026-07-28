@@ -24,7 +24,10 @@
     "verify:schemas": "node scripts/check-schemas.mjs",
     "freeze:routes": "node scripts/collect-seeds.mjs && node scripts/freeze-routes.mjs && node scripts/author-policy.mjs",
     "contract:relock": "node scripts/contract-lock.mjs relock",
-    "check:links": "node scripts/check-external-links.mjs"
+    "check:links": "node scripts/check-external-links.mjs",
+    "migrate:pages": "node scripts/migrate-pages.mjs && node scripts/collect-media.mjs",
+    "author:redirects": "node scripts/author-redirects.mjs",
+    "author:content-expectations": "node scripts/author-content-expectations.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
