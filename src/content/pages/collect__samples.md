@@ -1,6 +1,6 @@
 ---
 outputPath: "collect/samples"
-title: "entangled world docs"
+title: "Entangled World Docs - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "page"
 surface: "dark"

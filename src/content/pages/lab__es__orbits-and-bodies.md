@@ -1,6 +1,6 @@
 ---
 outputPath: "lab/es/orbits-and-bodies"
-title: "órbitas y cuerpos"
+title: "Órbitas y Cuerpos - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
@@ -10,6 +10,7 @@ source: "maar.world/collections/_lab/es/2025-08-24-01-Orbit-and-Bodies.md"
 lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2025-08-24-01-Orbit-and-Bodies.md"
+indexLabel: "Órbitas y Cuerpos"
 ---
 
 # Órbitas y Cuerpos

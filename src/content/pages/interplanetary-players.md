@@ -1,6 +1,6 @@
 ---
 outputPath: "interplanetary-players"
-title: "interplanetary players"
+title: "Redirecting…"
 area: "maar"
 kind: "page"
 surface: "dark"

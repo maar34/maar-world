@@ -1,6 +1,6 @@
 ---
 outputPath: "lab/es/helix-eac-montevideo-2025"
-title: "helix — requisitos técnicos"
+title: "Helix — Requisitos técnicos - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
@@ -10,6 +10,7 @@ source: "maar.world/collections/_lab/es/2026-03-24-Helix-EAC-Montevideo.md"
 lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2026-03-24-Helix-EAC-Montevideo.md"
+indexLabel: "Helix — Requisitos técnicos"
 date: "2026-03-24"
 ---
 

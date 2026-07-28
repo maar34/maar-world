@@ -56,6 +56,7 @@ const AREA = { 'maar.world': 'maar', 'collect.maar.world': 'collect', 'tree.maar
 const OUT = join(ROOT, 'src/content/pages');
 
 const policy = JSON.parse(readFileSync(join(ROOT, 'routes/policy.json'), 'utf8'));
+const manifest = JSON.parse(readFileSync(join(ROOT, 'routes/manifest.production.json'), 'utf8'));
 const cardCodes = new Set(
   JSON.parse(readFileSync(join(ROOT, 'routes/nfc-cards.json'), 'utf8')).cards.map((c) => c.code),
 );
@@ -257,6 +258,35 @@ const DROPPED = new Set(
     return [p, p.replace(/\.html$/i, ''), `${p.replace(/\.html$/i, '')}.html`];
   }),
 );
+
+/**
+ * The `<title>` production served, per page key.
+ *
+ * `<title>` is the one string on a page that CSS cannot reach. The site-wide
+ * lowercase is a CSS decision — `src/styles/reset.css` says source text keeps its
+ * casing "so it stays correct when copied, quoted, read by a screen reader" —
+ * but the migration lowercased the `title:` frontmatter as well and dropped the
+ * brand, so all 133 browser tabs, search results, share cards and screen-reader
+ * page announcements read `about` instead of `About - MAAR WORLD`. `<h1>` was
+ * never affected, which is why this went unseen.
+ *
+ * Taken from the frozen manifest rather than reconstructed: it is the only
+ * record of what each of the three origins actually sent, suffix included
+ * (`MAAR WORLD`, `COLLECT.MAAR.WORLD`, `TREE.MAAR.WORLD`).
+ */
+const PRODUCTION_TITLE = new Map();
+for (const r of manifest.routes) {
+  if (r.status !== 200 || r.kind !== 'page' || typeof r.title !== 'string' || !r.title.trim()) continue;
+  const { key } = pageKeyOf(`${AREA_PREFIX[r.origin] ?? ''}${r.url}`);
+  if (!PRODUCTION_TITLE.has(key)) PRODUCTION_TITLE.set(key, r.title.trim());
+}
+
+/** Brand suffix per origin, for the handful of pages the crawl never titled. */
+const BRAND = {
+  'maar.world': 'MAAR WORLD',
+  'collect.maar.world': 'COLLECT.MAAR.WORLD',
+  'tree.maar.world': 'TREE.MAAR.WORLD',
+};
 
 const FIRST_PARTY = /(^|\/\/|\.)maar\.world(\/|$|:)/i;
 
@@ -963,14 +993,28 @@ function coverFrom(data, origin) {
   return existsSync(join(SITES[origin], onDisk)) ? path : null;
 }
 
-function titleFrom(data, key) {
+/**
+ * The page's own name, in the casing its author wrote.
+ *
+ * Never lowercased here. Lowercase is a `text-transform` in the stylesheet, so
+ * it applies to what a reader sees and not to what they copy, quote, hear from a
+ * screen reader or read in a search result.
+ */
+function pageTitleFrom(data, key) {
   for (const k of ['title', 'card_title']) {
     if (typeof data[k] === 'string' && data[k].trim()) {
-      return data[k].trim().replace(/^["']|["']$/g, '').toLowerCase();
+      return data[k].trim().replace(/^["']|["']$/g, '');
     }
   }
-  const leaf = key.split('/').pop().replace(/[-_]+/g, ' ').replace(/\.\d+/g, '').trim();
-  return (leaf || 'maar world').toLowerCase();
+  return key.split('/').pop().replace(/[-_]+/g, ' ').replace(/\.\d+/g, '').trim() || 'Maar World';
+}
+
+/** What production put in `<title>` — its own string wherever the crawl has one. */
+function documentTitleFrom(key, origin, pageTitle, problems) {
+  const live = PRODUCTION_TITLE.get(key);
+  if (live) return live;
+  problems.push(`${key}: no production <title> in the frozen manifest — composed from the page title and the brand`);
+  return `${pageTitle} - ${BRAND[origin] ?? BRAND['maar.world']}`;
 }
 
 /** outputPath -> a filename that survives every filesystem, reversibly. */
@@ -1002,9 +1046,10 @@ for (const m of matched) {
   const t = transform(body, { key: m.key, area, origin: m.meta.origin });
   problems.push(...t.problems);
 
+  const pageTitle = pageTitleFrom(data, m.key);
   const record = {
     outputPath,
-    title: titleFrom(data, m.key),
+    title: documentTitleFrom(m.key, m.meta.origin, pageTitle, problems),
     area,
     kind,
     surface: kind === 'doc' ? 'paper' : 'dark',
@@ -1024,6 +1069,19 @@ for (const m of matched) {
   if (member) {
     record.indexGroup = member.group;
     record.indexOrder = member.order;
+    /**
+     * How this entry names itself in an index, as against how the document
+     * names itself to a browser tab.
+     *
+     * `title` is now production's `<title>`, brand suffix and all, because that
+     * is the string BaseLayout renders and nothing else can reach it. An index
+     * row wants the page's own name — "Sky Sounds", not "Sky Sounds -
+     * COLLECT.MAAR.WORLD" — so it is carried separately. The Lab index below
+     * uses it; `/collect/documentation` and `/collect/cards` are rendered by
+     * `src/pages/[...page].astro`, which is not this session's to edit, so the
+     * field is present and waiting for `indexLabel ?? title` there.
+     */
+    record.indexLabel = pageTitle;
   }
 
   if (member && coveredGroups.has(member.group)) {
@@ -1052,7 +1110,9 @@ for (const m of matched) {
    */
   // Collect card pages get their heading from the route, off the card fields.
   if (kind !== 'collect-card' && !/^#\s|<h1\b/im.test(finalBody)) {
-    const lead = [`# ${data.title || record.title}`];
+    // The page's own name, never the branded `<title>` — an `<h1>` reading
+    // "About - MAAR WORLD" would say the brand twice on every page.
+    const lead = [`# ${pageTitle}`];
     if (record.description) lead.push('', record.description);
     finalBody = `${lead.join('\n')}\n\n${finalBody}`.trim();
   }

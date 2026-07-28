@@ -1,6 +1,6 @@
 ---
 outputPath: "lab/en/music-return-to-playing"
-title: "music, abstraction, and the return to playing"
+title: "Music, Abstraction, and the Return to Playing - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
@@ -10,6 +10,7 @@ source: "maar.world/collections/_lab/en/2026-01-20-music-abstraction-return-play
 lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2026-01-20-music-abstraction-return-playing.md"
+indexLabel: "Music, Abstraction, and the Return to Playing"
 date: "2026-01-20"
 ---
 

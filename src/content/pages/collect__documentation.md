@@ -1,6 +1,6 @@
 ---
 outputPath: "collect/documentation"
-title: "docs"
+title: "Docs - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "page"
 surface: "dark"

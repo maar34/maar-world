@@ -1,6 +1,6 @@
 ---
 outputPath: "orbiters"
-title: "orbiters"
+title: "Orbiters - MAAR WORLD"
 area: "maar"
 kind: "page"
 surface: "dark"

@@ -1,6 +1,6 @@
 ---
 outputPath: "subscribe"
-title: "subscribe"
+title: "Subscribe - MAAR WORLD"
 area: "maar"
 kind: "page"
 surface: "dark"

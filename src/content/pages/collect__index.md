@@ -1,6 +1,6 @@
 ---
 outputPath: "collect/index"
-title: "collect"
+title: "Sky Sounds - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "index"
 surface: "dark"

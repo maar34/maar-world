@@ -1,6 +1,6 @@
 ---
 outputPath: "about"
-title: "about"
+title: "About - MAAR WORLD"
 area: "maar"
 kind: "page"
 surface: "dark"

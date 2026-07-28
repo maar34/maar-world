@@ -1,6 +1,6 @@
 ---
 outputPath: "collect/docs/ent-cards/nfc"
-title: "nfc"
+title: "NFC - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
 surface: "paper"
@@ -9,6 +9,7 @@ tags: []
 source: "collect.maar.world/collections/_documentation/03-ent-cards/04-nfc.md"
 indexGroup: "collect-docs"
 indexOrder: "03-ent-cards/04-nfc.md"
+indexLabel: "NFC"
 cover: "/img/docs/covers/nfc-cover.jpeg"
 ---
 

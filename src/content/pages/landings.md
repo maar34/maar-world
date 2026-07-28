@@ -1,6 +1,6 @@
 ---
 outputPath: "landings"
-title: "landings"
+title: "Landings - MAAR WORLD"
 area: "maar"
 kind: "page"
 surface: "dark"

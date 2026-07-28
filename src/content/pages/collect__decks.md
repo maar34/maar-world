@@ -1,6 +1,6 @@
 ---
 outputPath: "collect/decks"
-title: "decks"
+title: "Decks - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "page"
 surface: "dark"

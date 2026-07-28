@@ -1,6 +1,6 @@
 ---
 outputPath: "lab/en/shared-culture"
-title: "music, access, and the human mind"
+title: "Music, Access, and the Human Mind - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
@@ -10,6 +10,7 @@ source: "maar.world/collections/_lab/en/2026-01-07-Music-access-human-mind.md"
 lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2026-01-07-Music-access-human-mind.md"
+indexLabel: "Music, Access, and the Human Mind"
 date: "2026-01-07"
 ---
 

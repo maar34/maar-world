@@ -1,6 +1,6 @@
 ---
 outputPath: "rthw00"
-title: "rthw00"
+title: "Rthw00 - MAAR WORLD"
 area: "maar"
 kind: "genesis"
 surface: "dark"

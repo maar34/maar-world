@@ -1,6 +1,6 @@
 ---
 outputPath: "collect/privacy"
-title: "privacy"
+title: "Privacy - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "page"
 surface: "dark"
@@ -9,6 +9,7 @@ tags: []
 source: "collect.maar.world/collections/_documentation/07-mw/03-Privacy.md"
 indexGroup: "collect-docs"
 indexOrder: "07-mw/03-Privacy.md"
+indexLabel: "Privacy"
 cover: "/img/docs/covers/terms-cover.jpg"
 ---
 

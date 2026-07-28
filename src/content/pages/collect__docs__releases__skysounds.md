@@ -1,6 +1,6 @@
 ---
 outputPath: "collect/docs/releases/skysounds"
-title: "sky sounds"
+title: "Sky Sounds - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
 surface: "paper"
@@ -9,6 +9,7 @@ tags: []
 source: "collect.maar.world/collections/_documentation/02-ent-releases/01-skysounds.md"
 indexGroup: "collect-docs"
 indexOrder: "02-ent-releases/01-skysounds.md"
+indexLabel: "Sky Sounds"
 cover: "/img/docs/covers/skysounds-cover.jpg"
 ---
 

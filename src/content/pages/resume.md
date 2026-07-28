@@ -1,6 +1,6 @@
 ---
 outputPath: "resume"
-title: "resume"
+title: "Resume - MAAR WORLD"
 area: "maar"
 kind: "page"
 surface: "dark"

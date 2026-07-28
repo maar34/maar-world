@@ -1,6 +1,6 @@
 ---
 outputPath: "bookings"
-title: "bookings"
+title: "Bookings - MAAR WORLD"
 area: "maar"
 kind: "page"
 surface: "dark"

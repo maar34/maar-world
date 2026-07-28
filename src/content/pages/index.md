@@ -1,6 +1,6 @@
 ---
 outputPath: "index"
-title: "maar world"
+title: "Maar World - MAAR WORLD"
 area: "maar"
 kind: "index"
 surface: "dark"

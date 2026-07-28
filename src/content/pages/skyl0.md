@@ -1,6 +1,6 @@
 ---
 outputPath: "skyl0"
-title: "skyl0"
+title: "Skyl0 - MAAR WORLD"
 area: "maar"
 kind: "genesis"
 surface: "dark"

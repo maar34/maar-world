@@ -1,6 +1,6 @@
 ---
 outputPath: "collect/docs/tutorials"
-title: "tutorials"
+title: "Tutorials - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
 surface: "paper"
@@ -9,6 +9,7 @@ tags: []
 source: "collect.maar.world/collections/_documentation/02-tutorials.md"
 indexGroup: "collect-docs"
 indexOrder: "02-tutorials.md"
+indexLabel: "Tutorials"
 cover: "/img/docs/covers/tutorials-cover.jpeg"
 ---
 

@@ -1,6 +1,6 @@
 ---
 outputPath: "music"
-title: "music"
+title: "Music - MAAR WORLD"
 area: "maar"
 kind: "page"
 surface: "dark"

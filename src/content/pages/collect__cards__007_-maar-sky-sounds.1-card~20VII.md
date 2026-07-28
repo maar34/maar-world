@@ -1,6 +1,6 @@
 ---
 outputPath: "collect/cards/007_-maar-sky-sounds.1-card VII"
-title: "card vii"
+title: "007_ Maar Sky Sounds.1 Card vii - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "collect-card"
 surface: "dark"
@@ -9,6 +9,7 @@ tags: []
 source: "collect.maar.world/collections/_cards/007_-maar-sky-sounds.1-card VII.md"
 indexGroup: "collect-cards"
 indexOrder: "007_-maar-sky-sounds.1-card VII.md"
+indexLabel: "Card VII"
 suit_title: "SkySounds.1"
 card_title: "Card VII"
 card_image: "https://www.dropbox.com/s/j78enrhvw79bgbz/SkySounds1_7.png?raw=1"

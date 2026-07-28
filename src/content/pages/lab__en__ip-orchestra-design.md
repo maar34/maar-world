@@ -1,6 +1,6 @@
 ---
 outputPath: "lab/en/ip-orchestra-design"
-title: "orbital creation workshop"
+title: "Orbital Creation Workshop - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
@@ -10,9 +10,10 @@ source: "maar.world/collections/_lab/en/2024-09-01-Orbital Creation Workshop.md"
 lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2024-09-01-Orbital Creation Workshop.md"
+indexLabel: "Orbital Creation Workshop"
 ---
 
-# "Orbital Creation Workshop"
+# Orbital Creation Workshop
 
 ### 🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬
 

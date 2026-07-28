@@ -1,6 +1,6 @@
 ---
 outputPath: "helix-diagram"
-title: "helix diagram"
+title: "Helix Diagram"
 area: "maar"
 kind: "page"
 surface: "dark"

@@ -1,6 +1,6 @@
 ---
 outputPath: "lab/en/ip-3"
-title: "interplanetary ancestors 3-3 (en)"
+title: "Interplanetary ancestors 3-3 (EN) - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
@@ -10,6 +10,7 @@ source: "maar.world/collections/_lab/en/2023-08-25-01_IP3.md"
 lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2023-08-25-01_IP3.md"
+indexLabel: "Interplanetary ancestors 3-3 (EN)"
 ---
 
 # Interplanetary ancestors 3-3 (EN)

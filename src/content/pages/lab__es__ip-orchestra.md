@@ -1,6 +1,6 @@
 ---
 outputPath: "lab/es/ip-orchestra"
-title: "taller de creación orbital: orbiters orchestra (es)"
+title: "Taller de creación orbital: Orbiters Orchestra (ES) - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
@@ -10,9 +10,10 @@ source: "maar.world/collections/_lab/es/2024-08-30-IP_Orchestra.md"
 lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2024-08-30-IP_Orchestra.md"
+indexLabel: "Taller de creación orbital: Orbiters Orchestra (ES)"
 ---
 
-# "Taller de creación orbital: Orbiters Orchestra (ES)"
+# Taller de creación orbital: Orbiters Orchestra (ES)
 
 ### 🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬
 

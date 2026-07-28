@@ -1,6 +1,6 @@
 ---
 outputPath: "calendar"
-title: "calendar"
+title: "Calendar - MAAR WORLD"
 area: "maar"
 kind: "page"
 surface: "dark"

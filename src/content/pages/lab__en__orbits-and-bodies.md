@@ -1,6 +1,6 @@
 ---
 outputPath: "lab/en/orbits-and-bodies"
-title: "orbits and bodies"
+title: "Orbits and Bodies - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
@@ -10,6 +10,7 @@ source: "maar.world/collections/_lab/en/2025-08-24-01-Orbit-and-Bodies.md"
 lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2025-08-24-01-Orbit-and-Bodies.md"
+indexLabel: "Orbits and Bodies"
 date: "2025-08-24"
 ---
 

@@ -1,6 +1,6 @@
 ---
 outputPath: "radio"
-title: "radio"
+title: "Radio - MAAR WORLD"
 area: "maar"
 kind: "page"
 surface: "dark"

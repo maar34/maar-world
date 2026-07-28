@@ -1,6 +1,6 @@
 ---
 outputPath: "privacy"
-title: "privacy"
+title: "Privacy - MAAR WORLD"
 area: "maar"
 kind: "page"
 surface: "dark"

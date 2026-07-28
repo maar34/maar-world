@@ -1,6 +1,6 @@
 ---
 outputPath: "lab/es/cultura-compartida"
-title: "música, acceso y la mente humana"
+title: "Música, Acceso y la Mente Humana - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
@@ -10,6 +10,7 @@ source: "maar.world/collections/_lab/es/2026-01-07-Music-access-human-mind.md"
 lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2026-01-07-Music-access-human-mind.md"
+indexLabel: "Música, Acceso y la Mente Humana"
 date: "2026-01-07"
 ---
 

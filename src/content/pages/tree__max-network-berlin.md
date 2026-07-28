@@ -1,6 +1,6 @@
 ---
 outputPath: "tree/max-network-berlin"
-title: "max berlin network"
+title: "MAX BERLIN NETWORK - TREE.MAAR.WORLD"
 area: "tree"
 kind: "page"
 surface: "dark"

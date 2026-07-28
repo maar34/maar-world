@@ -1,6 +1,6 @@
 ---
 outputPath: "tree/index"
-title: "tree"
+title: "TREE.MAAR.WORLD"
 area: "tree"
 kind: "index"
 surface: "dark"

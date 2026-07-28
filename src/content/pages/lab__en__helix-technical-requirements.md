@@ -1,6 +1,6 @@
 ---
 outputPath: "lab/en/helix-technical-requirements"
-title: "helix — technical requirements"
+title: "Helix — Technical Requirements - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
@@ -10,6 +10,7 @@ source: "maar.world/collections/_lab/en/2026-03-24-Helix-EAC-Montevideo.md"
 lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2026-03-24-Helix-EAC-Montevideo.md"
+indexLabel: "Helix — Technical Requirements"
 date: "2026-03-24"
 ---
 

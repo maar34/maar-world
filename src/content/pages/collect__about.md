@@ -1,6 +1,6 @@
 ---
 outputPath: "collect/about"
-title: "about"
+title: "About - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "page"
 surface: "dark"

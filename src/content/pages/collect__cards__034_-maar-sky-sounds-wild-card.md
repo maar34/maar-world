@@ -1,6 +1,6 @@
 ---
 outputPath: "collect/cards/034_-maar-sky-sounds-wild-card"
-title: "wildcard"
+title: "034_ Maar Sky Sounds Wild Card - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "collect-card"
 surface: "dark"
@@ -9,6 +9,7 @@ tags: []
 source: "collect.maar.world/collections/_cards/034_-maar-sky-sounds-wild-card.md"
 indexGroup: "collect-cards"
 indexOrder: "034_-maar-sky-sounds-wild-card.md"
+indexLabel: "WildCard"
 suit_title: "SkySounds"
 card_title: "WildCard"
 card_image: "https://www.dropbox.com/s/k2gdp6saf52082y/SkySounds34.png?raw=1"

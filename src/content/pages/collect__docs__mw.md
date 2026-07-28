@@ -1,6 +1,6 @@
 ---
 outputPath: "collect/docs/mw"
-title: "information"
+title: "Information - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
 surface: "paper"
@@ -9,6 +9,7 @@ tags: []
 source: "collect.maar.world/collections/_documentation/07-mw.md"
 indexGroup: "collect-docs"
 indexOrder: "07-mw.md"
+indexLabel: "Information"
 cover: "/img/docs/covers/information-cover.jpg"
 ---
 

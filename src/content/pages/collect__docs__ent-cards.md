@@ -1,6 +1,6 @@
 ---
 outputPath: "collect/docs/ent-cards"
-title: "ent cards"
+title: "ENT Cards - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
 surface: "paper"
@@ -9,6 +9,7 @@ tags: []
 source: "collect.maar.world/collections/_documentation/03-ent-cards.md"
 indexGroup: "collect-docs"
 indexOrder: "03-ent-cards.md"
+indexLabel: "ENT Cards"
 cover: "/img/docs/covers/ent-cards-cover.jpg"
 ---
 

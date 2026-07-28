@@ -1,6 +1,6 @@
 ---
 outputPath: "collect/suits"
-title: "suits"
+title: "Suits - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "page"
 surface: "dark"

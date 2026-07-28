@@ -1,6 +1,6 @@
 ---
 outputPath: "lab"
-title: "lab"
+title: "Lab - MAAR WORLD"
 area: "maar"
 kind: "page"
 surface: "dark"

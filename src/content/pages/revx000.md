@@ -1,6 +1,6 @@
 ---
 outputPath: "revx000"
-title: "revx000"
+title: "Revx000 - MAAR WORLD"
 area: "maar"
 kind: "genesis"
 surface: "dark"

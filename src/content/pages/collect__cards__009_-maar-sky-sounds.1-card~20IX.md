@@ -1,6 +1,6 @@
 ---
 outputPath: "collect/cards/009_-maar-sky-sounds.1-card IX"
-title: "card ix"
+title: "009_ Maar Sky Sounds.1 Card ix - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "collect-card"
 surface: "dark"
@@ -9,6 +9,7 @@ tags: []
 source: "collect.maar.world/collections/_cards/009_-maar-sky-sounds.1-card IX.md"
 indexGroup: "collect-cards"
 indexOrder: "009_-maar-sky-sounds.1-card IX.md"
+indexLabel: "Card IX"
 suit_title: "SkySounds.1"
 card_title: "Card IX"
 card_image: "https://www.dropbox.com/s/w1l73y9i2ceh8nz/SkySounds1_9.png?raw=1"

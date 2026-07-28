@@ -1,6 +1,6 @@
 ---
 outputPath: "lab/es/musica-retorno-al-juego"
-title: "música, abstracción y el retorno al juego"
+title: "Música, Abstracción y el Retorno al Juego - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
@@ -10,6 +10,7 @@ source: "maar.world/collections/_lab/es/2026-01-20-music-abstraction-return-play
 lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2026-01-20-music-abstraction-return-playing.md"
+indexLabel: "Música, Abstracción y el Retorno al Juego"
 date: "2026-01-20"
 ---
 
