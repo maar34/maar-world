@@ -64,6 +64,7 @@ import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { ROOT, indexDist, readDistFile } from './lib/artifacts.mjs';
 import { resolveRoute } from './lib/routes.mjs';
+import { mainContent } from './verify-content.mjs';
 
 const PAGES = join(ROOT, 'src/content/pages');
 
@@ -576,7 +577,7 @@ for (const page of pages) {
     failures.push(`${page.url}: not in build output`);
     continue;
   }
-  const html = readDistFile(file);
+  const html = mainContent(readDistFile(file));
   const text = stripTags(html);
   for (const h of page.headings) if (!text.includes(h)) failures.push(`${page.url}: missing heading "${h}"`);
   if (typeof page.minTextLength === 'number' && text.length < page.minTextLength) {

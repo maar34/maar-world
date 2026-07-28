@@ -908,6 +908,34 @@ check('a page with no production baseline fails verify:content', (root) => {
   return { ok, detail: ok ? 'exit 1, baseline-less page caught' : `expected exit 1, got ${code}\n${out}` };
 });
 
+// 56. The site shell must not pay for the page. Production's side of every
+//     assertion has its header, nav and footer removed by name, so the build's
+//     side is measured inside <main>. Without that, the shell's brand, area nav
+//     and footer add text and links to all 133 pages, lifting a collapsed body
+//     back over its floor — the check would go green as the shell landed.
+check('shell chrome outside <main> does not satisfy verify:content', (root) => {
+  contentFixture(root);
+  const shell =
+    '<!doctype html><html><body><header><a href="/">Maar World</a>' +
+    `<nav>${'Areas maar collect tree. '.repeat(30)}</nav></header>` +
+    '<main>' +
+    CONTENT_PROD.headings.map((h) => `<h2>${h}</h2>`).join('') +
+    '<img src="/a.png">'.repeat(CONTENT_PROD.images) +
+    '<iframe src="https://play.maar.world/?g=1"></iframe>' +
+    '<p>One line survived.</p></main>' +
+    `<footer><a href="${CONTENT_PROD.links[0]}">note</a>` +
+    `${'Footer text. '.repeat(30)}</footer></body></html>`;
+  writeFileSync(join(root, 'dist/orbits.html'), shell);
+  const { code, out } = run(root, 'verify-content.mjs');
+  const ok = code === 1 && /chars < expected 340/.test(out) && /missing link/.test(out);
+  return {
+    ok,
+    detail: ok
+      ? 'exit 1, shell text and shell link did not count'
+      : `expected exit 1 naming both, got ${code}\n${out}`,
+  };
+});
+
 // --- F7: the documented source of truth is the strongest command ---------
 
 // OPERATING-RULES designates `npm run verify` as the command whose exit code

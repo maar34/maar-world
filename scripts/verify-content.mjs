@@ -38,6 +38,28 @@ const stripTags = (html) => html.replace(/<script[\s\S]*?<\/script>/gi, ' ')
 
 const countMatches = (html, re) => (html.match(re) || []).length;
 
+/**
+ * The built page's own content region.
+ *
+ * The production side of every assertion has the legacy theme's header, nav,
+ * footer, sidebar and cookie banner removed by name — otherwise the check would
+ * assert chrome that was deliberately not ported. The build side has to be
+ * measured the same way or the comparison is not like for like: once the site
+ * shell landed, its skip link, brand, area nav and footer added text and links
+ * to all 133 pages, which raises every page over its minTextLength floor and
+ * would mask exactly the body collapse this check exists to catch.
+ *
+ * `<main>` is the landmark the shell already uses. A page without one is
+ * measured whole, which is what every page did before the shell existed.
+ */
+export function mainContent(html) {
+  const open = /<main\b[^>]*>/i.exec(html);
+  if (!open) return html;
+  const close = html.lastIndexOf('</main>');
+  if (close <= open.index) return html;
+  return html.slice(open.index + open[0].length, close);
+}
+
 /** Print at most `n` lines, then say how many were withheld. */
 function list(problems, n = 12) {
   for (const p of problems.slice(0, n)) console.log(`      ${p}`);
@@ -156,7 +178,7 @@ export async function checkContent(report) {
       continue;
     }
 
-    const html = readDistFile(file);
+    const html = mainContent(readDistFile(file));
     const text = stripTags(html);
     checked += 1;
 
