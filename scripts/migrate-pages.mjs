@@ -227,15 +227,35 @@ for (const [key, meta] of targets) {
 
 // ── 4. body transforms ───────────────────────────────────────────────────
 
-/** Merged-site paths of every route the policy drops, in both spellings. */
+/**
+ * Merged-site paths of every route the policy drops, in both spellings.
+ *
+ * **Only `dropKind: 'decided'` counts.** `policy === 'drop'` is not one thing:
+ * MW-4's second freeze grew the policy from 306 routes to 611 and, with it, the
+ * drop set from 5 to 256 — but 254 of those carry `dropKind: 'unresolved'` and
+ * an open decision. They are live 200s awaiting a human, not addresses that have
+ * stopped existing, and ~250 of them are images.
+ *
+ * 192 of the undecided drops are image URLs and 4 more are the PDFs the resume
+ * page offers for download. The rewrite below deletes the `<a>` around any
+ * dropped path and keeps only its text, so every one of those was a live
+ * reference this script was one link away from erasing — silently, because
+ * unwrapping a link is reported as a routine problem line, not an error.
+ *
+ * Re-running with the whole set happens to be harmless *today*: the only dropped
+ * URL any page still links is `/docs/ent-worlds/glossary.html`, which is decided
+ * and already 404s. That is luck, not safety. Reading `dropKind` is what stops a
+ * later re-run turning a question nobody has answered into a deletion.
+ */
 const AREA_PREFIX = { 'maar.world': '', 'collect.maar.world': '/collect', 'tree.maar.world': '/tree' };
+const allDrops = policy.routes.filter((r) => r.policy === 'drop');
+const decidedDrops = allDrops.filter((r) => r.dropKind === 'decided');
+const undecidedDrops = allDrops.filter((r) => r.dropKind !== 'decided');
 const DROPPED = new Set(
-  policy.routes
-    .filter((r) => r.policy === 'drop')
-    .flatMap((r) => {
-      const p = `${AREA_PREFIX[r.origin] ?? ''}${r.url}`;
-      return [p, p.replace(/\.html$/i, ''), `${p.replace(/\.html$/i, '')}.html`];
-    }),
+  decidedDrops.flatMap((r) => {
+    const p = `${AREA_PREFIX[r.origin] ?? ''}${r.url}`;
+    return [p, p.replace(/\.html$/i, ''), `${p.replace(/\.html$/i, '')}.html`];
+  }),
 );
 
 const FIRST_PARTY = /(^|\/\/|\.)maar\.world(\/|$|:)/i;
@@ -702,6 +722,10 @@ console.log(`targets required : ${targets.size}`);
 console.log(`matched to source: ${matched.length}`);
 console.log(`written          : ${written.length}`);
 console.log(`UNMATCHED        : ${unmatched.length}`);
+console.log(
+  `drops consumed   : ${decidedDrops.length} decided ` +
+    `(${undecidedDrops.length} dropKind:unresolved left intact — an open question is not a deletion)`,
+);
 for (const u of unmatched) console.log(`  ! ${u.origin}  ${u.key}  (looked for "${u.want}")`);
 
 const unresolved = problems.filter((p) => /UNRESOLVED|SCHEMA|DUPLICATE/.test(p));
