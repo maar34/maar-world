@@ -6,9 +6,16 @@
 # maar.world routes are absent by design — they never moved.
 #
 #   <legacy path>  <target url>  <status>
+#
+# A path marked UNDECIDED has NO active line, on purpose. It is a live 200
+# whose retirement nobody has authorised, and a 301 to the area root would
+# publish that decision to every cache that sees it. Left inert, it falls
+# through to the policy.redirectMap wildcard at the end of its block and keeps
+# its path shape. Deciding one means uncommenting one line.
 
 # ── collect.maar.world ──────────────────────────────────────────
-/  https://maar.world/collect/  301
+# 122 redirect(s), 104 undecided and deliberately inert.
+/  https://maar.world/collect  301
 /about  https://maar.world/collect/about  301
 /about.html  https://maar.world/collect/about.html  301
 /cards  https://maar.world/collect/cards  301
@@ -104,6 +111,25 @@
 /docs/tutorials.html  https://maar.world/collect/docs/tutorials.html  301
 /documentation  https://maar.world/collect/documentation  301
 /documentation.html  https://maar.world/collect/documentation.html  301
+/img/docs/covers/qr-technology.jpg  https://maar.world/img/docs/covers/qr-technology.jpg  301
+/img/docs/ent-cards/01_card-front.png  https://maar.world/img/docs/ent-cards/01_card-front.png  301
+/img/docs/ent-cards/02_card-back.png  https://maar.world/img/docs/ent-cards/02_card-back.png  301
+/img/docs/ent-cards/03-sustainability.png  https://maar.world/img/docs/ent-cards/03-sustainability.png  301
+/img/docs/ent-cards/04-NFC.png  https://maar.world/img/docs/ent-cards/04-NFC.png  301
+/img/docs/ent-cards/NFC-on-an-iPhone.png  https://maar.world/img/docs/ent-cards/NFC-on-an-iPhone.png  301
+/img/docs/ent-release/01_skysounds.png  https://maar.world/img/docs/ent-release/01_skysounds.png  301
+/img/docs/mw/01-info.jpg  https://maar.world/img/docs/mw/01-info.jpg  301
+/img/docs/orbiters/02_web-player.png  https://maar.world/img/docs/orbiters/02_web-player.png  301
+/img/docs/orbiters/03_int-development.png  https://maar.world/img/docs/orbiters/03_int-development.png  301
+/img/docs/orbiters/04-vinyl-sphere.png  https://maar.world/img/docs/orbiters/04-vinyl-sphere.png  301
+/img/docs/orbiters/05_int-player-2024.jpeg  https://maar.world/img/docs/orbiters/05_int-player-2024.jpeg  301
+/img/docs/orbiters/06_int-player-2024.jpeg  https://maar.world/img/docs/orbiters/06_int-player-2024.jpeg  301
+/img/landing/2024_ss-10.jpeg  https://maar.world/img/landing/2024_ss-10.jpeg  301
+/img/landing/2024_ss-11.jpeg  https://maar.world/img/landing/2024_ss-11.jpeg  301
+/img/landing/2024_ss-12.jpeg  https://maar.world/img/landing/2024_ss-12.jpeg  301
+/img/landing/2024_ss-2.jpeg  https://maar.world/img/landing/2024_ss-2.jpeg  301
+/img/landing/2024_ss-7.jpeg  https://maar.world/img/landing/2024_ss-7.jpeg  301
+/img/landing/2024_ss-8.jpeg  https://maar.world/img/landing/2024_ss-8.jpeg  301
 /index.html  https://maar.world/collect/index.html  301
 /privacy  https://maar.world/collect/privacy  301
 /privacy.html  https://maar.world/collect/privacy.html  301
@@ -112,13 +138,174 @@
 /suits  https://maar.world/collect/suits  301
 /suits.html  https://maar.world/collect/suits.html  301
 
+# 104 live URL(s) awaiting a human decision — see MIGRATION-LEDGER.md.
+# No host acts on these. They fall through to the wildcard below.
+# UNDECIDED  /404  — live in production (HTTP 200, 43818 bytes) and the new build emits nothing at this path. error page — not a page, and not something any migrated content references.
+# UNDECIDED  /404.html  — live in production (HTTP 200, 43818 bytes) and the new build emits nothing at this path. error page — not a page, and not something any migrated content references.
+# UNDECIDED  /apple-touch-icon.png  — live in production (HTTP 200, 7384 bytes) and the new build emits nothing at this path. icon or web-app manifest — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/android-chrome-192x192.png  — live in production (HTTP 200, 7949 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/android-chrome-512x512.png  — live in production (HTTP 200, 23569 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/apple-touch-icon.png  — live in production (HTTP 200, 7384 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/browserconfig.xml  — live in production (HTTP 200, 246 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/css/main.css  — live in production (HTTP 200, 152225 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/favicon-16x16.png  — live in production (HTTP 200, 841 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/favicon-32x32.png  — live in production (HTTP 200, 1343 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/favicon.ico  — live in production (HTTP 200, 15086 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/favicon.png  — live in production (HTTP 200, 12513 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/images/logo/logo.svg  — live in production (HTTP 200, 423 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/mstile-144x144.png  — live in production (HTTP 200, 5754 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/mstile-150x150.png  — live in production (HTTP 200, 5589 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/mstile-310x150.png  — live in production (HTTP 200, 6065 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/mstile-310x310.png  — live in production (HTTP 200, 12513 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/mstile-70x70.png  — live in production (HTTP 200, 3817 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/safari-pinned-tab.svg  — live in production (HTTP 200, 2637 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/search.js  — live in production (HTTP 200, 4079 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/site.webmanifest  — live in production (HTTP 200, 426 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /browserconfig.xml  — live in production (HTTP 200, 246 bytes) and the new build emits nothing at this path. icon or web-app manifest — not a page, and not something any migrated content references.
+# UNDECIDED  /CNAME  — live in production (HTTP 200, 18 bytes) and the new build emits nothing at this path. build file published by accident — not a page, and not something any migrated content references.
+# UNDECIDED  /docker/nginx.conf  — live in production (HTTP 200, 331 bytes) and the new build emits nothing at this path. build file published by accident — not a page, and not something any migrated content references.
+# UNDECIDED  /Dockerfile.dev  — live in production (HTTP 200, 373 bytes) and the new build emits nothing at this path. build file published by accident — not a page, and not something any migrated content references.
+# UNDECIDED  /favicon-16x16.png  — live in production (HTTP 200, 841 bytes) and the new build emits nothing at this path. icon or web-app manifest — not a page, and not something any migrated content references.
+# UNDECIDED  /favicon-32x32.png  — live in production (HTTP 200, 1343 bytes) and the new build emits nothing at this path. icon or web-app manifest — not a page, and not something any migrated content references.
+# UNDECIDED  /favicon.ico  — live in production (HTTP 200, 15086 bytes) and the new build emits nothing at this path. icon or web-app manifest — not a page, and not something any migrated content references.
+# UNDECIDED  /feed  — live in production (HTTP 200, 596 bytes) and the new build emits nothing at this path. RSS feed — not a page, and not something any migrated content references.
+# UNDECIDED  /feed.xml  — live in production (HTTP 200, 596 bytes) and the new build emits nothing at this path. RSS feed — not a page, and not something any migrated content references.
+# UNDECIDED  /img/docs/covers/contact.jpg  — live in production (HTTP 200, 190555 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/covers/dev-cover.jpeg  — live in production and still referenced by 1 live page(s) (/documentation.html), but absent from the build.
+# UNDECIDED  /img/docs/covers/ecofriendly-papers-inks.jpg  — live in production (HTTP 200, 124493 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/covers/ent-cards-cover.jpg  — live in production and still referenced by 1 live page(s) (/documentation.html), but absent from the build.
+# UNDECIDED  /img/docs/covers/ent-cover.jpeg  — live in production (HTTP 200, 192398 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/covers/ent-release.jpg  — live in production (HTTP 200, 394653 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/covers/ent-releases-cover.jpeg  — live in production (HTTP 200, 316913 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/covers/ent-space-cover.jpeg  — live in production (HTTP 200, 350688 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/covers/ent-worlds-cover.jpg  — live in production (HTTP 200, 146638 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/covers/faquestions-cover.jpg  — live in production (HTTP 200, 350288 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/covers/glossary-cover.jpeg  — live in production (HTTP 200, 360208 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/covers/how-to.jpg  — live in production and still referenced by 1 live page(s) (/documentation.html), but absent from the build.
+# UNDECIDED  /img/docs/covers/information-cover.jpg  — live in production and still referenced by 1 live page(s) (/documentation.html), but absent from the build.
+# UNDECIDED  /img/docs/covers/int-players-cover.jpeg  — live in production (HTTP 200, 462569 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/covers/nfc-cover.jpeg  — live in production and still referenced by 1 live page(s) (/documentation.html), but absent from the build.
+# UNDECIDED  /img/docs/covers/nfc.jpg  — live in production (HTTP 200, 73669 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/covers/nft-cover.jpeg  — live in production (HTTP 200, 420693 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/covers/redistribution-cover.jpg  — live in production (HTTP 200, 136992 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/covers/skysounds-cover.jpg  — live in production and still referenced by 1 live page(s) (/documentation.html), but absent from the build.
+# UNDECIDED  /img/docs/covers/solar-power.jpg  — live in production (HTTP 200, 107537 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/covers/sustainability-cover.jpeg  — live in production and still referenced by 1 live page(s) (/documentation.html), but absent from the build.
+# UNDECIDED  /img/docs/covers/terms-cover.jpg  — live in production and still referenced by 1 live page(s) (/documentation.html), but absent from the build.
+# UNDECIDED  /img/docs/covers/tutorials-cover.jpeg  — live in production and still referenced by 1 live page(s) (/documentation.html), but absent from the build.
+# UNDECIDED  /img/docs/ent-release/02-purchase-diagram.png  — live in production (HTTP 200, 290238 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/ent-space/01_ent-space.png  — live in production (HTTP 200, 288697 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/ent-space/02-space.png  — live in production (HTTP 200, 417226 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/ent-worlds/01_ecosystem.png  — live in production (HTTP 200, 449276 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/ent-worlds/02-ent-world-diagram.png  — live in production (HTTP 200, 198823 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/ent/00-ent-logo.png  — live in production (HTTP 200, 939829 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/ent/01-ent-model.png  — live in production (HTTP 200, 563613 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/ent/02-ent-model.png  — live in production (HTTP 200, 438590 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/ent/regenerative.png  — live in production (HTTP 200, 27493 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/interplanetary-music-players.png  — live in production (HTTP 200, 114495 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/Maar_AI.jpg  — live in production (HTTP 200, 288464 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/maar-world-max-msp-software.png  — live in production (HTTP 200, 310539 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/orbiters/00_modern-ancestry.jpeg  — live in production (HTTP 200, 180671 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/orbiters/01_int-player.png  — live in production (HTTP 200, 276361 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/orbiters/07_ip-card.jpg  — live in production (HTTP 200, 441315 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/orbiters/08_ip-max-24.jpg  — live in production (HTTP 200, 177875 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/orbiters/09_ip-immersive.jpg  — live in production (HTTP 200, 134233 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/orbiters/10_ip-transit.png  — live in production (HTTP 200, 279856 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/orbiters/101_regen.svg  — live in production (HTTP 200, 1767 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/orbiters/maar-world-banner-ovni.jpg  — live in production (HTTP 200, 136121 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/docs/orbiters/Planetary_Musical_Scales_from_Harmony_of_the_Worlds.jpg  — live in production (HTTP 200, 371113 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/2024_ss-1.jpeg  — live in production (HTTP 200, 344318 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/2024_ss-3.jpeg  — live in production (HTTP 200, 138006 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/2024_ss-4.jpeg  — live in production (HTTP 200, 177256 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/2024_ss-5.jpeg  — live in production (HTTP 200, 2878456 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/2024_ss-6.jpeg  — live in production (HTTP 200, 2739007 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/2024_ss-9.jpeg  — live in production (HTTP 200, 127091 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/433-mobile-cards.gif  — live in production (HTTP 200, 2082541 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/artists-community.jpg  — live in production (HTTP 200, 298926 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/cards-back.png  — live in production (HTTP 200, 30643 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/development-new-technologies.jpg  — live in production (HTTP 200, 267390 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/digital-1.mp4  — live in production (HTTP 200, 837935 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/digital-1.png  — live in production (HTTP 200, 218529 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/digital-2.mp4  — live in production (HTTP 200, 755130 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/digital-2.png  — live in production (HTTP 200, 221998 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/digital-3.mp4  — live in production (HTTP 200, 759476 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/digital-3.png  — live in production (HTTP 200, 166003 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/Kepler_Space_Telescope.png  — live in production (HTTP 200, 974450 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/maar-world-banner-1.png  — live in production (HTTP 200, 472398 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/max-msp-proto.gif  — live in production (HTTP 200, 2151895 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/mother-earth.png  — live in production (HTTP 200, 32880 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/landing/platonic-solids.png  — live in production (HTTP 200, 124371 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/pages/433-cards.gif  — live in production (HTTP 200, 3609977 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/pages/433-decks.gif  — live in production (HTTP 200, 699656 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/pages/433-suits.gif  — live in production (HTTP 200, 2599347 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/sky-sounds/r01-sky-sounds-cover.png  — live in production (HTTP 200, 1088079 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /robots.txt  — live in production (HTTP 200, 48 bytes) and the new build emits nothing at this path. crawler directive — not a page, and not something any migrated content references.
+# UNDECIDED  /safari-pinned-tab.svg  — live in production (HTTP 200, 2637 bytes) and the new build emits nothing at this path. icon or web-app manifest — not a page, and not something any migrated content references.
+# UNDECIDED  /site.webmanifest  — live in production (HTTP 200, 426 bytes) and the new build emits nothing at this path. icon or web-app manifest — not a page, and not something any migrated content references.
+# UNDECIDED  /sitemap.xml  — live in production (HTTP 200, 6857 bytes) and the new build emits nothing at this path. crawler directive — not a page, and not something any migrated content references.
+# UNDECIDED  /tools/assert-url.js  — live in production (HTTP 200, 995 bytes) and the new build emits nothing at this path. build file published by accident — not a page, and not something any migrated content references.
+
+# Catch-all from policy.redirectMap — everything not named above, including
+# every UNDECIDED path, keeps its shape rather than collapsing to the root.
+/*  https://maar.world/collect/:splat  301
+
 # ── tree.maar.world ─────────────────────────────────────────────
+# 5 redirect(s), 45 undecided and deliberately inert.
 /  https://maar.world/tree  301
+/img/music-tree.jpg  https://maar.world/img/music-tree.jpg  301
 /index.html  https://maar.world/tree/index.html  301
-/index.min  https://maar.world/tree  301
-/index.min.html  https://maar.world/tree  301
 /max-network-berlin  https://maar.world/tree/max-network-berlin  301
 /max-network-berlin.html  https://maar.world/tree/max-network-berlin.html  301
-/z/README-zh  https://maar.world/tree  301
-/z/README-zh.html  https://maar.world/tree  301
+
+# 45 live URL(s) awaiting a human decision — see MIGRATION-LEDGER.md.
+# No host acts on these. They fall through to the wildcard below.
+# UNDECIDED  /404  — live in production (HTTP 200, 29225 bytes) and the new build emits nothing at this path. error page — not a page, and not something any migrated content references.
+# UNDECIDED  /404.html  — live in production (HTTP 200, 29225 bytes) and the new build emits nothing at this path. error page — not a page, and not something any migrated content references.
+# UNDECIDED  /apple-touch-icon.png  — live in production (HTTP 200, 7384 bytes) and the new build emits nothing at this path. icon or web-app manifest — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/android-chrome-192x192.png  — live in production (HTTP 200, 7949 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/android-chrome-512x512.png  — live in production (HTTP 200, 23569 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/apple-touch-icon.png  — live in production (HTTP 200, 7384 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/browserconfig.xml  — live in production (HTTP 200, 246 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/css/main.css  — live in production (HTTP 200, 155481 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/favicon-16x16.png  — live in production (HTTP 200, 841 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/favicon-32x32.png  — live in production (HTTP 200, 1343 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/favicon.ico  — live in production (HTTP 200, 15086 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/favicon.png  — live in production (HTTP 200, 12513 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/images/logo/logo.svg  — live in production (HTTP 200, 423 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/mstile-144x144.png  — live in production (HTTP 200, 5754 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/mstile-150x150.png  — live in production (HTTP 200, 5589 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/mstile-310x150.png  — live in production (HTTP 200, 6065 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/mstile-310x310.png  — live in production (HTTP 200, 12513 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/mstile-70x70.png  — live in production (HTTP 200, 3817 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/safari-pinned-tab.svg  — live in production (HTTP 200, 2637 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/search.js  — live in production (HTTP 200, 144 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /assets/site.webmanifest  — live in production (HTTP 200, 426 bytes) and the new build emits nothing at this path. compiled theme asset — not a page, and not something any migrated content references.
+# UNDECIDED  /browserconfig.xml  — live in production (HTTP 200, 246 bytes) and the new build emits nothing at this path. icon or web-app manifest — not a page, and not something any migrated content references.
+# UNDECIDED  /CNAME  — live in production (HTTP 200, 15 bytes) and the new build emits nothing at this path. build file published by accident — not a page, and not something any migrated content references.
+# UNDECIDED  /docker/nginx.conf  — live in production (HTTP 200, 331 bytes) and the new build emits nothing at this path. build file published by accident — not a page, and not something any migrated content references.
+# UNDECIDED  /Dockerfile.dev  — live in production (HTTP 200, 373 bytes) and the new build emits nothing at this path. build file published by accident — not a page, and not something any migrated content references.
+# UNDECIDED  /favicon-16x16.png  — live in production (HTTP 200, 841 bytes) and the new build emits nothing at this path. icon or web-app manifest — not a page, and not something any migrated content references.
+# UNDECIDED  /favicon-32x32.png  — live in production (HTTP 200, 1343 bytes) and the new build emits nothing at this path. icon or web-app manifest — not a page, and not something any migrated content references.
+# UNDECIDED  /favicon.ico  — live in production (HTTP 200, 15086 bytes) and the new build emits nothing at this path. icon or web-app manifest — not a page, and not something any migrated content references.
+# UNDECIDED  /feed  — live in production (HTTP 200, 627 bytes) and the new build emits nothing at this path. RSS feed — not a page, and not something any migrated content references.
+# UNDECIDED  /feed.xml  — live in production (HTTP 200, 627 bytes) and the new build emits nothing at this path. RSS feed — not a page, and not something any migrated content references.
+# UNDECIDED  /img/cards.jpeg  — live in production (HTTP 200, 346807 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/Small_Maar_Avatar-2023.jpg  — live in production (HTTP 200, 222343 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /img/sq-mw-logo-jpg-black.png  — live in production, but its only referrer(s) — /index.min.html — are themselves unresolved, so this asset is kept or retired with them rather than on its own.
+# UNDECIDED  /img/tree.jpg  — live in production (HTTP 200, 236562 bytes) but referenced by no live page on any of the three sites, and absent from the build.
+# UNDECIDED  /index.min  — live in production (HTTP 200) and the new build does not emit it. ARCHITECTURE-REVIEW §8.2 makes the 301 conditional on A8, and A8 is unverified.
+# UNDECIDED  /index.min.html  — live in production (HTTP 200) and the new build does not emit it. ARCHITECTURE-REVIEW §8.2 makes the 301 conditional on A8, and A8 is unverified.
+# UNDECIDED  /robots.txt  — live in production (HTTP 200, 45 bytes) and the new build emits nothing at this path. crawler directive — not a page, and not something any migrated content references.
+# UNDECIDED  /safari-pinned-tab.svg  — live in production (HTTP 200, 2637 bytes) and the new build emits nothing at this path. icon or web-app manifest — not a page, and not something any migrated content references.
+# UNDECIDED  /site.webmanifest  — live in production (HTTP 200, 426 bytes) and the new build emits nothing at this path. icon or web-app manifest — not a page, and not something any migrated content references.
+# UNDECIDED  /sitemap.xml  — live in production (HTTP 200, 619 bytes) and the new build emits nothing at this path. crawler directive — not a page, and not something any migrated content references.
+# UNDECIDED  /tools/assert-url.js  — live in production (HTTP 200, 995 bytes) and the new build emits nothing at this path. build file published by accident — not a page, and not something any migrated content references.
+# UNDECIDED  /z  — live in production (HTTP 301) and the new build does not emit it. ARCHITECTURE-REVIEW §10 item 12 forbids CARRYING OVER the z/ source directory; it does not authorise switching off a URL production answers with 200, and MW-4 says "This issue only records reality". This URL is a 301 to https://tree.maar.world/z/, which itself answers 404.
+# UNDECIDED  /z/README-zh  — live in production (HTTP 200) and the new build does not emit it. ARCHITECTURE-REVIEW §10 item 12 forbids CARRYING OVER the z/ source directory; it does not authorise switching off a URL production answers with 200, and MW-4 says "This issue only records reality".
+# UNDECIDED  /z/README-zh.html  — live in production (HTTP 200) and the new build does not emit it. ARCHITECTURE-REVIEW §10 item 12 forbids CARRYING OVER the z/ source directory; it does not authorise switching off a URL production answers with 200, and MW-4 says "This issue only records reality".
+# UNDECIDED  /z/README-zh.md  — live in production (HTTP 200) and the new build does not emit it. ARCHITECTURE-REVIEW §10 item 12 forbids CARRYING OVER the z/ source directory; it does not authorise switching off a URL production answers with 200, and MW-4 says "This issue only records reality".
+
+# Catch-all from policy.redirectMap — everything not named above, including
+# every UNDECIDED path, keeps its shape rather than collapsing to the root.
+/*  https://maar.world/tree/:splat  301
 
