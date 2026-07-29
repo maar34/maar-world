@@ -3,9 +3,11 @@
 Regenerated at every stop. A fresh agent should need nothing but this file,
 `MIGRATION-LEDGER.md`, `docs/agent/OPERATING-RULES.md` and the Linear issue.
 
-**Last updated:** 2026-07-28T23:05Z
-**Last issue worked:** MW-9 (Helix island built, embeds facaded, fonts confirmed self-hosted)
-**Next action:** MW-11 — full verification + a11y/responsive sign-off. Do not start MW-10/MW-12.
+**Last updated:** 2026-07-29T08:15Z
+**Last issue worked:** MW-7 / MW-11 (content-rendering defects: alt text, article title headings, commented-out embed, card body duplicates)
+**Next action:** MW-11 — a11y/responsive sign-off. The remaining `verify:content` failures are
+check-side, not content-side; see the ledger line `content/residue-is-check-side` before
+touching any content to satisfy them. Do not start MW-10/MW-12.
 
 ---
 
@@ -33,11 +35,25 @@ The route contract is now **fully satisfied**. The missing-count metric has land
 | after MW-6 | 192 of 264 — dropped by exactly the 70 card forms |
 | after MW-8 | **0 of 264** ✔ |
 
-`npm run verify` still exits non-zero, and there is now exactly **one** reason:
-`verify:links` → *no third-party request fires on page load*, 75 on-load references to
-`www.dropbox.com`. That is MW-6's card art, blocked on a human decision since MW-6, and
-the count grew because the 34 retired Collect card pages carry the same URLs. **Every
-other check passes.** If a future run sees anything else red, it is a regression.
+`npm run verify` exits non-zero — **46 passed, 2 failed, 1 skipped** — for exactly two reasons,
+both known and both recorded:
+
+1. `verify:links` → *no third-party request fires on page load*, **73** on-load references to
+   `www.dropbox.com`. That is MW-6's card art, blocked on a human decision since MW-6. It was
+   75; two went when the DWE1406 and STW3344 bodies stopped duplicating the cover the card
+   route already renders. **It must never go up.**
+2. `verify:content` → **49 problems across 48 of 130 pages** (33 headings, 7 text, 9 links).
+   It was 174, then 56 at the start of this session. Every one of the 49 left is the check
+   disagreeing with itself, quantified page by page in the ledger line
+   `MW-7 NOTE content/residue-is-check-side`: an entity-decoding asymmetry in
+   `verify-content.mjs` `stripTags()` on 33 card pages, a text floor measured against the
+   whole production document (`<title>` counted as body text) on 7 pages, 8 `disqus.com`
+   links removed on purpose, and one `soundcloud.com` link the expectation took from a stale
+   legacy `_site` build that the frozen production manifest contradicts. **Do not edit content
+   to satisfy these.** Fixing them means `scripts/author-content-expectations.mjs` and
+   `scripts/verify-content.mjs`, and each needs a selftest case.
+
+**Every other check passes.** If a future run sees anything else red, it is a regression.
 
 `npm run migrate:pages` regenerates `src/content/pages/` and `media/` from the read-only
 legacy checkouts. It is idempotent and its output is committed, so a fresh clone needs no
@@ -45,11 +61,28 @@ access to those checkouts to build.
 
 ## In flight
 
-MW-9's own work is committed and nothing of it is half-applied. Two things a fresh session
-will meet immediately:
+Nothing. The content-rendering session's work is committed in four units — `MW-11
+pages/missing-alt`, `MW-7 pages/article-title-heading`, `MW-7 pages/commented-out-embed`,
+and three record-only ledger lines — and nothing is half-applied. What it changed:
 
-- **`npm run verify` at the MW-9 stopping point reported `verify:contract` red, and it is
-  not MW-9's.** A concurrent session had an *uncommitted* re-freeze in the working tree:
+- Every raw `<img>` in a migrated body now carries an `alt`. The decision per image lives in
+  `IMAGE_ALT` in `scripts/migrate-pages.mjs`, and any alt-less `<img>` without a recorded
+  decision is printed by `npm run migrate:pages`.
+- `scripts/migrate-cards.mjs` drops body media the card route already renders from the same
+  frontmatter field, so `/DWE1406` and `/STW3344` no longer serve the cover twice.
+- The article title `<h1>` the legacy theme printed is materialised whenever the body's
+  *first* heading is not the page title **and** the frozen manifest records the title as
+  production's own first heading. Six pages gained it.
+- A comment containing element markup is dropped rather than migrated, so `/collect` no
+  longer builds a facade nobody can click.
+
+One thing a fresh session will still meet immediately, plus one now settled:
+
+- **`verify:contract` is green.** It is now 3/3 against a committed 611-route manifest
+  (sha256 `3f55727ba0d4`, decisions 355 preserve / 0 redirect / 256 drop). The history
+  below is kept because it explains how it got there. — *At the MW-9 stopping point
+  `verify:contract` was red, and it was not MW-9's.* A concurrent session had an
+  *uncommitted* re-freeze in the working tree:
   `routes/manifest.production.json` had grown from the locked 306 routes to 611, and
   `routes/policy.json` from 299/0/7 to 355/0/256, so all three contract-lock assertions
   failed. Run against the committed `routes/` with the same `dist/`, `verify:contract` is
@@ -85,7 +118,7 @@ against the live spec when the MCP is available.
 ## Blocked — needs a human
 
 1. **Card art is hotlinked from Dropbox** (`MW-6`, ledger `cards/dropbox-third-party`).
-   **75** `<img src>` references to `www.dropbox.com` — 37 on the canonical card pages plus
+   **73** `<img src>` references to `www.dropbox.com` — 35 on the canonical card pages plus
    34 on the retired `/collect/cards/*` twins and 4 in Lab articles, all the same URLs and
    the same decision. MW-6 says keep those URLs and that
    migrating them is out of scope; the MW-1 quality gate says no third-party request may fire
