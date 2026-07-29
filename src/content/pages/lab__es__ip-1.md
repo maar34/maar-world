@@ -25,7 +25,7 @@ El 25 de febrero de 1833 partió un buque con rumbo a Francia con 33 personas a 
 
 Estudios recientes en el terreno de la Arqueoastronomía, indican que las comunidades Charruas al igual que etnografías de grupos indígenas sudamericanos como Mapuches, Tehuelches, Indios Patagónicos tienen en su mitología y en su cosmogonía una fuerte identificación de algunos elementos del cielo  que se refleja en sus construcciones arquitectónicas e integración con el paisaje. Al igual que muchas otras culturas, y sobretodo las culturas no occidentales, tenian una forma de pertenecer al paisaje que no se limita al plano físico, una visión del mundo que incluía varios planos, como el inframundo y el cielo. El Sol, la Luna, Venus, las estrellas, las montañas, los cerros, las piedras, las cuevas, las nubes, la lluvia, la tierra, el mar, los ríos, las lagunas, la flora y la fauna formaban parte del paisaje ritual de los antiguos pueblos prehispánicos.
 
-<a href="https://maar.world/lab/es/ip-2.html " rel="Ancestros interplanetarios 2-3">  Continuar leyendo</a> 
+ 
 
 1.Trompeta Mochica.
 
@@ -57,8 +57,4 @@ Estudios recientes en el terreno de la Arqueoastronomía, indican que las comuni
 <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=6" style="border: 0" ></iframe>
 </div>
 
-<a href="https://play.maar.world/?g=8&s=0&c=6 " rel="Maar World Player" target="_blank"> Play full screen</a> 
-
-<div id="disqus_thread"></div>
-
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://play.maar.world/?g=8&s=0&c=6 " rel="Maar World Player" target="_blank"> Play full screen</a>

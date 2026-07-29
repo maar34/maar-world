@@ -27,7 +27,7 @@ Todos los instrumentos musicales construidos y grabados por <a href="https://mel
 
 <a href="https://shikashika.bandcamp.com/album/sample-pack-sonido-de-las-am-ricas" rel="Bandcamp" target="_blank">Apoya este proyecto en Bandcamp</a>
 
-<a href="https://maar.world/lab/es/ip-3.html " rel="Ancestros interplanetarios 3-3"> Continuar leyendo</a> 
+ 
 
 5.Vasija Silbadora Vicus
 
@@ -68,8 +68,4 @@ Flauta Doble de Jalisco
 <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=11" style="border: 0" ></iframe>
 </div>
 
-<a href="https://play.maar.world/?g=8&s=0&c=11 " rel="Maar World Player" target="_blank"> Play full screen</a> 
-
-<div id="disqus_thread"></div>
-
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://play.maar.world/?g=8&s=0&c=11 " rel="Maar World Player" target="_blank"> Play full screen</a>

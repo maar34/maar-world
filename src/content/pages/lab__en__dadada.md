@@ -58,8 +58,4 @@ Thanks to Gustavo Bravetti and Arturia for inviting me to enjoy the sounds of al
 <br> The Norns spin their tapestry at the roots of Yggdrasil
 <br> Autor: L. B. Hansen<br>
 🦋 Live performance inspired by "Ride of the Valkyries," which is the second part of Richard Wagner's epic music dramas comprising Der Ring des Nibelungen.
-🌸 Dembow beats made with Bonish and Fede Percibal 
-
-<div id="disqus_thread"></div>
-
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+🌸 Dembow beats made with Bonish and Fede Percibal

@@ -24,7 +24,7 @@ On February 25th, 1833, a ship set sail from Uruguay to France with 33 people on
 
 Recent studies in the field of Archaeoastronomy indicate that Charrúa communities, as well as ethnographic groups of South American indigenous peoples such as Mapuches, Tehuelches, and Patagonian Indians, have a strong identification with certain celestial elements in their mythology and cosmogony, which is reflected in their architectural constructions and integration with the landscape. Like many other cultures, especially non-Western cultures, they had a way of belonging to the landscape that was not limited to the physical plane, a worldview that included multiple planes, such as the underworld and the sky. The Sun, the Moon, Venus, the stars, the mountains, the hills, the stones, the caves, the clouds, the rain, the earth, the sea, the rivers, the lagoons, the flora, and the fauna were all part of the ritual landscape of the ancient pre-Hispanic peoples.
 
-<a href="https://maar.world/lab/en/ip-2.html " rel="Interplanetary ancestors 2-3"> Continue reading</a> 
+ 
 
 1.Trompeta Mochica.
 
@@ -56,8 +56,4 @@ Recent studies in the field of Archaeoastronomy indicate that Charrúa communiti
 <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=6" style="border: 0" ></iframe>
 </div>
 
-<a href="https://play.maar.world/?g=8&s=0&c=6 " rel="Maar World Player" target="_blank"> Play full screen</a> 
-
-<div id="disqus_thread"></div>
-
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://play.maar.world/?g=8&s=0&c=6 " rel="Maar World Player" target="_blank"> Play full screen</a>

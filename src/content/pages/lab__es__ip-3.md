@@ -55,8 +55,4 @@ Este proyecto esta hecho con Amor, <a href="https://github.com/maar34/interplane
 <iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=15" style="border: 0" ></iframe>
 </div>
 
-<a href="https://play.maar.world/?g=8&s=0&c=15 " rel="Maar World Player" target="_blank"> Play full screen</a> 
-
-<div id="disqus_thread"></div>
-
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://play.maar.world/?g=8&s=0&c=15 " rel="Maar World Player" target="_blank"> Play full screen</a>

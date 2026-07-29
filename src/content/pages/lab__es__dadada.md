@@ -59,8 +59,4 @@ Gracias Gustavo Bravetti y Arturia por invitarme a disfrutar los sonidos de todo
 <br>Las nornas tejen su tapiz en las raíces de Yggdrasil
 <br>Autor: L. B. Hansen<br>
 🦋 Live set basado en "Ride of the Valkyries", que es la segunda parte de los cuatro dramas musicales épicos de Richard Wagner que conforman Der Ring des Nibelungen.
-🌸 Dembow beats made with Bonish and Fede Percibal 
-
-<div id="disqus_thread"></div>
-
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+🌸 Dembow beats made with Bonish and Fede Percibal

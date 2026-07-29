@@ -411,6 +411,42 @@ function stripElement(html, tag) {
   return out.replace(new RegExp(`<${tag}\\b[^>]*\\/?>`, 'gi'), '');
 }
 
+/**
+ * Two pieces of the dead TeXt theme that shipped into the bodies.
+ *
+ * **The Disqus mount.** Eight Lab pages carry `<div id="disqus_thread"></div>`
+ * and a `<noscript>` linking `disqus.com`. The loader that filled the div was a
+ * `<script>` and is already gone, so nothing fetches anything — but an empty
+ * mount point and a live anchor to a third-party comment host are a dead
+ * third-party surface in the DOM of a site whose whole no-cookie-banner position
+ * rests on not having one.
+ *
+ * **The "Continue reading" link.** In the theme this was the tail of an *excerpt*
+ * in an article list. Four articles have it pasted into the body itself, where
+ * it sits mid-page above the rest of the article it claims to continue. All four
+ * are the same paste — two English, two Spanish — so all four go; leaving the
+ * Spanish pair would be the same defect in the other language.
+ */
+const READ_MORE = /^(continue reading|continuar leyendo|seguir leyendo|read more|leer más)$/i;
+
+function stripDeadThemeChrome(html, problems, where) {
+  let out = html.replace(/<div\b[^>]*id\s*=\s*["']disqus_thread["'][^>]*>[\s\S]*?<\/div>|<div\b[^>]*id\s*=\s*["']disqus_thread["'][^>]*\/?>/gi, () => {
+    problems.push(`${where}: removed dead disqus mount point`);
+    return '';
+  });
+  out = out.replace(/<noscript>[\s\S]*?<\/noscript>/gi, (m) => {
+    if (!/disqus/i.test(m)) return m;
+    problems.push(`${where}: removed disqus <noscript> and its disqus.com link`);
+    return '';
+  });
+  out = out.replace(/<a\b[^>]*>([\s\S]*?)<\/a>/gi, (m, text) => {
+    if (!READ_MORE.test(text.replace(/<[^>]+>/g, '').trim())) return m;
+    problems.push(`${where}: removed theme excerpt chrome "${text.trim()}" from the body`);
+    return '';
+  });
+  return out;
+}
+
 const EMBED_HOSTS = [
   [/docs\.google\.com\/forms/i, 'google-forms', 'open this form on google forms'],
   [/calendar\.google\.com/i, 'google-calendar', 'open the booking calendar on google calendar'],
@@ -775,6 +811,7 @@ function transform(body, ctx) {
 
   out = stripElement(out, 'script');
   out = stripElement(out, 'style');
+  out = stripDeadThemeChrome(out, problems, ctx.key);
 
   /**
    * Material Symbols icon spans. The glyph came from fonts.googleapis.com,
