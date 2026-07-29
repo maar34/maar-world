@@ -311,9 +311,30 @@ const readableDate = (iso: string) => {
     padding: 0;
   }
 
+  /**
+   * OPPOSED CHIPS — mark 5, and only the half of it that is settled.
+   *
+   * 4a's pair is "one filled, one outlined, and they tilt in opposite
+   * directions". The fill-against-outline half is shipped here because it is
+   * the spec's own chip table — rest is `1px solid` ink at 20%, selected is a
+   * field — and 4a's `en`/`es` pair is that table drawn in the language
+   * switcher. Before this, a non-current language was plain meta text and the
+   * pair did not read as two chips at all.
+   *
+   * THE OPPOSITION IS NOT SHIPPED, and it is held for a reason rather than
+   * forgotten. The tilt is the part that makes them *opposed*, and a chip is
+   * ui: the rules-of-use table gives "body, ui, labels, captions" no tilt,
+   * ever. That is the same open owner decision as mark 6, tilted actions —
+   * `MW-11 BLOCKED design/tilted-actions-vs-ui-row`. One answer settles both.
+   *
+   * The transparent border on the base rule is not padding fiddling: it keeps
+   * the filled and the outlined chip the same box, so the row does not shift by
+   * a pixel when the current language changes.
+   */
   .lang-switch a {
     display: inline-block;
     padding-inline: var(--s-2);
+    border: 1px solid transparent;
     border-radius: var(--r-0);
     font-family: var(--t-meta-face);
     font-size: var(--t-meta-size);
@@ -323,14 +344,24 @@ const readableDate = (iso: string) => {
     color: var(--ink-meta);
   }
 
+  /* Rest — the outlined chip. */
+  .lang-switch a:not([aria-current]) {
+    border-color: var(--chip-rule);
+  }
+
+  /* Selected — the filled chip. The field is not the only carrier: aria-current
+     and the underline say it too. */
   .lang-switch a[aria-current] {
     background: var(--area-pigment, var(--c-maar));
     color: var(--pigment-ink);
     text-decoration: underline;
   }
 
+  /* Hover fills, so the edge joins the field rather than ruling a line through
+     the middle of it. */
   .lang-switch a:hover {
     background: var(--area-pigment, var(--c-maar));
+    border-color: var(--area-pigment, var(--c-maar));
     color: var(--pigment-ink);
   }
 

@@ -383,6 +383,22 @@
      underline clear of neighbouring words. */
   --btn-pad-inline-text: var(--s-1);
 
+  /**
+   * The chip's outline, at rest.
+   *
+   * The spec's chip row draws rest and disabled with `1px solid` ink at 20% and
+   * 13%, and 4a's outlined language chip is `rgba(255,255,255,.2)` — the same
+   * 20%, written the other way. There is no --ink-* token at 20%: the ladder
+   * goes 13% (hairline) and 10% (tint), both of which are quieter than a chip
+   * edge wants to be.
+   *
+   * Not in the contrast table, and the same judgement --ink-hairline already
+   * carries on input and facade borders: the chip's STATE is the pigment field
+   * plus aria-current plus the underline, three carriers none of which is this
+   * line. An outline that identified the control on its own would owe 3:1.
+   */
+  --chip-rule: color-mix(in srgb, var(--ink) 20%, transparent);
+
   /* "press is a 1px downward nudge, no scale." */
   --press-nudge: 1px;
 }
