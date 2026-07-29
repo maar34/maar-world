@@ -14,7 +14,7 @@ indexLabel: "Música, Acceso y la Mente Humana"
 date: "2026-01-07"
 ---
 
-# Música, Acceso y la Mente Humana
+# Música, Acceso y la Mente <span class="mark mark--cut mark--tilt-2 mark--tear-2">Humana</span>
 
 ![](/img/lab/orbital-workshop-1.jpg)
 

@@ -14,7 +14,7 @@ indexLabel: "Taller de creación orbital: Orbiters Orchestra (ES)"
 date: "2024-08-30"
 ---
 
-# Taller de creación orbital: Orbiters Orchestra (ES)
+# Taller de creación orbital: Orbiters <span class="mark mark--highlight">Orchestra</span> (ES)
 
 ## 🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬
 

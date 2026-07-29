@@ -9,7 +9,7 @@ tags: []
 source: "maar.world/collections/_pages/resume.md"
 ---
 
-# Resume
+# <span class="mark mark--cut mark--tilt-2 mark--tear-4">Resume</span>
 
 <br>
 

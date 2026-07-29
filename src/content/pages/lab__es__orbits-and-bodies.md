@@ -14,7 +14,7 @@ indexLabel: "Órbitas y Cuerpos"
 date: "2025-08-24"
 ---
 
-# Órbitas y Cuerpos
+# <span class="mark mark--cut mark--tilt-1 mark--tear-2">Órbitas</span> y Cuerpos
 
 Una performance que conecta gestos humanos, datos orbitales y sistemas audiovisuales en tiempo real.
 

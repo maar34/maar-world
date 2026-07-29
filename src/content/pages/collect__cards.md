@@ -12,7 +12,7 @@ indexCovers: true
 description: "Collect your favorite cards."
 ---
 
-# Cards
+# <span class="mark mark--highlight">Cards</span>
 
 Collect your favorite cards.
 

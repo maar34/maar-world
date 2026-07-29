@@ -13,7 +13,7 @@ indexLabel: "NFC"
 cover: "/img/docs/covers/nfc-cover.jpeg"
 ---
 
-# NFC
+# <span class="mark mark--cut mark--tilt-3 mark--tear-2">NFC</span>
 
 ![Image](/img/docs/ent-cards/04-NFC.png "NFC card")
 ## Each ENT Card includes an NFC Chip. 

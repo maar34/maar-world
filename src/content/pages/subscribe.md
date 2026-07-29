@@ -9,7 +9,7 @@ tags: []
 source: "maar.world/collections/_pages/subscribe.md"
 ---
 
-# Subscribe
+# <span class="mark mark--highlight">Subscribe</span>
 
 <!-- Begin Mailchimp Signup Form -->
 

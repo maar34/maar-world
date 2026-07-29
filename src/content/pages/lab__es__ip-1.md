@@ -14,7 +14,7 @@ indexLabel: "Ancestros interplanetarios 1-3 (ES)"
 date: "2023-08-25"
 ---
 
-# Ancestros interplanetarios 1-3 (ES)
+# Ancestros <span class="mark mark--cut mark--tilt-3 mark--tear-1">interplanetarios</span> 1-3 (ES)
 
 *¿Pueden los sonidos desempeñar un papel en la recuperación de nuestra memoria? 
 ¿Es posible llamar a la memoria de culturas históricamente reprimidas?*

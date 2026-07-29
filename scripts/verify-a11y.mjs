@@ -449,6 +449,17 @@ const CONTRAST_PAIRS = [
   { fg: '--pigment-ink', bg: '--c-collect', min: 4.5, what: 'type on the collect pastel' },
   { fg: '--pigment-ink', bg: '--c-tree', min: 4.5, what: 'type on the tree pastel' },
   { fg: '--focus-c', bg: '--sf-base', min: 3, what: 'the focus ring' },
+  /**
+   * The cut word — `patterns/mark`. It is the one place in the design that puts
+   * type on a field which is neither a surface role nor a pastel: the field is
+   * `--sf-paper`, the page's own ink used as paper, and the type on it is dark.
+   *
+   * `--sf-paper` is a constant on both surfaces — it is not swapped by
+   * `[data-surface='paper']`, which reads it rather than redefining it — so a
+   * cut word is the same clipping on a dark page and on a paper one, and this
+   * single pair covers both.
+   */
+  { fg: '--pigment-ink', bg: '--sf-paper', min: 4.5, what: 'a cut word — dark type on the cream field' },
 ];
 
 /**

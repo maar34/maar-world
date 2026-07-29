@@ -9,7 +9,7 @@ tags: []
 source: "maar.world/collections/_genesis/revx000.md"
 ---
 
-# Revolution X  
+# <span class="mark mark--cut mark--tilt-2 mark--tear-3">Revolution</span> X
 
 Aural improvisation that fuses electronic and acoustic instruments from Africa, America, Asia, Europe, and Oceania.
 

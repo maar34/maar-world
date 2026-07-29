@@ -178,6 +178,57 @@
   --tilt-c: 1.5deg;
   --tilt-d: 3deg;
 
+  /* ---- marks ----------------------------------------------------------- */
+  /**
+   * Values for patterns/mark. `src/styles/mark.css` draws with these and
+   * `src/lib/mark.mjs` chooses which of them an instance gets.
+   *
+   * Padding is FIXED, not relative, on the spec's own instruction: "marks
+   * scale with their type; their padding does not". The inline value is the
+   * spec's — mark.highlight is drawn as `padding: 0 8px`, which is --s-2. The
+   * block value is 4a's; a cut word's torn edge is clipped out of the top and
+   * bottom of the box, so with no vertical padding the tear eats the letters.
+   */
+  --mark-pad-inline: var(--s-2);
+  --mark-pad-block: 2px;
+
+  /**
+   * A cut word is set smaller than the display type it sits in. Measured
+   * across 4a's five Archivo cut words: 12/21 = 0.57, 21/30 = 0.70,
+   * 22/30 = 0.73, 30/46 = 0.65, 30/46 = 0.65. Archivo's x-height is much
+   * larger than Bodoni's, so the smaller point size is what makes them read as
+   * the same size — and it is what keeps the marked word inside the display
+   * line box rather than growing it.
+   */
+  --mark-cut-scale: 0.68em;
+
+  /**
+   * MARK TILT — AN OPEN OWNER DECISION. These are 4a's cut-word rotations, and
+   * they are deliberately NOT the four --tilt-* tokens above.
+   *
+   * The spec's set is -2.5 / -1 / 1.5 / 3, "four values, no others, chosen per
+   * instance and then frozen", and it says tilt applies to a containing block
+   * only. 4a instead rotates the marked span itself, and does so at fourteen
+   * distinct angles across the mockup — of which the seven cut words use -2,
+   * -1.8, -1.6, 1.4 and 1.6. The scatter is the effect: one angle everywhere
+   * reads as a skewed page, many small unequal angles read as things placed by
+   * hand.
+   *
+   * What ships here is 4a's, on instruction, and the conflict is recorded in
+   * MIGRATION-LEDGER.md as `MW-11 NOTE design/mark-tilt-set`. Three of the
+   * spec's four values are within 0.5deg of a 4a cut-word angle (-2.5≈-2,
+   * -1≈-1.6, 1.5≈1.4/1.6) and only --tilt-d 3deg is outside the range 4a uses
+   * on a word, so if the owner keeps the spec's numbers it is four edits here
+   * and nothing else moves.
+   *
+   * The spec's *discipline* is kept either way: chosen per instance from a
+   * seed, then frozen, never re-rolled at render.
+   */
+  --mark-tilt-1: -2deg;
+  --mark-tilt-2: -1.6deg;
+  --mark-tilt-3: 1.4deg;
+  --mark-tilt-4: 1.6deg;
+
   /* ---- motion ---------------------------------------------------------- */
   /* Moves opacity, height and 2d transform only. No blur, no parallax, no
      colour animation. All motion is suppressed under prefers-reduced-motion. */

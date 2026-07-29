@@ -13,7 +13,7 @@ indexLabel: "Development"
 cover: "/img/docs/covers/dev-cover.jpeg"
 ---
 
-# Development
+# <span class="mark mark--cut mark--tilt-3 mark--tear-2">Development</span>
 
 At the moment, we are developing two versions of the Orbiters: a web version and a Desktop application for Mac and Windows, designed for live and online jamming.
 

@@ -9,7 +9,7 @@ tags: []
 source: "collect.maar.world/samples.html"
 ---
 
-# Entangled World Docs
+# <span class="mark mark--highlight">Entangled</span> World Docs
 
 Welcome to Entangled Worlds, an initiative that explores the intersection of digital and physical worlds through the development of intelligent music players and meta-musical instruments.
 

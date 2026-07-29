@@ -45,6 +45,7 @@ import { readdirSync, readFileSync, writeFileSync, existsSync, statSync, mkdirSy
 import { join, relative, sep } from 'node:path';
 import { ROOT } from './lib/artifacts.mjs';
 import { normaliseHeadingLevels } from './lib/headings.mjs';
+import { markHeadingText } from '../src/lib/mark.mjs';
 import { SCHEMAS } from '../src/content/schemas.mjs';
 
 const LEGACY = join(ROOT, '..');
@@ -1537,6 +1538,9 @@ const written = [];
 const emitted = new Set();
 /** Pages whose heading outline had a gap the theme's own <h1> used to hide. */
 const headingLevelsChanged = [];
+/** Pages whose <h1> carries a type mark, and the word each one landed on. */
+const headingsMarked = [];
+const headingsUnmarked = [];
 
 for (const m of matched) {
   const area = AREA[m.meta.origin];
@@ -1667,6 +1671,46 @@ for (const m of matched) {
     finalBody = outline.body;
   }
 
+  /**
+   * patterns/mark, on the page's own `<h1>` — and on nothing else.
+   *
+   * This runs AFTER the outline is normalised, for the same reason the outline
+   * runs after the title is materialised: mark the heading that is going to be
+   * the `<h1>`, not the one that happened to be written as `#` before the
+   * levels were rewritten. It runs BEFORE the index is appended because an
+   * index's own rows are links at list level, where marks are forbidden.
+   *
+   * Only the FIRST top-level heading, and only when it is ATX. A mark is
+   * permitted at h1 and card-cover level and forbidden at h2 and below, so a
+   * body's later headings are left alone; and a heading already written as raw
+   * `<h1>` markup is left alone too, because `markHeadingText` will not reach
+   * inside markup it did not write.
+   *
+   * A Collect card page's `<h1>` is rendered by the route from `card_title` and
+   * marked there by `patterns/TypeMark`, so its body has no title to mark.
+   *
+   * The seed is `outputPath` — stable for the life of the URL, which is the
+   * point: the same page marks the same word with the same tear and the same
+   * angle on every build, forever. Nothing is stored and nothing is re-rolled.
+   */
+  if (kind !== 'collect-card') {
+    const atx = /^#[ \t]+(.+?)[ \t]*$/m.exec(finalBody);
+    if (atx) {
+      const { html, choice } = markHeadingText(atx[1], outputPath);
+      if (choice) {
+        finalBody =
+          finalBody.slice(0, atx.index) +
+          `# ${html}` +
+          finalBody.slice(atx.index + atx[0].length);
+        headingsMarked.push(`${outputPath} → ${choice.kind} "${choice.word}"`);
+      } else {
+        // Not a failure. A heading of stopwords and short words has nothing a
+        // mark should land on, and leaving it plain is the correct outcome.
+        headingsUnmarked.push(`${outputPath} ("${atx[1]}")`);
+      }
+    }
+  }
+
   if (ownIndex) finalBody = `${finalBody}\n\n${ownIndex}\n`;
 
   if (SPECIAL[m.key]) finalBody = SPECIAL[m.key](record);
@@ -1694,6 +1738,11 @@ console.log(
     `(${undecidedDrops.length} dropKind:unresolved left intact — an open question is not a deletion)`,
 );
 for (const u of unmatched) console.log(`  ! ${u.origin}  ${u.key}  (looked for "${u.want}")`);
+
+console.log(
+  `\nh1 type marks     : ${headingsMarked.length} marked, ${headingsUnmarked.length} left plain ` +
+    `(nothing eligible to mark — not a failure)`,
+);
 
 if (headingLevelsChanged.length) {
   console.log(

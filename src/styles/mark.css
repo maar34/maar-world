@@ -1,0 +1,171 @@
+/**
+ * patterns/mark — the drawing half.
+ *
+ * `src/lib/mark.mjs` chooses which word is marked and which frozen variant it
+ * gets, and emits class names only. Every colour, angle, length and polygon in
+ * the language lives here, so a mark can be re-tuned in one file without
+ * regenerating a single page of content.
+ *
+ * TWO MARKS, TWO DIFFERENT AUTHORITIES. This is the whole reason the file reads
+ * the way it does:
+ *
+ *   .mark--highlight  is `mark.highlight`, which the live spec specifies in as
+ *                     many words — "flat field, 8px horizontal padding, no
+ *                     radius, ink type. always horizontal. one per heading." —
+ *                     and draws in its own §02 sample as
+ *                     `background:#a9d5e8; color:#100f14; padding:0 8px`.
+ *                     So it is transcribed, not designed.
+ *
+ *   .mark--cut        is the cut word, which the spec *permits* (the rules-of-
+ *                     use table has a "cut words" column, allowed at h1 and
+ *                     card cover, forbidden below) and never defines. The only
+ *                     definition anywhere is `Maar World 4a.dc.html`, as inline
+ *                     styles on seven spans. So its mechanics and its values
+ *                     are 4a's, read off that file directly.
+ *
+ * A note on 4a's highlighter, which is NOT what .mark--highlight does. 4a paints
+ * a marker stroke that deliberately misses the line box —
+ * `linear-gradient(transparent 8%, #a9d5e8 8%, #a9d5e8 92%, transparent 92%)`,
+ * hard stops, rotated -0.8deg. It is lovely and it is not this mark: the spec
+ * defines `mark.highlight` as a full flat field and says it is always
+ * horizontal, and a direction mockup does not overrule a specified component.
+ * Order of authority, applied — see docs/agent/DESIGN-REFERENCES.md.
+ */
+
+/* ---- shared -------------------------------------------------------------- */
+
+.mark {
+  /* "--r-0  0  marks, badges, cards, media, slides" */
+  border-radius: var(--r-0);
+  /* A pastel — or paper — is always a background; type on it is always dark,
+     on both surfaces. So the mark's ink does not follow the page's. */
+  color: var(--pigment-ink);
+}
+
+/* ---- mark.highlight — the spec's, transcribed ---------------------------- */
+
+/**
+ * The pigment is the page's area, not a seeded pick: --c-maar is "water,
+ * place, wayfinding", --c-collect is "saving, sets, favourites", --c-tree is
+ * "growth, time, lineage". A heading on a Collect page marked in Collect's own
+ * pink is the pigment doing the job the spec gives it. `--area-pigment` is set
+ * by the layout from AREAS in src/config/site.ts, which is where the header's
+ * current-area field already reads it from.
+ *
+ * "one pigment per component instance; never two pastels touching" holds
+ * trivially: there is one mark per heading.
+ */
+.mark--highlight {
+  background: var(--area-pigment, var(--c-maar));
+  padding: 0 var(--mark-pad-inline);
+}
+
+/* ---- the cut word — 4a's, measured --------------------------------------- */
+
+/**
+ * The field is `--sf-paper`, and that is not a coincidence dressed up as one:
+ * 4a's cut words are `#efe7da`, which is this system's paper surface and, on
+ * dark, its ink. A cut word is the page's own ink used as paper — a clipping
+ * torn from a different sheet and pasted back into the line.
+ *
+ * It is deliberately NOT `var(--ink)`. On a paper route `--ink` is #100f14, and
+ * a cut word that inverted with the surface would stop being a clipping and
+ * become a highlight in the wrong colour. Paper is paper on both surfaces.
+ *
+ * SIZE. The cut word is smaller than the display type around it — measured
+ * across 4a's five Archivo cut words, between 0.57 and 0.73 of the heading,
+ * clustering at 0.65–0.73. That is not a decorative choice: Archivo's x-height
+ * is far larger than Bodoni's, so a smaller point size is what makes the two
+ * read as the same size, and it is also what keeps the marked word inside the
+ * display line box instead of growing it. 0.68em, so it scales with its type.
+ *
+ * PADDING. Fixed, not relative — the spec's responsive section says exactly
+ * this: "marks scale with their type; their padding does not". 4a bears it out;
+ * its cut words run 7–14px horizontal across type from 12px to 62px, nowhere
+ * near proportional. The horizontal value is the spec's own mark padding, 8px.
+ * The 2px vertical is 4a's, and unlike the highlight the cut word needs it:
+ * the torn edge is clipped out of the top and bottom of the box, so with zero
+ * vertical padding the tear would eat into the letterforms.
+ */
+.mark--cut {
+  display: inline-block;
+  background: var(--sf-paper);
+  font-family: var(--face-head);
+  font-weight: 600;
+  font-size: var(--mark-cut-scale);
+  line-height: 1;
+  padding: var(--mark-pad-block) var(--mark-pad-inline);
+  /* A heading may be set in italic Bodoni (mark.face); the clipping is not. */
+  font-style: normal;
+}
+
+/**
+ * The torn edges. Eleven points each, all four variants read off 4a verbatim —
+ * ragged along the top and bottom, near-straight down the sides, which is what
+ * a strip torn by hand from a sheet looks like. They differ by a few percent,
+ * because two clippings torn from the same sheet do not tear identically.
+ *
+ * `clip-path` is not a `border-radius`, so --r-0 is not contradicted: the
+ * corners are still square, they are just not all present.
+ */
+.mark--tear-1 { clip-path: polygon(0 6%, 4% 0, 26% 5%, 52% 0, 78% 6%, 100% 2%, 98% 96%, 72% 100%, 44% 95%, 18% 100%, 2% 94%); }
+.mark--tear-2 { clip-path: polygon(0 7%, 5% 0, 28% 6%, 54% 0, 80% 7%, 100% 2%, 98% 95%, 70% 100%, 42% 94%, 16% 100%, 2% 93%); }
+.mark--tear-3 { clip-path: polygon(0 8%, 6% 0, 30% 6%, 58% 0, 84% 7%, 100% 2%, 97% 95%, 70% 100%, 40% 94%, 14% 100%, 2% 92%); }
+.mark--tear-4 { clip-path: polygon(0 8%, 6% 0, 32% 6%, 60% 0, 86% 7%, 100% 2%, 97% 94%, 68% 100%, 38% 94%, 12% 100%, 2% 92%); }
+
+/**
+ * The angles. These are 4a's own cut-word rotations and they are NOT the
+ * spec's tilt set — see the token block in tokens.css and the ledger line
+ * `MW-11 NOTE design/mark-tilt-set`. Four variants because the spec's set is
+ * four, so settling that question is a value swap and not a change of shape.
+ */
+.mark--tilt-1 { transform: rotate(var(--mark-tilt-1)); }
+.mark--tilt-2 { transform: rotate(var(--mark-tilt-2)); }
+.mark--tilt-3 { transform: rotate(var(--mark-tilt-3)); }
+.mark--tilt-4 { transform: rotate(var(--mark-tilt-4)); }
+
+/* ---- where marks are allowed --------------------------------------------- */
+
+/**
+ * The rules-of-use table permits marks at h1 and card-cover level and forbids
+ * them at h2, h3, accordion label, body, ui, label and caption. The choosing
+ * code only ever marks an `<h1>`, but a generated body is regenerated by a
+ * script and a stylesheet is the cheaper guarantee: anywhere else, the classes
+ * simply do not paint.
+ *
+ * This is a containment rule, not a hiding rule — the word keeps its text, its
+ * place in the sentence and its accessible name, and loses only the field.
+ */
+:where(h2, h3, h4, h5, h6, p, li, dd, dt, figcaption, label, th, td) .mark {
+  background: none;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+  clip-path: none;
+  transform: none;
+}
+
+/**
+ * "< 600 … one mark per h1".
+ *
+ * A card page's `<h1>` already carries a glyph run, which the spec counts as a
+ * mark (`mark.glyphs`). Two marks is correct at h1 — the table allows up to two
+ * — but the responsive table caps it at one below 600px, so below 600px the
+ * second mark stands down and the word reads plain. The route says which
+ * headings those are rather than the stylesheet guessing with `:has()`, so the
+ * rule holds in any engine.
+ *
+ * The glyph run is the one that stays because it is the one that is already
+ * `aria-hidden` and carries no word: standing the cut word down costs a reader
+ * nothing at all.
+ */
+@media (max-width: 599px) {
+  .h1--marked-glyphs .mark {
+    background: none;
+    color: inherit;
+    font: inherit;
+    padding: 0;
+    clip-path: none;
+    transform: none;
+  }
+}

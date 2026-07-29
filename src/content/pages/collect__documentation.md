@@ -11,7 +11,7 @@ indexOf: "collect-docs"
 indexCovers: true
 ---
 
-# Docs
+# <span class="mark mark--cut mark--tilt-3 mark--tear-1">Docs</span>
 
 <div class="layout--articles">
 <section class="my-5">

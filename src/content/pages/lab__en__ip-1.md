@@ -14,7 +14,7 @@ indexLabel: "Interplanetary ancestors 1-3 (EN)"
 date: "2023-08-25"
 ---
 
-# Interplanetary ancestors 1-3 (EN)
+# <span class="mark mark--cut mark--tilt-4 mark--tear-4">Interplanetary</span> ancestors 1-3 (EN)
 
 *Can sounds and musical instruments play a role in the recovery of hidden memories? Is it possible to call forth the memory of historically repressed cultures?*
 

@@ -14,7 +14,7 @@ indexLabel: "Música, Abstracción y el Retorno al Juego"
 date: "2026-01-20"
 ---
 
-# Música, Abstracción y el Retorno al Juego
+# Música, <span class="mark mark--cut mark--tilt-1 mark--tear-2">Abstracción</span> y el Retorno al Juego
 
 ![](/img/lab/orbital-workshop-1.jpg)
 

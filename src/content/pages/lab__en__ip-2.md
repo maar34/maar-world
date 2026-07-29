@@ -14,7 +14,7 @@ indexLabel: "Interplanetary ancestors 2-3 (EN)"
 date: "2023-08-25"
 ---
 
-# Interplanetary ancestors 2-3 (EN)
+# <span class="mark mark--highlight">Interplanetary</span> ancestors 2-3 (EN)
 
 ## Sample Pack: Sound of the Americas by Shika Shika
 

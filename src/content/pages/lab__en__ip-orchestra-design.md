@@ -14,7 +14,7 @@ indexLabel: "Orbital Creation Workshop"
 date: "2024-09-01"
 ---
 
-# Orbital Creation Workshop
+# Orbital <span class="mark mark--highlight">Creation</span> Workshop
 
 ## 🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬
 

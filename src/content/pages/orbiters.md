@@ -10,7 +10,7 @@ source: "maar.world/collections/_pages/orbiters.md"
 description: "Imagine turning your browser into a turntable from outer space."
 ---
 
-# Orbiters
+# <span class="mark mark--cut mark--tilt-2 mark--tear-4">Orbiters</span>
 
 Imagine turning your browser into a turntable from outer space.
 

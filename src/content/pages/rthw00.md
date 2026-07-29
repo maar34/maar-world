@@ -9,7 +9,7 @@ tags: []
 source: "maar.world/collections/_genesis/rthw00.md"
 ---
 
-# Rainbow technologies to heal war.
+# Rainbow <span class="mark mark--cut mark--tilt-4 mark--tear-4">technologies</span> to heal war.
 
 War march transformed with artificial intelligence systems that learned from scientific and poetic texts.
 

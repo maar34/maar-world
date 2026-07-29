@@ -9,7 +9,7 @@ tags: []
 source: "tree.maar.world/collections/_pages/max-network-berlin.html"
 ---
 
-# MAX BERLIN NETWORK
+# MAX BERLIN <span class="mark mark--highlight">NETWORK</span>
 
 <div class="button-container"> 
 

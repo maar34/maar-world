@@ -9,7 +9,7 @@ tags: []
 source: "maar.world/collections/_genesis/skyl0.md"
 ---
 
-# Skylight.1
+# <span class="mark mark--highlight">Skylight.1</span>
 
 Soundscapes from the north of Maar World, recorded when groundwater comes into contact with magma. 
 

@@ -9,7 +9,7 @@ tags: []
 source: "maar.world/collections/_pages/bookings.md"
 ---
 
-# Bookings
+# <span class="mark mark--cut mark--tilt-2 mark--tear-2">Bookings</span>
 
 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾
 

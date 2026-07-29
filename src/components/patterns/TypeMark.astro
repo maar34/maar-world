@@ -1,0 +1,50 @@
+---
+/**
+ * patterns/mark — one marked heading, for headings the route renders itself.
+ *
+ * The card pages build their `<h1>` from `card_title`, so this component marks
+ * it. Every migrated page's `<h1>` is written into generated markdown by
+ * `scripts/migrate-pages.mjs`, which marks it there. Both call
+ * `src/lib/mark.mjs`, so the rule about which word gets marked exists once.
+ *
+ * ACCESSIBLE NAME. The output is the same words in the same order, with one of
+ * them inside a `<span>`. A span contributes its text content and nothing else,
+ * so the heading's accessible name is the title, unchanged and unannotated —
+ * which is the whole requirement. No `aria-hidden` is needed here because
+ * nothing is duplicated: this mark paints a word, it does not echo one.
+ */
+import { chooseMark, markClass } from '../../lib/mark.mjs';
+
+interface Props {
+  /** The heading's text. Plain text — this component never takes markup. */
+  text: string;
+  /** Stable per instance. The card's permalink or the page's outputPath. */
+  seed: string;
+}
+
+const { text, seed } = Astro.props;
+
+const choice = chooseMark(text, seed);
+
+/**
+ * Split into the three pieces the template needs. Whitespace is preserved as
+ * its own token, so the heading's spacing is byte-identical to the unmarked
+ * form and a marked word never fuses to its neighbour.
+ */
+const tokens = String(text).split(/(\s+)/);
+const before = choice ? tokens.slice(0, choice.index).join('') : String(text);
+const marked = choice ? tokens[choice.index] : '';
+const after = choice ? tokens.slice(choice.index + 1).join('') : '';
+
+/**
+ * An unmarked heading is a correct heading: `chooseMark` returns null when
+ * every word is a stopword or too short, and inventing a mark on `# FAQ` would
+ * be worse than leaving it plain. In that case `before` is the whole text and
+ * the three marked pieces are empty, so the template emits the title verbatim.
+ *
+ * The template below is one line on purpose. Astro preserves whitespace between
+ * expressions, and a heading is a run of words: a newline between the pieces
+ * would put a space inside a word.
+ */
+---
+{before}{choice && <span class={markClass(choice)}>{marked}</span>}{after}

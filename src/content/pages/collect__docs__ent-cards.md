@@ -13,7 +13,7 @@ indexLabel: "ENT Cards"
 cover: "/img/docs/covers/ent-cards-cover.jpg"
 ---
 
-# ENT Cards
+# ENT <span class="mark mark--highlight">Cards</span>
 
 ## ENT Cards
 A new paradigm for music distribution of independent artists, merging physical and digital releases, music making and listening. 

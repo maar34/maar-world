@@ -13,7 +13,7 @@ indexLabel: "TERMS AND CONDITIONS"
 cover: "/img/docs/covers/terms-cover.jpg"
 ---
 
-# TERMS AND CONDITIONS
+# TERMS AND <span class="mark mark--cut mark--tilt-3 mark--tear-3">CONDITIONS</span>
 
 ## Terms and Conditions
 

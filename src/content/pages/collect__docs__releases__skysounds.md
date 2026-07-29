@@ -13,7 +13,7 @@ indexLabel: "Sky Sounds"
 cover: "/img/docs/covers/skysounds-cover.jpg"
 ---
 
-# Sky Sounds
+# Sky <span class="mark mark--cut mark--tilt-3 mark--tear-1">Sounds</span>
 
 ## Formation
 

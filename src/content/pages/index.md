@@ -9,7 +9,7 @@ tags: []
 source: "maar.world/index.md"
 ---
 
-# Maar World
+# Maar <span class="mark mark--cut mark--tilt-4 mark--tear-4">World</span>
 
 <!-- HERO (single rotating line, smooth slide+fade every 1.5s) -->
 <div class="hero hero--center hero--statement rotating-hero single-line">

@@ -13,7 +13,7 @@ indexLabel: "Sustainability"
 cover: "/img/docs/covers/sustainability-cover.jpeg"
 ---
 
-# Sustainability
+# <span class="mark mark--highlight">Sustainability</span>
 
 ![Image](/img/docs/ent-cards/03-sustainability.png "Sustainability")
 

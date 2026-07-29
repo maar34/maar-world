@@ -13,7 +13,7 @@ indexLabel: "Tutorials"
 cover: "/img/docs/covers/tutorials-cover.jpeg"
 ---
 
-# Tutorials
+# <span class="mark mark--cut mark--tilt-4 mark--tear-1">Tutorials</span>
 
 <hr>
 

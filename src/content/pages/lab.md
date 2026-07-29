@@ -9,7 +9,7 @@ tags: []
 source: "maar.world/collections/_pages/lab.md"
 ---
 
-# Lab
+# <span class="mark mark--highlight">Lab</span>
 
 <div class="hero hero--dark" style='height:200px; background-image:url("/img/lab/genesis-lab.jpg");'>
 <div class="hero__content"></div>

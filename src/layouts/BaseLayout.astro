@@ -25,9 +25,24 @@ import '../styles/reset.css';
 import '../styles/type.css';
 import '../styles/shell.css';
 import '../styles/button.css';
+import '../styles/mark.css';
 import '../styles/legacy.css';
 
-import { SITE, type AreaName } from '../config/site';
+import { SITE, AREAS, type AreaName } from '../config/site';
+
+/**
+ * The page's area pigment, bound once on the document element.
+ *
+ * `mark.highlight` in styles/mark.css reads `--area-pigment`, so a heading
+ * marked on a Collect page is marked in Collect's own pink — the pigment roles
+ * the spec gives the three areas, doing the job it gives them. The header's
+ * current-area field already reads the same value out of AREAS, so there is one
+ * source for it and no second copy in CSS.
+ *
+ * It goes on `<html>` rather than `<body>` deliberately: an expression between
+ * `</head>` and `<body>` makes Astro drop the `<body>` tag entirely, and every
+ * check that reads a page's body text then sees an empty document.
+ */
 import ShellDark from './shell-dark/Shell.astro';
 import ShellPaper from './shell-paper/Shell.astro';
 
@@ -94,7 +109,7 @@ const Shell = surface === 'paper' ? ShellPaper : ShellDark;
 ---
 
 <!doctype html>
-<html lang={lang} data-surface={surface}>
+<html lang={lang} data-surface={surface} style={`--area-pigment: ${AREAS[area].pigment}`}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

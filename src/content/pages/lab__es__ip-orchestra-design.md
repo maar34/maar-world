@@ -14,7 +14,7 @@ indexLabel: "Taller de creación orbital"
 date: "2024-09-01"
 ---
 
-# Taller de creación orbital
+# Taller de <span class="mark mark--cut mark--tilt-4 mark--tear-3">creación</span> orbital
 
 ## 🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬
 

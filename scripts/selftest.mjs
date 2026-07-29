@@ -953,7 +953,11 @@ check('shell chrome outside <main> does not satisfy verify:content', (root) => {
  */
 const A11Y_CSS = [
   ':root{--c-maar: #a9d5e8;--c-collect: #f0aecb;--c-tree: #e7c98f;--c-dark: #100f14;',
-  '--pigment-ink: var(--c-dark);--sf-base: #100f14;--ink: #efe7da;',
+  // --sf-paper is here because a cut word's field is paper on BOTH surfaces —
+  // it is the one token the contrast table asks for that is not swapped by
+  // [data-surface='paper'], and the fixture has to carry it for the same reason
+  // it carries the others: these are the real values from tokens.css.
+  '--pigment-ink: var(--c-dark);--sf-base: #100f14;--ink: #efe7da;--sf-paper: #efe7da;',
   '--ink-muted: color-mix(in srgb, var(--ink) 75%, transparent);',
   '--ink-meta: color-mix(in srgb, var(--ink) 60%, transparent);',
   '--ink-faint: color-mix(in srgb, var(--ink) 40%, transparent);',

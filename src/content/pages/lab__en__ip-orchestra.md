@@ -14,7 +14,7 @@ indexLabel: "Orbital Creation Workshop: Orbiters Orchestra (EN)"
 date: "2024-08-30"
 ---
 
-# Orbital Creation Workshop: Orbiters Orchestra (EN)
+# Orbital Creation Workshop: Orbiters <span class="mark mark--cut mark--tilt-2 mark--tear-3">Orchestra</span> (EN)
 
 ## 🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬
 

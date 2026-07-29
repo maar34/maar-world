@@ -10,6 +10,6 @@ source: "collect.maar.world/collections/_pages/decks.html"
 description: "Collect Full Album with 34 cards."
 ---
 
-# Decks
+# <span class="mark mark--highlight">Decks</span>
 
 Collect Full Album with 34 cards.

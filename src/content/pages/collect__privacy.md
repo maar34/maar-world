@@ -13,7 +13,7 @@ indexLabel: "Privacy"
 cover: "/img/docs/covers/terms-cover.jpg"
 ---
 
-# Privacy
+# <span class="mark mark--cut mark--tilt-2 mark--tear-1">Privacy</span>
 
 ## Privacy and Cookies Policy  
 

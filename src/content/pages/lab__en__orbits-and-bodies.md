@@ -14,7 +14,7 @@ indexLabel: "Orbits and Bodies"
 date: "2025-08-24"
 ---
 
-# Orbits and Bodies
+# <span class="mark mark--cut mark--tilt-3 mark--tear-2">Orbits</span> and Bodies
 
 A performance connecting human gestures, orbital data, and real-time audiovisual systems.
 

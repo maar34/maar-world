@@ -14,7 +14,7 @@ indexLabel: "Helix — Technical Requirements"
 date: "2026-03-24"
 ---
 
-# Helix — Technical Requirements
+# Helix — Technical <span class="mark mark--cut mark--tilt-2 mark--tear-2">Requirements</span>
 
 ## HELIX
 

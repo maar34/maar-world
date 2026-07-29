@@ -13,7 +13,7 @@ indexLabel: "How to use"
 cover: "/img/docs/covers/how-to.jpg"
 ---
 
-# How to use
+# How to <span class="mark mark--cut mark--tilt-3 mark--tear-1">use</span>
 
 ## A Planet is a Vinyl + One dimension
 

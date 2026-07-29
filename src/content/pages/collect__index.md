@@ -10,7 +10,7 @@ source: "collect.maar.world/index.html"
 description: "Explore a new musical dimension with Sky Sounds, a collection of cards that open the doors to a sonic journey through the cosmos."
 ---
 
-# collect
+# <span class="mark mark--cut mark--tilt-4 mark--tear-2">collect</span>
 
 Explore a new musical dimension with Sky Sounds, a collection of cards that open the doors to a sonic journey through the cosmos.
 

@@ -22,6 +22,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import GlyphRun from '../components/patterns/GlyphRun.astro';
+import TypeMark from '../components/patterns/TypeMark.astro';
 import HelixIsland from '../components/react/HelixIsland.astro';
 
 export async function getStaticPaths() {
@@ -106,13 +107,14 @@ const isCard = d.kind === 'collect-card';
     }
 
     {
-      /* One mark, not two: the responsive table caps an h1 at one mark below
-         600px, and a single run satisfies every breakpoint without the heading
-         changing shape as the viewport does. aria-hidden inside the heading, so
-         the accessible name stays the card title alone. */
+      /* Two marks, which is the h1 maximum: the glyph run, and one word of the
+         title cut out of a different sheet. Below 600px the responsive table
+         allows one, so `h1--marked-glyphs` stands the cut word down there and
+         leaves the run — it is already aria-hidden and carries no word.
+         Both are decoration: the accessible name is the card title alone. */
       isCard && (
-        <h1>
-          {d.card_title}
+        <h1 class="h1--marked-glyphs">
+          <TypeMark text={d.card_title} seed={d.outputPath} />
           {' '}
           <GlyphRun seed={d.outputPath} />
         </h1>

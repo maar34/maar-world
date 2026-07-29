@@ -9,7 +9,7 @@ tags: []
 source: "maar.world/collections/_genesis/sphe0.md"
 ---
 
-# Spherical Drops
+# <span class="mark mark--highlight">Spherical</span> Drops
 
 Timeless  and Spaceless mix from planet Earth, remixing Chopin experiences in Valdemosa, frogs singing in Valizas, jungle recordings in Costa Rica.  
 

@@ -14,7 +14,7 @@ indexLabel: "Music, Abstraction, and the Return to Playing"
 date: "2026-01-20"
 ---
 
-# Music, Abstraction, and the Return to Playing
+# Music, <span class="mark mark--cut mark--tilt-4 mark--tear-2">Abstraction,</span> and the Return to Playing
 
 ![](/img/lab/orbital-workshop-1.jpg)
 
