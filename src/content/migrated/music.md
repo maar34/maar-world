@@ -7,6 +7,7 @@ surface: "dark"
 inNav: false
 tags: []
 source: "maar.world/collections/_pages/music.md"
+lang: "en"
 ---
 
 # <span class="mark mark--cut mark--tilt-2 mark--tear-1">Music</span>

@@ -7,6 +7,7 @@ surface: "dark"
 inNav: false
 tags: []
 source: "maar.world/collections/_pages/bookings.md"
+lang: "en"
 ---
 
 # <span class="mark mark--cut mark--tilt-2 mark--tear-2">Bookings</span>

@@ -8,6 +8,7 @@ inNav: false
 tags: ["orbiter", "EN"]
 source: "maar.world/collections/_lab/en/2024-09-01-Orbital Creation Workshop.md"
 lang: "en"
+translationKey: "ip-orchestra-design"
 indexGroup: "lab"
 indexOrder: "en/2024-09-01-Orbital Creation Workshop.md"
 indexLabel: "Orbital Creation Workshop"

@@ -8,6 +8,7 @@ inNav: false
 tags: ["orbiter", "ES"]
 source: "maar.world/collections/_lab/es/2024-08-30-IP_Orchestra.md"
 lang: "es"
+translationKey: "2024-08-30-ip-orchestra"
 indexGroup: "lab"
 indexOrder: "es/2024-08-30-IP_Orchestra.md"
 indexLabel: "Taller de creación orbital: Orbiters Orchestra (ES)"

@@ -7,6 +7,7 @@ surface: "dark"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_pages/suits.html"
+lang: "en"
 description: "Collect Suits with 11 cards."
 ---
 

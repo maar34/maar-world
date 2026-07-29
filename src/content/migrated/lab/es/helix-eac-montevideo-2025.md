@@ -8,6 +8,7 @@ inNav: false
 tags: ["ES", "Helix", "EAC", "Montevideo", "instalacion", "interaccion", "red", "Plantasia"]
 source: "maar.world/collections/_lab/es/2026-03-24-Helix-EAC-Montevideo.md"
 lang: "es"
+translationKey: "2026-03-24-helix-eac-montevideo"
 indexGroup: "lab"
 indexOrder: "es/2026-03-24-Helix-EAC-Montevideo.md"
 indexLabel: "Helix — Requisitos técnicos"

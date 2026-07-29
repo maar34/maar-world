@@ -7,6 +7,7 @@ surface: "dark"
 inNav: false
 tags: []
 source: "maar.world/collections/_genesis/sphe0.md"
+lang: "en"
 ---
 
 # <span class="mark mark--highlight">Spherical</span> Drops

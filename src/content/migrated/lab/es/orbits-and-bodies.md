@@ -8,6 +8,7 @@ inNav: false
 tags: ["EW", "orbiter", "ES", "performance", "audiovisual", "exoplanetas"]
 source: "maar.world/collections/_lab/es/2025-08-24-01-Orbit-and-Bodies.md"
 lang: "es"
+translationKey: "2025-08-24-01-orbit-and-bodies"
 indexGroup: "lab"
 indexOrder: "es/2025-08-24-01-Orbit-and-Bodies.md"
 indexLabel: "Órbitas y Cuerpos"

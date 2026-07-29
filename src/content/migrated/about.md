@@ -7,6 +7,7 @@ surface: "dark"
 inNav: false
 tags: []
 source: "maar.world/collections/_pages/about.md"
+lang: "en"
 ---
 
 <header class="page-header">

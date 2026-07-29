@@ -120,7 +120,35 @@ export const pageSchema = z
     title: z.string().min(1),
     area: z.enum(['maar', 'collect', 'tree']),
     kind: z.enum(['page', 'lab', 'genesis', 'doc', 'collect-card', 'index']),
-    lang: z.enum(['en', 'es']).optional(),
+    /**
+     * REQUIRED, and deliberately so.
+     *
+     * It used to be optional, and `BaseLayout` defaulted a missing value to
+     * 'en'. That default was invisible — it lived in a layout, not in the
+     * record — and it made `verify:a11y`'s "every page declares its own
+     * language" assertion unfalsifiable: every page emitted a lang attribute
+     * whether or not anyone had decided what it should be. 75 of 95 pages had
+     * no language, /esp-feedback among them, and the check was green.
+     *
+     * Requiring it moves the decision into the data, where it is reviewable in
+     * a diff and changeable per page. A record without it fails the build.
+     */
+    lang: z.enum(['en', 'es']),
+
+    /**
+     * Which pages are the same page in another language.
+     *
+     * A relation, not a scalar — and it is stored rather than derived because
+     * it cannot be derived reliably: of the ten Lab pairs, three have slugs
+     * that are translations of each other rather than copies
+     * (`shared-culture` ↔ `cultura-compartida`), so a path-based rule silently
+     * finds 70% of them and reports nothing about the rest.
+     *
+     * Pages sharing a `translationKey` are alternates of one another. A page
+     * with no translation simply omits it.
+     */
+    translationKey: z.string().min(1).optional(),
+
     permalink: permalink.optional(),
     surface: z.enum(['dark', 'paper']).default('dark'),
     noindex: z.boolean().optional(),

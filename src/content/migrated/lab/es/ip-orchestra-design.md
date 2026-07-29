@@ -8,6 +8,7 @@ inNav: false
 tags: ["orbiter", "ES"]
 source: "maar.world/collections/_lab/es/2024-09-01-Taller de creación orbital.md"
 lang: "es"
+translationKey: "ip-orchestra-design"
 indexGroup: "lab"
 indexOrder: "es/2024-09-01-Taller de creación orbital.md"
 indexLabel: "Taller de creación orbital"

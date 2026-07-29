@@ -7,6 +7,7 @@ surface: "dark"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_pages/cards.html"
+lang: "en"
 indexOf: "collect-cards"
 indexCovers: true
 description: "Collect your favorite cards."

@@ -7,6 +7,7 @@ surface: "dark"
 inNav: false
 tags: []
 source: "maar.world/collections/_pages/orbiters.md"
+lang: "en"
 description: "Imagine turning your browser into a turntable from outer space."
 ---
 

@@ -24,6 +24,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import GlyphRun from '../components/patterns/GlyphRun.astro';
 import TypeMark from '../components/patterns/TypeMark.astro';
 import HelixIsland from '../components/react/HelixIsland.astro';
+import { languageChoices, alternatesFor } from '../lib/translations.mjs';
 
 export async function getStaticPaths() {
   const pages = await getCollection('pages');
@@ -81,6 +82,21 @@ const hrefOf = (outputPath: string) =>
 const isCard = d.kind === 'collect-card';
 
 /**
+ * The language switcher, and the <link rel="alternate"> set.
+ *
+ * Empty for the 75 pages that exist in one language only — a switcher offering
+ * one choice is a label, not a control, and rendering it would suggest a
+ * Spanish version exists where none does.
+ *
+ * This replaces the two buttons the legacy body carried at /lab
+ * (`?tag=EN` / `?tag=ES`). Those pointed at query-string filters on a static
+ * build with no JavaScript, so both served the identical unfiltered page: a
+ * visible, clickable, inert control. They are stripped by the migration now.
+ */
+const langChoices = languageChoices(entry, all);
+const alternates = alternatesFor(entry, all);
+
+/**
  * The Lab reads as a dated bibliography, not a list of links, so it groups by
  * year with a rule per group — the spec's page family 02, and what production
  * served. Every other index is a flat list of titles.
@@ -118,6 +134,7 @@ const readableDate = (iso: string) => {
   noindex={d.noindex}
   area={d.area}
   lang={d.lang}
+  alternates={alternates.map((p) => ({ lang: p.data.lang, outputPath: p.data.outputPath }))}
   redirectTo={d.redirectTo}
 >
   {/* The shell owns <main>. This is the page family inside it. */}
@@ -160,6 +177,32 @@ const readableDate = (iso: string) => {
     }
 
     {isCard && d.card_description && <p class="description">{d.card_description}</p>}
+
+    {
+      /* One link per language, the current one marked with aria-current rather
+         than by colour alone. It is a nav landmark so a screen-reader user can
+         reach it directly, and each link declares the language it leads TO —
+         `hreflang` for machines, `lang` so the label "español" is pronounced
+         as Spanish rather than read with English phonemes. */
+      langChoices.length > 1 && (
+        <nav class="lang-switch" aria-label="Language">
+          <ul role="list">
+            {langChoices.map((c) => (
+              <li>
+                <a
+                  href={hrefOf(c.outputPath)}
+                  hreflang={c.lang}
+                  lang={c.lang}
+                  aria-current={c.current ? 'page' : undefined}
+                >
+                  {c.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
 
     <div class="legacy">
       <Content />
@@ -248,6 +291,41 @@ const readableDate = (iso: string) => {
 </BaseLayout>
 
 <style>
+  /* The language switcher. A row of links, the current one carrying the same
+     pigment field the header uses for the current area — pigment plus
+     aria-current plus an underline, because a pigment field never carries
+     meaning alone. */
+  .lang-switch ul {
+    display: flex;
+    gap: var(--s-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .lang-switch a {
+    display: inline-block;
+    padding-inline: var(--s-2);
+    border-radius: var(--r-0);
+    font-family: var(--t-meta-face);
+    font-size: var(--t-meta-size);
+    line-height: var(--t-meta-line);
+    letter-spacing: var(--t-meta-track);
+    text-decoration: none;
+    color: var(--ink-meta);
+  }
+
+  .lang-switch a[aria-current] {
+    background: var(--area-pigment, var(--c-maar));
+    color: var(--pigment-ink);
+    text-decoration: underline;
+  }
+
+  .lang-switch a:hover {
+    background: var(--area-pigment, var(--c-maar));
+    color: var(--pigment-ink);
+  }
+
   /* Page family 03 — entry. Single measure.
      The measure is --measure (66ch), not 72ch: "prose measure never exceeds
      66ch at any width". The horizontal padding is the shell's responsive

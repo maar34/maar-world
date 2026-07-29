@@ -89,6 +89,15 @@ interface Props {
    */
   lang?: string;
   /**
+   * Other-language versions of this page, for `<link rel="alternate">`.
+   *
+   * Search engines and translation tools have no other way to learn that
+   * /lab/en/shared-culture and /lab/es/cultura-compartida are one page in two
+   * languages — the slugs are translations of each other, not copies, so
+   * nothing about the URLs reveals it.
+   */
+  alternates?: { lang: string; outputPath: string }[];
+  /**
    * A deprecated address that production serves as a 200 with a meta refresh,
    * not as an HTTP redirect. `/interplanetary-players` is the only one. Kept as
    * a meta refresh rather than JavaScript so it works with scripting disabled.
@@ -104,6 +113,7 @@ const {
   canonical,
   area = 'maar',
   lang = 'en',
+  alternates = [],
   redirectTo,
 } = Astro.props;
 
@@ -138,6 +148,23 @@ const Shell = surface === 'paper' ? ShellPaper : ShellDark;
     {noindex && <meta name="robots" content="noindex" />}
     {redirectTo && <meta http-equiv="refresh" content={`0; url=${redirectTo}`} />}
     <link rel="canonical" href={canonicalUrl} />
+    {
+      /* Self-referential too: `rel=alternate` sets are only valid if every page
+         in the set lists every page in the set, including itself. Omitting the
+         self link is the most common way these are got wrong. */
+      alternates.length > 0 && (
+        <>
+          <link rel="alternate" hreflang={lang} href={canonicalUrl} />
+          {alternates.map((a) => (
+            <link
+              rel="alternate"
+              hreflang={a.lang}
+              href={new URL(`/${a.outputPath}.html`, SITE.origin).href}
+            />
+          ))}
+        </>
+      )
+    }
   </head>
   <body>
     <Shell area={area} chromeLang={chromeLang}>

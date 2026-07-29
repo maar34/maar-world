@@ -703,6 +703,41 @@ check('an unbacked page still fails when an authored directory exists', (root) =
   return { ok, detail: ok ? 'exit 1, unbacked page still reported' : `expected exit 1, got ${code}\n${out}` };
 });
 
+// --- patterns/translations: the relation, tested directly ----------------
+// These are the first cases that exercise a src/ module rather than a script.
+// translations.mjs is pure, so it needs no fixture — and it is the one place
+// that decides whether two pages are the same page in another language, which
+// nothing in the build could answer at all before MW-11.
+const T = await import('../src/lib/translations.mjs');
+const rec = (outputPath, lang, translationKey) => ({ data: { outputPath, lang, translationKey } });
+
+check('alternatesFor finds the other-language page', () => {
+  const en = rec('lab/en/shared-culture', 'en', 'k');
+  const es = rec('lab/es/cultura-compartida', 'es', 'k');
+  const got = T.alternatesFor(en, [en, es, rec('about', 'en', undefined)]);
+  const ok = got.length === 1 && got[0].data.outputPath === 'lab/es/cultura-compartida';
+  return { ok, detail: ok ? 'paired across divergent slugs' : `got ${JSON.stringify(got.map((g) => g.data.outputPath))}` };
+});
+
+check('a page with no translationKey has no alternates', () => {
+  const solo = rec('about', 'en', undefined);
+  const got = T.alternatesFor(solo, [solo, rec('lab/es/x', 'es', 'k')]);
+  return { ok: got.length === 0, detail: got.length === 0 ? 'empty, as it must be' : `got ${got.length}` };
+});
+
+// A switcher offering one choice is a label, not a control. 75 of the site's
+// pages exist in one language only, so this is the common case and rendering a
+// single-item switcher on all of them would claim translations that do not exist.
+check('languageChoices is empty when there is nothing to switch to', () => {
+  const solo = rec('about', 'en', undefined);
+  const paired = rec('lab/en/a', 'en', 'k');
+  const other = rec('lab/es/a', 'es', 'k');
+  const none = T.languageChoices(solo, [solo]);
+  const two = T.languageChoices(paired, [paired, other]);
+  const ok = none.length === 0 && two.length === 2 && two[0].lang === 'en' && two[0].current === true;
+  return { ok, detail: ok ? 'empty for solo, two entries in language order for a pair' : `${none.length} / ${two.length}` };
+});
+
 // --- F8: the policy/manifest join is checked in both directions ----------
 
 check('a policy for a route not in the manifest fails verify:routes', (root) => {

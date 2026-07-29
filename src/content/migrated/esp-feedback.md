@@ -7,6 +7,8 @@ surface: "dark"
 inNav: false
 tags: []
 source: "maar.world/collections/_pages/1-feedback-esp.html"
+lang: "es"
+translationKey: "eng-feedback"
 ---
 
 # esp <span class="mark mark--cut mark--tilt-1 mark--tear-2">feedback</span>

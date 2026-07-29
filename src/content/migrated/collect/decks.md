@@ -7,6 +7,7 @@ surface: "dark"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_pages/decks.html"
+lang: "en"
 description: "Collect Full Album with 34 cards."
 ---
 

@@ -8,6 +8,7 @@ inNav: false
 tags: ["EN", "Music", "Cultural", "Capital", "Participation", "Listening", "Intelligence"]
 source: "maar.world/collections/_lab/en/2026-01-20-music-abstraction-return-playing.md"
 lang: "en"
+translationKey: "2026-01-20-music-abstraction-return-playing"
 indexGroup: "lab"
 indexOrder: "en/2026-01-20-music-abstraction-return-playing.md"
 indexLabel: "Music, Abstraction, and the Return to Playing"

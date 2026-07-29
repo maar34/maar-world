@@ -7,6 +7,7 @@ surface: "paper"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_documentation/02-tutorials.md"
+lang: "en"
 indexGroup: "collect-docs"
 indexOrder: "02-tutorials.md"
 indexLabel: "Tutorials"

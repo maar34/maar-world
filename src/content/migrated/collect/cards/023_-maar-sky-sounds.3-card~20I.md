@@ -7,6 +7,7 @@ surface: "dark"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_cards/023_-maar-sky-sounds.3-card I.md"
+lang: "en"
 indexGroup: "collect-cards"
 indexOrder: "023_-maar-sky-sounds.3-card I.md"
 indexLabel: "Card I"

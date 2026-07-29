@@ -7,6 +7,7 @@ surface: "dark"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_documentation/07-mw/03-Privacy.md"
+lang: "en"
 indexGroup: "collect-docs"
 indexOrder: "07-mw/03-Privacy.md"
 indexLabel: "Privacy"

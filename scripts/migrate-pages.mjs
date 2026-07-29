@@ -1068,6 +1068,27 @@ function transform(body, ctx) {
   // article-list becomes an `indexOf` prop rendered by the route.
   out = out.replace(/\{%-?\s*include\s+article-list\.html[\s\S]*?-?%\}/g, '');
 
+  /**
+   * The dead language filter.
+   *
+   * `/lab` shipped two anchors pointing at `/lab?tag=EN` and `?tag=ES`. This is
+   * a static build with no JavaScript on that page, so both served the identical
+   * unfiltered index: a visible, clickable control that did nothing. A false
+   * affordance is worse than a missing one — a visitor who wants the Spanish
+   * articles clicks it, sees the same page, and concludes there are none.
+   *
+   * The real switcher lives on each translated page now, driven by
+   * `translationKey` (see src/lib/translations.mjs), so this is a removal and
+   * not a regression: the capability moved, it did not disappear.
+   */
+  out = out.replace(
+    /(?:^|\n)[^\n]*Filter posts in:[^\n]*\n(?:\s*<a\b[^>]*href="\/lab\?tag=[^"]*"[^>]*>[^<]*<\/a>\s*\n?)+/gi,
+    (m) => {
+      problems.push(`${ctx.key}: dropped the inert ?tag= language filter (${(m.match(/<a\b/g) || []).length} anchors)`);
+      return '\n';
+    },
+  );
+
   out = stripElement(out, 'script');
   out = stripElement(out, 'style');
   out = stripDeadThemeChrome(out, problems, ctx.key);
@@ -1474,6 +1495,86 @@ rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 writeFileSync(join(OUT, '.gitkeep'), '');
 
+/**
+ * Pages written in Spanish that no URL prefix identifies.
+ *
+ * `/esp-feedback` is the Spanish half of the feedback pair and its whole body
+ * is Spanish; production served it that way. Recorded here rather than guessed
+ * from the slug, because `esp` in a path is a naming habit and not a
+ * declaration — `/eng-feedback` sits beside it and is English.
+ *
+ * Recorded in MIGRATION-LEDGER.md as MW-11 BLOCKED shell/lang-two-pages-unset,
+ * which this closes. The other page that line names, /helix-diagram, is NOT
+ * here: its prose is English and only the embedded diagram is Spanish, so the
+ * island declares its own language instead of the document lying about all of
+ * it.
+ */
+const SPANISH_PAGES = new Set(['esp-feedback']);
+
+/**
+ * Pairs whose two halves share neither a source basename nor a slug.
+ *
+ * Derivation catches the ten Lab pairs. It cannot catch this one: the sources
+ * are `1-feedback-eng.html` and `1-feedback-esp.html` and the outputPaths are
+ * `eng-feedback` and `esp-feedback`, so nothing common survives either rule.
+ * It is a real pair and production served both, so it is stated.
+ */
+const EXPLICIT_PAIRS = [['eng-feedback', 'esp-feedback']];
+
+/**
+ * translationKey per page key, computed before anything is written.
+ *
+ * Three rules, in order, because no single one reaches all eleven pairs:
+ *
+ *   1. SHARED SOURCE BASENAME. The two halves of a translated Lab article were
+ *      authored as `_lab/en/<name>.md` and `_lab/es/<name>.md`. Nine of the ten
+ *      pairs match this way, including all three whose published slugs diverge
+ *      (`shared-culture` ↔ `cultura-compartida`).
+ *   2. SHARED FINAL SLUG. `ip-orchestra-design` is the tenth: its sources are
+ *      `2024-09-01-Orbital Creation Workshop.md` and `2024-09-01-Taller de
+ *      creación orbital.md`, which share nothing, but both publish at
+ *      `lab/<lang>/ip-orchestra-design`.
+ *   3. EXPLICIT_PAIRS, for the eleventh — `/eng-feedback` and `/esp-feedback`
+ *      share neither.
+ *
+ * A group is a pair only if its members are in DIFFERENT languages. Two English
+ * pages that happen to share a basename are not translations of each other, and
+ * pairing them would put a switcher on both pointing at the wrong page.
+ */
+const langOfKey = (key) => (SPANISH_PAGES.has(key) || /^lab\/es\//.test(key) ? 'es' : 'en');
+
+const TRANSLATION_KEYS = (() => {
+  const keys = new Map();
+  const slug = (s) => s.replace(/\.[^.]+$/, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase();
+
+  const assign = (group, name) => {
+    const langs = new Set(group.map((k) => langOfKey(k)));
+    if (group.length < 2 || langs.size < 2) return;
+    for (const k of group) if (!keys.has(k)) keys.set(k, name);
+  };
+
+  const groupBy = (fn) => {
+    const g = new Map();
+    for (const m of matched) {
+      if (keys.has(m.key)) continue;
+      const v = fn(m);
+      if (!v) continue;
+      g.set(v, [...(g.get(v) ?? []), m.key]);
+    }
+    return g;
+  };
+
+  // 1 — shared source basename
+  for (const [name, group] of groupBy((m) => m.source.rel.split('/').pop())) assign(group, slug(name));
+  // 2 — shared final slug
+  for (const [name, group] of groupBy((m) => m.key.split('/').pop())) assign(group, slug(name));
+  // 3 — stated
+  for (const pair of EXPLICIT_PAIRS) {
+    if (pair.every((k) => !keys.has(k))) assign(pair, slug(pair[0]));
+  }
+  return keys;
+})();
+
 const problems = [];
 const written = [];
 const emitted = new Set();
@@ -1508,8 +1609,23 @@ for (const m of matched) {
     tags: typeof data.tags === 'string' ? data.tags.split(/\s+/).filter(Boolean) : [],
     source: `${m.meta.origin}/${m.source.rel}`,
   };
-  if (/^lab\/en\//.test(m.key)) record.lang = 'en';
-  if (/^lab\/es\//.test(m.key)) record.lang = 'es';
+  /**
+   * Every page declares a language. Not just the twenty in /lab.
+   *
+   * This used to set `lang` on the /lab/en and /lab/es articles alone and leave
+   * the other 75 pages without one, where `BaseLayout` quietly turned the
+   * absence into 'en'. That is how /esp-feedback — a Spanish feedback form —
+   * shipped announcing itself as English, and how the a11y check that guards
+   * exactly this stayed green: it asserted the attribute was present, and the
+   * layout guaranteed it always was.
+   *
+   * The default is still English, because the site is written in English. What
+   * changed is that it is now written into the record, so it is visible in a
+   * diff, overridable per page, and the schema rejects a page that has none.
+   */
+  record.lang = SPANISH_PAGES.has(m.key) || /^lab\/es\//.test(m.key) ? 'es' : 'en';
+  const tk = TRANSLATION_KEYS.get(m.key);
+  if (tk) record.translationKey = tk;
   if (data.noindex === true) record.noindex = true;
   /**
    * The Lab index is written into the body instead — see `labIndexHtml`. Both

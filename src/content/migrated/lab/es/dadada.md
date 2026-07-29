@@ -8,6 +8,7 @@ inNav: false
 tags: ["EW", "orbiter", "ES"]
 source: "maar.world/collections/_lab/es/2023-12-09-Dadada.md"
 lang: "es"
+translationKey: "2023-12-09-dadada"
 indexGroup: "lab"
 indexOrder: "es/2023-12-09-Dadada.md"
 indexLabel: "Dadada (ES)"

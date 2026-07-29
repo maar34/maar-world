@@ -8,6 +8,7 @@ inNav: false
 tags: ["EN", "Cultural", "Capital", "Shared", "Music", "Access"]
 source: "maar.world/collections/_lab/en/2026-01-07-Music-access-human-mind.md"
 lang: "en"
+translationKey: "2026-01-07-music-access-human-mind"
 indexGroup: "lab"
 indexOrder: "en/2026-01-07-Music-access-human-mind.md"
 indexLabel: "Music, Access, and the Human Mind"

@@ -7,6 +7,7 @@ surface: "paper"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_documentation/03-ent-cards.md"
+lang: "en"
 indexGroup: "collect-docs"
 indexOrder: "03-ent-cards.md"
 indexLabel: "ENT Cards"

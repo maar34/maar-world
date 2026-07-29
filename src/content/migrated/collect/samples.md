@@ -7,6 +7,7 @@ surface: "dark"
 inNav: false
 tags: []
 source: "collect.maar.world/samples.html"
+lang: "en"
 ---
 
 # <span class="mark mark--highlight">Entangled</span> World Docs

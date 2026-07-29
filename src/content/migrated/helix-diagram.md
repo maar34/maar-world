@@ -7,6 +7,7 @@ surface: "dark"
 inNav: false
 tags: []
 source: "maar.world/helix-diagram.html"
+lang: "en"
 island: "helix"
 ---
 

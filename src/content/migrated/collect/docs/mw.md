@@ -7,6 +7,7 @@ surface: "paper"
 inNav: false
 tags: []
 source: "collect.maar.world/collections/_documentation/07-mw.md"
+lang: "en"
 indexGroup: "collect-docs"
 indexOrder: "07-mw.md"
 indexLabel: "Information"

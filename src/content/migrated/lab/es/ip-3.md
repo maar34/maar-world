@@ -8,6 +8,7 @@ inNav: false
 tags: ["EW", "orbiter", "ES"]
 source: "maar.world/collections/_lab/es/2023-08-25-01_IP3.md"
 lang: "es"
+translationKey: "2023-08-25-01-ip3"
 indexGroup: "lab"
 indexOrder: "es/2023-08-25-01_IP3.md"
 indexLabel: "Ancestros interplanetarios 3-3 (ES)"

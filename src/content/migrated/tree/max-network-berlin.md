@@ -7,6 +7,7 @@ surface: "dark"
 inNav: false
 tags: []
 source: "tree.maar.world/collections/_pages/max-network-berlin.html"
+lang: "en"
 ---
 
 # MAX BERLIN <span class="mark mark--highlight">NETWORK</span>
