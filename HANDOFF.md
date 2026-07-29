@@ -3,11 +3,13 @@
 Regenerated at every stop. A fresh agent should need nothing but this file,
 `MIGRATION-LEDGER.md`, `docs/agent/OPERATING-RULES.md` and the Linear issue.
 
-**Last updated:** 2026-07-29T08:15Z
-**Last issue worked:** MW-7 / MW-11 (content-rendering defects: alt text, article title headings, commented-out embed, card body duplicates)
-**Next action:** MW-11 — a11y/responsive sign-off. The remaining `verify:content` failures are
+**Last updated:** 2026-07-29T09:20Z
+**Last issue worked:** MW-11 — accessibility and responsive sign-off, plus the first design
+work done against the live spec (the DesignSync MCP was unreachable during MW-9).
+**Next action:** the remaining MW-11 human gates, listed under "What MW-11 still needs a human
+for" below. **Do not start MW-10/MW-12.** The remaining `verify:content` failures are
 check-side, not content-side; see the ledger line `content/residue-is-check-side` before
-touching any content to satisfy them. Do not start MW-10/MW-12.
+touching any content to satisfy them.
 
 ---
 
@@ -22,7 +24,7 @@ touching any content to satisfy them. Do not start MW-10/MW-12.
 | MW-7 | Maar pages, genesis codes, Lab articles | **done** — 95 pages, `verify:content` green |
 | MW-8 | Collect → `/collect/*`, Tree → `/tree` | **done** — `routes/redirects.map`, 111 lines |
 | MW-9 | Embed facades, self-hosted fonts, Helix island | **build done** — 3 items handed to an owner, see below |
-| MW-11 | Full verification + a11y/responsive sign-off | not started |
+| MW-11 | Full verification + a11y/responsive sign-off | **automated gates done, human gates outstanding** |
 | MW-10, MW-12 | Cutover, stabilise | **human-gated — do not start** |
 
 ## Read this before trusting a green run
@@ -35,8 +37,9 @@ The route contract is now **fully satisfied**. The missing-count metric has land
 | after MW-6 | 192 of 264 — dropped by exactly the 70 card forms |
 | after MW-8 | **0 of 264** ✔ |
 
-`npm run verify` exits non-zero — **46 passed, 2 failed, 1 skipped** — for exactly two reasons,
-both known and both recorded:
+`npm run verify` exits non-zero — **70 passed, 2 failed, 1 skipped** — for exactly two reasons,
+both known and both recorded. It was 46/2/1; the 24 new passes are `verify:a11y`, which is now
+composed into the suite. The two failures are the same two they have always been:
 
 1. `verify:links` → *no third-party request fires on page load*, **73** on-load references to
    `www.dropbox.com`. That is MW-6's card art, blocked on a human decision since MW-6. It was
@@ -61,20 +64,77 @@ access to those checkouts to build.
 
 ## In flight
 
-Nothing. The content-rendering session's work is committed in four units — `MW-11
-pages/missing-alt`, `MW-7 pages/article-title-heading`, `MW-7 pages/commented-out-embed`,
-and three record-only ledger lines — and nothing is half-applied. What it changed:
+Nothing. Nothing is half-applied.
 
-- Every raw `<img>` in a migrated body now carries an `alt`. The decision per image lives in
-  `IMAGE_ALT` in `scripts/migrate-pages.mjs`, and any alt-less `<img>` without a recorded
-  decision is printed by `npm run migrate:pages`.
-- `scripts/migrate-cards.mjs` drops body media the card route already renders from the same
-  frontmatter field, so `/DWE1406` and `/STW3344` no longer serve the cover twice.
-- The article title `<h1>` the legacy theme printed is materialised whenever the body's
-  *first* heading is not the page title **and** the frozen manifest records the title as
-  production's own first heading. Six pages gained it.
-- A comment containing element markup is dropped rather than migrated, so `/collect` no
-  longer builds a facade nobody can click.
+## What the a11y/responsive session did
+
+`npm run verify:a11y` is new and is composed into `npm run verify`. It is 18 per-page
+assertions plus 6 stylesheet ones, measured against `dist/` and against the CSS that ships —
+**including inline `<style>` blocks**, which matters: Astro emits a scoped style inline when it
+is small and into a stylesheet when it is not, and the rule painting `--ink-faint` is inline on
+all 35 card pages, so reading only `dist/**/*.css` concluded the token was painted nowhere.
+
+Contrast is **computed, not transcribed**: tokens are resolved out of the built CSS through
+`var()` and `color-mix(… N%, transparent)`, composited over their surface and measured as WCAG
+relative luminance. 17 pairs, lowest 3.33:1. A pair is measured on a surface only where a page
+actually paints it, and the pairs skipped are named in the output rather than passed over.
+
+**24 selftest cases** were added (57 → 81), one per assertion plus three that prove the shapes
+which only *look* wrong still pass — a wrapping `<label>` with no `for=`, an `aria-hidden`
+region that is also `display:none`, and a decorative `alt=""`. Each of those three was a false
+positive the check reported before it was calibrated against the real build.
+
+Six real defect classes were found and fixed, all in the migration scripts rather than in
+`src/content/**`, which is generated:
+
+- **38 pages skipped a heading level and 7 carried two `<h1>`.** The legacy theme printed the
+  title as an `<h1>` above every body, so authors reached for `###`/`####` as a font size.
+  `scripts/lib/headings.mjs` rewrites each heading to one level deeper than its nearest
+  smaller-level ancestor. Heading *text* is untouched byte for byte.
+- **30 `<iframe>` had no title.** Every Lab player's track name was already in the block above
+  it; that is now the frame's title. **Ordering trap:** this must run *after* the kramdown
+  `{:.class}` strip, or the strip deletes the label back out of the title it just wrote.
+- **Two anchors were empty** — Mailchimp badges whose only child was a third-party image the
+  privacy rule drops. They now read their own `title` as visible text.
+- **Two tables had no `<th>`.** Both are label-column tables; their left cells are now
+  `<th scope="row">`, and the single-cell one is `role="presentation"`.
+- **Nothing allowed a long word to break.** `body` now sets `overflow-wrap: break-word`.
+
+**Responsive, measured in Chrome, not asserted:** every page loaded into a fixed-width iframe
+and measured for horizontal overflow. **0 of 133 pages overflow** — 101 at all four widths plus
+the remaining 32 at 360. The harness was proved able to fail first. Per-breakpoint layout
+matches the spec's responsive table exactly: gutters 20/32/48/64 and display 40/48/60/76.
+
+## What the design session did
+
+The **DesignSync MCP is reachable now** — it was not during MW-9 — so `Maar World Design
+System.dc.html` was read live. Three things came out of it:
+
+- **The display scale is bound at all four breakpoints.** The spec states this twice and the
+  two do not agree: the type-scale table names two steps (76, 48), the responsive table names
+  four (40, 48, 60, 76). Only two were bound, so an `h1` was 48px at 360 where the table says
+  40 and 48px at 1024 where it says 60.
+- **`src/styles/button.css`** is the spec's five-by-four state grid transcribed cell by cell.
+  It reaches migrated form controls by element, not by class — a class in `src/content/**` is
+  removed by the next migration run.
+- **The prose column now aligns with the chrome.** It was centred in the *viewport* while the
+  header and footer sat in the 1180 column, so at 1745px the chrome started at x=276 and the
+  body text at x=480. Every page read as two documents that had never met.
+
+## What MW-11 still needs a human for
+
+The automated gates pass. These are the issue's own human-review gates, and an agent cannot
+close them:
+
+1. **All 35 rendered card pages reviewed**, and three physical cards scanned.
+2. **Forms submit end-to-end** — both Formspree endpoints and both Google Forms, with a real
+   test submission each. Sending real traffic to a third party is not an agent's call.
+3. **All ~175 `play.maar.world` embeds load from the new origin.** They are titled, same-site
+   and unclipped; whether each *plays* needs the origin live.
+4. **Judgement, not mechanics:** whether an alt text reads well, whether a focus ring is
+   legible over a photograph, whether the reading order makes sense.
+5. **Lighthouse against the pre-migration baseline** — non-blocking, and the baseline was
+   never captured.
 
 One thing a fresh session will still meet immediately, plus one now settled:
 
@@ -151,7 +211,17 @@ against the live spec when the MCP is available.
    MW-9's acceptance criterion is "largest served asset under 2 MB". The 8.8 MB landing GIF
    is already gone; `2024_ss-5/6/7.jpeg` (2.6–2.75 MB) and `433-suits.gif` (2.48 MB) are not.
    Re-encoding needs `sharp`/`ffmpeg` and changes what a visitor sees.
-8. **The Tree hub image is gone** (`MW-8`, ledger `tree/sunflower-image`).
+8. **Two display line heights are interpolated, not specified** (`MW-11`, ledger
+   `design/display-steps`). The spec's responsive table gives four display sizes but the
+   type-scale table gives line heights for only two of them. 40px and 60px ship as a linear
+   interpolation between the two stated anchors — 1.03 and 1.00 — and that is the **only**
+   value in `src/styles/tokens.css` not read directly off the spec. One line each to change.
+9. **Seven of the spec's ten page families are unbuilt** (`MW-11`, ledger
+   `shell/page-families-outstanding`). Every route still renders family 03 (entry). Home is
+   specified as family 01 — "one feature card, then three entry cards" — and building it means
+   deciding *which* cards, which is content, which moves what `verify:content` asserts. That
+   is an owner's decision, not a styling one.
+10. **The Tree hub image is gone** (`MW-8`, ledger `tree/sunflower-image`).
    `/tree` had one image, hotlinked from `herbarium.plantasia.space` — a different
    registrable domain, so a third-party request on page load. The file is in no read-only
    checkout, so it cannot be self-hosted from here. Needs the asset, or an exception.
@@ -236,7 +306,8 @@ MW-11**, once the 35 real cards carry the guarantee themselves.
 npm run build            assemble media + astro build
 npm run verify           everything; exit code decides
 npm run verify:cards     the physical-card contract, cheapest useful check
-npm run verify:selftest  proves the suite still fails on broken builds (10/10)
+npm run verify:a11y      the accessibility gates, against dist/ and the CSS that ships
+npm run verify:selftest  proves the suite still fails on broken builds (81/81)
 npm run verify:schemas   proves the schemas still reject bad records (12/12)
 npm run freeze:routes    re-crawl production (only if the contract must be re-frozen)
 npm run migrate:pages    re-derive src/content/pages/ + media/ from the legacy checkouts
