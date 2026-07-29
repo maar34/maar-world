@@ -941,6 +941,37 @@ function titleUntitledFrames(body, problems, where) {
   });
 }
 
+/**
+ * Remove anchors that other rules emptied.
+ *
+ * `/radio` and `/subscribe` both carry Mailchimp's attribution badge:
+ * `<a href="http://eepurl.com/if7emL" title="Mailchimp — …"><img src="eep.io/…"></a>`.
+ * The image is third-party, so `defuseThirdParty` drops it — correctly, since
+ * nothing third-party may be requested on page load — and what is left is an
+ * anchor with no content at all. It is zero-size, so it cannot be clicked or
+ * tapped, but it is still a tab stop, and the `title` gives it just enough of
+ * an accessible name that a check asking only "is it named" would pass it.
+ *
+ * A link to nothing that nobody can see is not a link. The `title` is not
+ * substituted as visible text: the badge said "intuit mailchimp" in artwork
+ * this build deliberately does not fetch, and inventing a caption for an image
+ * nobody here has seen would be a guess about what production showed.
+ *
+ * An anchor carrying its own `aria-label` is a named control by intent — an
+ * icon button, say — and is left alone. A wrapper left holding nothing but the
+ * removed anchor goes with it.
+ */
+function dropEmptiedAnchors(html, problems, where) {
+  let out = html.replace(/<a\b([^>]*\bhref\b[^>]*)>(\s*)<\/a>/gi, (whole, attrs) => {
+    if (/\baria-label\s*=/i.test(attrs)) return whole;
+    const href = /\bhref\s*=\s*["']([^"']*)["']/i.exec(attrs);
+    problems.push(`${where}: removed emptied <a href="${href ? href[1] : '?'}"> — its only content was dropped`);
+    return '';
+  });
+  out = out.replace(/<p\b[^>]*class\s*=\s*["'][^"']*brandingLogo[^"']*["'][^>]*>\s*<\/p>\s*/gi, '');
+  return out;
+}
+
 function addMissingAlt(html, problems, where) {
   return html.replace(/<img\b[^>]*>/gi, (m) => {
     if (/\balt\s*=/i.test(m)) return m;
@@ -1092,6 +1123,8 @@ function transform(body, ctx) {
     return '';
   });
 
+  // After every rule that can remove an element from inside an anchor.
+  out = dropEmptiedAnchors(out, problems, ctx.key);
   out = addMissingAlt(out, problems, ctx.key);
 
   /**

@@ -118,7 +118,6 @@ source: "maar.world/collections/_pages/radio.md"
 <div class="optionalParent">
 <div class="clear foot">
 <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button">
-<p class="brandingLogo"><a href="http://eepurl.com/if7emL" title="Mailchimp - email marketing made easy and fun"></a></p>
 </div>
 </div>
 </div>
