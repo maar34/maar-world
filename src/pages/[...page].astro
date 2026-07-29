@@ -33,6 +33,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import GlyphRun from '../components/patterns/GlyphRun.astro';
 import TypeMark from '../components/patterns/TypeMark.astro';
 import Stamp from '../components/patterns/Stamp.astro';
+import Card from '../components/patterns/Card.astro';
 import HelixIsland from '../components/react/HelixIsland.astro';
 import { languageChoices, alternatesFor } from '../lib/translations.mjs';
 import { stampText } from '../lib/mark.mjs';
@@ -93,6 +94,12 @@ const hrefOf = (outputPath: string) =>
 const isCard = d.kind === 'collect-card';
 
 /**
+ * A covered index renders patterns/card in a grid — page family 04's shape —
+ * so it is not bound by family 03's prose measure. See the page container.
+ */
+const isCardGrid = Boolean(d.indexCovers);
+
+/**
  * The language switcher, and the <link rel="alternate"> set.
  *
  * Empty for the 75 pages that exist in one language only — a switcher offering
@@ -148,8 +155,20 @@ const readableDate = (iso: string) => {
   alternates={alternates.map((p) => ({ lang: p.data.lang, outputPath: p.data.outputPath }))}
   redirectTo={d.redirectTo}
 >
-  {/* The shell owns <main>. This is the page family inside it. */}
-  <div class="page shell__inner measure">
+  {/* The shell owns <main>. This is the page family inside it.
+
+      THE MEASURE IS FAMILY 03's, NOT EVERY PAGE'S. "03 entry — single measure,
+      66ch max" is the rule for an article, and it is why a lab post reads at a
+      sane line length. A covered index is not an article: family 04 collection
+      is "two-up card grid", and a two-up grid inside a 66ch column is a one-up
+      grid — measured, 644px of column against the 664px two 20rem cards and a
+      gap need.
+
+      So a card grid takes the full content column, which is the same 1180 the
+      header and footer use. This is also the narrow answer to "the width of the
+      content is not the same as the width of the header": it is correct for an
+      entry page and wrong for an index, and only the index changes. */}
+  <div class:list={['page', 'shell__inner', !isCardGrid && 'measure']}>
     {
       /* The label line, with no mark on it.
          The rules-of-use table permits marks at h1 and card-cover level and
@@ -282,20 +301,52 @@ const readableDate = (iso: string) => {
     }
 
     {
-      sorted.length > 0 && !isYearIndex && (
-        <ul role="list" class={d.indexCovers ? 'index-list index-list--covers' : 'index-list'}>
+      /**
+       * A covered index is a CARD GRID — patterns/card, §04 — and this is the
+       * component's first consumer.
+       *
+       * What it replaces put a link on the thumbnail AND a link on the title of
+       * every row, both going to the same page: every entry twice in the tab
+       * order and twice to a screen reader, with the first one `aria-hidden`
+       * and `tabindex="-1"` to paper over it. The spec settles that outright —
+       * "the whole card is one link target" — so the card is one `<a>` and the
+       * problem stops existing rather than being suppressed.
+       *
+       * THE COVER IS `cover`, NEVER `card_image`. These records carry both, and
+       * `card_image` is a dropbox.com URL: rendering 34 of them here would take
+       * the on-load third-party count from 73 to 107, and that number must
+       * never go up. `cover` is the (currently missing) thumbnail, so most of
+       * these render the hatch plate — which is exactly what the spec draws an
+       * empty cover as, and what the lost-thumbnails BLOCKED item looks like
+       * until a human resolves it.
+       *
+       * An uncovered index stays a list of links. It is a list of links.
+       */
+      sorted.length > 0 && !isYearIndex && d.indexCovers && (
+        <div class="card-grid">
+          {sorted.map((p) => (
+            <Card
+              variant="entry"
+              href={hrefOf(p.data.outputPath)}
+              title={p.data.indexLabel ?? p.data.title}
+              level={2}
+              cover={p.data.cover}
+              badge={p.data.suit_title}
+              badgeOutline={p.data.date ? String(p.data.date).slice(0, 4) : undefined}
+              excerpt={p.data.card_description ?? p.data.description}
+              meta={p.data.lang}
+              seed={p.data.outputPath}
+            />
+          ))}
+        </div>
+      )
+    }
+
+    {
+      sorted.length > 0 && !isYearIndex && !d.indexCovers && (
+        <ul role="list" class="index-list">
           {sorted.map((p) => (
             <li>
-              {/* The legacy include rendered a thumbnail per entry for
-                  `type='grid'` lists. The image is decorative — the anchor
-                  beside it carries the same destination and the readable name —
-                  so it takes an empty alt rather than repeating the title to a
-                  screen reader. */}
-              {d.indexCovers && p.data.cover && (
-                <a class="index-list__cover plate" href={hrefOf(p.data.outputPath)} tabindex="-1" aria-hidden="true">
-                  <img src={p.data.cover} alt="" loading="lazy" decoding="async" />
-                </a>
-              )}
               <a href={hrefOf(p.data.outputPath)}>{p.data.title}</a>
               {p.data.date && <span class="t-meta"> {String(p.data.date).slice(0, 10)}</span>}
               {p.data.lang && <span class="t-meta"> {p.data.lang}</span>}

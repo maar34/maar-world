@@ -501,16 +501,53 @@ check('a rendered mark class with no rule fails verify:build', (root) => {
   writeFileSync(join(root, 'src/styles/mark.css'), '.mark { border-radius: 0; }\n.mark--tilt-1 { transform: rotate(-2deg); }\n');
   writeFileSync(
     join(root, 'dist/article.html'),
-    PROSE_PAGE.replace('<h1>A title</h1>', '<h1>A <span class="mark mark--cut mark--tilt-5">title</span></h1>'),
+    PROSE_PAGE.replace('</div></main>', '</div><h2 class="mark mark--cut mark--tilt-5">t</h2></main>'),
   );
   const { code, out } = run(root, 'verify-build.mjs');
-  const ok = code === 1 && /mark class rendered/.test(out) && /mark--tilt-5/.test(out);
+  const ok = code === 1 && /component class rendered/.test(out) && /mark--tilt-5/.test(out);
   return {
     ok,
     detail: ok
       ? 'exit 1, the undrawn variant named'
       : `expected exit 1 naming .mark--tilt-5, got ${code}\n${out}`,
   };
+});
+
+// The same guarantee for the card, which is the third component to hold a
+// class-name correspondence by hand. `.card--entry` shipped with no rule and
+// this check named it on its first run.
+check('a rendered card variant with no rule fails verify:build', (root) => {
+  proseFixture(root, PROSE_CSS_FULL);
+  mkdirSync(join(root, 'src/styles'), { recursive: true });
+  writeFileSync(join(root, 'src/styles/card.css'), '.card { background: none; }\n.card--entry { display: flex; }\n');
+  writeFileSync(
+    join(root, 'dist/article.html'),
+    PROSE_PAGE.replace('</div></main>', '</div><a class="card card--feature">f</a></main>'),
+  );
+  const { code, out } = run(root, 'verify-build.mjs');
+  const ok = code === 1 && /component class rendered/.test(out) && /card--feature/.test(out);
+  return { ok, detail: ok ? 'exit 1, the undrawn variant named' : `expected exit 1 naming .card--feature, got ${code}\n${out}` };
+});
+
+// A dead theme put `card`, `card__image` and `card--clickable` INSIDE page
+// bodies on four migrated pages. Those names belong to the theme, not to
+// patterns/card, and demanding card.css draw them is how a check starts lying.
+// The first slicer counted depth from 0 and closed the body at its first nested
+// </div>, so most of the body stayed in the scan and reported them anyway.
+check('component classes inside a .prose body are the content, not the component', (root) => {
+  proseFixture(root, PROSE_CSS_FULL);
+  mkdirSync(join(root, 'src/styles'), { recursive: true });
+  writeFileSync(join(root, 'src/styles/card.css'), '.card--entry { display: flex; }\n');
+  writeFileSync(
+    join(root, 'dist/article.html'),
+    PROSE_PAGE.replace(
+      '</p></div>',
+      '</p><div><div><div class="card card--clickable"><div class="card__image">x</div></div></div></div></div>',
+    ),
+  );
+  const { code, out } = run(root, 'verify-build.mjs');
+  const ok = code === 0 && !/card--clickable/.test(out);
+  return { ok, detail: ok ? 'body content ignored, nested divs and all' : `expected exit 0, got ${code}\n${out}` };
 });
 
 // --- F3: the ledger is append-only across its whole history --------------

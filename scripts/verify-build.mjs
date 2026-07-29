@@ -143,7 +143,7 @@ export function checkBuildOutput(report) {
   }
 
   checkProseCoverage(report, pages);
-  checkMarkClassCoverage(report, pages);
+  checkComponentClassCoverage(report, pages);
 }
 
 /**
@@ -295,59 +295,106 @@ function checkProseCoverage(report, pages) {
 }
 
 /**
- * THE SECOND HALF OF THE SAME GUARANTEE, found by auditing for the first.
+ * COMPONENT CLASSES THE CODE EMITS, AGAINST THE RULES THE STYLESHEET DEFINES.
  *
- * `src/lib/mark.mjs` builds class names by interpolation —
- * `mark--tilt-${n} mark--tear-${n}` — and `src/styles/mark.css` defines the
- * rules `.mark--tilt-1` through `-4`. The two agree today and NOTHING asserted
- * that they do. `TILTS` is 4 because 4a has four cut-word angles; the tilt set
- * is an open owner decision (`ledger -- find mark-tilt-set`), so the single
- * most likely edit to this area is the one that changes the count. Raise it to
- * 5 and a fifth of every cut word on the site renders with no rotation at all:
- * silent, because the text is unchanged, the page is not hollow and the colours
- * still pass.
+ * This is the third instance of one failure mode and the reason it is now one
+ * mechanism rather than three checks. Twice this codebase has shipped a
+ * correspondence held between two files by hand:
  *
- * Same shape as the h1 bug — a correspondence held in two files by hand — so it
- * gets the same treatment. Measured against what the build actually RENDERS
- * rather than what the code could theoretically emit, for the same reason the
- * prose assertion is: a variant nobody renders cannot be seen to be broken, and
- * one that ships must have a rule.
+ *   prose.css listed h2-h6 and skipped h1 — 61 titles with no space beneath.
+ *   mark.mjs interpolates `mark--tilt-${n}`; mark.css defines 1-4 one at a time.
+ *
+ * Card.astro now does the same thing with `card--${variant}`, and the tilt set
+ * is still an open owner decision, so the counts most likely to change are
+ * exactly the ones nothing was watching. A component class that renders with no
+ * rule is silent: the text is unchanged, no page is hollow, contrast passes.
+ *
+ * Each entry is a prefix and the stylesheet that owes it rules. Adding a
+ * component means adding a line here, which is the point — the alternative is
+ * remembering, and remembering is what failed twice.
  */
-function checkMarkClassCoverage(report, pages) {
-  const cssPath = resolve(ROOT, 'src/styles/mark.css');
+const COMPONENT_CLASSES = [
+  { prefix: 'mark', css: 'src/styles/mark.css' },
+  { prefix: 'card', css: 'src/styles/card.css' },
+];
+
+/**
+ * The page with its `.prose` body removed.
+ *
+ * Component classes are page-family elements and never render inside a body;
+ * the dead Jekyll theme, meanwhile, put `card`, `card__image` and
+ * `card--clickable` INSIDE bodies on four pages. Both vocabularies are real and
+ * they are told apart by where they are, so the assertion below must look only
+ * where our components can actually be — otherwise it demands that card.css
+ * draw a class the theme invented, which is how a check starts lying.
+ *
+ * Depth-counted rather than regex-matched to the closing tag: `.prose` bodies
+ * are arbitrarily nested raw HTML and a non-greedy match would stop at the
+ * first `</div>` inside them.
+ */
+export function withoutProseBodies(html) {
+  let out = '';
+  let i = 0;
+  for (;;) {
+    const open = html.indexOf('<div class="prose"', i);
+    if (open === -1) return out + html.slice(i);
+    out += html.slice(i, open);
+    // The opening tag is already counted, so depth starts at 1. Starting at 0
+    // closed the region on the first NESTED </div> instead of the body's own,
+    // which left most of the body in the scan.
+    let depth = 1;
+    let j = open;
+    for (;;) {
+      const next = html.slice(j + 1).search(/<\/?div\b/);
+      if (next === -1) return out;
+      j = j + 1 + next;
+      depth += html.startsWith('</div', j) ? -1 : 1;
+      if (depth === 0) break;
+    }
+    i = j;
+  }
+}
+
+function checkComponentClassCoverage(report, pages) {
   const rendered = new Map();
   for (const page of pages) {
-    for (const m of dropCode(readDistFile(page)).matchAll(/class="([^"]*\bmark\b[^"]*)"/g)) {
+    const html = withoutProseBodies(dropCode(readDistFile(page)));
+    for (const m of html.matchAll(/class="([^"]*)"/g)) {
       for (const cls of m[1].split(/\s+/)) {
-        if (cls.startsWith('mark') && !rendered.has(cls)) rendered.set(cls, page);
+        if (!cls) continue;
+        const owner = COMPONENT_CLASSES.find(
+          (c) => cls === c.prefix || cls.startsWith(`${c.prefix}--`) || cls.startsWith(`${c.prefix}__`),
+        );
+        if (owner && !rendered.has(cls)) rendered.set(cls, { page, owner });
       }
     }
   }
 
   if (rendered.size === 0) {
-    return report.skip('every mark class rendered has a rule', 'no marks in the build', 'n/a');
-  }
-  if (!existsSync(cssPath)) {
-    return report.fail('every mark class rendered has a rule', 'src/styles/mark.css is missing');
+    return report.skip('every component class rendered has a rule', 'none in the build', 'n/a');
   }
 
-  const css = readFileSync(cssPath, 'utf8');
-  const defined = new Set([...css.matchAll(/\.(mark[\w-]*)/g)].map((m) => m[1]));
+  const defined = new Map();
+  for (const { css } of COMPONENT_CLASSES) {
+    const abs = resolve(ROOT, css);
+    if (!existsSync(abs)) continue;
+    for (const m of readFileSync(abs, 'utf8').matchAll(/\.([A-Za-z][\w-]*)/g)) defined.set(m[1], css);
+  }
+
   const orphans = [...rendered].filter(([cls]) => !defined.has(cls));
-
   if (orphans.length) {
     report.fail(
-      'every mark class rendered has a rule',
-      `${orphans.length} rendered with no rule in mark.css: ` +
-        orphans.slice(0, 6).map(([c, p]) => `.${c} (${p})`).join(', ') +
-        ' — src/lib/mark.mjs emits it and the stylesheet does not draw it',
+      'every component class rendered has a rule',
+      `${orphans.length} rendered with no rule: ` +
+        orphans.slice(0, 6).map(([c, { page, owner }]) => `.${c} (${page}, owed by ${owner.css})`).join(', ') +
+        ' — the code emits it and the stylesheet does not draw it',
     );
     return;
   }
 
   report.pass(
-    'every mark class rendered has a rule',
-    `${rendered.size} distinct mark classes, all drawn`,
+    'every component class rendered has a rule',
+    `${rendered.size} distinct classes across ${COMPONENT_CLASSES.length} components, all drawn`,
   );
 }
 

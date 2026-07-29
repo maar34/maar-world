@@ -1,0 +1,153 @@
+---
+/**
+ * patterns/card — §04, "the fundamental unit. five variants, one anatomy."
+ *
+ * `src/styles/card.css` draws it and holds every value; this file decides the
+ * anatomy — which slots exist, in what order, and what a missing one does.
+ *
+ * ONE LINK TARGET. The spec: "the whole card is one link target; nothing inside
+ * it is separately focusable except an explicit collect action." So the root
+ * element is a single `<a>` and the title is an `<h3>` inside it rather than a
+ * second link. The pattern this replaces on the collect indexes put one link on
+ * the thumbnail and another on the title — every entry twice in the tab order,
+ * both going to the same page. That is the accessibility half of the rule; the
+ * visual half is that the whole field is the hit target.
+ *
+ * The heading level is a prop, not a constant. A card is a component and its
+ * title's level depends on what encloses it — an h3 under an h2 year group, an
+ * h2 in a bare grid. Hardcoding h3 would let `verify:a11y`'s "no page skips a
+ * heading level" fail on a page that used it correctly.
+ *
+ * MISSING SLOTS DEGRADE, THEY DO NOT COLLAPSE. No cover renders the hatch
+ * plate, which is what the spec's own samples draw an empty cover as. No
+ * excerpt, no badges and no meta simply omit their elements. That matters more
+ * than usual here: the 34 Sky Sounds thumbnails are a standing BLOCKED item, so
+ * "no cover" is the common case today, not the edge one.
+ */
+import { markHeadingText } from '../../lib/mark.mjs';
+
+type Variant = 'entry' | 'compact' | 'place' | 'collection' | 'feature';
+
+interface Props {
+  variant?: Variant;
+  href: string;
+  title: string;
+  /** Heading level for the title. See the note above on why this is a prop. */
+  level?: 2 | 3 | 4;
+  /** Cover image. Omit for the hatch plate — that is a designed state. */
+  cover?: string;
+  /** Three covers for `collection`'s cover strip. */
+  strip?: string[];
+  /** The pigment badge — an area, a suit, a set. */
+  badge?: string;
+  /** The outline badge — a year, a count in words. "badges max two." */
+  badgeOutline?: string;
+  excerpt?: string;
+  /** The meta line: kind, glyphs, reading time. */
+  meta?: string;
+  /** `place` only — "meta as a definition list, never as prose." */
+  facts?: { term: string; value: string }[];
+  /** "unavailable states say why in words." Supplying a reason marks it so. */
+  unavailable?: string;
+  /** Seed for the title's type mark. Marks are permitted at card-cover level. */
+  seed?: string;
+}
+
+const {
+  variant = 'entry',
+  href,
+  title,
+  level = 3,
+  cover,
+  strip,
+  badge,
+  badgeOutline,
+  excerpt,
+  meta,
+  facts,
+  unavailable,
+  seed,
+} = Astro.props;
+
+const Title = `h${level}` as 'h2' | 'h3' | 'h4';
+
+/**
+ * Marks are permitted at card-cover level — the rules-of-use table allows two
+ * there — but `card.compact` says "no cover title marks at this size", and the
+ * spec draws no mark on `card.place`'s or `card.collection`'s title either.
+ * Only entry and feature are marked, and only when a seed is supplied.
+ *
+ * `markHeadingText` refuses any title containing markup and returns it
+ * unchanged, so a card title is never mis-nested.
+ */
+const marked = seed && (variant === 'entry' || variant === 'feature')
+  ? markHeadingText(title, seed).html
+  : null;
+---
+
+<a
+  href={href}
+  class:list={[
+    'card',
+    `card--${variant}`,
+    unavailable && 'card--unavailable',
+  ]}
+  aria-disabled={unavailable ? 'true' : undefined}
+>
+  {
+    /* `collection` shows a three-up strip where the others show one cover.
+       Each cell is a `.card__cover`, so an empty one is the same hatch plate. */
+    variant === 'collection' ? (
+      <div class="card__strip">
+        {[0, 1, 2].map((i) => (
+          <div class="card__cover plate">
+            {strip?.[i] && <img src={strip[i]} alt="" loading="lazy" decoding="async" />}
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div class="card__cover plate">
+        {cover && <img src={cover} alt="" loading="lazy" decoding="async" />}
+      </div>
+    )
+  }
+
+  {
+    /* "badges max two" — the props allow exactly two and no more. */
+    (badge || badgeOutline) && (
+      <div class="card__badges">
+        {badge && <span class="card__badge card__badge--pigment">{badge}</span>}
+        {badgeOutline && <span class="card__badge card__badge--outline">{badgeOutline}</span>}
+      </div>
+    )
+  }
+
+  {/* The feature card is the only one allowed to tilt, so it is the only one
+      that wraps its title in a containing block to rotate. */}
+  <Title class="card__title">
+    {variant === 'feature' ? (
+      <span class="card__tilt">{marked ? <Fragment set:html={marked} /> : title}</span>
+    ) : marked ? (
+      <Fragment set:html={marked} />
+    ) : (
+      title
+    )}
+  </Title>
+
+  {facts && facts.length > 0 && (
+    <dl class="card__dl">
+      {facts.map((f) => (
+        <div>
+          <dt>{f.term}</dt>
+          <dd>{f.value}</dd>
+        </div>
+      ))}
+    </dl>
+  )}
+
+  {excerpt && <p class="card__excerpt">{excerpt}</p>}
+
+  {/* The unavailable reason is text, never colour alone — the spec asks for it
+      in words, and it replaces the meta line rather than sitting beside it. */}
+  {unavailable ? <p class="card__meta">{unavailable}</p> : meta && <p class="card__meta">{meta}</p>}
+</a>

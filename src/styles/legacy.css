@@ -55,6 +55,37 @@
    chips have been shipping as plain text. Found by this split, which is the
    argument for the split. */
 
+/* ---- the card namespace collision --------------------------------------- */
+/**
+ * The dead theme used `card`, `card__image`, `card__content`, `card__header`,
+ * `card--clickable`, `card-border` and `card-columns` inside page bodies. The
+ * spec's own component — patterns/card, §04 — owns that vocabulary now, and
+ * `styles/card.css` is global, so a body element wearing `class="card"` would
+ * be drawn as a component: a raised field, 24px of padding and a flex column,
+ * on four migrated pages that never asked for one.
+ *
+ * Our card never renders inside `.prose` — it is a page-family element, and the
+ * bodies are content — so the two can be told apart by where they are. The
+ * theme's `card` is drawn as nothing, which is what it was before card.css
+ * existed and what it should stay.
+ *
+ * Deletable with the rest of this file: when the migration stops emitting these
+ * names, the collision stops existing.
+ */
+.prose .card {
+  display: revert;
+  background: none;
+  padding: 0;
+  border-radius: revert;
+  transition: none;
+}
+
+.prose .card:hover,
+.prose .card:active {
+  background: none;
+  transform: none;
+}
+
 /* ---- hero bands — 10 pages ---------------------------------------------- */
 /**
  * The theme's hero. Not a component of ours and not one the spec names, so it

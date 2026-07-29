@@ -1,0 +1,385 @@
+/**
+ * patterns/card — §04 of the spec, "the fundamental unit. five variants, one
+ * anatomy."
+ *
+ * Five variants share one box and one internal rhythm; each overrides only what
+ * the spec says it changes. Every value is transcribed from the spec's own
+ * drawing of that variant and lives in tokens.css — nothing here is a raw size.
+ *
+ * WHY THIS COMPONENT FIRST. Families 01 home, 04 collection, 05 place and 07
+ * search are all card grids. One component makes four page skeletons possible,
+ * which is why it leads the plan in HANDOFF.md rather than the home page the
+ * owner actually asked to see.
+ *
+ * THE WHOLE CARD IS ONE LINK TARGET — the spec says so in as many words, and
+ * "nothing inside it is separately focusable except an explicit collect
+ * action". That is an accessibility rule as much as a visual one: the pattern
+ * this replaces put a link on the thumbnail AND a link on the title, so every
+ * entry appeared twice in the tab order and twice to a screen reader, going to
+ * the same place. `Card.astro` emits one `<a>` wrapping the whole thing.
+ *
+ * NO BORDER, NO SHADOW. "it is defined by its raised field against the shell."
+ * Hover raises that field one step and underlines the title; it "never scales,
+ * tints or shadows the card", so there is no transform here at all.
+ */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--card-field);
+  /* "--r-0  0  marks, badges, cards, media, slides" */
+  border-radius: var(--r-0);
+  padding: var(--card-pad);
+  color: inherit;
+  text-decoration: none;
+  transition: background var(--m-fast) var(--ease);
+}
+
+/**
+ * Hover raises the field one step. The spec draws it as
+ * `--sf-raised` -> `color-mix(in srgb, ink 12%, transparent)`, which is
+ * `--sf-raised-2` under its own name, so the step is a role and not a second
+ * value that could drift from it.
+ */
+.card:hover {
+  background: var(--card-field-hover);
+}
+
+.card:hover .card__title {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* The focus ring is the global one from --focus-*. It is not restated per
+   variant and it is never removed. */
+
+/* "press is a 1px downward nudge, no scale." The card is a link, so it takes
+   the same press the buttons do — this is the one movement allowed, and it is
+   not a scale, a tint or a shadow. */
+.card:active {
+  transform: translateY(var(--press-nudge));
+}
+
+/* ---- the cover ----------------------------------------------------------- */
+/**
+ * "cover ratio is 3:2 everywhere except card.compact (4:3 thumb) and card.place
+ * (16:9 map)."
+ *
+ * The empty cover is the HATCH PLATE, and that is not a stand-in chosen here:
+ * the spec draws every one of its own card samples with an empty cover painted
+ * as `repeating-linear-gradient(45deg, …)`. Mark 7 already is that texture, so
+ * a card whose image is missing shows the plate rather than a hole. Which
+ * matters right now — the 34 Sky Sounds thumbnails are a standing BLOCKED item
+ * (`ledger -- find cover`), so most covers on the site are empty today.
+ */
+.card__cover {
+  aspect-ratio: var(--card-cover-ratio);
+  overflow: hidden;
+}
+
+.card__cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- badges -------------------------------------------------------------- */
+/**
+ * "badges max two." The filled one carries the area pigment; the outline one is
+ * ink. Type on a pastel is always dark, on both surfaces.
+ *
+ * The values are §03's badge row rather than §04's slightly tighter drawing of
+ * the same thing (12px/5-10 against 11.5px/4-9). The spec states badges twice
+ * and the two disagree by half a pixel and one step of padding; §03 is the
+ * section that specifies badges, so it wins, and shipping both would put two
+ * near-identical badge scales in one build. Recorded rather than silently
+ * chosen — see `ledger -- find card-badge-scale`.
+ */
+.card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-block-start: var(--card-space-badges);
+}
+
+.card__badge {
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: 1;
+  padding: 5px 10px;
+  border-radius: var(--r-0);
+  border: 1px solid transparent;
+}
+
+/* One pigment per component instance; never two pastels touching — so only the
+   first badge is ever a field and the second is always the outline. */
+.card__badge--pigment {
+  background: var(--area-pigment, var(--c-maar));
+  color: var(--pigment-ink);
+}
+
+.card__badge--outline {
+  border-color: currentColor;
+  padding: 4px 9px;
+}
+
+/* ---- title, excerpt, meta ------------------------------------------------ */
+
+.card__title {
+  font-family: var(--t-display-face);
+  font-weight: var(--t-display-weight);
+  font-size: var(--t-card-title-size);
+  line-height: var(--t-card-title-line);
+  letter-spacing: var(--t-display-track);
+  margin: 0;
+  margin-block-start: var(--card-space-title);
+}
+
+/**
+ * "excerpt two lines, truncated with an ellipsis, never marked."
+ *
+ * Clamped in CSS rather than cut in the template on purpose: the full sentence
+ * stays in the DOM, so a screen reader gets all of it and `verify:content`'s
+ * text floor still counts it. Truncating in the template would delete content
+ * to make a layout fit, which is the thing `verify:content` exists to catch.
+ */
+.card__excerpt {
+  font-family: var(--t-body-face);
+  font-size: var(--t-card-excerpt-size);
+  line-height: var(--t-card-excerpt-line);
+  color: var(--card-ink-excerpt);
+  margin: 0;
+  margin-block-start: var(--card-space-excerpt);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--card-excerpt-lines);
+  line-clamp: var(--card-excerpt-lines);
+  overflow: hidden;
+}
+
+.card__meta {
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: 1;
+  letter-spacing: var(--t-meta-track);
+  color: var(--ink-meta);
+  margin-block-start: var(--card-space-meta);
+}
+
+/* ---- card.entry — default, grids and feeds ------------------------------- */
+/**
+ * "card.entry — default, grids and feeds." The base above IS this variant, so
+ * the rule is empty of overrides — but it is stated rather than left implicit,
+ * and that is not ceremony. `Card.astro` emits `card--entry`, and a class the
+ * code emits with no rule anywhere is the exact failure `verify:build`'s
+ * component-class assertion exists to catch. It caught this one: the first run
+ * of that check named `.card--entry` on `/collect/cards`.
+ */
+.card--entry {
+  flex-direction: column;
+}
+
+/* ---- card.compact — list row with thumb ---------------------------------- */
+/**
+ * "no cover title marks at this size. thumb 4:3, fixed 88px."
+ *
+ * The title drops to Archivo: at 16px, Bodoni is below the "display only —
+ * never below 34px" floor, so the compact row is the one card whose title is
+ * not display type.
+ */
+.card--compact {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--card-gap-compact);
+  padding: var(--card-pad-compact);
+}
+
+.card--compact .card__cover {
+  flex: none;
+  width: var(--card-thumb-w);
+  aspect-ratio: var(--card-thumb-ratio);
+}
+
+.card--compact .card__title {
+  font-family: var(--t-h3-face);
+  font-weight: var(--t-h3-weight);
+  font-size: var(--t-card-compact-size);
+  line-height: var(--t-card-compact-line);
+  letter-spacing: 0;
+  margin-block-start: 0;
+}
+
+.card--compact .card__meta {
+  margin-block-start: var(--s-2);
+}
+
+/* "no cover title marks at this size" — the mark keeps its word and loses its
+   field, the same containment the rules-of-use levels get in mark.css. */
+.card--compact .mark {
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-indent: 0;
+  padding: 0;
+  border: 0;
+  clip-path: none;
+  transform: none;
+}
+
+/* ---- card.place — map or image plus meta --------------------------------- */
+/* "meta as a definition list, never as prose. one badge only." */
+.card--place .card__cover {
+  aspect-ratio: var(--card-map-ratio);
+}
+
+.card--place .card__title {
+  font-size: var(--t-card-title-sm-size);
+  line-height: var(--t-card-title-sm-line);
+}
+
+.card__dl {
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  color: var(--ink-meta);
+  display: flex;
+  flex-direction: column;
+  gap: var(--card-dl-gap);
+  margin: 0;
+  margin-block-start: var(--card-space-title);
+}
+
+.card__dl > div {
+  display: flex;
+  gap: var(--card-dl-col-gap);
+}
+
+.card__dl dt {
+  width: var(--card-dl-term-w);
+  flex: none;
+  color: var(--card-ink-term);
+}
+
+.card__dl dd {
+  margin: 0;
+}
+
+/* ---- card.collection — a set, with count --------------------------------- */
+/* "three-up cover strip, 4px gap. count always stated in words, never only
+   pink." The count is a word in the outline badge, so the pigment is never the
+   only carrier of it. */
+.card--collection .card__strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--card-strip-gap);
+}
+
+.card--collection .card__strip .card__cover {
+  aspect-ratio: var(--card-cover-ratio);
+}
+
+.card--collection .card__title {
+  font-size: var(--t-card-title-sm-size);
+  line-height: var(--t-card-title-sm-line);
+}
+
+/* ---- card.feature — one per page, full measure --------------------------- */
+/**
+ * "the only card that may carry tilt and two marks together, and the only one
+ * at --t-display scale. stacks to image-over-text below 900px, and the tilt
+ * drops to --tilt-b."
+ *
+ * The tilt is on the title's own inline-block, which is what the spec draws —
+ * `transform: rotate(-1deg)` on a span inside the h3 — and it is a containing
+ * block, so `mark.tilt`'s "block only" rule holds. A highlight inside it
+ * counter-rotates and stays level, as it does everywhere.
+ */
+.card--feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: var(--card-gap-feature);
+  align-items: center;
+  padding: var(--card-pad-feature);
+}
+
+.card--feature .card__badges {
+  margin-block-start: 0;
+}
+
+.card--feature .card__title {
+  font-size: var(--t-card-title-lg-size);
+  line-height: var(--t-card-title-lg-line);
+  margin-block-start: 18px;
+}
+
+.card--feature .card__tilt {
+  display: inline-block;
+  transform: rotate(var(--tilt-b));
+}
+
+.card--feature .card__excerpt {
+  font-size: var(--t-card-excerpt-lg-size);
+  line-height: var(--t-card-excerpt-lg-line);
+  max-width: var(--card-excerpt-measure);
+  margin-block-start: var(--s-4);
+}
+
+.card--feature .card__meta {
+  margin-block-start: 18px;
+}
+
+/* "stacks to image-over-text below 900px, and the tilt drops to --tilt-b." The
+   tilt is already --tilt-b, so only the stack changes here. */
+@media (max-width: 899px) {
+  .card--feature {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---- unavailable --------------------------------------------------------- */
+/**
+ * "unavailable states say why in words."
+ *
+ * So this rule deliberately does NOT hide or grey the card into meaninglessness
+ * — the reason is rendered as text by the component and the field simply stops
+ * responding. A card that only looked disabled would be saying why in colour.
+ */
+.card--unavailable {
+  cursor: not-allowed;
+}
+
+.card--unavailable:hover {
+  background: var(--card-field);
+}
+
+.card--unavailable:hover .card__title {
+  text-decoration: none;
+}
+
+.card--unavailable:active {
+  transform: none;
+}
+
+/* ---- grids --------------------------------------------------------------- */
+/**
+ * The two arrangements the page families ask for, kept with the component
+ * because a card grid is not a page-family invention — 01 home, 04 collection
+ * and 07 search all want the same one.
+ *
+ * "04 collection — two-up card grid." `auto-fill` with a floor rather than a
+ * hard `repeat(2, …)` so the same class serves the three-up home strip and
+ * collapses to one column on a phone without a breakpoint of its own.
+ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  gap: var(--s-6);
+}
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}

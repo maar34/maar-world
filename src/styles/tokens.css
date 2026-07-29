@@ -23,9 +23,9 @@
   /* ---- pigment roles -------------------------------------------------- */
   /* One pigment per component instance; never two pastels touching.
      A pastel is always a background, never type. */
-  --c-maar: #4ac9ff;    /* maar — water, place, wayfinding */
-  --c-collect: #ff4696; /* collect — saving, sets, favourites */
-  --c-tree: #ffbf3f;    /* tree — growth, time, lineage */
+  --c-maar: #ff33cc;    /* maar — water, place, wayfinding */
+  --c-collect: #33ffff; /* collect — saving, sets, favourites */
+  --c-tree: #ff8833;    /* tree — growth, time, lineage */
   --c-dark: #000000;
 
   /* Type on any pastel is always dark, on both surfaces. */
@@ -440,6 +440,63 @@
   --action-tilt-secondary: 0.5deg;
   --chip-tilt-selected: -1.5deg;
   --chip-tilt-rest: 1deg;
+
+  /* ---- cards ----------------------------------------------------------- */
+  /**
+   * §04 of the spec — "the fundamental unit. five variants, one anatomy."
+   *
+   * Transcribed from the spec's own drawings of each variant, not from the
+   * type scale: the card section draws its title at 30px, its excerpt at
+   * 14.5px and its meta at 11.5px, and none of those is a step in the scale
+   * table. The card is specified as a component, so its component values win
+   * inside it — the same standing `--btn-*` already has.
+   *
+   * A card has NO BORDER AND NO SHADOW. It is defined by its raised field
+   * against the shell, and hover raises that field one step rather than
+   * scaling, tinting or shadowing anything.
+   */
+  --card-field: var(--sf-raised);
+  --card-field-hover: var(--sf-raised-2);
+  --card-pad: var(--s-6);           /* entry, place, collection — spec 24px */
+  --card-pad-compact: 20px;         /* spec 20px; between --s-4 and --s-6 */
+  --card-pad-feature: var(--s-8);   /* spec 32px */
+  --card-gap-compact: var(--s-4);   /* thumb to text */
+  --card-gap-feature: var(--s-8);   /* image column to text column */
+
+  /* The spec's own rhythm inside a card, top to bottom. */
+  --card-space-badges: 18px;        /* cover  -> badge row */
+  --card-space-title: 14px;         /* badges -> title */
+  --card-space-excerpt: 12px;       /* title  -> excerpt */
+  --card-space-meta: var(--s-4);    /* excerpt -> meta line */
+
+  /* "cover ratio is 3:2 everywhere except card.compact (4:3 thumb) and
+     card.place (16:9 map)." */
+  --card-cover-ratio: 3 / 2;
+  --card-thumb-ratio: 4 / 3;
+  --card-map-ratio: 16 / 9;
+  --card-thumb-w: 88px;             /* "thumb 4:3, fixed 88px" */
+  --card-strip-gap: 4px;            /* "three-up cover strip, 4px gap" */
+
+  --t-card-title-size: 30px;        /* entry */
+  --t-card-title-line: 1.08;
+  --t-card-title-sm-size: 26px;     /* place, collection */
+  --t-card-title-sm-line: 1.1;
+  --t-card-title-lg-size: 44px;     /* feature — "the only one at display scale" */
+  --t-card-title-lg-line: 1.02;
+  --t-card-compact-size: 16px;      /* compact title, Archivo not Bodoni */
+  --t-card-compact-line: 1.25;
+  --t-card-excerpt-size: 14.5px;
+  --t-card-excerpt-line: 1.55;
+  --t-card-excerpt-lg-size: 15.5px; /* feature */
+  --t-card-excerpt-lg-line: 1.6;
+  --card-excerpt-measure: 46ch;     /* feature only — the spec states it */
+  /* "excerpt two lines, truncated with an ellipsis, never marked." */
+  --card-excerpt-lines: 2;
+  --card-ink-excerpt: color-mix(in srgb, var(--ink) 73%, transparent);
+  --card-ink-term: color-mix(in srgb, var(--ink) 40%, transparent);
+  --card-dl-term-w: 62px;
+  --card-dl-gap: 6px;
+  --card-dl-col-gap: 14px;
 
   /* "press is a 1px downward nudge, no scale." */
   --press-nudge: 1px;
