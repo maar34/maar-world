@@ -49,6 +49,9 @@ import '../styles/mark.css';
 /* patterns/card — §04, the fundamental unit. Global because the page families
    that consume it are routes, not one component. */
 import '../styles/card.css';
+/* ui/carousel — §06. Styles markup the MIGRATION emits, not a component of
+   ours, which is why it is global rather than scoped. */
+import '../styles/carousel.css';
 /* The rendered body of every page — permanent, and checked for completeness by
    verify:build. Imported before legacy.css so a dead-theme class name can
    override the element rhythm it sits inside, never the other way round. */

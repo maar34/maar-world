@@ -148,19 +148,10 @@
   width: 100%;
 }
 
-/* ---- dead carousel slides — 5 pages ------------------------------------- */
-/**
- * The swiper's JavaScript is gone (MW-7 forbids it), so its slides no longer
- * slide — they stack, which is the correct no-script degradation and is what
- * production's own no-script state does. They are given the gap a stack needs
- * so they do not read as one continuous block.
- */
-.prose .swiper__slide {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-3);
-  padding-block: var(--s-4);
-}
+/* The stacked swiper slides used to be styled here. They are gone: the
+   migration now rebuilds that markup as ui/carousel (scripts/lib/carousel.mjs),
+   so `swiper__slide` is emitted nowhere and a rule for it would be dead code
+   pretending to be containment. */
 
 /* ---- legacy buttons — 11 pages ------------------------------------------ */
 /**

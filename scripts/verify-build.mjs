@@ -316,56 +316,43 @@ function checkProseCoverage(report, pages) {
 const COMPONENT_CLASSES = [
   { prefix: 'mark', css: 'src/styles/mark.css' },
   { prefix: 'card', css: 'src/styles/card.css' },
+  { prefix: 'carousel', css: 'src/styles/carousel.css' },
 ];
 
 /**
- * The page with its `.prose` body removed.
+ * Dead theme class names that collide with our component vocabulary.
  *
- * Component classes are page-family elements and never render inside a body;
- * the dead Jekyll theme, meanwhile, put `card`, `card__image` and
- * `card--clickable` INSIDE bodies on four pages. Both vocabularies are real and
- * they are told apart by where they are, so the assertion below must look only
- * where our components can actually be — otherwise it demands that card.css
- * draw a class the theme invented, which is how a check starts lying.
+ * This list replaced a location test, and the reason is worth keeping. The
+ * first version skipped `.prose` bodies entirely, on the theory that component
+ * classes never appear inside content. That was wrong in both directions:
+ * `mark--cut` and friends ARE written into bodies by migrate-pages.mjs — so 46
+ * marked headings went unchecked — and ui/carousel is emitted into bodies too.
+ * Location was a proxy for authorship, and it was the wrong proxy.
  *
- * Depth-counted rather than regex-matched to the closing tag: `.prose` bodies
- * are arbitrarily nested raw HTML and a non-greedy match would stop at the
- * first `</div>` inside them.
+ * Authorship is the real test, and the collision set is small, closed and
+ * derivable: these are the only class names in `src/content/**` that match a
+ * component prefix and are NOT written by us. Every one belongs to the dead
+ * Jekyll theme, is drawn as nothing by legacy.css, and goes when that file does.
  */
-export function withoutProseBodies(html) {
-  let out = '';
-  let i = 0;
-  for (;;) {
-    const open = html.indexOf('<div class="prose"', i);
-    if (open === -1) return out + html.slice(i);
-    out += html.slice(i, open);
-    // The opening tag is already counted, so depth starts at 1. Starting at 0
-    // closed the region on the first NESTED </div> instead of the body's own,
-    // which left most of the body in the scan.
-    let depth = 1;
-    let j = open;
-    for (;;) {
-      const next = html.slice(j + 1).search(/<\/?div\b/);
-      if (next === -1) return out;
-      j = j + 1 + next;
-      depth += html.startsWith('</div', j) ? -1 : 1;
-      if (depth === 0) break;
-    }
-    i = j;
-  }
-}
+const THEME_COLLISIONS = new Set([
+  'card',            // collect/index.md — a bandcamp promo block
+  'card--clickable', // collect/index.md
+  'card__content',   // collect/docs/ent-cards.md and two others
+  'card__header',    // collect/docs/ent-cards.md and one other
+  'card__image',     // collect/docs/ent-cards.md and two others
+]);
 
 function checkComponentClassCoverage(report, pages) {
   const rendered = new Map();
   for (const page of pages) {
-    const html = withoutProseBodies(dropCode(readDistFile(page)));
+    const html = dropCode(readDistFile(page));
     for (const m of html.matchAll(/class="([^"]*)"/g)) {
       for (const cls of m[1].split(/\s+/)) {
         if (!cls) continue;
         const owner = COMPONENT_CLASSES.find(
           (c) => cls === c.prefix || cls.startsWith(`${c.prefix}--`) || cls.startsWith(`${c.prefix}__`),
         );
-        if (owner && !rendered.has(cls)) rendered.set(cls, { page, owner });
+        if (owner && !THEME_COLLISIONS.has(cls) && !rendered.has(cls)) rendered.set(cls, { page, owner });
       }
     }
   }

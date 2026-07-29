@@ -45,6 +45,7 @@ import { readdirSync, readFileSync, writeFileSync, existsSync, statSync, mkdirSy
 import { join, relative, sep, dirname } from 'node:path';
 import { ROOT } from './lib/artifacts.mjs';
 import { normaliseHeadingLevels } from './lib/headings.mjs';
+import { swiperToCarousel } from './lib/carousel.mjs';
 import { markHeadingText } from '../src/lib/mark.mjs';
 import { SCHEMAS } from '../src/content/schemas.mjs';
 
@@ -1734,6 +1735,10 @@ for (const m of matched) {
   }
 
   if (kind === 'collect-card') finalBody = `${finalBody}\n\n${CARD_TAIL}\n`.trim();
+
+  // The dead photo swiper becomes ui/carousel. See swiperToCarousel above for
+  // why this is a migration change and not a stylesheet one.
+  finalBody = swiperToCarousel(finalBody, { idPrefix: `carousel-${outputPath.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}` });
 
   /**
    * The outline, after the title heading is in place and before the index is

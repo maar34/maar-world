@@ -74,48 +74,27 @@ Explore a new musical dimension with Sky Sounds, a collection of cards that open
 </div>
 
 <div class="swiper my-3 swiper-demo swiper-demo--image swiper-demo--3">
-<div class="swiper__wrapper">
-<!-- Slide 1 -->
-<div class="swiper__slide">
-<img class="lightbox-ignore" src="/img/landing/2024_ss-12.jpeg" alt=""/>
+<section class="carousel" aria-roledescription="carousel" aria-label="photographs"><ul class="carousel__track" role="list"><li class="carousel__slide" id="carousel-collect-index-1-1"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/landing/2024_ss-12.jpeg" alt=""/>
 <div class="text-content">
 <h2>I</h2>
 <p>Choose a Sky Sound card that resonates with you and tempts you to explore its soundscapes.</p>
-</div>
-</div>
-<!-- Slide 2 -->
-<div class="swiper__slide">
-<img class="lightbox-ignore" src="/img/landing/2024_ss-10.jpeg" alt=""/>
+</div></div></li><li class="carousel__slide" id="carousel-collect-index-1-2"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/landing/2024_ss-10.jpeg" alt=""/>
 <div class="text-content">
 <h2>II</h2>
 <p>For physical editions, scan the card with your smartphone or NFC reader on your PC to access its contents. Discover hidden parameters in for digital cards.</p>
-</div>
-</div>
-<!-- Slide 3 -->
-<div class="swiper__slide">
-<img class="lightbox-ignore" src="/img/landing/2024_ss-8.jpeg" alt=""/>
+</div></div></li><li class="carousel__slide" id="carousel-collect-index-1-3"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/landing/2024_ss-8.jpeg" alt=""/>
 <div class="text-content">
 <h2>III</h2>
 <p>Play the music associated with the card to immerse yourself in its sound universe.</p>
-</div>
-</div>
-<!-- Slide 4 -->
-<div class="swiper__slide">
-<img class="lightbox-ignore" src="/img/landing/2024_ss-11.jpeg" alt=""/>
+</div></div></li><li class="carousel__slide" id="carousel-collect-index-1-4"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/landing/2024_ss-11.jpeg" alt=""/>
 <div class="text-content">
 <h2>IV</h2>
 <p>Add more cards to your composition. You can include as many cards as your device can handle, further enriching and personalizing your musical experience.</p>
-</div>
-</div>
-<!-- Slide 5 -->
-<div class="swiper__slide">
-<img class="lightbox-ignore" src="/img/landing/2024_ss-2.jpeg" alt=""/>
+</div></div></li><li class="carousel__slide" id="carousel-collect-index-1-5"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/landing/2024_ss-2.jpeg" alt=""/>
 <div class="text-content">
 <h2>V</h2>
 <p>Transform the music using the effects and loops provided by the card, creating your own version or musical piece.</p>
-</div>
-</div>
-</div>
+</div></div></li></ul><div class="carousel__chrome"><ul class="carousel__controls" role="list"><li><a class="carousel__control" href="#carousel-collect-index-1-1" aria-label="go to slide 1 of 5">1</a></li><li><a class="carousel__control" href="#carousel-collect-index-1-2" aria-label="go to slide 2 of 5">2</a></li><li><a class="carousel__control" href="#carousel-collect-index-1-3" aria-label="go to slide 3 of 5">3</a></li><li><a class="carousel__control" href="#carousel-collect-index-1-4" aria-label="go to slide 4 of 5">4</a></li><li><a class="carousel__control" href="#carousel-collect-index-1-5" aria-label="go to slide 5 of 5">5</a></li></ul><p class="carousel__counter" aria-live="polite">5 slides</p></div></section>
 <div class="swiper__button swiper__button--prev fas fa-chevron-left"></div>
 <div class="swiper__button swiper__button--next fas fa-chevron-right"></div>
 </div>

@@ -1,0 +1,185 @@
+/**
+ * ui/carousel — §06, and the spec's accessibility section states its contract
+ * outright:
+ *
+ *   "carousel: a labelled group with aria-roledescription='carousel', slides as
+ *    list items, the counter in a polite live region, and no auto-advance to
+ *    interrupt."
+ *
+ * All four hold here. The markup is emitted by `scripts/migrate-pages.mjs`,
+ * which is why this file styles element and class names it does not itself
+ * write — see `swiperToCarousel` there.
+ *
+ * IT SHIPS NO JAVASCRIPT, AND THAT IS A CONSTRAINT, NOT A SHORTCUT. MW-7 allows
+ * application JavaScript on exactly one page — /helix-diagram.html, whose
+ * content *is* an application — and these carousels are on the home page, the
+ * Collect hub and three articles. So the track is a native scroll-snap
+ * container: swipe, trackpad, shift-wheel and arrow keys all work because the
+ * browser already does them, and the numbered controls are ordinary in-page
+ * links that need nothing to run.
+ *
+ * What that costs is written down rather than hidden: a counter cannot follow
+ * the scroll position without JavaScript, so it states the total instead of
+ * "3 / 11". The live region is still correct — there is no auto-advance, so
+ * there is nothing to announce. Recorded as `MW-11 NOTE ui/carousel-no-js`.
+ *
+ * "1 + peek" at every width above 600, "1 + swipe" below it — the responsive
+ * table's own carousel column, and the peek is the affordance that tells you
+ * there is more without a control having to say so.
+ */
+
+.carousel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  /* A carousel is media, so it takes the media frame's radius: none. */
+  border-radius: var(--r-0);
+}
+
+/* ---- track --------------------------------------------------------------- */
+
+.carousel__track {
+  display: flex;
+  gap: var(--s-2);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  /* The snap points sit at the start, so the first slide is never half-scrolled
+     out of the frame by an odd container width. */
+  scroll-padding-inline-start: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  /* "--m-slide 320ms carousel track advance" is the spec's duration for this,
+     and `scroll-behavior` takes no duration — the browser owns the curve. What
+     matters is that it is smooth here and instant under reduced motion. */
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel__track {
+    scroll-behavior: auto;
+  }
+}
+
+/* ---- slide --------------------------------------------------------------- */
+/**
+ * "1 + peek". The slide is a little under the full width so the next one shows
+ * at the edge; below 600px the responsive table says "1 + swipe", so it fills
+ * the frame and the swipe is the affordance.
+ */
+.carousel__slide {
+  flex: 0 0 auto;
+  width: 86%;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  margin: 0;
+}
+
+@media (max-width: 599px) {
+  .carousel__slide {
+    width: 100%;
+  }
+}
+
+/* The figure is the slide's own wrapper when it has a caption: media above,
+   caption below, no rule between them. A slide without a caption holds the
+   frame directly and this never renders. */
+.carousel__figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  margin: 0;
+}
+
+/**
+ * The frame owns the crop, which is the thing the audit said the old sites had
+ * no system for: "artwork sits on the page without a frame". Mixed portrait and
+ * landscape photographs in one track read as a broken grid otherwise. 3:2 is the
+ * spec's cover ratio and the same one patterns/card uses.
+ */
+.carousel__frame {
+  aspect-ratio: var(--card-cover-ratio);
+  overflow: hidden;
+  border-radius: var(--r-0);
+}
+
+.carousel__frame img,
+.carousel__frame video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* "caption sits below at --t-meta, no rule, no italics." */
+.carousel__caption {
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: var(--t-meta-line);
+  letter-spacing: var(--t-meta-track);
+  color: var(--ink-meta);
+  font-style: normal;
+  margin: 0;
+}
+
+/* ---- controls and counter ------------------------------------------------ */
+/**
+ * The controls are in-page links to each slide, so they work with no script and
+ * are in the tab order for free. They are numbered rather than dots because a
+ * dot has no accessible name that says which slide it is, and "go to slide 4"
+ * is the whole job.
+ *
+ * They sit in a row with the counter, which is the spec's "counter" and
+ * "controls" as one line of chrome under the track.
+ */
+.carousel__chrome {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-3);
+}
+
+.carousel__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.carousel__control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--hit-min);
+  min-height: var(--hit-min);
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  letter-spacing: var(--t-meta-track);
+  color: var(--ink-meta);
+  text-decoration: none;
+  border: 1px solid var(--chip-rule);
+  border-radius: var(--r-0);
+}
+
+.carousel__control:hover {
+  background: var(--area-pigment, var(--c-maar));
+  color: var(--pigment-ink);
+  border-color: transparent;
+}
+
+/* "the counter in a polite live region". It states the total: without
+   JavaScript nothing can follow the scroll position, and with no auto-advance
+   there is no change to announce. */
+.carousel__counter {
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  letter-spacing: var(--t-meta-track);
+  color: var(--ink-meta);
+  margin: 0;
+  margin-inline-start: auto;
+}

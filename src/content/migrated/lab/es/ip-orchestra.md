@@ -39,26 +39,13 @@ En nuestro laboratorio de creación implementaremos un proceso de investigación
 
 <!-- Swiper Primario (tarjetas) -->
 <div class="swiper my-3 swiper-demo swiper-demo--image swiper-demo--es-primary swiper--tall swiper--separated">
-<div class="swiper__wrapper">
-<!-- Diapositiva 1 -->
-<div class="swiper__slide orb-slide">
-<h2 class="orb-step">I</h2>
+<section class="carousel" aria-roledescription="carousel" aria-label="photographs"><ul class="carousel__track" role="list"><li class="carousel__slide" id="carousel-lab-es-ip-orchestra-1-1"><div class="carousel__frame"><h2 class="orb-step">I</h2>
 <div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/07_ip-card.jpg" alt="Carta layering"/></div>
-<div class="orb-desc">Explora la música superponiendo sonidos con controles que varían según las cartas que juegas, creando experiencias sonoras ricas y originales.</div>
-</div>
-<!-- Diapositiva 2 -->
-<div class="swiper__slide orb-slide">
-<h2 class="orb-step">II</h2>
+<div class="orb-desc">Explora la música superponiendo sonidos con controles que varían según las cartas que juegas, creando experiencias sonoras ricas y originales.</div></div></li><li class="carousel__slide" id="carousel-lab-es-ip-orchestra-1-2"><div class="carousel__frame"><h2 class="orb-step">II</h2>
 <div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/10_ip-transit.png" alt="Mapeo de tránsito"/></div>
-<div class="orb-desc">Recrea música de forma intuitiva; la creación sonora se vuelve accesible y divertida para todxs, desde músicos profesionales hasta quienes no tienen experiencia previa.</div>
-</div>
-<!-- Diapositiva 3 -->
-<div class="swiper__slide orb-slide">
-<h2 class="orb-step">III</h2>
+<div class="orb-desc">Recrea música de forma intuitiva; la creación sonora se vuelve accesible y divertida para todxs, desde músicos profesionales hasta quienes no tienen experiencia previa.</div></div></li><li class="carousel__slide" id="carousel-lab-es-ip-orchestra-1-3"><div class="carousel__frame"><h2 class="orb-step">III</h2>
 <div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/08_ip-max-24.jpg" alt="Patch taller"/></div>
-<div class="orb-desc">Estamos al inicio de este viaje. Inscríbete para co-crear la primera Orbiters Orchestra.</div>
-</div>
-</div>
+<div class="orb-desc">Estamos al inicio de este viaje. Inscríbete para co-crear la primera Orbiters Orchestra.</div></div></li></ul><div class="carousel__chrome"><ul class="carousel__controls" role="list"><li><a class="carousel__control" href="#carousel-lab-es-ip-orchestra-1-1" aria-label="go to slide 1 of 3">1</a></li><li><a class="carousel__control" href="#carousel-lab-es-ip-orchestra-1-2" aria-label="go to slide 2 of 3">2</a></li><li><a class="carousel__control" href="#carousel-lab-es-ip-orchestra-1-3" aria-label="go to slide 3 of 3">3</a></li></ul><p class="carousel__counter" aria-live="polite">3 slides</p></div></section>
 <div class="swiper__button swiper__button--prev fas fa-chevron-left"></div>
 <div class="swiper__button swiper__button--next fas fa-chevron-right"></div>
 </div>
@@ -82,13 +69,7 @@ Queremos invitar a estudiantes y profesionales de diversas disciplinas a unirse 
 
 <!-- Swiper Secundario (fotos) -->
 <div class="swiper my-3 swiper-demo swiper-demo--image swiper-demo--es-secondary swiper--tall swiper--plain">
-<div class="swiper__wrapper">
-<div class="swiper__slide"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-12.jpeg" alt="Sesión 12"/></div>
-<div class="swiper__slide"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-10.jpeg" alt="Sesión 10"/></div>
-<div class="swiper__slide"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-8.jpeg" alt="Sesión 8"/></div>
-<div class="swiper__slide"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-11.jpeg" alt="Sesión 11"/></div>
-<div class="swiper__slide"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-2.jpeg" alt="Sesión 2"/></div>
-</div>
+<section class="carousel" aria-roledescription="carousel" aria-label="photographs"><ul class="carousel__track" role="list"><li class="carousel__slide" id="carousel-lab-es-ip-orchestra-2-1"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-12.jpeg" alt="Sesión 12"/></div></li><li class="carousel__slide" id="carousel-lab-es-ip-orchestra-2-2"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-10.jpeg" alt="Sesión 10"/></div></li><li class="carousel__slide" id="carousel-lab-es-ip-orchestra-2-3"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-8.jpeg" alt="Sesión 8"/></div></li><li class="carousel__slide" id="carousel-lab-es-ip-orchestra-2-4"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-11.jpeg" alt="Sesión 11"/></div></li><li class="carousel__slide" id="carousel-lab-es-ip-orchestra-2-5"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-2.jpeg" alt="Sesión 2"/></div></li></ul><div class="carousel__chrome"><ul class="carousel__controls" role="list"><li><a class="carousel__control" href="#carousel-lab-es-ip-orchestra-2-1" aria-label="go to slide 1 of 5">1</a></li><li><a class="carousel__control" href="#carousel-lab-es-ip-orchestra-2-2" aria-label="go to slide 2 of 5">2</a></li><li><a class="carousel__control" href="#carousel-lab-es-ip-orchestra-2-3" aria-label="go to slide 3 of 5">3</a></li><li><a class="carousel__control" href="#carousel-lab-es-ip-orchestra-2-4" aria-label="go to slide 4 of 5">4</a></li><li><a class="carousel__control" href="#carousel-lab-es-ip-orchestra-2-5" aria-label="go to slide 5 of 5">5</a></li></ul><p class="carousel__counter" aria-live="polite">5 slides</p></div></section>
 <div class="swiper__button swiper__button--prev fas fa-chevron-left"></div>
 <div class="swiper__button swiper__button--next fas fa-chevron-right"></div>
 </div>

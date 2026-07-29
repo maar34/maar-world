@@ -534,7 +534,7 @@ check('a rendered card variant with no rule fails verify:build', (root) => {
 // patterns/card, and demanding card.css draw them is how a check starts lying.
 // The first slicer counted depth from 0 and closed the body at its first nested
 // </div>, so most of the body stayed in the scan and reported them anyway.
-check('component classes inside a .prose body are the content, not the component', (root) => {
+check('a dead theme class name that collides with a component prefix is not owed a rule', (root) => {
   proseFixture(root, PROSE_CSS_FULL);
   mkdirSync(join(root, 'src/styles'), { recursive: true });
   writeFileSync(join(root, 'src/styles/card.css'), '.card--entry { display: flex; }\n');
@@ -1004,6 +1004,53 @@ check('the stamp refuses a title that carries no edition number', () => {
   const got = [M.stampText('WildCard'), M.stampText('SkySounds 3'), M.stampText(''), M.stampText(undefined)];
   const ok = got.every((g) => g === null);
   return { ok, detail: ok ? 'WildCard, SkySounds 3, empty and undefined all unstamped' : `got ${JSON.stringify(got)}` };
+});
+
+// --- ui/carousel: the transform that rebuilds the dead swiper ------------
+// Both cases below are bugs this transform actually had. A non-greedy regex
+// stopped at the first </div></div> — the caption's — and converted 2 of 6
+// carousels; and an exact-attribute matcher missed the 9 slides written
+// `class="swiper__slide orb-slide"`. Both produced valid HTML and reported
+// success, which is why they need cases rather than a comment.
+const C = await import('../scripts/lib/carousel.mjs');
+
+const SWIPER = (slideClass = 'swiper__slide') =>
+  '<div class="swiper__wrapper">' +
+  `<div class="${slideClass}"><img src="/a.jpg" alt="A"><div class="slide-caption">First</div></div>` +
+  `<div class="${slideClass}"><img src="/b.jpg" alt="B"></div>` +
+  '</div>';
+
+check('every slide survives the swiper-to-carousel rebuild', () => {
+  const out = C.swiperToCarousel(SWIPER(), { idPrefix: 't' });
+  const slides = (out.match(/class="carousel__slide"/g) || []).length;
+  const imgs = (out.match(/<img/g) || []).length;
+  const ok = slides === 2 && imgs === 2 && !/swiper__slide/.test(out) && /2 slides<\/p>/.test(out);
+  return { ok, detail: ok ? '2 slides, 2 images, counter says 2' : `${slides} slides / ${imgs} imgs\n${out}` };
+});
+
+check('a slide with an extra class is still a slide', () => {
+  const out = C.swiperToCarousel(SWIPER('swiper__slide orb-slide'), { idPrefix: 't' });
+  const slides = (out.match(/class="carousel__slide"/g) || []).length;
+  return { ok: slides === 2, detail: slides === 2 ? 'class matched as a token, not a string' : `${slides} of 2 converted` };
+});
+
+check('the carousel carries the accessibility contract the spec states', () => {
+  const out = C.swiperToCarousel(SWIPER(), { idPrefix: 't' });
+  const has = [
+    /aria-roledescription="carousel"/.test(out),
+    /<ul class="carousel__track" role="list">/.test(out),
+    /<li class="carousel__slide"/.test(out),
+    /aria-live="polite"/.test(out),
+    !/autoplay|setInterval|<script/.test(out),
+  ];
+  const ok = has.every(Boolean);
+  return { ok, detail: ok ? 'labelled group, list items, polite counter, no auto-advance' : `checks: ${has.join(',')}` };
+});
+
+check('an empty swiper wrapper is left exactly as it was', () => {
+  const empty = '<div class="swiper__wrapper"></div>';
+  const out = C.swiperToCarousel(empty, { idPrefix: 't' });
+  return { ok: out === empty, detail: out === empty ? 'a carousel of nothing is not a carousel' : out };
 });
 
 // --- F8: the policy/manifest join is checked in both directions ----------
