@@ -917,6 +917,27 @@ function transform(body, ctx) {
   out = out.replace(/\{\{\s*site\.baseurl\s*\}\}/g, '');
   out = out.replace(/\{\{\s*page\.[A-Za-z_0-9]+\s*\}\}/g, '');
 
+  /**
+   * Commented-out markup is not markup.
+   *
+   * `/collect` carries `<!-- <iframe … youtube.com/embed/gpL2sTqXdrA …> -->`,
+   * an embed its author switched off. Production never rendered it and never
+   * requested it. The migration, which matches on tags and not on whether they
+   * are live, turned it into a facade — a facade inside a comment, which no
+   * reader can click and which still counts as an embed to anything reading the
+   * built HTML. Carrying the iframe verbatim instead would be no better: the
+   * third-party URL would still be there to be counted and link-checked.
+   *
+   * So a comment containing element markup is dropped and reported. Comments
+   * that are prose (`<!-- Slide 1 -->`, 51 of the 52 in the corpus) are not
+   * markup and stay exactly where they are.
+   */
+  out = out.replace(/<!--[\s\S]*?-->/g, (m) => {
+    if (!/<(iframe|img|script|a|link|video|audio|object|embed)\b/i.test(m)) return m;
+    problems.push(`${ctx.key}: dropped commented-out markup (${m.replace(/\s+/g, ' ').slice(0, 60)}…)`);
+    return '';
+  });
+
   out = defuseThirdParty(out, problems, ctx.key);
 
   // Page-relative asset references were correct while every page sat at the

@@ -1,9 +1,9 @@
 {
   "note": "Baseline external links that are deliberately absent from the build. Reviewed by a human via npm run links:review-removals -- --write. verify:links fails on any baseline link that disappears without being listed here, which is what stops the external-link baseline from being a one-way ratchet.",
-  "reviewedAt": "2026-07-29T07:50:26.441Z",
+  "reviewedAt": "2026-07-29T08:09:28.934Z",
   "generator": "scripts/review-link-removals.mjs",
   "basedOn": "verify/external-links-baseline.json",
-  "removedCount": 107,
+  "removedCount": 108,
   "byHost": {
     "www.dropbox.com": 33,
     "raw.githubusercontent.com": 16,
@@ -13,6 +13,7 @@
     "fonts.googleapis.com": 4,
     "unpkg.com": 3,
     "disqus.com": 2,
+    "www.youtube.com": 2,
     "www.chartjs.org": 1,
     "analytics.google.com": 1,
     "cdn.bootcdn.net": 1,
@@ -34,7 +35,6 @@
     "www.mathjax.org": 1,
     "www.paypal.me": 1,
     "www.youtube-nocookie.com": 1,
-    "www.youtube.com": 1,
     "www.zhihu.com": 1
   },
   "pendingHumanReviewNote": "Removals on hosts the invariants require to disappear (analytics, third-party fonts, CDN scripts, legacy blog-theme widgets) are settled. The hosts below carry content — a track, a paper, a profile — and their absence is recorded here so it is visible, not because anyone has confirmed the content was meant to go. Confirming them belongs to MW-9.",
@@ -43,13 +43,13 @@
     "raw.githubusercontent.com": 16,
     "tianqi.name": 15,
     "github.com": 6,
+    "www.youtube.com": 2,
     "herbarium.plantasia.space": 1,
     "player.vimeo.com": 1,
     "www.instagram.com": 1,
     "www.mathjax.org": 1,
     "www.paypal.me": 1,
     "www.youtube-nocookie.com": 1,
-    "www.youtube.com": 1,
     "www.zhihu.com": 1
   },
   "removed": [
@@ -159,6 +159,7 @@
     "https://www.paypal.me/kitian616",
     "https://www.youtube-nocookie.com/embed/VIDEO_ID",
     "https://www.youtube.com/embed/",
+    "https://www.youtube.com/embed/gpL2sTqXdrA",
     "https://www.zhihu.com/question/20223939/answer/122596506"
   ]
 }

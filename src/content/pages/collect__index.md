@@ -125,7 +125,7 @@ Explore a new musical dimension with Sky Sounds, a collection of cards that open
 <div class="grid">
 <div class="cell cell--bordered cell--12">
 <div class="article__content">
-<!-- <p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a class="embed-facade__action" href="https://www.youtube.com/embed/gpL2sTqXdrA" target="_blank" rel="noopener noreferrer"><span class="embed-facade__provider" aria-hidden="true">youtube</span><span class="embed-facade__label">watch this video on youtube</span></a><span class="embed-facade__note">opens in a new tab. nothing is requested from youtube until you choose it.</span></p> -->
+
 <div class="hero hero--center hero--dark hero-buy--linear-gradient">
 <div class="hero__content">
 <p>This method is designed to be accessible and fun for everyone, from experienced musicians to complete beginners.<br><br><a class="button button--primary button--rounded button--xl" href="/collect/docs/tutorials.html">Watch Tutorials</a></p>
