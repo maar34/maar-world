@@ -275,6 +275,31 @@ function cmdTail(n) {
   }
 }
 
+/**
+ * Search the ledger instead of reading it.
+ *
+ * This exists so no session ever has to be told "read the last N entries"
+ * again. The ledger is 164 entries and grows; the tail of it is not the part
+ * you need, the part about the thing in front of you is. Case-insensitive
+ * substring over the whole line, newest first.
+ */
+function cmdFind(term) {
+  if (!term) {
+    console.error('usage: ledger.mjs find <term>   e.g. find dropbox');
+    process.exit(1);
+  }
+  const lines = readFileSync(LEDGER_PATH, 'utf8')
+    .split('\n')
+    .filter((l) => /^20\d\d-/.test(l) && l.toLowerCase().includes(term.toLowerCase()))
+    .reverse();
+  if (!lines.length) {
+    console.log(`no ledger entry mentions "${term}"`);
+    return;
+  }
+  for (const l of lines) console.log(l);
+  console.log(`\n${lines.length} entr${lines.length === 1 ? 'y' : 'ies'} mentioning "${term}"`);
+}
+
 const isEntryPoint =
   process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 
@@ -283,8 +308,34 @@ const [, , cmd, ...rest] = process.argv;
 if (isEntryPoint) switch (cmd) {
   case 'append': {
     const [issue, status, unit, ...detail] = rest;
+    const text = detail.join(' ');
+    /**
+     * A HARD CAP, not a guideline.
+     *
+     * The ledger is append-only and every session reads the tail of it, so a
+     * long entry is a cost paid forever by everyone. Measured at 164 entries:
+     * the mean was 753 characters, and one session's twelve averaged 3222 —
+     * 4.3x — which alone made "read the last 14 entries" an 11,500-token
+     * instruction. That is the whole onboarding budget spent on history.
+     *
+     * An entry's job is: what changed, the number that moved, and where to
+     * look. The REASONING belongs in a comment beside the code it explains,
+     * where it costs nothing until someone opens that file, or in docs/adr/
+     * when it is a decision rather than an explanation.
+     */
+    const MAX_DETAIL = 500;
+    if (text.length > MAX_DETAIL) {
+      console.error(
+        `ledger append failed: detail is ${text.length} chars, limit ${MAX_DETAIL}.\n\n` +
+          'Say what changed, the number that moved, and which file to open.\n' +
+          'Put the reasoning in a comment next to the code, or an ADR in docs/adr/.\n' +
+          'The ledger is append-only and every future session reads it.\n\n' +
+          `First ${MAX_DETAIL} chars of what you tried to write:\n${text.slice(0, MAX_DETAIL)}…`,
+      );
+      process.exit(1);
+    }
     try {
-      console.log(appendEntry({ issue, status, unit, detail: detail.join(' ') }));
+      console.log(appendEntry({ issue, status, unit, detail: text }));
     } catch (err) {
       console.error(`ledger append failed: ${err.message}`);
       process.exit(1);
@@ -300,7 +351,10 @@ if (isEntryPoint) switch (cmd) {
   case 'tail':
     cmdTail(Number(rest[0]) || 15);
     break;
+  case 'find':
+    cmdFind(rest.join(' '));
+    break;
   default:
-    console.error('usage: ledger.mjs append|check|status|tail');
+    console.error('usage: ledger.mjs append|check|status|tail|find <term>');
     process.exit(1);
 }

@@ -32,6 +32,12 @@ They are human-gated. Reaching MW-11 with checks passing is a complete, successf
 1. Do the unit.
 2. Run the narrowest relevant check — `npm run verify:cards`, not the whole suite.
 3. Append exactly one line to `MIGRATION-LEDGER.md` (use `npm run ledger -- append …`).
+   **Capped at 500 characters, enforced.** Say what changed, the number that moved,
+   and which file to open. The reasoning goes in a comment beside the code, or in
+   `docs/adr/` if it is a decision. The ledger is append-only and every session
+   pays for its length forever — one session's entries averaged 3,222 chars and
+   made "read the recent ledger" an 11,500-token instruction on its own.
+   **Never read the ledger front-to-back. Query it:** `npm run ledger -- find <term>`.
 4. Commit, with the issue key in the message.
 
 **Never declare work done from your own judgement. Run the command; its exit code decides.**
