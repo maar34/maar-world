@@ -1,6 +1,7 @@
 # Handoff
 
-**State:** tree clean at `93dd1fc`. `npm run verify` = **71 passed, 2 failed, 1 skipped**.
+**State:** last work commit `bd1c548`, plus the commit that updated this file.
+`npm run verify` = **71 passed, 2 failed, 1 skipped**.
 
 Both failures are known, deliberate and human-gated. Neither is a regression:
 
