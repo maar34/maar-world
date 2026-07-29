@@ -17,7 +17,12 @@ typography, correct spacing, correct contrast, and none of the character. Everyt
 measured out of 4a so the next session does not have to re-derive it — and so the argument about
 which parts to keep is had with numbers rather than adjectives.
 
-**Nothing here is implemented yet.** `GlyphRun.astro` is the only mark in the build.
+**All seven are now implemented.** Two are not where this file asks for them, and in both
+cases this file was wrong rather than the code — the **stamp** is on the card cover, not
+the suit/number line (a *label* line, where the rules-of-use table allows no marks), and
+the **struck word** is applied to exactly one heading rather than by rule, because §02 of
+the spec opens with *"marks … never indicate state or meaning"*. `HANDOFF.md` has the
+table of where each one landed.
 
 ---
 
@@ -74,12 +79,13 @@ a plain skewed page, which is the thing the whole language exists to avoid.
 
 **The scope of the rule, in the owner's words, after a session read it too widely:**
 *"I only asked to not tilt the highlighted text… with the tilt it looks bad, it looks
-like a star."* It binds `mark.highlight` and nothing else. In particular it does **not**
-bind buttons, chips or any other control — the rules-of-use table's `body, ui, labels,
-captions — tilt: never` row is not an intentional prohibition on tilting a control, and
-the spec's own tilt-set prose agrees: *"tilt applies to a containing block only"*, and a
-button is a containing block. Marks 5 and 6 were blocked for a session on the wide
-reading. See `ledger -- find tilt-rule-scope`.
+like a star."* It binds `mark.highlight` and nothing else.
+
+**The spec has been corrected to say so** — its rules-of-use table used to put `ui` in
+the same row as body, labels and captions at `tilt: never`, and that row is now split:
+`body, labels, captions` keeps `never`, and `ui — buttons, chips` reads `allowed`. The
+tilt-set prose carries the reason rather than the bare prohibition. Spec and repo agree
+again. See `ledger -- find spec-tilt-column-corrected`.
 
 So the rule is not "no rotation anywhere". It is:
 

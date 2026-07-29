@@ -1,7 +1,10 @@
 # Handoff
 
-**State:** last work commit `bd1c548`, plus the commit that updated this file.
-`npm run verify` = **71 passed, 2 failed, 1 skipped**.
+**State:** last work commit `fd4fc81`, plus the commit that updated this file.
+`npm run verify` = **72 passed, 2 failed, 1 skipped**.
+
+The 71 you may remember became 72 when `verify:build` gained the prose-coverage
+assertion. One check was **added**; none was changed, relaxed or removed.
 
 Both failures are known, deliberate and human-gated. Neither is a regression:
 
@@ -9,23 +12,17 @@ Both failures are known, deliberate and human-gated. Neither is a regression:
 - **`verify:content`** — 49 problems / 48 pages. All check-side. **Do not edit content to fix them.**
   Why: `npm run ledger -- find residue-is-check-side`
 
-Everything else is green: selftest 96/96 · schemas 12/12 · build 6/6 · contract 3/3 ·
+Everything else is green: selftest 99/99 · schemas 12/12 · build 7/7 · contract 3/3 ·
 routes 8/8 · cards 20/20 (+1 skip, needs MW-10) · a11y 24/24.
 
 ---
 
 ## Next action
 
-1. **Correct the spec upstream.** Its rules-of-use table row `body, ui, labels,
-   captions — tilt: never` does not say what it was written to say. The owner:
-   *"I only asked to not tilt the highlighted text."* The rule binds
-   `mark.highlight` alone. Reading it widely blocked two marks for a session;
-   the repo now follows the owner's scope, so the **table and the repo disagree
-   until someone edits the spec**. `ledger -- find tilt-rule-scope`
-2. **Dropbox card art** — the only red check that isn't check-side. Needs a human.
-3. **4 route groups**, 215 live URLs — theme assets, orphan files, deploy artifacts,
+1. **Dropbox card art** — the only red check that isn't check-side. Needs a human.
+2. **4 route groups**, 215 live URLs — theme assets, orphan files, deploy artifacts,
    `%20` card URLs. Need the owner's knowledge. `ledger -- find routes/`
-4. **7 of 10 page families** unbuilt. Every route renders family 03.
+3. **7 of 10 page families** unbuilt. Every route renders family 03.
 
 ### Type marks — where they stand
 
@@ -79,6 +76,23 @@ odd, open it — the explanation is there.
 | Why two collections? | `docs/adr/0001-one-pages-collection.md` |
 
 ## Repo shape
+
+The two stylesheets that are easiest to get wrong, because one name used to
+cover both:
+
+```
+src/styles/prose.css      the rendered body of EVERY page — migrated and
+                          authored alike. PERMANENT. Keyed to elements.
+                          verify:build fails if a body contains an element it
+                          never decided about, so it cannot silently lose one.
+src/styles/legacy.css     DISPOSABLE. Only rules keyed to the dead Jekyll
+                          theme's class names. When migrate-pages.mjs stops
+                          emitting them, delete the file and its import.
+```
+
+The wrapper class is `.prose`. It was `.legacy`, which was a lie — that div
+wraps every body on the site, so a name meaning "temporary" was sitting on the
+one thing that is permanent. That mis-naming is what let `h1` go unstyled.
 
 ```
 src/content/migrated/**   95 records. GENERATED — wiped by rmSync every run.
