@@ -17,6 +17,7 @@
     "verify:cards": "node scripts/verify-cards.mjs",
     "verify:content": "node scripts/verify-content.mjs",
     "verify:links": "node scripts/verify-links.mjs",
+    "verify:a11y": "node scripts/verify-a11y.mjs",
     "verify:build": "node scripts/verify-build.mjs",
     "verify:selftest": "node scripts/selftest.mjs",
     "ledger": "node scripts/ledger.mjs",

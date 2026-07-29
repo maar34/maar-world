@@ -936,6 +936,204 @@ check('shell chrome outside <main> does not satisfy verify:content', (root) => {
   };
 });
 
+// --- G: verify:a11y really fails on an inaccessible build ----------------
+
+/**
+ * A small, accessible page and the stylesheet that ships with it.
+ *
+ * Every case below starts from this and breaks exactly one thing, so a case
+ * that goes green tells you which assertion stopped working. The tokens are the
+ * real ones from src/styles/tokens.css: a fixture with invented colours would
+ * prove the contrast arithmetic runs but not that the design passes it.
+ *
+ * The page also carries the three shapes that are correct but look wrong to a
+ * naive check — a wrapping `<label>` with no `for`, an `aria-hidden` region
+ * that is also `display:none`, and a decorative `<img alt="">` — so a case
+ * would fail if any of those started being reported.
+ */
+const A11Y_CSS = [
+  ':root{--c-maar: #a9d5e8;--c-collect: #f0aecb;--c-tree: #e7c98f;--c-dark: #100f14;',
+  '--pigment-ink: var(--c-dark);--sf-base: #100f14;--ink: #efe7da;',
+  '--ink-muted: color-mix(in srgb, var(--ink) 75%, transparent);',
+  '--ink-meta: color-mix(in srgb, var(--ink) 60%, transparent);',
+  '--ink-faint: color-mix(in srgb, var(--ink) 40%, transparent);',
+  '--action-invert: var(--ink);--focus-c: var(--c-maar)}',
+  ':focus-visible{outline:2px solid var(--focus-c)}',
+  '@media (prefers-reduced-motion: reduce){*{transition-duration:.01ms !important}}',
+  'body{overflow-wrap:break-word}',
+  'pre,table{overflow-x:auto}',
+].join('');
+
+const A11Y_PAGE = [
+  '<!doctype html><html lang="en" data-surface="dark"><head><meta charset="utf-8">',
+  '<meta name="viewport" content="width=device-width, initial-scale=1"><title>Fixture</title>',
+  '<link rel="stylesheet" href="/_assets/site.css"></head><body><div class="shell">',
+  '<a class="skip-link" href="#content">Skip to content</a>',
+  '<header><nav aria-label="Areas"><ul><li><a href="/">maar</a></li></ul></nav>',
+  '<nav aria-label="maar pages"><ul><li><a href="/lab">Lab</a></li></ul></nav></header>',
+  '<main id="content"><h1>Fixture</h1><h2>Section</h2><h3>Sub</h3>',
+  '<img src="/img/decorative.png" alt="">',
+  '<iframe src="https://play.maar.world/?g=8&amp;s=0&amp;c=1" title="fixture player"></iframe>',
+  '<p><a href="/elsewhere">a named link</a></p>',
+  '<form action="/f" method="post"><label>Your name <input type="text" name="name"></label>',
+  '<button type="submit">Send</button></form>',
+  '<div class="pdf-fallback" aria-hidden="true" style="display:none;"><a href="/x.pdf">Open</a></div>',
+  '<table><tr><th>Column</th></tr><tr><td>Cell</td></tr></table>',
+  '</main><footer><p>© Maar World 2023</p></footer></div></body></html>',
+].join('');
+
+function a11yFixture(root, page = A11Y_PAGE, css = A11Y_CSS) {
+  mkdirSync(join(root, 'dist/_assets'), { recursive: true });
+  writeFileSync(join(root, 'dist/_assets/site.css'), css);
+  writeFileSync(join(root, 'dist/fixture.html'), page);
+}
+
+/** Break one thing in the fixture and assert verify:a11y names it. */
+function a11yCase(name, { page = A11Y_PAGE, css = A11Y_CSS, expect }) {
+  check(name, (root) => {
+    a11yFixture(root, page, css);
+    const { code, out } = run(root, 'verify-a11y.mjs');
+    const ok = code === 1 && expect.test(out);
+    return { ok, detail: ok ? 'exit 1, defect reported' : `expected exit 1 matching ${expect}, got ${code}\n${out}` };
+  });
+}
+
+check('an accessible page passes verify:a11y', (root) => {
+  a11yFixture(root);
+  const { code, out } = run(root, 'verify-a11y.mjs');
+  return { ok: code === 0, detail: code === 0 ? 'exit 0' : `expected exit 0, got ${code}\n${out}` };
+});
+
+a11yCase('an undeclared language fails verify:a11y', {
+  page: A11Y_PAGE.replace('<html lang="en"', '<html'),
+  expect: /declares its own language/,
+});
+
+a11yCase('a viewport that blocks zoom fails verify:a11y', {
+  page: A11Y_PAGE.replace('initial-scale=1', 'initial-scale=1, user-scalable=no'),
+  expect: /zoomable/,
+});
+
+a11yCase('a second <h1> fails verify:a11y', {
+  page: A11Y_PAGE.replace('<h2>Section</h2>', '<h1>Second</h1>'),
+  expect: /exactly one <h1>/,
+});
+
+a11yCase('a page with no <h1> fails verify:a11y', {
+  page: A11Y_PAGE.replace('<h1>Fixture</h1>', ''),
+  expect: /exactly one <h1>/,
+});
+
+a11yCase('a skipped heading level fails verify:a11y', {
+  page: A11Y_PAGE.replace('<h3>Sub</h3>', '<h4>Sub</h4>'),
+  expect: /skips a heading level/,
+});
+
+a11yCase('an image without alt fails verify:a11y', {
+  page: A11Y_PAGE.replace('<img src="/img/decorative.png" alt="">', '<img src="/img/decorative.png">'),
+  expect: /alt attribute/,
+});
+
+a11yCase('an untitled frame fails verify:a11y', {
+  page: A11Y_PAGE.replace(' title="fixture player"', ''),
+  expect: /carries a title/,
+});
+
+a11yCase('a link with no accessible name fails verify:a11y', {
+  page: A11Y_PAGE.replace('<a href="/elsewhere">a named link</a>', '<a href="/elsewhere"></a>'),
+  expect: /accessible name/,
+});
+
+/**
+ * The legacy Mailchimp badge is this exact shape: an anchor with nothing in it
+ * and a `title`. It computes a name, so a check that only asked "is it named"
+ * passed it, and the link is still invisible and unreachable by touch.
+ */
+a11yCase('an empty link named only by title fails verify:a11y', {
+  page: A11Y_PAGE.replace('<a href="/elsewhere">a named link</a>', '<a href="/elsewhere" title="Mailchimp"></a>'),
+  expect: /empty target/,
+});
+
+a11yCase('an unlabelled form control fails verify:a11y', {
+  page: A11Y_PAGE.replace('<label>Your name <input type="text" name="name"></label>', '<input type="text" name="name">'),
+  expect: /has a label/,
+});
+
+/**
+ * `aria-hidden` alone leaves the element in the tab order — hidden from a
+ * screen reader and still reachable by keyboard, which is worse than either.
+ * The fixture's own `display:none` version must keep passing (case 1).
+ */
+a11yCase('an aria-hidden link that keeps its tab stop fails verify:a11y', {
+  page: A11Y_PAGE.replace('style="display:none;"', ''),
+  expect: /keeps a tab stop/,
+});
+
+a11yCase('a positive tabindex fails verify:a11y', {
+  page: A11Y_PAGE.replace('<a href="/elsewhere">', '<a href="/elsewhere" tabindex="3">'),
+  expect: /positive tabindex/,
+});
+
+a11yCase('a duplicated id fails verify:a11y', {
+  page: A11Y_PAGE.replace('<h2>Section</h2>', '<h2 id="content">Section</h2>'),
+  expect: /unique within a page/,
+});
+
+a11yCase('a fragment link to nothing fails verify:a11y', {
+  page: A11Y_PAGE.replace('href="#content"', 'href="#nowhere"'),
+  expect: /points at an element that exists/,
+});
+
+a11yCase('a missing <main> landmark fails verify:a11y', {
+  page: A11Y_PAGE.replace('<main id="content">', '<div id="content">').replace('</main>', '</div>'),
+  expect: /landmarks/,
+});
+
+a11yCase('an unnamed navigation landmark fails verify:a11y', {
+  page: A11Y_PAGE.replace('<nav aria-label="maar pages">', '<nav>'),
+  expect: /navigation landmark is named/,
+});
+
+a11yCase('an inline click handler fails verify:a11y', {
+  page: A11Y_PAGE.replace('<p><a href="/elsewhere">', '<p><span onclick="go()">go</span><a href="/elsewhere">'),
+  expect: /inline event handler/,
+});
+
+a11yCase('a table with no header cells fails verify:a11y', {
+  page: A11Y_PAGE.replace('<th>Column</th>', '<td>Column</td>'),
+  expect: /header cells/,
+});
+
+a11yCase('removing the focus outline fails verify:a11y', {
+  css: `${A11Y_CSS}\na:focus-visible{outline:none}`,
+  expect: /focus ring is never removed/,
+});
+
+a11yCase('shipping no reduced-motion block fails verify:a11y', {
+  css: A11Y_CSS.replace('@media (prefers-reduced-motion: reduce){*{transition-duration:.01ms !important}}', ''),
+  expect: /prefers-reduced-motion/,
+});
+
+a11yCase('dropping overflow-wrap fails verify:a11y', {
+  css: A11Y_CSS.replace('body{overflow-wrap:break-word}', ''),
+  expect: /allowed to wrap/,
+});
+
+a11yCase('losing the scroll container for wide content fails verify:a11y', {
+  css: A11Y_CSS.replace('pre,table{overflow-x:auto}', ''),
+  expect: /scrolls inside itself/,
+});
+
+/**
+ * The contrast arithmetic, proven against a token change rather than against a
+ * hand-written ratio. Darkening `--ink` to a mid grey takes body text under
+ * 4.5:1 on the dark surface; nothing else in the fixture moves.
+ */
+a11yCase('a token change that breaks contrast fails verify:a11y', {
+  css: A11Y_CSS.replace('--ink: #efe7da;', '--ink: #4a4750;'),
+  expect: /WCAG 2\.2 AA contrast/,
+});
+
 // --- F7: the documented source of truth is the strongest command ---------
 
 // OPERATING-RULES designates `npm run verify` as the command whose exit code
