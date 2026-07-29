@@ -488,6 +488,31 @@ check('markup inside a <script> is not counted as a page element', (root) => {
   return { ok, detail: ok ? 'script contents ignored' : `expected exit 0 ignoring it, got ${code}\n${out}` };
 });
 
+// --- F10: a mark class with no rule fails verify:build -------------------
+//
+// mark.mjs builds class names by interpolation and mark.css defines them one by
+// one. Raising TILTS without adding `.mark--tilt-5` renders a fifth of the cut
+// words flat, and every other check stays green: the text is unchanged, the
+// page is not hollow, the colours still pass. This is the case that sees it.
+
+check('a rendered mark class with no rule fails verify:build', (root) => {
+  proseFixture(root, PROSE_CSS_FULL);
+  mkdirSync(join(root, 'src/styles'), { recursive: true });
+  writeFileSync(join(root, 'src/styles/mark.css'), '.mark { border-radius: 0; }\n.mark--tilt-1 { transform: rotate(-2deg); }\n');
+  writeFileSync(
+    join(root, 'dist/article.html'),
+    PROSE_PAGE.replace('<h1>A title</h1>', '<h1>A <span class="mark mark--cut mark--tilt-5">title</span></h1>'),
+  );
+  const { code, out } = run(root, 'verify-build.mjs');
+  const ok = code === 1 && /mark class rendered/.test(out) && /mark--tilt-5/.test(out);
+  return {
+    ok,
+    detail: ok
+      ? 'exit 1, the undrawn variant named'
+      : `expected exit 1 naming .mark--tilt-5, got ${code}\n${out}`,
+  };
+});
+
 // --- F3: the ledger is append-only across its whole history --------------
 
 const LEDGER_HEADER = [

@@ -1,10 +1,13 @@
 # Handoff
 
-**State:** last work commit `fd4fc81`, plus the commit that updated this file.
-`npm run verify` = **72 passed, 2 failed, 1 skipped**.
+**State:** last work commit `7dae700`, plus the commit that updated this file.
+`npm run verify` = **73 passed, 2 failed, 1 skipped**.
 
-The 71 you may remember became 72 when `verify:build` gained the prose-coverage
-assertion. One check was **added**; none was changed, relaxed or removed.
+The 71 you may remember became 73 as `verify:build` gained two coverage
+assertions — prose elements, and mark classes. Both were **added**; no check was
+changed, relaxed or removed. Both exist for the same reason and it is worth
+knowing before writing another: a correspondence held between two files by hand
+is the failure mode this codebase has actually shipped, twice.
 
 Both failures are known, deliberate and human-gated. Neither is a regression:
 
@@ -12,7 +15,7 @@ Both failures are known, deliberate and human-gated. Neither is a regression:
 - **`verify:content`** — 49 problems / 48 pages. All check-side. **Do not edit content to fix them.**
   Why: `npm run ledger -- find residue-is-check-side`
 
-Everything else is green: selftest 99/99 · schemas 12/12 · build 7/7 · contract 3/3 ·
+Everything else is green: selftest 100/100 · schemas 12/12 · build 8/8 · contract 3/3 ·
 routes 8/8 · cards 20/20 (+1 skip, needs MW-10) · a11y 24/24.
 
 ---
@@ -122,6 +125,21 @@ navigational only.
 - Per unit: do the work, run the narrowest check, append **one** ledger line, commit.
   Stage your own paths — never `git add -A` at the repo root.
 - **Never declare work done from judgement. Run the command; its exit code decides.**
+
+## The failure mode this repo actually has
+
+Twice now the bug has been the same shape: **a correspondence maintained between
+two files by hand, with nothing asserting the two agree.**
+
+- `prose.css` listed h2–h6 and skipped `h1`. 61 titles shipped with no space.
+- `mark.mjs` interpolates `mark--tilt-${n}`; `mark.css` defines 1–4 one at a
+  time. They agreed by luck, and the tilt set is an open decision.
+
+Both are now checked by `verify:build`, which reads what the build RENDERS and
+fails if the stylesheet does not cover it. **Before adding a third list of this
+shape, add its check in the same commit.** An audit for further instances found
+no others: the only unrendered CSS is the four button variants and the type
+utilities, which are specified ahead of the page families that will use them.
 
 ## Traps
 

@@ -143,6 +143,7 @@ export function checkBuildOutput(report) {
   }
 
   checkProseCoverage(report, pages);
+  checkMarkClassCoverage(report, pages);
 }
 
 /**
@@ -290,6 +291,63 @@ function checkProseCoverage(report, pages) {
     `${found.size} distinct elements across ${pages.length} pages — ` +
       `${[...found.keys()].filter((t) => styled.has(t)).length} styled, ` +
       `${[...found.keys()].filter((t) => PROSE_EXEMPT.has(t)).length} exempt with a stated reason`,
+  );
+}
+
+/**
+ * THE SECOND HALF OF THE SAME GUARANTEE, found by auditing for the first.
+ *
+ * `src/lib/mark.mjs` builds class names by interpolation —
+ * `mark--tilt-${n} mark--tear-${n}` — and `src/styles/mark.css` defines the
+ * rules `.mark--tilt-1` through `-4`. The two agree today and NOTHING asserted
+ * that they do. `TILTS` is 4 because 4a has four cut-word angles; the tilt set
+ * is an open owner decision (`ledger -- find mark-tilt-set`), so the single
+ * most likely edit to this area is the one that changes the count. Raise it to
+ * 5 and a fifth of every cut word on the site renders with no rotation at all:
+ * silent, because the text is unchanged, the page is not hollow and the colours
+ * still pass.
+ *
+ * Same shape as the h1 bug — a correspondence held in two files by hand — so it
+ * gets the same treatment. Measured against what the build actually RENDERS
+ * rather than what the code could theoretically emit, for the same reason the
+ * prose assertion is: a variant nobody renders cannot be seen to be broken, and
+ * one that ships must have a rule.
+ */
+function checkMarkClassCoverage(report, pages) {
+  const cssPath = resolve(ROOT, 'src/styles/mark.css');
+  const rendered = new Map();
+  for (const page of pages) {
+    for (const m of dropCode(readDistFile(page)).matchAll(/class="([^"]*\bmark\b[^"]*)"/g)) {
+      for (const cls of m[1].split(/\s+/)) {
+        if (cls.startsWith('mark') && !rendered.has(cls)) rendered.set(cls, page);
+      }
+    }
+  }
+
+  if (rendered.size === 0) {
+    return report.skip('every mark class rendered has a rule', 'no marks in the build', 'n/a');
+  }
+  if (!existsSync(cssPath)) {
+    return report.fail('every mark class rendered has a rule', 'src/styles/mark.css is missing');
+  }
+
+  const css = readFileSync(cssPath, 'utf8');
+  const defined = new Set([...css.matchAll(/\.(mark[\w-]*)/g)].map((m) => m[1]));
+  const orphans = [...rendered].filter(([cls]) => !defined.has(cls));
+
+  if (orphans.length) {
+    report.fail(
+      'every mark class rendered has a rule',
+      `${orphans.length} rendered with no rule in mark.css: ` +
+        orphans.slice(0, 6).map(([c, p]) => `.${c} (${p})`).join(', ') +
+        ' — src/lib/mark.mjs emits it and the stylesheet does not draw it',
+    );
+    return;
+  }
+
+  report.pass(
+    'every mark class rendered has a rule',
+    `${rendered.size} distinct mark classes, all drawn`,
   );
 }
 
