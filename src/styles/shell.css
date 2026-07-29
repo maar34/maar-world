@@ -83,12 +83,33 @@
   max-width: var(--measure);
 }
 
-/* Composed with .shell__inner, the measure wins over the column bound. Stated at
-   two-class specificity rather than relying on source order, because which of
-   two equally specific max-widths applies is otherwise decided by the order the
-   bundler happens to emit them in. */
+/**
+ * Composed with .shell__inner, the measure wins over the column bound. Stated at
+ * two-class specificity rather than relying on source order, because which of
+ * two equally specific max-widths applies is otherwise decided by the order the
+ * bundler happens to emit them in.
+ *
+ * The margin is the part that matters, and it was wrong. `.shell__inner` centres
+ * its box with `margin-inline: auto`, so narrowing that same box to the measure
+ * centred the prose in the *viewport* — at 1745px the header and footer sat in
+ * the 1180 column starting at x=276 while the body text started at x=480. Every
+ * page read as two documents that had never met: a line of chrome, then a column
+ * of text floating 200px to the right of it, aligned with nothing.
+ *
+ * "content max 1180, prose measure still 66ch" is two bounds, not one. The
+ * column is 1180 and centred; the measure is 66ch and sits at the *start* of
+ * that column. So the inline-start margin is the column's own offset — the same
+ * `(available - 1180) / 2` that `margin-inline: auto` computes for the header,
+ * which is why the two now agree exactly rather than approximately — and the
+ * end margin takes the remainder. Below 1180 the offset clamps to zero and the
+ * gutter alone does the work, exactly as before.
+ *
+ * The spec's own header markup is built this way: a 1180 column with
+ * `margin: 0 auto`, holding a 720px text block that is left-aligned inside it.
+ */
 .shell__inner.measure {
   max-width: var(--measure);
+  margin-inline: max(0px, (100% - var(--content-max)) / 2) auto;
 }
 
 /* ---- skip link ---------------------------------------------------------- */
