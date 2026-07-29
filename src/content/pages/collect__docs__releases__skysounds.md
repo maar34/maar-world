@@ -24,7 +24,7 @@ The complete Deck Album consists of 34 cards that are divided into three suits o
 ### Credits
 
 <table>
-<tbody><tr><td>Idea</td><td>Maar</td></tr><tr><td>Music</td><td>Maar</td></tr><tr><td>Mix Master</td><td>I/O Studios - Nicolas Panzl and Diego Rey</td></tr><tr><td>ENT web player Programming</td><td>Maar</td></tr><tr><td>Web Design and Development</td><td>Maar</td></tr><tr><td>Card Desing</td><td>Maar*</td></tr><tr><td>Programming Assitance:</td><td><a href="https://vigliensoni.com/" target="_blank"> Vigliensoni </a></td></tr><tr><td>Design Assitance:</td><td>DALLE 2.</td></tr><tr><td>Text Assitance:</td><td>Chat-GPT3.</td></tr></tbody>
+<tbody><tr><th scope="row">Idea</th><td>Maar</td></tr><tr><th scope="row">Music</th><td>Maar</td></tr><tr><th scope="row">Mix Master</th><td>I/O Studios - Nicolas Panzl and Diego Rey</td></tr><tr><th scope="row">ENT web player Programming</th><td>Maar</td></tr><tr><th scope="row">Web Design and Development</th><td>Maar</td></tr><tr><th scope="row">Card Desing</th><td>Maar*</td></tr><tr><th scope="row">Programming Assitance:</th><td><a href="https://vigliensoni.com/" target="_blank"> Vigliensoni </a></td></tr><tr><th scope="row">Design Assitance:</th><td>DALLE 2.</td></tr><tr><th scope="row">Text Assitance:</th><td>Chat-GPT3.</td></tr></tbody>
 </table>
 
 *Cards 1 - 12 - 23  made with my brother <a href="http://vrglit.ch " target="_blank"> VR Glitch </a>

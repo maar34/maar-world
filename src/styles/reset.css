@@ -41,6 +41,17 @@ ol[role='list'] {
    quoted, read by a screen reader, or rendered anywhere without this stylesheet. */
 body {
   text-transform: lowercase;
+
+  /* MW-11: "long Spanish copy and unbroken URLs wrap safely."
+     A token wider than the viewport is the one overflow a media query cannot
+     fix, because the element that is too wide is not the element you would
+     write the query against — it pushes the whole document sideways and every
+     line of the page gets a horizontal scrollbar. The legacy bodies carry bare
+     URLs and long compound Spanish words, so this is not hypothetical.
+
+     `break-word` rather than `anywhere`: it breaks a word only when the word
+     alone cannot fit, so ordinary prose keeps its normal line breaking. */
+  overflow-wrap: break-word;
 }
 
 img,

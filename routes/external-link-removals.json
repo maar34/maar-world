@@ -1,9 +1,9 @@
 {
   "note": "Baseline external links that are deliberately absent from the build. Reviewed by a human via npm run links:review-removals -- --write. verify:links fails on any baseline link that disappears without being listed here, which is what stops the external-link baseline from being a one-way ratchet.",
-  "reviewedAt": "2026-07-29T08:48:00.836Z",
+  "reviewedAt": "2026-07-29T08:09:28.934Z",
   "generator": "scripts/review-link-removals.mjs",
   "basedOn": "verify/external-links-baseline.json",
-  "removedCount": 109,
+  "removedCount": 108,
   "byHost": {
     "www.dropbox.com": 33,
     "raw.githubusercontent.com": 16,
@@ -14,7 +14,6 @@
     "unpkg.com": 3,
     "disqus.com": 2,
     "www.youtube.com": 2,
-    "eepurl.com": 1,
     "www.chartjs.org": 1,
     "analytics.google.com": 1,
     "cdn.bootcdn.net": 1,
@@ -45,7 +44,6 @@
     "tianqi.name": 15,
     "github.com": 6,
     "www.youtube.com": 2,
-    "eepurl.com": 1,
     "herbarium.plantasia.space": 1,
     "player.vimeo.com": 1,
     "www.instagram.com": 1,
@@ -55,7 +53,6 @@
     "www.zhihu.com": 1
   },
   "removed": [
-    "http://eepurl.com/if7emL",
     "http://www.chartjs.org/",
     "https://analytics.google.com/analytics/web/",
     "https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.1/css/all.css",

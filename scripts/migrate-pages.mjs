@@ -662,15 +662,49 @@ function convertPipeTables(body, problems = [], where = '') {
       1,
     );
     const pad = (row) => Array.from({ length: width }, (_, n) => row[n] ?? '');
-    const cell = (tag, v) => `<${tag}>${v}</${tag}>`;
-    const rowHtml = (row, tag) => `<tr>${pad(row).map((v) => cell(tag, v)).join('')}</tr>`;
+    const cell = (tag, v, attrs = '') => `<${tag}${attrs}>${v}</${tag}>`;
 
-    const html = ['<table>'];
+    /**
+     * Kramdown accepts a table with no separator line at all, and two in this
+     * corpus use it — so two tables shipped with no `<th>` anywhere, which is a
+     * table whose rows are announced without ever saying what a column is.
+     *
+     * There is no header row to promote: `Idea | Maar` in the SkySounds credits
+     * is data on both sides. What it has is a *label column* — the left cell
+     * names what the right cell is — which is what `<th scope="row">` means.
+     * A screen reader then reads "Idea: Maar" instead of two loose cells.
+     *
+     * A header-less table of one column is not tabular at all. `/collect/docs/mw`
+     * has one holding a single sentence, which kramdown made a table of because
+     * the line began with a pipe. It is marked presentational so it is read as
+     * the sentence it is, rather than announced as a one-by-one table.
+     *
+     * Both cases are the whole population — the corpus has exactly these two
+     * header-less tables and each was read before this rule was written. A third
+     * would be reported by the pipe-table line above.
+     */
+    const headerless = !headerRows?.length;
+    const labelColumn = headerless && width > 1;
+    const presentational = headerless && width === 1;
+
+    const rowHtml = (row, tag) =>
+      `<tr>${pad(row)
+        .map((v, n) => (labelColumn && n === 0 ? cell('th', v, ' scope="row"') : cell(tag, v)))
+        .join('')}</tr>`;
+
+    const html = [presentational ? '<table role="presentation">' : '<table>'];
     if (headerRows?.length) html.push(`<thead>${headerRows.map((r) => rowHtml(r, 'th')).join('')}</thead>`);
     for (const rows of sections) {
       if (rows.length) html.push(`<tbody>${rows.map((r) => rowHtml(r, 'td')).join('')}</tbody>`);
     }
     html.push('</table>');
+
+    if (labelColumn) {
+      problems.push(`${where}: header-less pipe table — marked its left column as row headers (${sections.flat().length} rows)`);
+    }
+    if (presentational) {
+      problems.push(`${where}: header-less single-column pipe table — marked presentational, it is a sentence and not a table`);
+    }
 
     const cells = [...(headerRows || []), ...sections.flat()].flat();
     problems.push(
@@ -942,7 +976,7 @@ function titleUntitledFrames(body, problems, where) {
 }
 
 /**
- * Remove anchors that other rules emptied.
+ * Give anchors that other rules emptied something to be.
  *
  * `/radio` and `/subscribe` both carry Mailchimp's attribution badge:
  * `<a href="http://eepurl.com/if7emL" title="Mailchimp — …"><img src="eep.io/…"></a>`.
@@ -952,21 +986,34 @@ function titleUntitledFrames(body, problems, where) {
  * tapped, but it is still a tab stop, and the `title` gives it just enough of
  * an accessible name that a check asking only "is it named" would pass it.
  *
- * A link to nothing that nobody can see is not a link. The `title` is not
- * substituted as visible text: the badge said "intuit mailchimp" in artwork
- * this build deliberately does not fetch, and inventing a caption for an image
- * nobody here has seen would be a guess about what production showed.
+ * The fix is the anchor's own `title`, promoted to visible text. That is not an
+ * invented caption: it is a string production already served on this element,
+ * written by the embed code that put the badge there. The attribute is dropped
+ * once it is the text, because a `title` duplicating the content is announced
+ * twice by some screen readers and shown as a tooltip repeating the link to
+ * everyone else.
  *
- * An anchor carrying its own `aria-label` is a named control by intent — an
- * icon button, say — and is left alone. A wrapper left holding nothing but the
- * removed anchor goes with it.
+ * Deleting the anchor instead was tried and was wrong: it takes an outbound
+ * link off two pages that production serves it on, and `verify:content` asserts
+ * the outbound link set per page against the frozen manifest — 49 problems
+ * became 51. Keeping the link and making it real satisfies both.
+ *
+ * An anchor with an `aria-label` is a named control by intent and is left
+ * alone. One with neither content nor a title has nothing to become, so it is
+ * removed and reported, along with a wrapper left holding only it.
  */
-function dropEmptiedAnchors(html, problems, where) {
+function nameEmptiedAnchors(html, problems, where) {
   let out = html.replace(/<a\b([^>]*\bhref\b[^>]*)>(\s*)<\/a>/gi, (whole, attrs) => {
     if (/\baria-label\s*=/i.test(attrs)) return whole;
     const href = /\bhref\s*=\s*["']([^"']*)["']/i.exec(attrs);
-    problems.push(`${where}: removed emptied <a href="${href ? href[1] : '?'}"> — its only content was dropped`);
-    return '';
+    const title = /\btitle\s*=\s*["']([^"']*)["']/i.exec(attrs);
+    const text = title ? title[1].trim() : '';
+    if (!text) {
+      problems.push(`${where}: removed emptied <a href="${href ? href[1] : '?'}"> — its only content was dropped and it had no title to fall back on`);
+      return '';
+    }
+    problems.push(`${where}: emptied <a href="${href ? href[1] : '?'}"> now reads its own title ("${text}")`);
+    return `<a${attrs.replace(/\s*\btitle\s*=\s*["'][^"']*["']/i, '')}>${text}</a>`;
   });
   out = out.replace(/<p\b[^>]*class\s*=\s*["'][^"']*brandingLogo[^"']*["'][^>]*>\s*<\/p>\s*/gi, '');
   return out;
@@ -1124,7 +1171,7 @@ function transform(body, ctx) {
   });
 
   // After every rule that can remove an element from inside an anchor.
-  out = dropEmptiedAnchors(out, problems, ctx.key);
+  out = nameEmptiedAnchors(out, problems, ctx.key);
   out = addMissingAlt(out, problems, ctx.key);
 
   /**

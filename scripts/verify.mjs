@@ -31,6 +31,7 @@ import { checkRoutes } from './verify-routes.mjs';
 import { checkCards } from './verify-cards.mjs';
 import { checkContent } from './verify-content.mjs';
 import { checkLinks } from './verify-links.mjs';
+import { checkA11y } from './verify-a11y.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -74,6 +75,7 @@ export const CHECKS = [
   ['verify:cards', checkCards],
   ['verify:content', checkContent],
   ['verify:links', checkLinks],
+  ['verify:a11y', checkA11y],
   ['ledger:check', commandCheck('ledger format and append-only history', ['ledger.mjs', 'check'])],
 ];
 

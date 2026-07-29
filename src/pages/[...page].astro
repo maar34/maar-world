@@ -282,6 +282,16 @@ const isCard = d.kind === 'collect-card';
     max-width: 100%;
   }
 
+  /* Two legacy tables have no header row and a label column, so the migration
+     marks their left cells `<th scope="row">` — a screen reader then reads
+     "Idea: Maar" rather than two loose cells. A `<th>` defaults to bold and
+     centred, and centring a label column is the one part of that which would
+     read as a mistake, so the alignment is restored and the weight is kept:
+     the cell now looks like the label it always was. */
+  .legacy :global(th) {
+    text-align: start;
+  }
+
   /* ---- click-to-load facades -------------------------------------------
      Every third-party embed on this site is one of these. No YouTube, Vimeo,
      SoundCloud, Google Forms or radio-stream byte is requested until the

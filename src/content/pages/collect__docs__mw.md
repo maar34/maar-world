@@ -39,7 +39,7 @@ I hear this Earth calls to our love, let's create together protected areas to al
 
 ## Kepler Telescope Discovers a Circumbinary P-type Planet with Unique Characteristics
 
-<table>
+<table role="presentation">
 <tbody><tr><td>Circumbinary planet, P-type, semi-major axis: 0.699±0.003 AU.</td></tr></tbody>
 </table>
 
