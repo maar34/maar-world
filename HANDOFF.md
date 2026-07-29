@@ -22,10 +22,36 @@ routes 8/8 · cards 20/20 (+1 skip, needs MW-10) · a11y 24/24.
 
 ## Next action
 
-1. **Dropbox card art** — the only red check that isn't check-side. Needs a human.
-2. **4 route groups**, 215 live URLs — theme assets, orphan files, deploy artifacts,
+**The page families are the whole of what the site is missing.** The owner's own
+list — "missing cards, carousels, a hero; the content is narrower than the header;
+images don't fit" — is one cause, not five: `/` renders **family 03 (entry)**,
+whose spec is *"single measure, 66ch max"*. It is an article layout on the home
+page. The narrow column is family 03 behaving correctly on the wrong page.
+
+Build in dependency order, because four families consume the same component:
+
+1. **`patterns/card` — §04 of the spec.** `feature · entry · compact · place ·
+   collection`. Families 01, 04, 05 and 07 are all card grids; build the card once
+   and four skeletons become possible. Nothing else unblocks as much.
+2. **`ui/carousel` — §06.** `track · slide · controls · counter · caption`. The
+   owner: images "go into carousels, they do not go into a sequence of images —
+   this changed a lot the navigation". Family 03 already says *"carousel sits
+   inside the measure"*, so entry pages get it with no layout change.
+3. **Family 01 home** — *"one feature card, then three entry cards. no sidebar."*
+   The feature card is the closest thing the spec has to a hero, and it is what
+   stops `/` being an article.
+4. **Family 04 collection** for `/collect` — *"two-up card grid, pink badges,
+   collect action per card"*. Then **06 tree**, **05 place**, **07 search**,
+   **08 form**.
+
+Do NOT widen family 03's measure to make the home page look wider. 66ch is the
+spec's rule for an entry page, and the home page simply is not one.
+
+Still open and needing a human:
+
+5. **Dropbox card art** — the only red check that isn't check-side.
+6. **4 route groups**, 215 live URLs — theme assets, orphan files, deploy artifacts,
    `%20` card URLs. Need the owner's knowledge. `ledger -- find routes/`
-3. **7 of 10 page families** unbuilt. Every route renders family 03.
 
 ### Type marks — where they stand
 
