@@ -25,7 +25,7 @@ const SITE_DIR = {
   collect: join(LEGACY, 'collect.maar.world'),
   tree: join(LEGACY, 'tree.maar.world'),
 };
-const PAGES = join(ROOT, 'src/content/pages');
+const PAGES = join(ROOT, 'src/content/migrated');
 const MEDIA = join(ROOT, 'media');
 
 /** Routes in the frozen manifest, so they ship whether or not a page links them. */
@@ -47,9 +47,20 @@ for (const [area, path] of CONTRACT_ASSETS) want(area, path);
 
 const REF_RE = /["'(](\/?(?:img|assets)\/[^"')\s>]+)/g;
 
-for (const name of readdirSync(PAGES)) {
-  if (!name.endsWith('.md') && !name.endsWith('.mdx')) continue;
-  const raw = readFileSync(join(PAGES, name), 'utf8');
+/** Every migrated record, at any depth — the pages source is a tree now. */
+function walkRecords(dir) {
+  if (!existsSync(dir)) return [];
+  const out = [];
+  for (const name of readdirSync(dir).sort()) {
+    const abs = join(dir, name);
+    if (statSync(abs).isDirectory()) out.push(...walkRecords(abs));
+    else if (name.endsWith('.md') || name.endsWith('.mdx')) out.push(abs);
+  }
+  return out;
+}
+
+for (const abs of walkRecords(PAGES)) {
+  const raw = readFileSync(abs, 'utf8');
   const area = (/^area:\s*"([a-z]+)"/m.exec(raw) || [])[1];
   if (!area) continue;
 

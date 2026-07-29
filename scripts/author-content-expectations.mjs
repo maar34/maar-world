@@ -59,14 +59,19 @@
  * floor under the build.
  */
 
-import { readdirSync, readFileSync, writeFileSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { ROOT, indexDist, readDistFile } from './lib/artifacts.mjs';
 import { resolveRoute } from './lib/routes.mjs';
 import { mainContent } from './verify-content.mjs';
 
-const PAGES = join(ROOT, 'src/content/pages');
+/**
+ * Both page sources. `migrated/` is generated, `authored/` is hand-written, and
+ * this audit wants every record either way: a page with no production baseline
+ * is worth a human look whichever directory it came from.
+ */
+const PAGE_DIRS = [join(ROOT, 'src/content/migrated'), join(ROOT, 'src/content/authored')];
 
 /** Read-only legacy checkouts. Never written to. */
 const LEGACY_SITE = {
@@ -475,11 +480,21 @@ for (const url of [...production.keys()].sort()) {
  * appearing here is either a new page or a broken servedAt join, and both are
  * worth a human look.
  */
+/** Every record under a page source, at any depth. */
+function walkRecords(dir) {
+  if (!existsSync(dir)) return [];
+  const out = [];
+  for (const name of readdirSync(dir).sort()) {
+    const abs = join(dir, name);
+    if (statSync(abs).isDirectory()) out.push(...walkRecords(abs));
+    else if (name.endsWith('.md') || name.endsWith('.mdx')) out.push(abs);
+  }
+  return out;
+}
+
 const withoutProduction = [];
-for (const name of readdirSync(PAGES).sort()) {
-  if (!name.endsWith('.md') && !name.endsWith('.mdx')) continue;
-  const outputPath =
-    (/^outputPath:\s*"(.*)"$/m.exec(readFileSync(join(PAGES, name), 'utf8')) || [])[1];
+for (const abs of PAGE_DIRS.flatMap(walkRecords)) {
+  const outputPath = (/^outputPath:\s*"(.*)"$/m.exec(readFileSync(abs, 'utf8')) || [])[1];
   if (!outputPath) continue;
   const url = `/${outputPath.replace(/(^|\/)index$/, '')}`.replace(/\/(?=$)/, '') || '/';
   if (!production.has(url)) withoutProduction.push(url);

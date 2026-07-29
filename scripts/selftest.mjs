@@ -661,6 +661,48 @@ check('allowlisted scaffolding passes verify:routes and is printed', (root) => {
   return { ok, detail: ok ? 'exit 0, allowlist entry printed' : `expected exit 0 + printed list, got ${code}\n${out}` };
 });
 
+// A page written by hand into src/content/authored/ is authorised by existing.
+// This is the half of the two-jobs split that lets the site grow: before it,
+// the frozen production manifest was also acting as the route allowlist, so
+// every new page failed as an extra and publishing required relocking a
+// contract that describes sites which are being switched off.
+check('an authored page passes verify:routes', (root) => {
+  goodFixture(root);
+  writeFileSync(
+    join(root, 'dist', 'new-post.html'),
+    '<!doctype html><html><head><title>new</title></head><body><p>authored</p></body></html>',
+  );
+  mkdirSync(join(root, 'src/content/authored'), { recursive: true });
+  writeFileSync(
+    join(root, 'src/content/authored/new-post.md'),
+    '---\noutputPath: "new-post"\ntitle: "New"\narea: "maar"\nkind: "page"\n---\n\nbody\n',
+  );
+  const { code, out } = run(root, 'verify-routes.mjs');
+  // `extra of` appears only in the FAIL detail — the PASS line quotes the
+  // assertion's own name, which contains "no production route asks for", so a
+  // negative match on that phrase passes vacuously.
+  const ok = code === 0 && !/extra of/.test(out);
+  return { ok, detail: ok ? 'exit 0, authored route accepted' : `expected exit 0, got ${code}\n${out}` };
+});
+
+// ...and the split must not become a hole. An emitted page with no authored
+// record behind it still fails, even with the authored directory present.
+check('an unbacked page still fails when an authored directory exists', (root) => {
+  goodFixture(root);
+  writeFileSync(
+    join(root, 'dist', 'leftover.html'),
+    '<!doctype html><html><head><title>leftover</title></head><body><p>orphan</p></body></html>',
+  );
+  mkdirSync(join(root, 'src/content/authored'), { recursive: true });
+  writeFileSync(
+    join(root, 'src/content/authored/other.md'),
+    '---\noutputPath: "other"\ntitle: "Other"\narea: "maar"\nkind: "page"\n---\n\nbody\n',
+  );
+  const { code, out } = run(root, 'verify-routes.mjs');
+  const ok = code === 1 && /leftover\.html/.test(out);
+  return { ok, detail: ok ? 'exit 1, unbacked page still reported' : `expected exit 1, got ${code}\n${out}` };
+});
+
 // --- F8: the policy/manifest join is checked in both directions ----------
 
 check('a policy for a route not in the manifest fails verify:routes', (root) => {

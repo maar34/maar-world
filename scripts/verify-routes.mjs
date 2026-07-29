@@ -11,8 +11,8 @@
  * exist in the build is the `/collect/*` or `/tree/*` path, not the original.
  */
 
-import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { resolve, join } from 'node:path';
 import { runStandalone } from './lib/report.mjs';
 import { ARTIFACTS, ROOT, has, loadJson, indexDist } from './lib/artifacts.mjs';
 import { resolveRoute } from './lib/routes.mjs';
@@ -35,6 +35,35 @@ function loadScaffolding() {
     files: (raw.files || []).map((f) => (typeof f === 'string' ? { path: f, reason: '' } : f)),
     prefixes: (raw.prefixes || []).map((p) => (typeof p === 'string' ? { path: p, reason: '' } : p)),
   };
+}
+
+/**
+ * The outputPath of every hand-written page record.
+ *
+ * Read straight from `src/content/authored/**`, which is the same directory the
+ * `pages` collection globs, so there is no second list to keep in step — a page
+ * is authorised by existing, and de-authorised by being deleted. Frontmatter is
+ * matched rather than parsed because this check must not depend on a YAML
+ * library or on Astro being able to build.
+ *
+ * Migrated records are deliberately NOT read here. They are already authorised
+ * by the policy, and reading them would let a migration bug authorise its own
+ * output.
+ */
+export function authoredRoutes(dir = join(ROOT, 'src/content/authored')) {
+  if (!existsSync(dir)) return [];
+  const out = [];
+  for (const name of readdirSync(dir).sort()) {
+    const abs = join(dir, name);
+    if (statSync(abs).isDirectory()) {
+      out.push(...authoredRoutes(abs));
+      continue;
+    }
+    if (!name.endsWith('.md') && !name.endsWith('.mdx')) continue;
+    const m = /^outputPath:\s*"(.*)"\s*$/m.exec(readFileSync(abs, 'utf8'));
+    if (m) out.push(m[1]);
+  }
+  return out;
 }
 
 export async function checkRoutes(report) {
@@ -141,6 +170,28 @@ export async function checkRoutes(report) {
       const file = resolveRoute(p.target, set);
       if (file) backed.add(file);
     }
+  }
+
+  /**
+   * Pages this site published itself, rather than inherited from production.
+   *
+   * THIS IS THE TWO-JOBS SPLIT. `routes/manifest.production.json` answers "did
+   * anything production served disappear", which is right forever. It was also
+   * answering "may this URL exist at all", which is right only until cutover —
+   * a frozen crawl of the old sites cannot authorise a page written next year,
+   * so before this every new page failed as an extra and the site could not
+   * grow without relocking a contract.
+   *
+   * So the allowed set is now `preserved ∪ authored`. Authored routes are not a
+   * second frozen file — they are read from the records themselves, so
+   * publishing is one file and nothing else. The fidelity half is untouched:
+   * `backed` above is still built from the policy alone, and a preserved route
+   * that stops resolving still fails.
+   */
+  const authored = authoredRoutes();
+  for (const outputPath of authored) {
+    const file = resolveRoute(`/${outputPath}`, set);
+    if (file) backed.add(file);
   }
 
   const scaffolding = loadScaffolding();

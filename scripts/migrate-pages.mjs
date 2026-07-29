@@ -42,7 +42,7 @@
  */
 
 import { readdirSync, readFileSync, writeFileSync, existsSync, statSync, mkdirSync, rmSync } from 'node:fs';
-import { join, relative, sep } from 'node:path';
+import { join, relative, sep, dirname } from 'node:path';
 import { ROOT } from './lib/artifacts.mjs';
 import { normaliseHeadingLevels } from './lib/headings.mjs';
 import { markHeadingText } from '../src/lib/mark.mjs';
@@ -55,7 +55,18 @@ const SITES = {
   'tree.maar.world': join(LEGACY, 'tree.maar.world'),
 };
 const AREA = { 'maar.world': 'maar', 'collect.maar.world': 'collect', 'tree.maar.world': 'tree' };
-const OUT = join(ROOT, 'src/content/pages');
+/**
+ * The migration's OWN directory, and the only one it may write to.
+ *
+ * `src/content/authored/` sits beside it and is never touched by any script —
+ * that is where a page written by hand lives. Both are globbed into the single
+ * `pages` collection by src/content.config.ts, so a migrated page and an
+ * authored one are the same kind of record and share one schema and one route.
+ *
+ * The split exists because this directory is WIPED on every run (below). That
+ * is correct for generated output and fatal for anything written by a person.
+ */
+const OUT = join(ROOT, 'src/content/migrated');
 
 const policy = JSON.parse(readFileSync(join(ROOT, 'routes/policy.json'), 'utf8'));
 const manifest = JSON.parse(readFileSync(join(ROOT, 'routes/manifest.production.json'), 'utf8'));
@@ -1522,9 +1533,28 @@ function documentTitleFrom(key, origin, pageTitle, problems) {
   return `${pageTitle} - ${BRAND[origin] ?? BRAND['maar.world']}`;
 }
 
-/** outputPath -> a filename that survives every filesystem, reversibly. */
+/**
+ * outputPath -> a path on disk that mirrors the URL, reversibly.
+ *
+ * Each `/` becomes a real directory. It used to become `__`, which meant 95
+ * files sat in one directory carrying a four-level tree in their names —
+ * `collect__docs__ent-cards__nfc.md` — and finding a page meant knowing the
+ * encoding rather than the URL.
+ *
+ * Within a segment the escaping is unchanged: anything outside
+ * `[A-Za-z0-9._-]` becomes `~<hex>`, so a space is `~20`. That is deliberately
+ * NOT relaxed. One Collect card path is
+ * `collect/cards/032_-maar-sky-sounds.3-card X ` — with an internal space AND a
+ * trailing one — and a filename ending in a space is the kind of thing git,
+ * Windows and archive tools each mishandle differently. The directories are
+ * what needed to become real; the escaping was never the problem.
+ *
+ * Returns a relative path with `/` separators; the caller makes the directories.
+ */
 function fileNameFor(outputPath) {
-  return `${outputPath.replace(/\//g, '__').replace(/[^A-Za-z0-9._-]/g, (c) => `~${c.charCodeAt(0).toString(16).padStart(2, '0')}`)}.md`;
+  const escape = (segment) =>
+    segment.replace(/[^A-Za-z0-9._-]/g, (c) => `~${c.charCodeAt(0).toString(16).padStart(2, '0')}`);
+  return `${outputPath.split('/').map(escape).join('/')}.md`;
 }
 
 const yaml = (v) => (Array.isArray(v) ? `[${v.map((x) => JSON.stringify(x)).join(', ')}]` : JSON.stringify(v));
@@ -1722,7 +1752,9 @@ for (const m of matched) {
   }
 
   const fm = Object.entries(record).map(([k, v]) => `${k}: ${yaml(v)}`).join('\n');
-  writeFileSync(join(OUT, fileNameFor(outputPath)), `---\n${fm}\n---\n\n${finalBody}\n`);
+  const outFile = join(OUT, fileNameFor(outputPath));
+  mkdirSync(dirname(outFile), { recursive: true });
+  writeFileSync(outFile, `---\n${fm}\n---\n\n${finalBody}\n`);
   emitted.add(outputPath);
   written.push(outputPath);
 }
