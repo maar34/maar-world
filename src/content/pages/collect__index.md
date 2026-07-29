@@ -77,7 +77,7 @@ Explore a new musical dimension with Sky Sounds, a collection of cards that open
 <div class="swiper__wrapper">
 <!-- Slide 1 -->
 <div class="swiper__slide">
-<img class="lightbox-ignore" src="/img/landing/2024_ss-12.jpeg"/>
+<img class="lightbox-ignore" src="/img/landing/2024_ss-12.jpeg" alt=""/>
 <div class="text-content">
 <h2>I</h2>
 <p>Choose a Sky Sound card that resonates with you and tempts you to explore its soundscapes.</p>
@@ -85,7 +85,7 @@ Explore a new musical dimension with Sky Sounds, a collection of cards that open
 </div>
 <!-- Slide 2 -->
 <div class="swiper__slide">
-<img class="lightbox-ignore" src="/img/landing/2024_ss-10.jpeg"/>
+<img class="lightbox-ignore" src="/img/landing/2024_ss-10.jpeg" alt=""/>
 <div class="text-content">
 <h2>II</h2>
 <p>For physical editions, scan the card with your smartphone or NFC reader on your PC to access its contents. Discover hidden parameters in for digital cards.</p>
@@ -93,7 +93,7 @@ Explore a new musical dimension with Sky Sounds, a collection of cards that open
 </div>
 <!-- Slide 3 -->
 <div class="swiper__slide">
-<img class="lightbox-ignore" src="/img/landing/2024_ss-8.jpeg"/>
+<img class="lightbox-ignore" src="/img/landing/2024_ss-8.jpeg" alt=""/>
 <div class="text-content">
 <h2>III</h2>
 <p>Play the music associated with the card to immerse yourself in its sound universe.</p>
@@ -101,7 +101,7 @@ Explore a new musical dimension with Sky Sounds, a collection of cards that open
 </div>
 <!-- Slide 4 -->
 <div class="swiper__slide">
-<img class="lightbox-ignore" src="/img/landing/2024_ss-11.jpeg"/>
+<img class="lightbox-ignore" src="/img/landing/2024_ss-11.jpeg" alt=""/>
 <div class="text-content">
 <h2>IV</h2>
 <p>Add more cards to your composition. You can include as many cards as your device can handle, further enriching and personalizing your musical experience.</p>
@@ -109,7 +109,7 @@ Explore a new musical dimension with Sky Sounds, a collection of cards that open
 </div>
 <!-- Slide 5 -->
 <div class="swiper__slide">
-<img class="lightbox-ignore" src="/img/landing/2024_ss-2.jpeg"/>
+<img class="lightbox-ignore" src="/img/landing/2024_ss-2.jpeg" alt=""/>
 <div class="text-content">
 <h2>V</h2>
 <p>Transform the music using the effects and loops provided by the card, creating your own version or musical piece.</p>
@@ -151,7 +151,7 @@ Explore a new musical dimension with Sky Sounds, a collection of cards that open
 <a href=" https://maar-world.bandcamp.com/merch">
 <div class="card card--clickable">
 <div class="card__image">
-<img class="image" src="/img/landing/2024_ss-7.jpeg"/>
+<img class="image" src="/img/landing/2024_ss-7.jpeg" alt=""/>
 <div class="card__content">
 <p>Get 11 cards envelope 33€</p>
 </div>  </div>

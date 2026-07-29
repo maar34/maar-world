@@ -58,7 +58,7 @@ source: "maar.world/collections/_pages/radio.md"
 
 <div class="cards-container">
 <div class="card__image">
-<img class="image" src="/img/radio/card-banner-3.png"/>
+<img class="image" src="/img/radio/card-banner-3.png" alt="ENT card: the voice of water is heard"/>
 </div>
 <div class="card__content">
 <div class="card__header">
@@ -69,7 +69,7 @@ source: "maar.world/collections/_pages/radio.md"
 </div>
 <div class="cards-container">
 <div class="card__image">
-<img class="image" src="/img/radio/card-banner-2.png"/>
+<img class="image" src="/img/radio/card-banner-2.png" alt="ENT card: strange birds ride the wind in groups of six"/>
 </div>
 <div class="card__content">
 <div class="card__header">
@@ -81,7 +81,7 @@ source: "maar.world/collections/_pages/radio.md"
 
 <div class="cards-container">
 <div class="card__image">
-<img class="image" src="/img/radio/card-banner-1.png"/>
+<img class="image" src="/img/radio/card-banner-1.png" alt="ENT card: contrast between water and the form taken by the movement of the water on the surface"/>
 </div>
 <div class="card__content">
 <div class="card__header">

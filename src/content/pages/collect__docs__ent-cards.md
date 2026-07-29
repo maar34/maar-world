@@ -41,7 +41,7 @@ On the back side of the card, you'll find:
 <div class="card-columns">
 <div class="card-border">
 <div class="card__image">
-<img class="image" src="/img/docs/covers/qr-technology.jpg"/>
+<img class="image" src="/img/docs/covers/qr-technology.jpg" alt=""/>
 </div>
 <div class="card__content">
 <div class="card__header">

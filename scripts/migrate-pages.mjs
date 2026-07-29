@@ -788,6 +788,63 @@ function dedentHtmlBlocks(body, problems = [], where = '') {
   return out.join('\n');
 }
 
+/**
+ * The `alt` a raw `<img>` in a legacy body is missing.
+ *
+ * Markdown image syntax cannot omit `alt`; raw `<img>` can, and the legacy
+ * bodies do it twelve times. An `<img>` with no `alt` attribute is announced by
+ * a screen reader as its filename — "2024 underscore ss dash 12 dot jpeg" — so
+ * the absence is not neutral, it is noise. `alt=""` is the correct value only
+ * when the image adds nothing a reader would otherwise miss.
+ *
+ * Keyed by `page key|src`, because the same file can be decorative on one page
+ * and load-bearing on another. Every entry states which it is:
+ *
+ * - `/collect` swiper slides and the bandcamp thumbnail sit immediately beside
+ *   the numbered step they illustrate ("I. Choose a Sky Sound card…"), and the
+ *   bandcamp card repeats "Get 11 cards envelope 33€" underneath. Announcing
+ *   them would read the same sentence twice, so they are decorative: `alt=""`.
+ * - `/collect/docs/ent-cards`'s QR illustration has its explanation in the
+ *   paragraph it heads. Decorative.
+ * - `/radio`'s three banners are NOT decorative. Each is a rendered ENT card
+ *   whose face carries a line of text that appears nowhere else on the page,
+ *   so the alt carries that line.
+ *
+ * Anything not listed is emitted as `alt=""` and reported, so a new alt-less
+ * image shows up in the migration output rather than shipping silently.
+ */
+const IMAGE_ALT = new Map([
+  ['collect|/img/landing/2024_ss-12.jpeg', ''],
+  ['collect|/img/landing/2024_ss-10.jpeg', ''],
+  ['collect|/img/landing/2024_ss-8.jpeg', ''],
+  ['collect|/img/landing/2024_ss-11.jpeg', ''],
+  ['collect|/img/landing/2024_ss-2.jpeg', ''],
+  ['collect|/img/landing/2024_ss-7.jpeg', ''],
+  ['collect/docs/ent-cards|/img/docs/covers/qr-technology.jpg', ''],
+  ['radio|/img/radio/card-banner-3.png', 'ENT card: the voice of water is heard'],
+  ['radio|/img/radio/card-banner-2.png', 'ENT card: strange birds ride the wind in groups of six'],
+  [
+    'radio|/img/radio/card-banner-1.png',
+    'ENT card: contrast between water and the form taken by the movement of the water on the surface',
+  ],
+]);
+
+function addMissingAlt(html, problems, where) {
+  return html.replace(/<img\b[^>]*>/gi, (m) => {
+    if (/\balt\s*=/i.test(m)) return m;
+    const src = /\bsrc\s*=\s*["']([^"']+)["']/i.exec(m);
+    const key = `${where}|${src ? src[1].trim() : ''}`;
+    const known = IMAGE_ALT.has(key);
+    const alt = known ? IMAGE_ALT.get(key) : '';
+    if (!known) {
+      problems.push(
+        `${where}: <img> without alt and without a recorded decision (${src ? src[1] : 'no src'}) — emitted alt="" as decorative`,
+      );
+    }
+    return m.replace(/\s*(\/?)>$/, ` alt="${escapeAttr(alt)}"$1>`);
+  });
+}
+
 function transform(body, ctx) {
   const problems = [];
   let out = body;
@@ -901,6 +958,8 @@ function transform(body, ctx) {
     problems.push(`${ctx.key}: dropped dead legacy <img> /${p} (absent from the legacy checkout)`);
     return '';
   });
+
+  out = addMissingAlt(out, problems, ctx.key);
 
   /**
    * Kramdown inline attribute lists — `{:.success}`, `{:.border.rounded}`. They
