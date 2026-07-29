@@ -168,10 +168,57 @@ diff the content expectations deliberately.
 
 ---
 
+## The pages look raw — real, measured, and MW-11's other half
+
+Observed at this stop, not a suspicion:
+
+```
+distinct classes in migrated bodies: 146  |  with CSS: 5  |  with NO CSS: 141
+```
+
+**Styled:** the shell only — `src/styles/{tokens,type,reset,shell}.css` (~49 KB shipped),
+`src/layouts/BaseLayout.astro` + `shell-dark/` + `shell-paper/`,
+`src/components/ui/{SiteHeader,SiteFooter,SkipLink,InstagramMark}`, `patterns/GlyphRun`,
+the Helix island, the card pages' own scoped styles, and the embed facades.
+
+**Not styled:** every migrated body still carries legacy TeXt-theme class names, and that
+theme's stylesheet was deliberately never migrated — it is the same theme that carried
+Disqus, Google Fonts and the analytics chrome the invariants forbid. Busiest orphans:
+`index-row__tag` ×87, `hero` ×45, `container` ×41, `hero__content` ×40,
+`responsive-iframe` ×39, `swiper__slide` ×38, `hero--center` ×35, `lightbox-ignore` ×35,
+`button` ×34, `card-unlock` / `card-snippet` / `card-player-note` ×34 each.
+
+What a reader sees: `hero` blocks render as plain flow, the five `/collect` swiper slides
+stack vertically instead of sliding, every `class="button"` is a bare link. **`index-row*`
+is unstyled too** — that is the Lab index a previous session built.
+
+1. **Not a content defect.** `verify:content` asserts headings, text length, images,
+   embeds and links — never CSS. A page can be fully content-correct and look like this.
+   Do not chase it through the migration scripts.
+2. **Out of the previous session's boundary.** `src/styles/**`, `src/components/**` and
+   `src/layouts/**` were all do-not-touch.
+3. **MW-11 is already BLOCKED on precisely this.** Ledger `048bf90 — MW-11: BLOCKED —
+   site shell needs the live design spec, DesignSync unreachable`; `HANDOFF.md` records
+   that the DesignSync MCP was unreachable during MW-9 so
+   `Maar World Design System.dc.html` could not be read; `OPERATING-RULES.md` forbids
+   caching design values from an earlier session. **Get that MCP reachable before styling
+   anything** — otherwise the next agent invents a design system, which the rules
+   explicitly prohibit ("implement only what is settled and log the rest as BLOCKED. Do
+   not invent the missing half.").
+
+**Owner decision that sizes the job:** should the 141 legacy class names be *restyled*
+(write CSS for `hero`, `swiper`, `grid`, `cell`… against the design tokens) or *replaced*
+(rewrite the bodies in the migration to emit the new design system's markup)? The second
+is more work but stops the dead theme's vocabulary becoming permanent. Design decision,
+not an implementation one.
+
+---
+
 ## Suggested next steps
 
-1. **MW-11 a11y / responsive sign-off** — the only thing left before the hard stop.
-   MW-10 and MW-12 are human-gated; do not start them.
+1. **MW-11 has two halves.** The a11y / responsive sign-off is one; applying the design to
+   the page bodies is the other, and it is blocked on the DesignSync MCP plus the
+   restyle-vs-replace decision above. MW-10 and MW-12 are human-gated; do not start them.
 2. Decide the ip-orchestra avatar question above.
 3. Optionally, with the boundary widened: close the 49 by fixing
    `author-content-expectations.mjs` (exclude `<head>` from the production body measure;
@@ -184,5 +231,8 @@ diff the content expectations deliberately.
   conventions in this repo family.
 - `ship` — only once MW-11 signs off and work is genuinely finished; it verifies, merges,
   propagates and closes out in one pass.
-- No design-library skill applies: this session touched no UI. If the next session does
-  touch components, `ps-design-lib-first` is binding.
+- `ps-design-lib-first` — **binding** for the styling half of MW-11. Look up the design
+  library's real components, variants and props before writing any UI; never hand-roll
+  what it already ships; add missing components to the lib rather than improvising in the
+  app. Combine with `OPERATING-RULES.md`'s "re-read the Claude Design project before
+  implementing any component — it is actively edited and will have changed".
