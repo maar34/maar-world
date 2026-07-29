@@ -4,7 +4,6 @@ title: "Helix — Requisitos técnicos - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
-inNav: false
 tags: ["ES", "Helix", "EAC", "Montevideo", "instalacion", "interaccion", "red", "Plantasia"]
 source: "maar.world/collections/_lab/es/2026-03-24-Helix-EAC-Montevideo.md"
 lang: "es"

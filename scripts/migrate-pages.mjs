@@ -1605,7 +1605,6 @@ for (const m of matched) {
     area,
     kind,
     surface: kind === 'doc' ? 'paper' : 'dark',
-    inNav: false,
     tags: typeof data.tags === 'string' ? data.tags.split(/\s+/).filter(Boolean) : [],
     source: `${m.meta.origin}/${m.source.rel}`,
   };

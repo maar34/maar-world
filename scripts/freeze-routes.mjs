@@ -36,6 +36,7 @@ import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { createHash } from 'node:crypto';
 import { ROOT } from './lib/artifacts.mjs';
+import { plainText, decodeAttrEntities } from './lib/html-text.mjs';
 
 const SITES = ['maar.world', 'collect.maar.world', 'tree.maar.world'];
 const USER_AGENT = 'maar-world-route-freeze/1.0 (+migration contract crawler)';
@@ -99,28 +100,21 @@ const HOST_FILES = [
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const text = (html) =>
-  html
-    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+/**
+ * The function that DEFINES `textSha256` in the frozen manifest.
+ *
+ * Shared with author-content-expectations.mjs, which recomputes the same hash
+ * to decide whether a legacy build reproduces production. They were two
+ * identical copies; they are one function now, so the comparison is structural.
+ */
+const text = plainText;
 
 /**
  * Decode the HTML entities that appear in attribute values. Without this an
  * `href` written as `?a=1&amp;raw=1` is recorded as a URL literally containing
  * "&amp;", which is not the URL production actually requests.
  */
-const decodeEntities = (s) =>
-  s
-    .replace(/&amp;/gi, '&')
-    .replace(/&lt;/gi, '<')
-    .replace(/&gt;/gi, '>')
-    .replace(/&quot;/gi, '"')
-    .replace(/&#0?39;|&apos;/gi, "'")
-    .replace(/&#x2F;/gi, '/');
+const decodeEntities = decodeAttrEntities;
 
 const attr = (tag, name) => {
   const m = new RegExp(`\\b${name}\\s*=\\s*["']([^"']*)["']`, 'i').exec(tag);

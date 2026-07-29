@@ -4,7 +4,6 @@ title: "Docs - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "page"
 surface: "dark"
-inNav: false
 tags: []
 source: "collect.maar.world/collections/_pages/documentation.html"
 lang: "en"

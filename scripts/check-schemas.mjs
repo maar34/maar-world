@@ -80,14 +80,34 @@ const cases = [
     { ...validCard, source: 'somewhere_else' },
     false,
   ],
-  ['accepts a genesis record', 'genesis', { permalink: '/skyl0', key: 'genesis' }, true],
+  // The `genesis`, `lab` and `docs` collections are gone — see
+  // docs/adr/0001-one-pages-collection.md. A Lab article is a `pages` record
+  // with `kind: 'lab'`, and these two cases assert that shape instead.
   [
-    'rejects a lab article without a language',
-    'lab',
-    { title: 'interplanetary players', tags: [] },
+    'rejects a page without a language',
+    'pages',
+    { outputPath: 'lab/en/x', title: 'interplanetary players', area: 'maar', kind: 'lab' },
     false,
   ],
-  ['accepts a lab article', 'lab', { title: 'interplanetary players', lang: 'en', tags: ['EN'] }, true],
+  [
+    'accepts a lab article as a page record',
+    'pages',
+    { outputPath: 'lab/en/x', title: 'interplanetary players', area: 'maar', kind: 'lab', lang: 'en', tags: ['EN'] },
+    true,
+  ],
+  [
+    'accepts a page carrying a translationKey',
+    'pages',
+    {
+      outputPath: 'lab/es/cultura-compartida',
+      title: 'cultura compartida',
+      area: 'maar',
+      kind: 'lab',
+      lang: 'es',
+      translationKey: '2026-01-07-music-access-human-mind',
+    },
+    true,
+  ],
   [
     'rejects a page in an unknown area',
     'pages',

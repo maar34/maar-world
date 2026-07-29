@@ -34,6 +34,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { runStandalone } from './lib/report.mjs';
 import { ARTIFACTS, indexDist } from './lib/artifacts.mjs';
+import { readableText, mainOf } from './lib/html-text.mjs';
 
 // ── html helpers ──────────────────────────────────────────────────────────
 
@@ -57,31 +58,11 @@ export function attrsOf(tag) {
   return out;
 }
 
-const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', '#39': "'", '#x27': "'" };
+/** Text a reader would hear. The one form that decodes entities properly. */
+export const textOf = readableText;
 
-/** Text a reader would hear, with markup and comments gone and entities decoded. */
-export function textOf(html) {
-  return html
-    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<!--[\s\S]*?-->/g, ' ')
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (m, name) => {
-      const key = name.toLowerCase();
-      if (key in ENTITIES) return ENTITIES[key];
-      if (key.startsWith('#x')) return String.fromCodePoint(parseInt(key.slice(2), 16));
-      if (key.startsWith('#')) return String.fromCodePoint(parseInt(key.slice(1), 10));
-      return ' ';
-    })
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-/** The shell owns <main>; page content is what is inside it. */
-function mainOf(html) {
-  const m = /<main\b[^>]*>([\s\S]*)<\/main>/i.exec(html);
-  return m ? m[1] : html;
-}
+/* The shell owns <main>; page content is what is inside it. mainOf is shared
+   with verify:content, which had its own copy under a different name. */
 
 /**
  * Whether an element is hidden from assistive technology.

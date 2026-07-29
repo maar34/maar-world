@@ -14,7 +14,7 @@
  * the browser's own control, no script. See styles/shell.css for why the wide
  * navigation is a separate element rather than the same <details> forced open.
  */
-import { AREAS, type AreaName } from '../../config/site';
+import { AREAS, SECTIONS, type AreaName } from '../../config/site';
 
 interface Props {
   area?: AreaName;
@@ -28,36 +28,6 @@ const ORDER: readonly AreaName[] = ['maar', 'collect', 'tree'];
 
 /** An area's own root. Derived from AREAS.pathPrefix — never spelled twice. */
 const areaHome = (name: AreaName) => AREAS[name].pathPrefix || '/';
-
-/**
- * The section links for each area.
- *
- * These are the legacy header of each origin, measured from the live sites and
- * recorded in MIGRATION-LEDGER.md as `shell/legacy-nav-inventory`. They are a
- * restoration, not an invention — nothing is here that a visitor could not
- * already reach from that site's header.
- *
- * Two entries from that inventory are deliberately absent:
- *   - the cross-origin "Collect" / "Maar World" / "Tree" links, which are now
- *     the area row above rather than a link inside one area's sections;
- *   - Collect's "Buy Now", a Bandcamp storefront. MW-1 and MW-6 both forbid
- *     reintroducing commerce and COMMERCE.destinationUrl is null.
- *
- * The eventual source for this list is the `inNav` field on the page schema,
- * which is false on all 95 migrated pages today. Moving it there is a content
- * change, not a shell change.
- */
-const SECTIONS: Record<AreaName, { href: string; label: string }[]> = {
-  maar: [
-    { href: '/orbiters', label: 'Orbiters' },
-    { href: '/lab', label: 'Lab' },
-    { href: '/landings', label: 'Landings' },
-    { href: '/bookings', label: 'Bookings' },
-    { href: '/about', label: 'About' },
-  ],
-  collect: [{ href: '/collect/documentation', label: 'Docs' }],
-  tree: [],
-};
 
 const sections = SECTIONS[area];
 

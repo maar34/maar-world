@@ -4,7 +4,6 @@ title: "034_ Maar Sky Sounds Wild Card - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "collect-card"
 surface: "dark"
-inNav: false
 tags: []
 source: "collect.maar.world/collections/_cards/034_-maar-sky-sounds-wild-card.md"
 lang: "en"

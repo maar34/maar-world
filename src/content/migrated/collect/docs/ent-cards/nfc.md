@@ -4,7 +4,6 @@ title: "NFC - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
 surface: "paper"
-inNav: false
 tags: []
 source: "collect.maar.world/collections/_documentation/03-ent-cards/04-nfc.md"
 lang: "en"

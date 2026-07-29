@@ -4,7 +4,6 @@ title: "Orbits and Bodies - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
-inNav: false
 tags: ["EW", "orbiter", "EN", "performance", "audiovisual", "exoplanets"]
 source: "maar.world/collections/_lab/en/2025-08-24-01-Orbit-and-Bodies.md"
 lang: "en"

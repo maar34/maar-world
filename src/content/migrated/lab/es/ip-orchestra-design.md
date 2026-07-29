@@ -4,7 +4,6 @@ title: "Taller de creación orbital - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
-inNav: false
 tags: ["orbiter", "ES"]
 source: "maar.world/collections/_lab/es/2024-09-01-Taller de creación orbital.md"
 lang: "es"

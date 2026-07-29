@@ -4,7 +4,6 @@ title: "Orbital Creation Workshop: Orbiters Orchestra (EN) - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
-inNav: false
 tags: ["orbiter", "EN"]
 source: "maar.world/collections/_lab/en/2024-08-30-IP_Orchestra.md"
 lang: "en"

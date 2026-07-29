@@ -64,6 +64,7 @@ import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { ROOT, indexDist, readDistFile } from './lib/artifacts.mjs';
 import { resolveRoute } from './lib/routes.mjs';
+import { plainText, decodeAttrEntities } from './lib/html-text.mjs';
 import { mainContent } from './verify-content.mjs';
 
 /**
@@ -200,24 +201,19 @@ const EXCLUSIONS = [
 
 // ── HTML helpers ─────────────────────────────────────────────────────────────
 
-/** Same text extraction verify:content and freeze-routes.mjs use. */
-const stripTags = (html) =>
-  html
-    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+/**
+ * THE function verify:content and freeze-routes use — not a copy of it.
+ *
+ * This used to be a third byte-identical implementation, and the comment here
+ * read "Same text extraction verify:content and freeze-routes.mjs use", which
+ * was a claim rather than a guarantee. It matters more here than anywhere:
+ * `sha16(stripTags(html)) === prod.route.textSha256` below decides whether a
+ * page gets an exact baseline or a weaker fallback, and that comparison is only
+ * meaningful if both sides ran the same code.
+ */
+const stripTags = plainText;
 
-const decodeEntities = (s) =>
-  s
-    .replace(/&amp;/gi, '&')
-    .replace(/&lt;/gi, '<')
-    .replace(/&gt;/gi, '>')
-    .replace(/&quot;/gi, '"')
-    .replace(/&#0?39;|&apos;/gi, "'")
-    .replace(/&#x2F;/gi, '/');
+const decodeEntities = decodeAttrEntities;
 
 /**
  * Remove every element matching `openRe`, with its subtree, by counting

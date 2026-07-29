@@ -4,7 +4,6 @@ title: "MAX BERLIN NETWORK - TREE.MAAR.WORLD"
 area: "tree"
 kind: "page"
 surface: "dark"
-inNav: false
 tags: []
 source: "tree.maar.world/collections/_pages/max-network-berlin.html"
 lang: "en"

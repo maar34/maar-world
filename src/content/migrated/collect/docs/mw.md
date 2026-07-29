@@ -4,7 +4,6 @@ title: "Information - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
 surface: "paper"
-inNav: false
 tags: []
 source: "collect.maar.world/collections/_documentation/07-mw.md"
 lang: "en"

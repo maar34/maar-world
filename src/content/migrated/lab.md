@@ -4,7 +4,6 @@ title: "Lab - MAAR WORLD"
 area: "maar"
 kind: "page"
 surface: "dark"
-inNav: false
 tags: []
 source: "maar.world/collections/_pages/lab.md"
 lang: "en"

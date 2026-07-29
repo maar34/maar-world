@@ -4,7 +4,6 @@ title: "Sphe0 - MAAR WORLD"
 area: "maar"
 kind: "genesis"
 surface: "dark"
-inNav: false
 tags: []
 source: "maar.world/collections/_genesis/sphe0.md"
 lang: "en"

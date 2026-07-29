@@ -4,7 +4,6 @@ title: "Dadada (EN) - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
-inNav: false
 tags: ["EW", "orbiter", "EN"]
 source: "maar.world/collections/_lab/en/2023-12-09-Dadada.md"
 lang: "en"

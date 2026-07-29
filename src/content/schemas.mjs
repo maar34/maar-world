@@ -71,31 +71,6 @@ export const cardSchema = z
   .strict()
   .superRefine(noCommerceFields);
 
-export const genesisSchema = z
-  .object({
-    permalink,
-    titles: z.record(z.string(), z.string()).optional(),
-    key: z.string().optional(),
-    show_title: z.boolean().optional(),
-    noindex: z.boolean().optional(),
-  })
-  .strict()
-  .superRefine(noCommerceFields);
-
-export const labSchema = z
-  .object({
-    title: z.string().min(1),
-    lang: z.enum(['en', 'es']),
-    permalink: permalink.optional(),
-    date: z.coerce.date().optional(),
-    tags: z.array(z.string()).default([]),
-    excerpt: z.string().optional(),
-    cover: url.optional(),
-    noindex: z.boolean().optional(),
-  })
-  .strict()
-  .superRefine(noCommerceFields);
-
 /**
  * Every non-card page: Maar pages, Lab articles, genesis codes, Collect pages,
  * Collect documentation, the Collect card catalogue, and Tree.
@@ -152,7 +127,6 @@ export const pageSchema = z
     permalink: permalink.optional(),
     surface: z.enum(['dark', 'paper']).default('dark'),
     noindex: z.boolean().optional(),
-    inNav: z.boolean().default(false),
     tags: z.array(z.string()).default([]),
     source: z.string().optional(),
     description: z.string().optional(),
@@ -222,20 +196,7 @@ export const pageSchema = z
   .passthrough()
   .superRefine(noCommerceFields);
 
-export const docSchema = z
-  .object({
-    title: z.string().min(1),
-    permalink: permalink.optional(),
-    surface: z.enum(['dark', 'paper']).default('paper'),
-    noindex: z.boolean().optional(),
-  })
-  .strict()
-  .superRefine(noCommerceFields);
-
 export const SCHEMAS = {
   cards: cardSchema,
-  genesis: genesisSchema,
-  lab: labSchema,
   pages: pageSchema,
-  docs: docSchema,
 };

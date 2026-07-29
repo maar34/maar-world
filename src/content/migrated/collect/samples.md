@@ -4,7 +4,6 @@ title: "Entangled World Docs - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "page"
 surface: "dark"
-inNav: false
 tags: []
 source: "collect.maar.world/samples.html"
 lang: "en"

@@ -4,7 +4,6 @@ title: "Maar World - MAAR WORLD"
 area: "maar"
 kind: "index"
 surface: "dark"
-inNav: false
 tags: []
 source: "maar.world/index.md"
 lang: "en"

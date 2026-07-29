@@ -3,6 +3,22 @@ import { glob } from 'astro/loaders';
 import { SCHEMAS } from './content/schemas.mjs';
 
 /**
+ * TWO collections, not five.
+ *
+ * `genesis`, `lab` and `docs` were declared here with schemas and empty
+ * directories, and were read by nothing — `getCollection` is called for exactly
+ * `cards` and `pages`. They are the shape the repo was designed with before the
+ * migration, and the migration went another way for a stated reason: one flat
+ * `pages` collection keyed by `outputPath` is what lets 264 preserved
+ * production URLs collapse onto ~95 records, and what a Lab article IS is
+ * carried by the `kind` discriminator instead.
+ *
+ * They cost three `[glob-loader] No files found` warnings on every build and
+ * read to a newcomer as unfinished work. Removed, with the reasoning in
+ * docs/adr/0001-one-pages-collection.md so it is not re-invented.
+ */
+
+/**
  * Typed content collections.
  *
  * Content files are `.md` by default and `.mdx` only where a component is
@@ -21,14 +37,6 @@ export const collections = {
   cards: defineCollection({
     loader: glob({ pattern, base: './src/content/cards' }),
     schema: SCHEMAS.cards,
-  }),
-  genesis: defineCollection({
-    loader: glob({ pattern, base: './src/content/genesis' }),
-    schema: SCHEMAS.genesis,
-  }),
-  lab: defineCollection({
-    loader: glob({ pattern, base: './src/content/lab' }),
-    schema: SCHEMAS.lab,
   }),
   /**
    * Every non-card page, from BOTH of its sources.
@@ -50,9 +58,5 @@ export const collections = {
   pages: defineCollection({
     loader: glob({ pattern: `{migrated,authored}/${pattern}`, base: './src/content' }),
     schema: SCHEMAS.pages,
-  }),
-  docs: defineCollection({
-    loader: glob({ pattern, base: './src/content/docs' }),
-    schema: SCHEMAS.docs,
   }),
 };

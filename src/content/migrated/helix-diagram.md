@@ -4,7 +4,6 @@ title: "Helix Diagram"
 area: "maar"
 kind: "page"
 surface: "dark"
-inNav: false
 tags: []
 source: "maar.world/helix-diagram.html"
 lang: "en"

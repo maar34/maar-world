@@ -4,7 +4,6 @@ title: "033_ Maar Sky Sounds.3 Card xi - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "collect-card"
 surface: "dark"
-inNav: false
 tags: []
 source: "collect.maar.world/collections/_cards/033_-maar-sky-sounds.3-card XI.md"
 lang: "en"

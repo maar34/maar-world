@@ -19,6 +19,7 @@
  */
 
 import { createHash } from 'node:crypto';
+import { sha } from './lib/html-text.mjs';
 
 import { runStandalone } from './lib/report.mjs';
 import { ARTIFACTS, has, loadJson, indexDist, readDistFile } from './lib/artifacts.mjs';
@@ -55,7 +56,7 @@ function decodeEntities(s) {
     .replace(/&amp;/g, '&');
 }
 
-const fingerprint = (text) => createHash('sha256').update(text, 'utf8').digest('hex').slice(0, 32);
+const fingerprint = (text) => sha(text, 32);
 const uniqueSorted = (xs) => [...new Set(xs)].sort();
 const sameSet = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]);
 const onlyIn = (a, b) => a.filter((x) => !b.includes(x));

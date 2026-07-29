@@ -4,7 +4,6 @@ title: "Taller de creación orbital: Orbiters Orchestra (ES) - MAAR WORLD"
 area: "maar"
 kind: "lab"
 surface: "dark"
-inNav: false
 tags: ["orbiter", "ES"]
 source: "maar.world/collections/_lab/es/2024-08-30-IP_Orchestra.md"
 lang: "es"

@@ -4,7 +4,6 @@ title: "Rthw00 - MAAR WORLD"
 area: "maar"
 kind: "genesis"
 surface: "dark"
-inNav: false
 tags: []
 source: "maar.world/collections/_genesis/rthw00.md"
 lang: "en"

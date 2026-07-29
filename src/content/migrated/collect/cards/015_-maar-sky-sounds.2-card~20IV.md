@@ -4,7 +4,6 @@ title: "015_ Maar Sky Sounds.2 Card iv - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "collect-card"
 surface: "dark"
-inNav: false
 tags: []
 source: "collect.maar.world/collections/_cards/015_-maar-sky-sounds.2-card IV.md"
 lang: "en"

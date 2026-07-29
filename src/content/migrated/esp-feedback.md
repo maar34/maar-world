@@ -4,7 +4,6 @@ title: "1 Feedback Esp - MAAR WORLD"
 area: "maar"
 kind: "page"
 surface: "dark"
-inNav: false
 tags: []
 source: "maar.world/collections/_pages/1-feedback-esp.html"
 lang: "es"

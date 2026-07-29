@@ -16,6 +16,7 @@ import { spawnSync } from 'node:child_process';
 import { resolve } from 'node:path';
 import { runStandalone } from './lib/report.mjs';
 import { ARTIFACTS, ROOT, has, loadJson, indexDist, readDistFile } from './lib/artifacts.mjs';
+import { bodyText } from './lib/html-text.mjs';
 
 const WARNING_THRESHOLD = 0;
 
@@ -33,24 +34,12 @@ const MAX_THIN_PAGE_SHARE = 0.25;
 const THIN_BODY_TEXT = 100;
 
 const TITLE_RE = /<title[^>]*>([\s\S]*?)<\/title>/i;
-const BODY_RE = /<body[^>]*>([\s\S]*)<\/body>/i;
-
 /**
- * Visible text in the page body: no markup, no script, no style, no entities.
- * Deliberately crude — the question is "did this page render anything at all",
- * not "how does it read".
+ * Re-exported from lib so the selftest keeps its import. The body of it lives
+ * in scripts/lib/html-text.mjs alongside the two other forms, where the ways
+ * they differ are written down rather than left to be rediscovered.
  */
-export function bodyText(html) {
-  const body = BODY_RE.exec(html);
-  return (body ? body[1] : '')
-    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<!--[\s\S]*?-->/g, ' ')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&[a-zA-Z#0-9]+;/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
+export { bodyText };
 
 const median = (xs) => {
   if (!xs.length) return 0;

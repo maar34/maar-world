@@ -4,7 +4,6 @@ title: "Sky Sounds - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
 surface: "paper"
-inNav: false
 tags: []
 source: "collect.maar.world/collections/_documentation/02-ent-releases/01-skysounds.md"
 lang: "en"

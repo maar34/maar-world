@@ -26,15 +26,11 @@
  */
 
 import { runStandalone } from './lib/report.mjs';
+import { plainText, mainOf } from './lib/html-text.mjs';
 import { ARTIFACTS, has, loadJson, indexDist, readDistFile } from './lib/artifacts.mjs';
 import { resolveRoute } from './lib/routes.mjs';
 
-const stripTags = (html) => html.replace(/<script[\s\S]*?<\/script>/gi, ' ')
-  .replace(/<style[\s\S]*?<\/style>/gi, ' ')
-  .replace(/<[^>]+>/g, ' ')
-  .replace(/&nbsp;/g, ' ')
-  .replace(/\s+/g, ' ')
-  .trim();
+const stripTags = plainText;
 
 const countMatches = (html, re) => (html.match(re) || []).length;
 
@@ -52,13 +48,8 @@ const countMatches = (html, re) => (html.match(re) || []).length;
  * `<main>` is the landmark the shell already uses. A page without one is
  * measured whole, which is what every page did before the shell existed.
  */
-export function mainContent(html) {
-  const open = /<main\b[^>]*>/i.exec(html);
-  if (!open) return html;
-  const close = html.lastIndexOf('</main>');
-  if (close <= open.index) return html;
-  return html.slice(open.index + open[0].length, close);
-}
+/** Re-exported so existing importers keep working; the body lives in lib. */
+export const mainContent = mainOf;
 
 /** Print at most `n` lines, then say how many were withheld. */
 function list(problems, n = 12) {

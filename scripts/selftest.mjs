@@ -18,11 +18,12 @@ import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { CHECK_NAMES } from './verify.mjs';
+import { sha, plainText, bodyText, readableText, mainOf } from './lib/html-text.mjs';
 
 const SCRIPTS = resolve(dirname(fileURLToPath(import.meta.url)));
 
-/** Same fingerprint verify:cards uses for a frozen card description. */
-const fingerprint = (text) => createHash('sha256').update(text, 'utf8').digest('hex').slice(0, 32);
+/** THE fingerprint verify:cards uses — the same function, not a third copy. */
+const fingerprint = (text) => sha(text, 32);
 
 const cardTitle = (code) => `Fixture Card ${code}`;
 const cardDescription = (code) => `Frozen description for fixture card ${code}.`;
@@ -701,6 +702,49 @@ check('an unbacked page still fails when an authored directory exists', (root) =
   const { code, out } = run(root, 'verify-routes.mjs');
   const ok = code === 1 && /leftover\.html/.test(out);
   return { ok, detail: ok ? 'exit 1, unbacked page still reported' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// --- lib/html-text: the three forms, and why they must stay three --------
+// These exist to stop a future tidy-up from "unifying" them. plainText's exact
+// output is baked into routes/manifest.production.json as textSha256, so
+// changing it invalidates a frozen contract; the other two answer different
+// questions and decode differently on purpose.
+check('the three text forms differ in exactly the documented ways', () => {
+  const html = '<body><!-- c --><p>a&nbsp;b &amp; c &#8212; d</p><script>x()</script></body>';
+  const plain = plainText(html);
+  const body = bodyText(html);
+  const readable = readableText(html);
+  const ok =
+    plain.includes('&amp;') &&        // plainText decodes nothing but &nbsp;
+    plain.includes('c') &&
+    !body.includes('&amp;') &&        // bodyText turns every entity into a space
+    !body.includes('&') &&
+    readable.includes('&') &&         // readableText decodes properly...
+    readable.includes('\u2014') &&    // ...including numeric
+    !plain.includes('x()') &&         // none of them keep script contents
+    !body.includes('x()') &&
+    !readable.includes('x()');
+  return {
+    ok,
+    detail: ok
+      ? 'plain keeps entities, body blanks them, readable decodes them'
+      : `plain=${JSON.stringify(plain)} body=${JSON.stringify(body)} readable=${JSON.stringify(readable)}`,
+  };
+});
+
+// The pair that has to agree: freeze-routes computes textSha256 and
+// author-content-expectations recomputes it. They call one function now, but a
+// case that pins the fingerprint form is what makes that a guarantee.
+check('plainText is stable — the frozen manifest depends on it', () => {
+  const got = plainText('<div>  the <b>maar</b>&nbsp;remembers  </div>');
+  const ok = got === 'the maar remembers';
+  return { ok, detail: ok ? got : `got ${JSON.stringify(got)}` };
+});
+
+check('mainOf takes the LAST closing main, not the first', () => {
+  const got = mainOf('<body><main><div>a</div><section>b</section></main></body>');
+  const ok = got === '<div>a</div><section>b</section>';
+  return { ok, detail: ok ? 'inner content only' : `got ${JSON.stringify(got)}` };
 });
 
 // --- patterns/translations: the relation, tested directly ----------------
