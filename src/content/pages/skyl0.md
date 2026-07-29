@@ -17,7 +17,7 @@ Soundscapes from the north of Maar World, recorded when groundwater comes into c
 - Artwork: <a href="http://vrglit.ch/" rel="vrglitch" target="_blank">vrglitch</a> + Maar
  <br>
 
-### Download
+## Download
 
 Thanks for purchasing this composition, hope you enjoy it. 
 

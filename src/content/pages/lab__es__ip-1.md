@@ -19,7 +19,7 @@ date: "2023-08-25"
 *¿Pueden los sonidos desempeñar un papel en la recuperación de nuestra memoria? 
 ¿Es posible llamar a la memoria de culturas históricamente reprimidas?*
 
-#### Del arco de Tacuabé a la creacion con nuevos mundos.
+## Del arco de Tacuabé a la creacion con nuevos mundos.
 
 El 25 de febrero de 1833 partió un buque con rumbo a Francia con 33 personas a bordo. Entre ellas se encontraban cuatro indígenas: Guyunusa, el Cacique Charrúa Vaimaca Perú, el joven Tacuabé y el chamán Senaqué, equivocadamente conocidxs como “los últimos Charruas”. El joven guerrero Tacuabé llevó consigo un arco musical cordófono monocorde construido por él. En este instrumento tocaba compases ternarios obteniendo "sonidos dulces y armoniosos". Según documentos de la época, el instrumento era capaz de reproducir una octava, dentro de este registro el arco de Tacuabé podía dar un número infinito de notas, puesto que se trata de un instrumento atemperado en el que se pueden obtener hasta las menores subdivisiones del tono. El arco musical de Tacuabé es en realidad un cordófono que se encuentra presente en diversas culturas en todos los continentes. En Europa hay referencias de él hacia el año 1000, en Oceanía, en África y en toda América también hay ejemplos de este instrumento. 
 

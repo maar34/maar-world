@@ -23,11 +23,11 @@ The trinary logic allows the inhabitants to develop smart tools for integration 
 
 ![](/img/docs/mw/01-info.jpg)
 
-#### Beyond Conventions: Aural Creations Born at the Intersection of Art, Science, and Technology
+## Beyond Conventions: Aural Creations Born at the Intersection of Art, Science, and Technology
 
 Entangled creations born at the intersection of the physical and digital worlds, an imaginary that crosses the borders of scientific discoveries, technological development and artistic creation. Maar world is a proof of concept for a new era of aural creations in a creator-owned creative economy. 
 
-#### The Cosmopolitan Ancestry of Maar World: A Global Village Connected by Love and Creativity
+## The Cosmopolitan Ancestry of Maar World: A Global Village Connected by Love and Creativity
 
 All this work has been done by one artist supported by a beloved community. Maar World is born between individual and collective experiences. An accumulation of adventures between Uruguay, Chile, Spain Germany and a global upbringing.
 
@@ -37,7 +37,7 @@ A human-machine commonwealth, from the brush to the machine learning models that
 
 I hear this Earth calls to our love, let's create together protected areas to allow this planet to regenerate, and so heal and take care of ourselves.
 
-#### Kepler Telescope Discovers a Circumbinary P-type Planet with Unique Characteristics
+## Kepler Telescope Discovers a Circumbinary P-type Planet with Unique Characteristics
 
 <table>
 <tbody><tr><td>Circumbinary planet, P-type, semi-major axis: 0.699±0.003 AU.</td></tr></tbody>

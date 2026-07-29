@@ -17,7 +17,7 @@ Soundscapes from the south of Maar World. Storms and underwater life recordings.
 - Artwork: <a href="http://vrglit.ch/" rel="vrglitch" target="_blank">vrglitch</a> + Maar
  <br>
 
-### Download
+## Download
 
 Thanks for purchasing this composition, hope you enjoy it. 
 

@@ -16,13 +16,13 @@ date: "2024-08-30"
 
 # Taller de creación orbital: Orbiters Orchestra (ES)
 
-### 🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬
+## 🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬
 
-### Invitación
+## Invitación
 Desde la Universidad de las Artes en Guayaquil, estamos emocionados de presentar <a href="/lab/es/ip-orchestra-design">Orbiters Orchestra</a>, un taller que propone experiencias sensoriales únicas para la co-creación musical. Este evento está diseñado para fusionar disciplinas como las artes sonoras, la música, la producción musical, el teatro, la danza, el cine, la literatura, la pedagogía intercultural, las artes visuales y la programación, en un único y vibrante espacio creativo y transdisciplinario.
 Nos preguntamos: ¿Qué ideas pueden unir a las personas presentes en la sala de conciertos, en la ciudad, en el país, en el continente y en la Tierra? Nuestro taller explora estas conexiones a través del uso de meta-instrumentos musicales, que combinan características de varios instrumentos tradicionales y contemporáneos, en una sola interfaz. Esto permite a los participantes tocar distintos tipos de sonidos desde múltiples dispositivos en red, integrando los cuerpos con tecnologías y nuevos medios de interacción. 
 
-### Descripción del Taller
+## Descripción del Taller
 En nuestro laboratorio de creación implementaremos un proceso de investigación, diseñado para formar un ensamble donde no se requiere experiencia musical previa para participar. Invitamos a explorar con nosotros las infinitas posibilidades de la música y el sonido en un ambiente colaborativo y experimental.
 <a href="/lab/es/ip-orchestra-design">Orbiters Orchestra</a> propone la co-creación de una experiencia de arte integral, donde buscamos generar una experiencia significativa al integrar a artistas y al público presente, junto con medios artísticos y científicos. Transformamos ordenadores y móviles en meta-instrumentos musicales que combinan múltiples funcionalidades, sincronizando las creaciones tanto con el movimiento humano como con el de los planetas del sistema estelar Kepler-47, para co-crear paisajes sonoros con un toque de polvo de estrellas.
 
@@ -39,19 +39,19 @@ En nuestro laboratorio de creación implementaremos un proceso de investigación
 <div class="swiper__wrapper">
 <!-- Diapositiva 1 -->
 <div class="swiper__slide orb-slide">
-<h3 class="orb-step">I</h3>
+<h2 class="orb-step">I</h2>
 <div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/07_ip-card.jpg" alt="Carta layering"/></div>
 <div class="orb-desc">Explora la música superponiendo sonidos con controles que varían según las cartas que juegas, creando experiencias sonoras ricas y originales.</div>
 </div>
 <!-- Diapositiva 2 -->
 <div class="swiper__slide orb-slide">
-<h3 class="orb-step">II</h3>
+<h2 class="orb-step">II</h2>
 <div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/10_ip-transit.png" alt="Mapeo de tránsito"/></div>
 <div class="orb-desc">Recrea música de forma intuitiva; la creación sonora se vuelve accesible y divertida para todxs, desde músicos profesionales hasta quienes no tienen experiencia previa.</div>
 </div>
 <!-- Diapositiva 3 -->
 <div class="swiper__slide orb-slide">
-<h3 class="orb-step">III</h3>
+<h2 class="orb-step">III</h2>
 <div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/08_ip-max-24.jpg" alt="Patch taller"/></div>
 <div class="orb-desc">Estamos al inicio de este viaje. Inscríbete para co-crear la primera Orbiters Orchestra.</div>
 </div>
@@ -60,7 +60,7 @@ En nuestro laboratorio de creación implementaremos un proceso de investigación
 <div class="swiper__button swiper__button--next fas fa-chevron-right"></div>
 </div>
 
-### Programación
+## Programación
 11 de septiembre 2024: Dia 1 de taller. 10:00am 01:00pm <br>
 12 de septiembre 2024: Día 2 de taller. 10:00am 01:00pm <br>
 13 de septiembre 2024: Día 3 de taller. 10:00am 11:00am + Montaje <br>

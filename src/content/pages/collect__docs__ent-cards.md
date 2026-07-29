@@ -15,10 +15,10 @@ cover: "/img/docs/covers/ent-cards-cover.jpg"
 
 # ENT Cards
 
-### ENT Cards
+## ENT Cards
 A new paradigm for music distribution of independent artists, merging physical and digital releases, music making and listening. 
 
-#### Front
+### Front
 
 On the front side of each card, you can find several identifying features, including:
 
@@ -29,7 +29,7 @@ On the front side of each card, you can find several identifying features, inclu
 
 ![Image](/img/docs/ent-cards/01_card-front.png "Card Front Diagram") 
 
-#### Back
+### Back
 
 On the back side of the card, you'll find:
 
@@ -45,7 +45,7 @@ On the back side of the card, you'll find:
 </div>
 <div class="card__content">
 <div class="card__header">
-<h6>QR Code. <br><br><br> </h6>
+<h4>QR Code. <br><br><br> </h4>
 </div>
 <p> <br> <br> <br> QR code can be added up on special request. <br><br><br><br> </p>
 </div>

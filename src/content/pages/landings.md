@@ -10,7 +10,7 @@ source: "maar.world/collections/_pages/landings.md"
 ---
 
 # Landings
-### Sonic events on planet earth
+## Sonic events on planet earth
 
 ENT Worlds
 

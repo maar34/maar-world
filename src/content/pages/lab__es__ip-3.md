@@ -18,10 +18,10 @@ date: "2023-08-25"
 
 Inspirada en Tacuabé con su instrumento musical y la librería de instrumentos de Shika Shika, abre el Lab de Maar World, un terreno abierto para la exploración de nuevos formatos de creación y difusión sonora, una bitácora de experimentos de todos los tiempos unidos por la escucha cómo leitmotif.
 
-#### Gracias 
+## Gracias 
 Mi gratitud eterna a mi familia, por su amor incondicional. A Head Brothers , Queguay y Exoplanetas por tantas experiencias, por su talento, amistad, y dedicación compartida. A Gabriel Bernardoni y Vigliensoni , por las aventuras sonoras.
 
-#### Codigo 
+## Codigo 
 Este proyecto esta hecho con Amor, <a href="https://github.com/maar34/interplanetary-players-web" rel="Maar World Player" target="_blank"> p5.js </a> y <a href="https://github.com/maar34/interplanetary-players-rnbo" rel="Maar World Player" target="_blank"> RNBO</a>, se encuentra publicado bajo la licencia General Public License Version 3 (GPLv3). 
    
 

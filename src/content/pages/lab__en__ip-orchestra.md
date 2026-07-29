@@ -16,13 +16,13 @@ date: "2024-08-30"
 
 # Orbital Creation Workshop: Orbiters Orchestra (EN)
 
-### 🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬
+## 🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬
 
-### Invitation
+## Invitation
 From the  <a href="https://www.uartes.edu.ec/sitio/">Universidad de las Artes in Guayaquil</a>, we are excited to present the <a href="/lab/en/ip-orchestra-design">Orbiters Orchestra</a>, a workshop offering unique sensory experiences for musical co-creation. This event is designed to integrate disciplines such as sound arts, music, music production, theater, dance, cinema, literature, intercultural pedagogy, visual arts, and programming into a single vibrant, creative, and transdisciplinary space.
 We ask ourselves: What ideas can unite the people present in the concert hall, in the city, in the country, on the continent, and on Earth? Our workshop explores these connections through the use of meta-instruments that combine features of various traditional and contemporary instruments into a single and simple interface. This allows participants to play different types of sounds from multiple networked devices, integrating bodies with technologies and new means of interaction.
 
-### Workshop Description
+## Workshop Description
 In our creation lab, we will implement a research process designed to form an ensemble where no prior musical experience is required to participate. We invite you to explore with us the infinite possibilities of music and sound in a collaborative and experimental environment.
 <a href="/lab/en/ip-orchestra-design">Orbiters Orchestra</a> proposes the co-creation of an integral art experience, where we aim to generate a meaningful experience by integrating artists and the audience, along with artistic and scientific media. We transform computers and mobiles into meta-musical-instruments that combine multiple functionalities, synchronizing creations with both human movement and the movements of planets in the Kepler-47 star system, to co-create otherworldy soundscapes with a touch of stardust.
 
@@ -36,19 +36,19 @@ In our creation lab, we will implement a research process designed to form an en
 <div class="swiper__wrapper">
 <!-- Slide 1 -->
 <div class="swiper__slide orb-slide">
-<h3 class="orb-step">I</h3>
+<h2 class="orb-step">I</h2>
 <div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/07_ip-card.jpg" alt="Card layering"/></div>
 <div class="orb-desc">Explore music by layering sounds with controls that vary depending on the cards you play, creating rich and original sonic experiences.</div>
 </div>
 <!-- Slide 2 -->
 <div class="swiper__slide orb-slide">
-<h3 class="orb-step">II</h3>
+<h2 class="orb-step">II</h2>
 <div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/10_ip-transit.png" alt="Transit mapping"/></div>
 <div class="orb-desc">Recreate music intuitively, making sound creation accessible and fun for everyone, from professional musicians to those with no prior experience.</div>
 </div>
 <!-- Slide 3 -->
 <div class="swiper__slide orb-slide">
-<h3 class="orb-step">III</h3>
+<h2 class="orb-step">III</h2>
 <div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/08_ip-max-24.jpg" alt="Workshop patch"/></div>
 <div class="orb-desc">We are at the beginning of this journey. Sign up for the workshop to help create the first Orbiters Orchestra.</div>
 </div>
@@ -57,7 +57,7 @@ In our creation lab, we will implement a research process designed to form an en
 <div class="swiper__button swiper__button--next fas fa-chevron-right"></div>
 </div>
 
-### Schedule
+## Schedule
 September 11, 2024: Workshop Day 1. 10:00am - 1:00pm <br>
 September 12, 2024: Workshop Day 2. 10:00am - 1:00pm <br>
 September 13, 2024: Workshop Day 3. 10:00am - 11:00am + Setup <br>

@@ -22,7 +22,7 @@ source: "maar.world/collections/_pages/radio.md"
 
 <div class="hero hero--center" style="background-color: #000000;">
 <div class="hero__content">
-<h3></h3>
+<h2></h2>
 <p style="font-size: 70%;"> Press PLAY ▶️. Desktop recommended. <br> Due to restrictions set by Apple, the radio interactivity feature is currently unavailable on iPhone devices and within the Safari browser.</p>
 </div>
 </div>
@@ -51,7 +51,7 @@ source: "maar.world/collections/_pages/radio.md"
 
 <div class="hero hero--center hero--dark"  style= 'height: 512px; background-image: url("img/radio/cards-back-collect.png");'>
 <div class="hero__content">
-<h1><a href="https://maarworld.gumroad.com" target="_blank">Collect</a></h1>
+<h2><a href="https://maarworld.gumroad.com" target="_blank">Collect</a></h2>
 <p><a href="https://maarworld.gumroad.com" target="_blank">ENT Cards for Orbiters.</a></p>
 </div>
 </div>
@@ -62,7 +62,7 @@ source: "maar.world/collections/_pages/radio.md"
 </div>
 <div class="card__content">
 <div class="card__header">
-<h4><a href="https://maarworld.gumroad.com" target="_blank">Increased focus on regeneration.</a></h4>
+<h3><a href="https://maarworld.gumroad.com" target="_blank">Increased focus on regeneration.</a></h3>
 </div>
 <p>By purchasing ENT cards, you're not only adding a rare and unique piece to your collection, but you're also contributing to nature regeneration in the Rio Uruguay.</p>
 </div>
@@ -73,7 +73,7 @@ source: "maar.world/collections/_pages/radio.md"
 </div>
 <div class="card__content">
 <div class="card__header">
-<h4><a href="https://maarworld.gumroad.com" target="_blank">ENT- Physical & NFT.</a></h4>
+<h3><a href="https://maarworld.gumroad.com" target="_blank">ENT- Physical & NFT.</a></h3>
 </div>
 <p>Our ENT cards come in physical and NFT formats, both with immersive experience and an immutable certificate of authenticity.</p>
 </div>
@@ -85,7 +85,7 @@ source: "maar.world/collections/_pages/radio.md"
 </div>
 <div class="card__content">
 <div class="card__header">
-<h4><a href="https://maarworld.gumroad.com" target="_blank">Limited editions.</a></h4>
+<h3><a href="https://maarworld.gumroad.com" target="_blank">Limited editions.</a></h3>
 </div>
 <p>Be the first to own our exclusive ENT Cards - with only 50 copies of each card in existence, they're a rare find for any collector.</p>
 </div>

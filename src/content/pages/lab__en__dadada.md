@@ -20,11 +20,11 @@ date: "2023-12-09"
 
 ## Is it possible to slow down time?
 
-#### ⏳ Wagner, the Norns, and time in the world.
+### ⏳ Wagner, the Norns, and time in the world.
 
-##### Does it make sense to make sense?
+#### Does it make sense to make sense?
 
-# 4 the dadadaistS
+## 4 the dadadaistS
 
 It's not Opera<br>
 It's not dembow<br>

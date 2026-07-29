@@ -86,7 +86,7 @@ source: "maar.world/index.md"
 
 <div class="hero hero--center hero--dark hero-example--linear-gradient">
 <div class="hero__content">
-<h3>Play music cards with exoplanets</h3>
+<h2>Play music cards with exoplanets</h2>
 <p>Sky Sounds introduces the first-ever card collection that when scanned allows you to listen to their music and transform them based on the movement of the exoplanets they belong. <br> <br> <a class="button button--primary button--rounded button--xl" href="https://maar-world.bandcamp.com/merch">Collect</a></p>
 </div>
 </div>
@@ -127,19 +127,19 @@ source: "maar.world/index.md"
 </div>
 <div style="display:grid;gap:1.6rem;">
 <div class="wip-card" style="background:#141820;padding:1.25rem 1.15rem;border:1px solid #232a33;border-radius:16px;">
-<h4 style="margin:.1rem 0 .55rem;font-size:1.15rem;">plantasia.space</h4>
+<h3 style="margin:.1rem 0 .55rem;font-size:1.15rem;">plantasia.space</h3>
 <p style="margin:0 0 .9rem;line-height:1.5;opacity:.9;">
 <strong>plantasia.space</strong> is a platform designed for interactive music releases. It simplifies the creation and customization of Orbiters and Entangled Worlds, and allows artists to upload music that users can listen to and remix in real time. The platform encourages innovation through playful music interaction and healthy sensory exploration.
 </p>
 <a href="https://plantasia.space" class="button button--outline button--rounded" style="font-size:.8rem;">Visit</a>
 </div>
 <div class="wip-card" style="background:#141820;padding:1.25rem 1.15rem;border:1px solid #232a33;border-radius:16px;">
-<h4 style="margin:.1rem 0 .55rem;font-size:1.15rem;">Orbits & Bodies</h4>
+<h3 style="margin:.1rem 0 .55rem;font-size:1.15rem;">Orbits & Bodies</h3>
 <p style="margin:0 0 .9rem;line-height:1.5;opacity:.9;">Orbits and Bodies explores the entanglement of embodied gesture, astronomical data, and networked computation  in real‑time audiovisual space.</p>
 <a href="/lab/en/orbits-and-bodies.html" class="button button--outline button--rounded" style="font-size:.8rem;">Read</a>
 </div>
 <div class="wip-card" style="background:#141820;padding:1.25rem 1.15rem;border:1px solid #232a33;border-radius:16px;">
-<h4 style="margin:.1rem 0 .55rem;font-size:1.15rem;">Orbiters Orchestra</h4>
+<h3 style="margin:.1rem 0 .55rem;font-size:1.15rem;">Orbiters Orchestra</h3>
 <p style="margin:0 0 .9rem;line-height:1.5;opacity:.9;">Collaborative workshop instrument: card‑driven layering generating an emergent orbital score.</p>
 <a href="/lab/en/ip-orchestra" class="button button--outline button--rounded" style="font-size:.8rem;">Open</a>
 </div>

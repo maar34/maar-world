@@ -16,7 +16,7 @@ date: "2023-08-25"
 
 # Interplanetary ancestors 2-3 (EN)
 
-#### Sample Pack: Sound of the Americas by Shika Shika
+## Sample Pack: Sound of the Americas by Shika Shika
 
 "Musical instruments have helped us to communicate and express ourselves since the dawn of humanity and the forms, scales and sounds of these artifacts give us a glimpse into the extraordinary cultures that created them. 
 

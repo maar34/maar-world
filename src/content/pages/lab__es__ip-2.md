@@ -16,7 +16,7 @@ date: "2023-08-25"
 
 # Ancestros interplanetarios 2-3 (ES)
 
-#### Sample Pack: Sonido de las Am​é​ricas by Shika Shika
+## Sample Pack: Sonido de las Am​é​ricas by Shika Shika
 "Los instrumentos musicales nos han ayudado a comunicarnos y expresarnos desde los albores de la humanidad y las formas, escalas y sonidos de estos artefactos nos dan una idea de las extraordinarias culturas que los crearon.
 
 Este paquete de samples se grabó en Buenos Aires en @estudiomudras e incluye grabaciones de instrumentos raros y poco conocidos, como diferentes tipos de flautas, silbato doble, un generador de ruido, trompeta, zumbador, botella silbadora y turú. Diseñados hace muchos cientos de años, escuchar sus sonidos y crear con ellos hoy es una invitación a reconectar con otras formas de ver y estar en el mundo. 

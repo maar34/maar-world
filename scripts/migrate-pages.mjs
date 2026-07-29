@@ -44,6 +44,7 @@
 import { readdirSync, readFileSync, writeFileSync, existsSync, statSync, mkdirSync, rmSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { ROOT } from './lib/artifacts.mjs';
+import { normaliseHeadingLevels } from './lib/headings.mjs';
 import { SCHEMAS } from '../src/content/schemas.mjs';
 
 const LEGACY = join(ROOT, '..');
@@ -1362,6 +1363,8 @@ writeFileSync(join(OUT, '.gitkeep'), '');
 const problems = [];
 const written = [];
 const emitted = new Set();
+/** Pages whose heading outline had a gap the theme's own <h1> used to hide. */
+const headingLevelsChanged = [];
 
 for (const m of matched) {
   const area = AREA[m.meta.origin];
@@ -1477,6 +1480,21 @@ for (const m of matched) {
 
   if (kind === 'collect-card') finalBody = `${finalBody}\n\n${CARD_TAIL}\n`.trim();
 
+  /**
+   * The outline, after the title heading is in place and before the index is
+   * appended, because those two are the only headings this script owns and both
+   * are already at the level they mean.
+   *
+   * A Collect card page's `<h1>` is rendered by the route from `card_title`, so
+   * the body leads with no title of its own; every other page's does, whether it
+   * was materialised above or was already the body's first heading.
+   */
+  const outline = normaliseHeadingLevels(finalBody, { leadsWithTitle: kind !== 'collect-card' });
+  if (outline.changed) {
+    headingLevelsChanged.push(`${outputPath} (${outline.changed})`);
+    finalBody = outline.body;
+  }
+
   if (ownIndex) finalBody = `${finalBody}\n\n${ownIndex}\n`;
 
   if (SPECIAL[m.key]) finalBody = SPECIAL[m.key](record);
@@ -1504,6 +1522,13 @@ console.log(
     `(${undecidedDrops.length} dropKind:unresolved left intact — an open question is not a deletion)`,
 );
 for (const u of unmatched) console.log(`  ! ${u.origin}  ${u.key}  (looked for "${u.want}")`);
+
+if (headingLevelsChanged.length) {
+  console.log(
+    `\nheading levels normalised on ${headingLevelsChanged.length} page(s) — ` +
+      `the theme's own <h1> used to hide the gap:\n  ${headingLevelsChanged.join('\n  ')}`,
+  );
+}
 
 const unresolved = problems.filter((p) => /UNRESOLVED|SCHEMA|DUPLICATE/.test(p));
 if (problems.length) {

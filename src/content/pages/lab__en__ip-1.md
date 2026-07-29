@@ -18,7 +18,7 @@ date: "2023-08-25"
 
 *Can sounds and musical instruments play a role in the recovery of hidden memories? Is it possible to call forth the memory of historically repressed cultures?*
 
-#### From the musical bow of Tacuabé to the creation of new worlds.
+## From the musical bow of Tacuabé to the creation of new worlds.
 
 On February 25th, 1833, a ship set sail from Uruguay to France with 33 people on board, including four indigenous individuals: Guyunusa, the shaman Senaqué, the Charrúa chief Vaimaca Perú, the young Tacuabé, and Tacuabé's musical bow, a monochord chordophone that he had built himself. With this instrument, he played ternary rhythms, producing "sweet and harmonious sounds". According to documents from the time, the instrument was capable of reproducing an octave, and within this range, Tacuabé's musical bow could produce an infinite number of notes, since it is a non tempered instrument capable of obtaining even the smallest subdivisions of tone. In reality, Tacuabé's musical bow is a chordophone that is present in various cultures across all continents. References to this instrument can be found in Europe as early as the year 1000, and examples of it can also be found in Oceania, Africa, and throughout the Americas.
 

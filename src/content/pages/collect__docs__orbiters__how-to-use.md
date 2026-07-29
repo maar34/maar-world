@@ -15,13 +15,13 @@ cover: "/img/docs/covers/how-to.jpg"
 
 # How to use
 
-### A Planet is a Vinyl + One dimension
+## A Planet is a Vinyl + One dimension
 
 ![Image](/img/docs/orbiters/04-vinyl-sphere.png "Vinyl and Planet Player")
 
 As a basic concept, playing an Orbiter is playing with a Sphere, think about adding an extra dimension to a vinyl record, and the option to maintain or interchange sound parameters. Each card changes the settings in the X, Y, and Z axes and loop time. Each suit combined represents a track, and each deck is an album. You can add as many layers as your browser can handle, creating a rich and complex sound experience. With endless possibilities for listening, and playing, the Orbiters offer a new level of musical creativity and exploration.
 
-#### Web Player 
+### Web Player 
 
 Each card number is associated with a unique Orbiter configuration that includes a selected set of transformation parameters. You can play the embedded player or switch to full-screen mode for an immersive experience. Additionally, you can play with multiple cards simultaneously, mixing their sounds to create unique sonic experiences every time.
 

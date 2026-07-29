@@ -42,14 +42,14 @@ style="width:100%;height:1400px;border:none;">
 **Artist using:** Sensors, controllers, synths, custom Max software, Ableton Live, Traktor.  
 Live AV includes custom Max Software and Synths. 
 
-<h3>Hybrid (Live + DJ) sets</h3>
+<h2>Hybrid (Live + DJ) sets</h2>
 
 From thirty minutes to four hours: sonic or audiovisual journeys through classical elements, expeditions to solar systems, exoplanets, and stars.
 
 Each concept appears under musical moods ranging from ambient and downtempo to house and techno, always adapting to the moment. Soundscapes and voices bring narrative strands. Over a decade assembling an archive of soundscapes, poetry, testimonies, native South American chants, radio signals, and eclectic music to connect people and cultures through sound.
 
 <div class="form-container" style="margin-top:72px;">
-<h3>Contact</h3>
+<h2>Contact</h2>
 <p>Send a booking inquiry.</p>
 <form
 action="https://formspree.io/f/mqkrdkde"

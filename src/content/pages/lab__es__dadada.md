@@ -20,11 +20,11 @@ date: "2023-12-09"
 
 ## Es posible desacelerar el tiempo? 
 
-#### ⏳ Wagner las nornas y el tiempo en el mundo. 
+### ⏳ Wagner las nornas y el tiempo en el mundo. 
 
-##### Tiene sentido hacer sentido? 
+#### Tiene sentido hacer sentido? 
 
-# Para lxs Dadadaistas
+## Para lxs Dadadaistas
 
 Is not Ópera,<br>
 No es dembow, <br>
