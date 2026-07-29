@@ -231,8 +231,20 @@ not an implementation one.
   conventions in this repo family.
 - `ship` — only once MW-11 signs off and work is genuinely finished; it verifies, merges,
   propagates and closes out in one pass.
-- `ps-design-lib-first` — **binding** for the styling half of MW-11. Look up the design
-  library's real components, variants and props before writing any UI; never hand-roll
-  what it already ships; add missing components to the lib rather than improvising in the
-  app. Combine with `OPERATING-RULES.md`'s "re-read the Claude Design project before
-  implementing any component — it is actively edited and will have changed".
+- **NOT `ps-design-lib-first`.** An earlier revision of this file called that skill
+  "binding" for the styling half of MW-11. That was wrong and is corrected here rather
+  than deleted, because the mistake is an easy one to repeat: it pattern-matches on
+  "Plantasia org + design".
+
+  That skill is scoped to `orbiters`, `plantasia.space-root` and `entangled-worlds`, and
+  its authority is the shared `plantasia.space-design` library. **maar-world is none of
+  those, and adopting that library is explicitly rejected** — ARCHITECTURE-REVIEW-ADDENDUM
+  D1: *"Do not adopt the Plantasia design library. Maar World is the experimental ground;
+  Plantasia was derived from it. New work is born here and flows outward."* Following the
+  skill here would invert the direction the whole design decision rests on.
+
+  The binding authority for any UI in this repo is `Maar World Design System.dc.html`,
+  read **live** via the DesignSync MCP each session, per `OPERATING-RULES.md` — it is
+  actively edited and will have changed. `../mw-design-system/` is an empty directory and
+  is not a source. If DesignSync is unreachable, append BLOCKED and stop; do not
+  substitute another library.
