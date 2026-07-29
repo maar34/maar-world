@@ -23,10 +23,10 @@
   /* ---- pigment roles -------------------------------------------------- */
   /* One pigment per component instance; never two pastels touching.
      A pastel is always a background, never type. */
-  --c-maar: #a9d5e8;    /* maar — water, place, wayfinding */
-  --c-collect: #f0aecb; /* collect — saving, sets, favourites */
-  --c-tree: #e7c98f;    /* tree — growth, time, lineage */
-  --c-dark: #100f14;
+  --c-maar: #4ac9ff;    /* maar — water, place, wayfinding */
+  --c-collect: #ff4696; /* collect — saving, sets, favourites */
+  --c-tree: #ffbf3f;    /* tree — growth, time, lineage */
+  --c-dark: #000000;
 
   /* Type on any pastel is always dark, on both surfaces. */
   --pigment-ink: var(--c-dark);
@@ -45,7 +45,7 @@
   --sf-paper-raised: #f2ece2;
 
   /* dark shell (default) */
-  --sf-base: #100f14;
+  --sf-base: #000000;
   --ink: #efe7da;
 
   --sf-raised: color-mix(in srgb, var(--ink) 7%, transparent);

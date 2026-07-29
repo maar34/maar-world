@@ -14,10 +14,19 @@
  * `outputPath` ending `/index` for exactly that reason.
  *
  * Layout is page family 03 (entry) as used by the card pages: single measure,
- * h1 may carry marks, nothing below it does. Legacy bodies arrive as raw HTML
- * carrying dead theme class names; they are scoped by `.legacy` and given a
- * neutral reading treatment rather than restyled page by page, which is MW-11's
- * responsibility once the design spec's page families are implemented.
+ * h1 may carry marks, nothing below it does.
+ *
+ * THE BODY WRAPPER IS `.prose`, AND IT IS NOT A MIGRATION ARTIFACT. Every page
+ * this route renders goes through it — a migrated body and an authored one
+ * alike — so it is the reading treatment of every page that will ever exist
+ * here, including posts not yet written. It was called `.legacy` and that name
+ * caused a bug: the rhythm of every page body was filed under a word meaning
+ * "temporary", nobody audited it for completeness, and `h1` was left out of the
+ * list of headings it styled. Two stylesheets now split by lifetime —
+ * `styles/prose.css` is permanent and checked for completeness by
+ * `verify:build`; `styles/legacy.css` holds only rules keyed to the dead
+ * theme's class names and is deleted whole when the migration stops emitting
+ * them.
  */
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -212,7 +221,7 @@ const readableDate = (iso: string) => {
       )
     }
 
-    <div class="legacy">
+    <div class="prose">
       <Content />
     </div>
 
@@ -491,99 +500,56 @@ const readableDate = (iso: string) => {
     border-radius: var(--r-0);
   }
 
-  /* Legacy bodies. Everything below is containment, not design: the markup
-     carries class names from a theme that no longer exists, so it is given a
-     neutral reading treatment and prevented from overflowing the measure. */
-  .legacy :global(img),
-  .legacy :global(video),
-  .legacy :global(iframe),
-  .legacy :global(object) {
-    max-width: 100%;
-    height: auto;
-    border-radius: var(--r-0);
-  }
-
-  .legacy :global(iframe) {
-    width: 100%;
-    min-height: 320px;
-    border: 0;
-    background: var(--sf-sunken);
-  }
-
-  .legacy :global(pre),
-  .legacy :global(table) {
-    overflow-x: auto;
-    display: block;
-    max-width: 100%;
-  }
-
-  /* Two legacy tables have no header row and a label column, so the migration
-     marks their left cells `<th scope="row">` — a screen reader then reads
-     "Idea: Maar" rather than two loose cells. A `<th>` defaults to bold and
-     centred, and centring a label column is the one part of that which would
-     read as a mistake, so the alignment is restored and the weight is kept:
-     the cell now looks like the label it always was. */
-  .legacy :global(th) {
-    text-align: start;
-  }
-
-  /* ---- click-to-load facades -------------------------------------------
-     Every third-party embed on this site is one of these. No YouTube, Vimeo,
-     SoundCloud, Google Forms or radio-stream byte is requested until the
-     visitor chooses it — which is the whole reason there is no cookie banner
-     and no consent engine in this codebase.
-
-     It is a link, so it is keyboard-operable for free and cannot be operated
-     by accident. The focus ring is the global one from --focus-*; it is only
-     restated here to sit outside the plate rather than inside it. */
-  /* The hatch plate, mark 7. `.plate` cannot be used here: the facade is
-     written into generated markdown by scripts/migrate-pages.mjs, so a class
-     added to it would be gone on the next migration run — and adding
-     presentational classes to content would be the wrong fix anyway. It reads
-     the same token instead, so there is still exactly one definition of the
-     texture. 4a's own video facade is a hatch plate, which is what makes this
-     the mark's home rather than a place it was extended to. */
-  .legacy :global(.embed-facade) {
+  /* ---- the year-grouped Lab index ---------------------------------------
+   * First-party markup, rendered by this route from the collection — the
+   * template is 30 lines above. It lived in `legacy.css` because the index used
+   * to be ~104 lines of HTML baked into lab.md by the migration, and it stayed
+   * there after the route took the job over.
+   *
+   * Which is how `.index-row__tag` came to be dead code: it kept the
+   * `.legacy ` prefix while the element it names moved OUT of that wrapper, so
+   * it matched nothing and the tags have been rendering as plain text. Scoped
+   * to this component now, where the markup is, so a selector and the element
+   * it targets cannot drift into different files again.
+   */
+  .index {
     display: flex;
     flex-direction: column;
-    gap: var(--s-2);
-    background: var(--plate);
-    border: 1px solid var(--ink-hairline);
-    border-radius: var(--r-0);
-    padding: var(--s-4);
+    gap: var(--s-16);
   }
 
-  .legacy :global(.embed-facade__action) {
+  .index-year {
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--s-3);
-    text-decoration: none;
-    color: var(--ink);
+    flex-direction: column;
+    gap: var(--s-6);
   }
 
-  /* The pigment is maar — wayfinding. It is a flat field, not a wash: the
-     provider chip is the only pigment in the component, and type on a pastel
-     is always dark. */
-  .legacy :global(.embed-facade__provider) {
-    flex: none;
-    background: var(--c-maar);
-    color: var(--pigment-ink);
-    border-radius: var(--r-0);
-    padding: 0 var(--s-2);
-    font-family: var(--t-meta-face);
-    font-size: var(--t-meta-size);
-    line-height: var(--t-meta-line);
-    letter-spacing: var(--t-meta-track);
+  /* The rule above a year group — the second of the two places one is allowed. */
+  .index-year__rule {
+    margin-block: var(--s-2) 0;
   }
 
-  .legacy :global(.embed-facade__label) {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 3px;
+  .index-rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-8);
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
-  .legacy :global(.embed-facade__note) {
+  .index-row {
+    display: flex;
+    flex-direction: column;
+    /* "sibling groups use gap, never margins." */
+    gap: var(--s-2);
+  }
+
+  .index-row__title {
+    margin: 0;
+  }
+
+  .index-row__date {
     color: var(--ink-meta);
     font-family: var(--t-meta-face);
     font-size: var(--t-meta-size);
@@ -591,19 +557,32 @@ const readableDate = (iso: string) => {
     letter-spacing: var(--t-meta-track);
   }
 
-  .legacy :global(.embed-facade__action:hover) {
-    background: transparent;
-    color: var(--ink);
+  .index-row__excerpt {
+    color: var(--ink-muted);
+    margin: 0;
   }
 
-  .legacy :global(.embed-facade__action:hover .embed-facade__label) {
-    background: var(--c-maar);
-    color: var(--pigment-ink);
-    text-decoration: none;
+  .index-row__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
-  .legacy :global(.embed-facade__action:focus-visible) {
-    outline: var(--focus-w) solid var(--focus-c);
-    outline-offset: var(--focus-o);
+  /* Tags are chips, not links: production linked each to `/lab.html?tag=X` and
+     a script hid the non-matching rows; MW-7 forbids that script, and a link
+     that lands on an unfiltered index and does nothing is worse than a label.
+     A chip is a flat field with dark type on it. */
+  .index-row__tag {
+    background: var(--ink-tint);
+    color: var(--ink-muted);
+    border-radius: var(--r-0);
+    padding-inline: var(--s-2);
+    font-family: var(--t-meta-face);
+    font-size: var(--t-meta-size);
+    line-height: var(--t-meta-line);
+    letter-spacing: var(--t-meta-track);
   }
 </style>

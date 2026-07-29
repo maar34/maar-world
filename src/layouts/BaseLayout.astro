@@ -46,6 +46,12 @@ import '../styles/type.css';
 import '../styles/shell.css';
 import '../styles/button.css';
 import '../styles/mark.css';
+/* The rendered body of every page — permanent, and checked for completeness by
+   verify:build. Imported before legacy.css so a dead-theme class name can
+   override the element rhythm it sits inside, never the other way round. */
+import '../styles/prose.css';
+/* Disposable: rules keyed to a dead Jekyll theme's class names. Delete this
+   import and the file together when the migration stops emitting them. */
 import '../styles/legacy.css';
 
 import { SITE, AREAS, type AreaName } from '../config/site';

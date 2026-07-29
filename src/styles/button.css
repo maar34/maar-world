@@ -15,10 +15,10 @@
  * surface it is drawn on.
  *
  * Global rather than component-scoped, for the same reason styles/shell.css is:
- * the treatment has to reach the submit controls inside migrated `.legacy`
- * bodies, which no component of ours renders. Those are styled by element at
- * the bottom of this file, so a form that came out of the legacy checkouts gets
- * the same button as one we write.
+ * the treatment has to reach the submit controls inside `.prose` bodies, which
+ * no component of ours renders. Those are styled by element at the bottom of
+ * this file, so a form that came out of the legacy checkouts gets the same
+ * button as one we write.
  *
  * Marks are not permitted here. The rules-of-use table allows them at h1 and
  * card-cover level and forbids them at "body, ui, label and caption" — a button
@@ -190,12 +190,18 @@
   transform: rotate(var(--btn-tilt));
 }
 
-/* ---- legacy form controls ----------------------------------------------- */
+/* ---- form controls inside a rendered body -------------------------------- */
 /**
  * The submit controls inside migrated bodies.
  *
- * `src/content/**` is generated from the read-only legacy checkouts, so a class
- * cannot be added to these without the next migration run removing it again —
+ * These are keyed to ELEMENTS, not to a dead theme's class names, so they are
+ * permanent in the sense styles/prose.css is: any form in any body, migrated or
+ * authored, gets them. They live here rather than in prose.css because they are
+ * the button table applied to markup we do not render, and splitting the button
+ * spec across two files to satisfy a folder boundary would be worse.
+ *
+ * `src/content/migrated/**` is generated from the read-only legacy checkouts, so
+ * a class cannot be added to these without the next migration run removing it —
  * and adding presentational classes to content would be the wrong fix anyway.
  * They are selected by element instead. The two Formspree forms use
  * `<button type="submit">`; both Mailchimp embeds use `<input type="submit">`,
@@ -203,8 +209,8 @@
  * box (`display: inline-flex` on an input is meaningless — it has no children
  * to align).
  */
-.legacy button[type='submit'],
-.legacy input[type='submit'] {
+.prose button[type='submit'],
+.prose input[type='submit'] {
   /* Drawn as a primary, so it leans as one. */
   --btn-tilt: var(--action-tilt-primary);
   transform: rotate(var(--btn-tilt));
@@ -224,20 +230,20 @@
   transition: background var(--m-fast) var(--ease), color var(--m-fast) var(--ease);
 }
 
-.legacy button[type='submit'] {
+.prose button[type='submit'] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
-.legacy button[type='submit']:hover,
-.legacy input[type='submit']:hover {
+.prose button[type='submit']:hover,
+.prose input[type='submit']:hover {
   background: var(--action-invert);
   color: var(--sf-base);
 }
 
-.legacy button[type='submit']:active,
-.legacy input[type='submit']:active {
+.prose button[type='submit']:active,
+.prose input[type='submit']:active {
   transform: rotate(var(--btn-tilt)) translateY(var(--press-nudge));
 }
 
@@ -250,9 +256,9 @@
  * the dark surface on four pages. Radius --r-1 is the spec's own value for
  * "inputs, buttons, carousel controls".
  */
-.legacy input[type='text'],
-.legacy input[type='email'],
-.legacy textarea {
+.prose input[type='text'],
+.prose input[type='email'],
+.prose textarea {
   display: block;
   width: 100%;
   min-height: var(--hit-min);
@@ -267,12 +273,12 @@
   border-radius: var(--r-1);
 }
 
-.legacy label {
+.prose label {
   display: block;
   margin-block-end: var(--s-2);
 }
 
-.legacy form {
+.prose form {
   display: flex;
   flex-direction: column;
   /* "sibling groups use gap, never margins." */

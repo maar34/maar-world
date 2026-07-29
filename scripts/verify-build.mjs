@@ -11,12 +11,12 @@
  * anywhere, because nothing looked inside the files. Those assertions are below.
  */
 
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { resolve } from 'node:path';
 import { runStandalone } from './lib/report.mjs';
 import { ARTIFACTS, ROOT, has, loadJson, indexDist, readDistFile } from './lib/artifacts.mjs';
-import { bodyText } from './lib/html-text.mjs';
+import { bodyText, dropCode } from './lib/html-text.mjs';
 
 const WARNING_THRESHOLD = 0;
 
@@ -141,6 +141,156 @@ export function checkBuildOutput(report) {
       `median ${med} chars; thinnest: ${thinnest.join(', ')}`,
     );
   }
+
+  checkProseCoverage(report, pages);
+}
+
+/**
+ * Elements that appear in a rendered body and correctly have no rhythm rule.
+ *
+ * Every entry is a decision with a reason, which is the point: the assertion
+ * below is that no element reaches a reader's page without someone having made
+ * one. Adding a tag here is allowed and is not a way of silencing the check —
+ * it is the other half of it.
+ */
+const PROSE_EXEMPT = new Map([
+  // Phrasing content. It flows inside a block that already carries the rhythm;
+  // giving it margins of its own would break the line, not space it.
+  ['a', 'inline'], ['span', 'inline'], ['strong', 'inline'], ['em', 'inline'],
+  ['b', 'inline'], ['i', 'inline'], ['small', 'inline'], ['sub', 'inline'],
+  ['sup', 'inline'], ['abbr', 'inline'], ['cite', 'inline'], ['time', 'inline'],
+  ['br', 'inline'], ['wbr', 'inline'], ['u', 'inline'], ['s', 'inline'],
+  ['del', 'inline'], ['ins', 'inline'], ['mark', 'inline'], ['q', 'inline'],
+  ['bdi', 'inline'], ['bdo', 'inline'], ['kbd', 'inline'], ['samp', 'inline'],
+  ['var', 'inline'], ['dfn', 'inline'], ['ruby', 'inline'], ['rt', 'inline'],
+  ['rp', 'inline'], ['picture', 'inline'], ['source', 'inline'],
+  // Grouping boxes that carry no rhythm of their own: their children do. Giving
+  // a bare <div> a margin would double every gap in a nested legacy body.
+  ['div', 'transparent container'], ['section', 'transparent container'],
+  ['article', 'transparent container'], ['header', 'transparent container'],
+  ['footer', 'transparent container'], ['main', 'transparent container'],
+  ['aside', 'transparent container'], ['nav', 'transparent container'],
+  ['tbody', 'table internals'], ['thead', 'table internals'],
+  ['tfoot', 'table internals'], ['tr', 'table internals'],
+  ['colgroup', 'table internals'], ['col', 'table internals'],
+  ['caption', 'table internals'], ['template', 'never rendered'],
+  ['noscript', 'never rendered when scripting is on'],
+  // Drawn elsewhere, deliberately, and named here so "no rule in prose.css" is
+  // not mistaken for "no rule anywhere".
+  ['button', 'styles/button.css'], ['input', 'styles/button.css'],
+  ['textarea', 'styles/button.css'], ['select', 'styles/button.css'],
+  ['label', 'styles/button.css'], ['form', 'styles/button.css'],
+  ['fieldset', 'styles/button.css'], ['legend', 'styles/button.css'],
+  ['option', 'styles/button.css'], ['optgroup', 'styles/button.css'],
+  ['svg', 'vector, sized by its own attributes'], ['path', 'inside <svg>'],
+  ['g', 'inside <svg>'], ['circle', 'inside <svg>'], ['ellipse', 'inside <svg>'],
+  ['rect', 'inside <svg>'], ['line', 'inside <svg>'], ['polygon', 'inside <svg>'],
+  ['polyline', 'inside <svg>'], ['defs', 'inside <svg>'], ['use', 'inside <svg>'],
+  ['title', 'inside <svg>'], ['desc', 'inside <svg>'], ['text', 'inside <svg>'],
+  ['tspan', 'inside <svg>'], ['clippath', 'inside <svg>'], ['mask', 'inside <svg>'],
+  ['lineargradient', 'inside <svg>'], ['stop', 'inside <svg>'],
+  ['meta', 'not rendered'], ['link', 'not rendered'], ['script', 'not rendered'],
+  ['style', 'not rendered'], ['param', 'not rendered'], ['track', 'not rendered'],
+  ['embed', 'legacy media, contained by the object/iframe rule'],
+  // The one approved island's hydration wrapper. It is a zero-size custom
+  // element around markup that IS styled, not a box of its own.
+  ['astro-island', 'Astro hydration wrapper for the Helix island'],
+  ['astro-slot', 'Astro hydration wrapper for the Helix island'],
+  ['summary', 'no accordion ships yet — add a rule with one'],
+  ['details', 'no accordion ships yet — add a rule with one'],
+]);
+
+/** Tags that `src/styles/prose.css` writes a `.prose <tag>` rule for. */
+export function proseStyledTags(css) {
+  const tags = new Set();
+  for (const rule of css.matchAll(/([^{}]+)\{[^{}]*\}/g)) {
+    for (const sel of rule[1].split(',')) {
+      const m = /\.prose\s+([a-z][a-z0-9]*)\b/i.exec(sel.trim());
+      if (m) tags.add(m[1].toLowerCase());
+    }
+  }
+  return tags;
+}
+
+/** Every tag rendered inside a `.prose` body, mapped to a page that has it. */
+export function proseTagsInBuild(pages, read) {
+  const found = new Map();
+  for (const page of pages) {
+    const html = read(page);
+    const open = /<div class="prose"[^>]*>/i.exec(html);
+    if (!open) continue;
+    // Script and style CONTENTS are not markup: Astro's hydration runtime
+    // contains the literal string "<unknown>", which is not an element on the
+    // page. Same definition the text helpers use, imported rather than repeated.
+    const body = dropCode(html.slice(open.index + open[0].length));
+    // Hyphens included, so a custom element is reported as `astro-island` and
+    // not truncated to `astro` — a truncated name cannot be looked up honestly.
+    for (const m of body.matchAll(/<([a-z][a-z0-9-]*)\b/gi)) {
+      const tag = m[1].toLowerCase();
+      if (!found.has(tag)) found.set(tag, page);
+    }
+  }
+  return found;
+}
+
+/**
+ * THE CHECK THAT EXISTS BECAUSE OF THE h1 BUG.
+ *
+ * `styles/prose.css` gives every page body its vertical rhythm, and it was
+ * written as a hand-kept list of elements. `h1` was left off it. 61 page titles
+ * shipped with `margin: 0` on both sides, and on a display face set below 1.0
+ * the descenders of the last line fell into the paragraph underneath.
+ *
+ * Nothing could have caught that, because nothing compared the list to what the
+ * bodies actually contain. This does: every element rendered inside `.prose`
+ * must either have a rule in prose.css or an entry in PROSE_EXEMPT giving the
+ * reason it does not need one. Delete the `h1` rule and this fails.
+ *
+ * It is deliberately about COVERAGE and not about values — it cannot know that
+ * --s-12 is the right space under a title. What it guarantees is that the
+ * decision was made at all, which is the failure mode that actually happened.
+ */
+function checkProseCoverage(report, pages) {
+  const found = proseTagsInBuild(pages, readDistFile);
+
+  /**
+   * Nothing rendered a body, so there is nothing to have decided about. This is
+   * a SKIP and not a pass: the assertion did not run, and `npm run verify`
+   * prints skips separately precisely so that is not read as completeness. In
+   * this repo it never fires — every build emits 96 of them — but a fixture
+   * exercising other assertions should not have to carry a stylesheet.
+   */
+  if (found.size === 0) {
+    return report.skip('every element in a body has a rhythm decision', 'no .prose body in the build', 'n/a');
+  }
+
+  const cssPath = resolve(ROOT, 'src/styles/prose.css');
+  if (!existsSync(cssPath)) {
+    return report.fail(
+      'every element in a body has a rhythm decision',
+      `${found.size} distinct elements are rendered in .prose bodies and src/styles/prose.css is missing`,
+    );
+  }
+  const styled = proseStyledTags(readFileSync(cssPath, 'utf8'));
+
+  const undecided = [...found].filter(([tag]) => !styled.has(tag) && !PROSE_EXEMPT.has(tag));
+
+  if (undecided.length) {
+    report.fail(
+      'every element in a body has a rhythm decision',
+      `${undecided.length} undecided: ` +
+        undecided.slice(0, 6).map(([tag, page]) => `<${tag}> (${page})`).join(', ') +
+        ' — give it a rule in src/styles/prose.css, or an entry in PROSE_EXEMPT saying why it needs none',
+    );
+    return;
+  }
+
+  report.pass(
+    'every element in a body has a rhythm decision',
+    `${found.size} distinct elements across ${pages.length} pages — ` +
+      `${[...found.keys()].filter((t) => styled.has(t)).length} styled, ` +
+      `${[...found.keys()].filter((t) => PROSE_EXEMPT.has(t)).length} exempt with a stated reason`,
+  );
 }
 
 const CONFIGS = ['astro.config.mjs', 'astro.config.ts', 'astro.config.js'];

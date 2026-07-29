@@ -1,0 +1,181 @@
+/**
+ * The rendered body of every page — `.prose`.
+ *
+ * PERMANENT. This is not migration scaffolding and it must not be filed with
+ * it. `[...page].astro` wraps `<Content />` in `.prose` for every page it
+ * renders, migrated and authored alike: the authored `404.md` gets these rules
+ * exactly as a lab article does, and so will every post written from now on.
+ *
+ * It used to live in `legacy.css` under a `.legacy` wrapper, and that name was
+ * wrong in a way that caused a real bug rather than just reading badly. A file
+ * called "legacy" is one nobody audits for completeness, because everything in
+ * it is on its way out. So when the rhythm rules were written as a list —
+ * h2, h3, h4, h5, h6 — and `h1` was left off, nothing noticed, and 61 page
+ * titles shipped with `margin: 0` on both sides. On a display face set at
+ * line-height 0.98 the line box is SHORTER than the glyphs, so the descenders
+ * of a title ending in "juego" fell into the paragraph under it.
+ *
+ * The split is by lifetime, which is the only split that stays true:
+ *
+ *   prose.css   keyed to ELEMENTS. Every page body has them. Permanent.
+ *   legacy.css  keyed to a dead Jekyll theme's CLASS NAMES. Stops matching the
+ *               day the migration stops emitting them. Disposable, and the file
+ *               says so.
+ *
+ * COMPLETENESS IS CHECKED, NOT REMEMBERED. `verify:build` reads this file for
+ * `.prose <tag>` selectors, reads every rendered body in `dist/`, and fails if
+ * a block element appears in a body that this stylesheet never decided about.
+ * Deleting a rule below fails the build. That check is the actual fix for the
+ * h1 bug — the 48px is just the value it was missing.
+ */
+
+/* ---- headings ------------------------------------------------------------ */
+
+/**
+ * THE PAGE TITLE. Measured against the ink, not the box, and that is why it is
+ * not the --s-6 a route-rendered title gets from `.page`'s flex gap.
+ *
+ * A gap is measured between BOXES, and for every other element here the box
+ * contains its own glyphs. `--t-display` is 76px at line-height 0.98, so this
+ * one does not: the last line hangs about 20px below the element's bottom edge.
+ * At --s-6 the box gap was 24px and the real clearance under the descenders was
+ * 3.9px — the collision was gone and it still read as touching.
+ *
+ * --s-12 leaves about 28px of true space under the descenders, which is the
+ * proportion h2 already has: 34px of type with 16px beneath it. Once the
+ * overhang is paid for, the ratio matches.
+ *
+ * If `--t-display-line` ever rises above 1 this can come back to --s-6. The
+ * overhang is what is being bought, not the title.
+ */
+.prose h1 {
+  margin-block: 0 var(--s-12);
+}
+
+/* "section rhythm is --s-24 top" — an h2 opens a section. */
+.prose h2 {
+  margin-block: var(--s-16) var(--s-4);
+}
+
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  margin-block: var(--s-8) var(--s-3);
+}
+
+/* ---- flow ---------------------------------------------------------------- */
+
+/**
+ * Stated as margins rather than as a flex gap on the wrapper, which is the one
+ * place the spec's "sibling groups use gap, never margins" cannot be followed:
+ * the bodies are arbitrary nested raw HTML, and a gap reaches only its
+ * container's own children while half of these elements sit two or three levels
+ * down.
+ */
+.prose p,
+.prose ul,
+.prose ol,
+.prose blockquote,
+.prose table,
+.prose figure,
+.prose pre {
+  margin-block: 0 var(--s-4);
+}
+
+.prose li {
+  margin-block-end: var(--s-2);
+}
+
+/* The first element in a body has the page chrome above it, which already
+   carries the section rhythm from the page family's gap. */
+.prose > :first-child {
+  margin-block-start: 0;
+}
+
+/* ---- the one rule the divider rule permits ------------------------------- */
+/**
+ * Bodies carry `<hr>`, and an unstyled one renders as the browser's 3D groove —
+ * a bevelled inset line, the single most dated thing on the page. It becomes
+ * the hairline token. The design forbids *adding* rules; this is not adding
+ * one, it is drawing one the content already has.
+ */
+.prose hr {
+  height: 0;
+  margin-block: var(--s-8);
+  border: 0;
+  border-block-start: 1px solid var(--ink-hairline);
+}
+
+/* ---- quotes, tables, figures --------------------------------------------- */
+
+.prose blockquote {
+  padding-inline-start: var(--s-4);
+  border-inline-start: 1px solid var(--ink-hairline);
+  color: var(--ink-muted);
+}
+
+.prose td,
+.prose th {
+  padding: var(--s-2) var(--s-3);
+  border-block-end: 1px solid var(--ink-hairline);
+  vertical-align: top;
+}
+
+/* Two bodies have no header row and a label column, so the migration marks
+   their left cells `<th scope="row">` — a screen reader then reads "Idea: Maar"
+   rather than two loose cells. A `<th>` defaults to bold and centred, and
+   centring a label column is the one part of that which reads as a mistake, so
+   the alignment is restored and the weight kept. */
+.prose th {
+  text-align: start;
+}
+
+/* "figure captions carry no rule — space does that work." */
+.prose figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.prose figcaption {
+  color: var(--ink-meta);
+  font-family: var(--t-small-face);
+  font-size: var(--t-small-size);
+  line-height: var(--t-small-line);
+}
+
+.prose code,
+.prose pre {
+  font-family: var(--face-mono);
+}
+
+/* ---- containment --------------------------------------------------------- */
+/**
+ * Media arrives at whatever width the old theme gave it. This is containment,
+ * not design: nothing here invents a component, and nothing is hidden —
+ * `verify:content` asserts a text floor per page, so a `display: none` here
+ * would be a content deletion wearing a stylesheet.
+ */
+.prose img,
+.prose video,
+.prose iframe,
+.prose object {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--r-0);
+}
+
+.prose iframe {
+  width: 100%;
+  min-height: 320px;
+  border: 0;
+  background: var(--sf-sunken);
+}
+
+.prose pre,
+.prose table {
+  overflow-x: auto;
+  display: block;
+  max-width: 100%;
+}

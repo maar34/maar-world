@@ -37,8 +37,15 @@
 
 import { createHash } from 'node:crypto';
 
-/** Script and style contents are not text a reader ever sees. */
-const dropCode = (html) =>
+/**
+ * Script and style contents are not text a reader ever sees.
+ *
+ * Exported because verify:build's prose-coverage assertion needs exactly this
+ * definition: it scans bodies for element names, and a `"<unknown>"` string
+ * inside Astro's hydration runtime is not an element on the page. Two
+ * definitions of "what is not visible markup" would drift.
+ */
+export const dropCode = (html) =>
   html.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ');
 
 const collapse = (s) => s.replace(/\s+/g, ' ').trim();

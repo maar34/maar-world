@@ -429,6 +429,65 @@ check('a near-empty dist fails verify:build', (root) => {
   return { ok, detail: ok ? 'exit 1, page count reported' : `expected exit 1, got ${code}\n${out}` };
 });
 
+// --- F9: a body element with no rhythm decision fails verify:build -------
+//
+// THE CASE THE h1 BUG NEEDED AND DID NOT HAVE. `styles/prose.css` gives every
+// page body its vertical rhythm and was maintained as a hand-kept list of
+// elements; `h1` was left off it, 61 titles shipped with no space beneath them,
+// and no check in the suite could have noticed. These two cases are the check
+// that now can — the first proves it fails on exactly that omission, the second
+// proves it is not simply always red.
+
+/** A fixture body carrying one styled element and one heading. */
+const PROSE_PAGE =
+  '<!doctype html><html lang="en"><head><title>Fixture</title></head><body><main>' +
+  '<div class="prose"><h1>A title</h1><p>Body text. ' +
+  'Enough of it that the page is not thin, repeated to clear the floor. '.repeat(8) +
+  '</p></div></main></body></html>';
+
+const PROSE_CSS_FULL = '.prose h1 { margin-block: 0 var(--s-12); }\n.prose p { margin-block: 0 var(--s-4); }\n';
+const PROSE_CSS_NO_H1 = '.prose p { margin-block: 0 var(--s-4); }\n';
+
+function proseFixture(root, css) {
+  goodFixture(root);
+  buildableFixture(root);
+  mkdirSync(join(root, 'src/styles'), { recursive: true });
+  writeFileSync(join(root, 'src/styles/prose.css'), css);
+  writeFileSync(join(root, 'dist/article.html'), PROSE_PAGE);
+}
+
+check('an element with no rhythm rule and no exemption fails verify:build', (root) => {
+  proseFixture(root, PROSE_CSS_NO_H1);
+  const { code, out } = run(root, 'verify-build.mjs');
+  const ok = code === 1 && /rhythm decision/.test(out) && /<h1>/.test(out);
+  return {
+    ok,
+    detail: ok
+      ? 'exit 1, the missing h1 rule named'
+      : `expected exit 1 naming <h1>, got ${code}\n${out}`,
+  };
+});
+
+check('the same fixture passes once the rule exists', (root) => {
+  proseFixture(root, PROSE_CSS_FULL);
+  const { code, out } = run(root, 'verify-build.mjs');
+  return { ok: code === 0, detail: code === 0 ? 'exit 0' : `expected exit 0, got ${code}\n${out}` };
+});
+
+// A `"<unknown>"` string inside Astro's hydration runtime is not an element on
+// the page. The first version of this check reported it as one.
+check('markup inside a <script> is not counted as a page element', (root) => {
+  proseFixture(root, PROSE_CSS_FULL);
+  const withScript = PROSE_PAGE.replace(
+    '</div></main>',
+    '</div><script>const s = "<marquee>";</script></main>',
+  );
+  writeFileSync(join(root, 'dist/article.html'), withScript);
+  const { code, out } = run(root, 'verify-build.mjs');
+  const ok = code === 0 && !/marquee/.test(out);
+  return { ok, detail: ok ? 'script contents ignored' : `expected exit 0 ignoring it, got ${code}\n${out}` };
+});
+
 // --- F3: the ledger is append-only across its whole history --------------
 
 const LEDGER_HEADER = [

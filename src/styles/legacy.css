@@ -1,22 +1,29 @@
 /**
- * Reading treatment for the migrated page bodies.
+ * DISPOSABLE. Every rule in this file is keyed to a class name written by a
+ * Jekyll TeXt theme that no longer exists, and every one of them stops matching
+ * the day `scripts/migrate-pages.mjs` stops emitting that name. When that
+ * happens, delete the file and its import — nothing else has to change.
  *
- * Every body under `src/content/**` came out of a Jekyll TeXt theme and still
- * carries that theme's class names. The theme's stylesheet is gone, so 135 of
- * the 147 distinct classes in the built bodies matched no CSS at all — which is
- * why the shell looked designed and the pages under it did not. The ledger line
- * `MW-11 BLOCKED design/page-bodies-unstyled` recorded the measurement and named
- * the two ways out: restyle the legacy names against the tokens, or change what
- * the migration emits so the names go away.
+ * That sentence is the whole reason this file was split from `prose.css`.
+ * Both used to live here under a `.legacy` wrapper, and mixing them caused a
+ * real bug: the vertical rhythm of every page body was filed under a name that
+ * says "temporary", so nobody audited it for completeness, and `h1` was missing
+ * from the list of headings it styled. 61 page titles shipped with no space
+ * under them. The permanent half now lives in `prose.css`, is checked for
+ * completeness by `verify:build`, and cannot lose an element silently again.
  *
- * This is the first. It was the owner's call, and the owner asked for the design
- * system applied; the second is a bigger change that alters what the migration
- * writes, and it can still be done later — every rule here keys off a class name
- * and simply stops matching when that name stops being emitted.
+ * The rule for what belongs here: **if the selector names a dead theme's class,
+ * it is disposable and it goes here. If it names an HTML element, it is the
+ * rhythm of every page ever written and it goes in prose.css.**
+ *
+ * The bodies still carry these names because MW-11 took the first of the two
+ * routes the ledger recorded in `design/page-bodies-unstyled`: restyle the
+ * legacy names against the tokens, rather than change what the migration
+ * emits. The second is still open and this file is what it deletes.
  *
  * THE RULES ARE CONTAINMENT AND RHYTHM, NOT DECORATION. Nothing here invents a
- * component. Every value is a token; there is no raw hex, size or duration. And
- * nothing is hidden — `verify:content` asserts a text floor per page against
+ * component. Every value is a token; there is no raw hex, size or duration.
+ * Nothing is hidden — `verify:content` asserts a text floor per page against
  * production, so a `display: none` here would be a content deletion wearing a
  * stylesheet.
  *
@@ -24,64 +31,29 @@
  * printed and the order these were worth writing in.
  */
 
-/* ---- the one rule the divider rule permits ------------------------------ */
-/**
- * Legacy bodies carry `<hr>`, and an unstyled one renders as the browser's 3D
- * groove — a bevelled inset line, which is the single most dated thing on the
- * page. It becomes the hairline token. The design forbids *adding* rules; this
- * is not adding one, it is drawing one the content already has.
- */
-.legacy hr {
-  height: 0;
-  margin-block: var(--s-8);
-  border: 0;
-  border-block-start: 1px solid var(--ink-hairline);
-}
-
 /* ---- the card tail — 34 pages ------------------------------------------- */
 /**
- * These three are the migration's own class names, written by CARD_TAIL in
+ * The migration's own class names, written by CARD_TAIL in
  * scripts/migrate-pages.mjs to restore the tail the `card.collect` layout used
  * to render. They were emitted with no styling at all, so the instruction to
  * unmute your device read at the same weight as the card's own description.
  */
-.legacy .card-unlock {
+.prose .card-unlock {
   color: var(--ink-muted);
 }
 
-.legacy .card-player-note {
+.prose .card-player-note {
   color: var(--ink-meta);
   font-family: var(--t-small-face);
   font-size: var(--t-small-size);
   line-height: var(--t-small-line);
 }
 
-/* ---- the Lab index — page family 02 ------------------------------------- */
-/**
- * Year-grouped rows, "rule per year group only". The migration writes this
- * structure (labIndexHtml) and it shipped unstyled: 20 rows of title, date,
- * excerpt and tags at one uniform weight, which is a wall of text where the
- * spec asks for a scannable index.
- */
-
-
-/**
- * Tags are chips, not links: production linked each to `/lab.html?tag=X` and a
- * script hid the non-matching rows, MW-7 forbids that script, and a link that
- * lands on an unfiltered index and does nothing is worse than a label. A chip
- * is a flat field with dark type on it — "a pastel is always a background,
- * never type", "type on any pastel is always dark, on both surfaces".
- */
-.legacy .index-row__tag {
-  background: var(--ink-tint);
-  color: var(--ink-muted);
-  border-radius: var(--r-0);
-  padding-inline: var(--s-2);
-  font-family: var(--t-meta-face);
-  font-size: var(--t-meta-size);
-  line-height: var(--t-meta-line);
-  letter-spacing: var(--t-meta-track);
-}
+/* The Lab index tag chip used to be here, scoped to the body wrapper. It has
+   been moved to src/pages/[...page].astro, because the index is rendered by the
+   route and sits OUTSIDE that wrapper — so the rule matched nothing and the
+   chips have been shipping as plain text. Found by this split, which is the
+   argument for the split. */
 
 /* ---- hero bands — 10 pages ---------------------------------------------- */
 /**
@@ -90,25 +62,25 @@
  * theme modifier for a light page; on a surface that is already dark it means
  * the sunken step rather than a second background colour.
  */
-.legacy .hero {
+.prose .hero {
   display: flex;
   flex-direction: column;
   gap: var(--s-4);
   padding-block: var(--s-8);
 }
 
-.legacy .hero--center {
+.prose .hero--center {
   text-align: center;
   align-items: center;
 }
 
-.legacy .hero--dark {
+.prose .hero--dark {
   background: var(--sf-sunken);
   padding: var(--s-8);
   border-radius: var(--r-0);
 }
 
-.legacy .hero__content {
+.prose .hero__content {
   display: flex;
   flex-direction: column;
   gap: var(--s-4);
@@ -118,12 +90,14 @@
 /* ---- player wrappers — 15 pages ----------------------------------------- */
 /**
  * `.container` wraps every `play.maar.world` frame, and `.responsive-iframe` is
- * the frame itself. The `.legacy iframe` rule already gives the frame its width
- * and height; what was missing is that the wrapper never filled the measure, so
- * the frames sat at the theme's intrinsic width instead of the column's.
+ * the frame itself. The iframe rule in prose.css already gives the frame its
+ * width and height; what was missing is that the wrapper never filled the
+ * measure, so the frames sat at the theme's intrinsic width rather than the
+ * column's.
  */
-.legacy .container {
+.prose .container {
   width: 100%;
+  margin-block: 0 var(--s-4);
 }
 
 /* ---- the theme's grid — 6 pages ----------------------------------------- */
@@ -133,13 +107,13 @@
  * item each, so the honest translation is a single column with the section
  * rhythm between cells rather than a reconstruction of a grid nobody can see.
  */
-.legacy .grid {
+.prose .grid {
   display: flex;
   flex-direction: column;
   gap: var(--s-8);
 }
 
-.legacy .cell {
+.prose .cell {
   width: 100%;
 }
 
@@ -150,7 +124,7 @@
  * production's own no-script state does. They are given the gap a stack needs
  * so they do not read as one continuous block.
  */
-.legacy .swiper__slide {
+.prose .swiper__slide {
   display: flex;
   flex-direction: column;
   gap: var(--s-3);
@@ -169,7 +143,7 @@
  * for avatars and toggle knobs only", so a rounded body link is not a shape the
  * design offers.
  */
-.legacy a.button {
+.prose a.button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -188,129 +162,67 @@
   transition: background var(--m-fast) var(--ease), color var(--m-fast) var(--ease);
 }
 
-.legacy a.button:hover {
+.prose a.button:hover {
   background: var(--action-invert);
   color: var(--sf-base);
 }
 
-.legacy a.button:active {
+.prose a.button:active {
   transform: translateY(var(--press-nudge));
 }
 
-/* ---- figures and captions ----------------------------------------------- */
-/* "figure captions carry no rule — space does that work." */
-.legacy figure {
-  margin: 0;
+/* ---- click-to-load facades ----------------------------------------------
+   Every third-party embed on this site is one of these. No YouTube, Vimeo,
+   SoundCloud, Google Forms or radio-stream byte is requested until the visitor
+   chooses it — which is the whole reason there is no cookie banner and no
+   consent engine in this codebase.
+
+   The facade is written by the migration, so it is a dead-theme name by the
+   rule above and lives here. It is a link, so it is keyboard-operable for free
+   and cannot be operated by accident. The focus ring is the global one from
+   --focus-*; it is only restated to sit outside the plate rather than inside. */
+.prose .embed-facade {
   display: flex;
   flex-direction: column;
   gap: var(--s-2);
-}
-
-.legacy figcaption {
-  color: var(--ink-meta);
-  font-family: var(--t-small-face);
-  font-size: var(--t-small-size);
-  line-height: var(--t-small-line);
-}
-
-/* ---- prose rhythm ------------------------------------------------------- */
-/**
- * The bodies arrive as raw HTML with the theme's own margins stripped, so
- * paragraphs and lists ran together. Section rhythm is --s-24 above a section
- * head; a paragraph gets the sibling gap.
- *
- * Stated as margins rather than as a flex gap on `.legacy` because the bodies
- * are arbitrary nested raw HTML — a gap on the container reaches only its own
- * children, and half of these elements are two or three levels down.
- */
-.legacy p,
-.legacy ul,
-.legacy ol,
-.legacy blockquote,
-.legacy table,
-.legacy figure,
-.legacy .container {
+  background: var(--plate);
+  border: 1px solid var(--ink-hairline);
+  border-radius: var(--r-0);
+  padding: var(--s-4);
   margin-block: 0 var(--s-4);
 }
 
-.legacy h2 {
-  margin-block: var(--s-16) var(--s-4);
-}
-
-.legacy h3,
-.legacy h4,
-.legacy h5,
-.legacy h6 {
-  margin-block: var(--s-8) var(--s-3);
-}
-
-/* The first heading in a body has the page's own h1 above it, which already
-   carries the section rhythm from the page family's gap. */
-.legacy > :first-child {
-  margin-block-start: 0;
-}
-
-.legacy li {
-  margin-block-end: var(--s-2);
-}
-
-.legacy blockquote {
-  padding-inline-start: var(--s-4);
-  border-inline-start: 1px solid var(--ink-hairline);
-  color: var(--ink-muted);
-}
-
-.legacy td,
-.legacy th {
-  padding: var(--s-2) var(--s-3);
-  border-block-end: 1px solid var(--ink-hairline);
-  vertical-align: top;
-}
-
-/* ---- the year-grouped index ------------------------------------------------
-   NOT legacy names, despite living next to them. These were legacy class names
-   while the Lab index was ~104 lines of HTML baked into lab.md by the migration.
-   src/pages/[...page].astro now renders the index from the collection, so the
-   markup is first-party and sits OUTSIDE .legacy — which is why the `.legacy `
-   scope had to come off, not as a widening but because the elements moved. */
-.index {
+.prose .embed-facade__action {
   display: flex;
-  flex-direction: column;
-  gap: var(--s-16);
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-3);
+  text-decoration: none;
+  color: var(--ink);
 }
 
-.index-year {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-6);
+/* The pigment is maar — wayfinding. It is a flat field, not a wash: the
+   provider chip is the only pigment in the component, and type on a pastel is
+   always dark. */
+.prose .embed-facade__provider {
+  flex: none;
+  background: var(--c-maar);
+  color: var(--pigment-ink);
+  border-radius: var(--r-0);
+  padding: 0 var(--s-2);
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: var(--t-meta-line);
+  letter-spacing: var(--t-meta-track);
 }
 
-/* The rule above a year group — the second of the two places one is allowed. */
-.index-year__rule {
-  margin-block: var(--s-2) 0;
+.prose .embed-facade__label {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
-.index-rows {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-8);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.index-row {
-  display: flex;
-  flex-direction: column;
-  /* "sibling groups use gap, never margins." */
-  gap: var(--s-2);
-}
-
-.index-row__title {
-  margin: 0;
-}
-
-.index-row__date {
+.prose .embed-facade__note {
   color: var(--ink-meta);
   font-family: var(--t-meta-face);
   font-size: var(--t-meta-size);
@@ -318,16 +230,18 @@
   letter-spacing: var(--t-meta-track);
 }
 
-.index-row__excerpt {
-  color: var(--ink-muted);
-  margin: 0;
+.prose .embed-facade__action:hover {
+  background: transparent;
+  color: var(--ink);
 }
 
-.index-row__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-2);
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.prose .embed-facade__action:hover .embed-facade__label {
+  background: var(--c-maar);
+  color: var(--pigment-ink);
+  text-decoration: none;
+}
+
+.prose .embed-facade__action:focus-visible {
+  outline: var(--focus-w) solid var(--focus-c);
+  outline-offset: var(--focus-o);
 }
