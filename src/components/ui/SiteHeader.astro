@@ -15,6 +15,7 @@
  * navigation is a separate element rather than the same <details> forced open.
  */
 import { AREAS, SECTIONS, type AreaName } from '../../config/site';
+import BrandMark from './BrandMark.astro';
 
 interface Props {
   area?: AreaName;
@@ -46,7 +47,15 @@ const areaCurrent = (name: AreaName) =>
 
 <header class="shell__header" lang={chromeLang}>
   <div class="shell__inner shell__header-inner">
-    <a class="shell__brand" href="/">Maar World</a>
+    {/* The mark and the wordmark are one link, not two — a logo beside a name
+        that both go to the same place is two tab stops and two announcements of
+        the same destination. The mark is aria-hidden; the link's name is the
+        text. It takes the current area's pigment, so the header states which
+        area you are in twice over: the mark and the current nav field. */}
+    <a class="shell__brand" href="/">
+      <BrandMark size={22} />
+      <span>Maar World</span>
+    </a>
 
     <nav class="nav-areas" aria-label="Areas">
       <ul role="list" class="nav-list">

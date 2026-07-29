@@ -147,6 +147,25 @@ const Shell = surface === 'paper' ? ShellPaper : ShellDark;
     {description && <meta name="description" content={description} />}
     {noindex && <meta name="robots" content="noindex" />}
     {redirectTo && <meta http-equiv="refresh" content={`0; url=${redirectTo}`} />}
+    {/* Icons. Production served 21 of these URLs across three origins and the
+        build emitted none, so an already-saved bookmark or home-screen shortcut
+        lost its icon at cutover — a silent break, like the feed.
+
+        Order matters: a browser takes the LAST `rel="icon"` it understands, so
+        the SVG comes after the PNGs and modern browsers get the one that
+        follows the viewer's theme. `favicon.ico` carries no `sizes` and is
+        found by browsers that only ever look at /favicon.ico anyway.
+
+        `mask-icon` is Safari's pinned tab. Its `color` is the palette's sky —
+        the file itself is a silhouette and Safari colours it from here, which
+        is why that asset is monochrome by design. */}
+    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#a9d5e8" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#100f14" />
     <link rel="canonical" href={canonicalUrl} />
     {
       /* Self-referential too: `rel=alternate` sets are only valid if every page

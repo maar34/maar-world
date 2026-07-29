@@ -24,7 +24,27 @@ const VALID_POLICIES = new Set(['preserve', 'redirect', 'drop']);
  * Declared here because two separate checks below need it: one asserts they are
  * still served, the other must not count them as unbacked extras.
  */
-const RESTORED = ['feed', 'feed.xml', 'robots.txt', 'sitemap.xml', '404.html'];
+const RESTORED = [
+  'feed',
+  'feed.xml',
+  'robots.txt',
+  'sitemap.xml',
+  '404.html',
+  // Browser chrome. 21 URLs across three origins in production, none in the
+  // build — so an already-saved bookmark or home-screen shortcut lost its icon
+  // at cutover, which nobody reports and everybody sees.
+  'favicon.ico',
+  'favicon-16x16.png',
+  'favicon-32x32.png',
+  'favicon.svg',
+  'apple-touch-icon.png',
+  'safari-pinned-tab.svg',
+  'site.webmanifest',
+  'browserconfig.xml',
+  'android-chrome-192x192.png',
+  'android-chrome-512x512.png',
+  'mstile-150x150.png',
+];
 
 const ALLOWLIST_REL = 'routes/scaffolding-allowlist.json';
 const ALLOWLIST_PATH = resolve(ROOT, ALLOWLIST_REL);

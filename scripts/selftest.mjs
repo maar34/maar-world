@@ -20,6 +20,7 @@ import { fileURLToPath } from 'node:url';
 import { CHECK_NAMES } from './verify.mjs';
 import { sha, plainText, bodyText, readableText, mainOf } from './lib/html-text.mjs';
 import { renderFeed, xmlEscape, rfc822 } from '../src/lib/feed.mjs';
+import { routeToFiles } from './lib/routes.mjs';
 
 const SCRIPTS = resolve(dirname(fileURLToPath(import.meta.url)));
 
@@ -70,7 +71,23 @@ function goodFixture(root) {
   // The endpoints production serves that are not pages. A healthy build has
   // them, so the fixture that stands for a healthy build must too — otherwise
   // every case expecting exit 0 fails for a reason unrelated to what it tests.
-  for (const f of ['feed', 'feed.xml', 'robots.txt', 'sitemap.xml']) {
+  for (const f of [
+    'feed',
+    'feed.xml',
+    'robots.txt',
+    'sitemap.xml',
+    'favicon.ico',
+    'favicon-16x16.png',
+    'favicon-32x32.png',
+    'favicon.svg',
+    'apple-touch-icon.png',
+    'safari-pinned-tab.svg',
+    'site.webmanifest',
+    'browserconfig.xml',
+    'android-chrome-192x192.png',
+    'android-chrome-512x512.png',
+    'mstile-150x150.png',
+  ]) {
     writeFileSync(join(root, 'dist', f), 'fixture');
   }
   // 404.html is a real page and verify:build holds it to the same standard as
@@ -717,6 +734,15 @@ check('an unbacked page still fails when an authored directory exists', (root) =
   const { code, out } = run(root, 'verify-routes.mjs');
   const ok = code === 1 && /leftover\.html/.test(out);
   return { ok, detail: ok ? 'exit 1, unbacked page still reported' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// A long extension is still an extension. `.webmanifest` is 11 characters and
+// the bound was 8, so /site.webmanifest resolved as site.webmanifest.html and
+// every page linking to it reported a broken link against a file in dist/.
+check('a .webmanifest URL resolves to the file, not to file.html', () => {
+  const got = routeToFiles('/site.webmanifest');
+  const ok = got.length === 1 && got[0] === 'site.webmanifest';
+  return { ok, detail: ok ? 'resolved verbatim' : `got ${JSON.stringify(got)}` };
 });
 
 // --- the feed, and the endpoints that fail silently when absent ----------

@@ -165,7 +165,23 @@
   text-decoration-line: none;
   display: inline-flex;
   align-items: center;
+  /* The mark and the wordmark are one link; the gap is what keeps them
+     legible as two things rather than a collision. */
+  gap: var(--s-2);
   min-height: var(--hit-min);
+}
+
+/**
+ * The mark takes the page's area pigment — sky on Maar, pink on Collect, tree
+ * on Tree — which is the same `--area-pigment` the current nav entry and a
+ * highlighted heading read. One binding, three places, so the whole chrome
+ * agrees about which area you are in without anyone restating a colour.
+ *
+ * It is `currentColor` in the component, so this is the only place the mark's
+ * colour is decided.
+ */
+.shell__brand .brand-mark {
+  color: var(--area-pigment, var(--c-maar));
 }
 
 /* ---- navigation --------------------------------------------------------- */

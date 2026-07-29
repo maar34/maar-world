@@ -17,7 +17,22 @@ export function decodePath(urlPath) {
   }
 }
 
-const HAS_EXTENSION = /\.[a-z0-9]{1,8}$/i;
+/**
+ * A trailing file extension.
+ *
+ * The bound was 8 characters, which silently excluded `.webmanifest` (11) — so
+ * `/site.webmanifest` was treated as an extensionless page URL and resolved as
+ * `site.webmanifest.html`, a file that does not and should not exist. Every
+ * page links to the manifest, so the moment one shipped, `verify:links`
+ * reported 134 broken internal links against a file sitting right there in
+ * dist/.
+ *
+ * 12 covers `.webmanifest` with room to spare. Checked against the contract
+ * before widening: the only paths in routes/policy.json with a dot-suffix over
+ * 8 characters ARE the webmanifests, so nothing that was resolving as a page
+ * starts resolving as a file.
+ */
+const HAS_EXTENSION = /\.[a-z0-9]{1,12}$/i;
 
 /**
  * Candidate build-output files that would satisfy a production URL, in order of
