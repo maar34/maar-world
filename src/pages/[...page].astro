@@ -177,7 +177,7 @@ const readableDate = (iso: string) => {
          the image. `cover--stamped` opens the mount only on the covers that have
          one, so a card with no numeral is laid out exactly as it was. */
       isCard && d.card_image && (
-        <figure class:list={['cover', stampText(d.card_title) && 'cover--stamped']}>
+        <figure class:list={['cover', 'plate', stampText(d.card_title) && 'cover--stamped']}>
           <Stamp cardTitle={d.card_title} />
           <img src={d.card_image} alt={`${d.suit_title} ${d.card_title}`} loading="lazy" decoding="async" />
         </figure>
@@ -283,7 +283,7 @@ const readableDate = (iso: string) => {
                   so it takes an empty alt rather than repeating the title to a
                   screen reader. */}
               {d.indexCovers && p.data.cover && (
-                <a class="index-list__cover" href={hrefOf(p.data.outputPath)} tabindex="-1" aria-hidden="true">
+                <a class="index-list__cover plate" href={hrefOf(p.data.outputPath)} tabindex="-1" aria-hidden="true">
                   <img src={p.data.cover} alt="" loading="lazy" decoding="async" />
                 </a>
               )}
@@ -354,9 +354,11 @@ const readableDate = (iso: string) => {
     margin: 0;
   }
 
+  /* The plate is the hatch, not the flat tint it used to be — mark 7. The
+     class carries it, so the value lives in tokens.css and nothing here
+     reaches for a texture directly. */
   .cover {
     margin: 0;
-    background: var(--sf-raised);
     border-radius: var(--r-0);
   }
 
@@ -426,10 +428,9 @@ const readableDate = (iso: string) => {
     gap: var(--s-6);
   }
 
+  /* `.plate` on the element carries the hatch and the radius. */
   .index-list__cover {
     display: block;
-    background: var(--sf-raised);
-    border-radius: var(--r-0);
     margin-bottom: var(--s-2);
   }
 
@@ -486,11 +487,18 @@ const readableDate = (iso: string) => {
      It is a link, so it is keyboard-operable for free and cannot be operated
      by accident. The focus ring is the global one from --focus-*; it is only
      restated here to sit outside the plate rather than inside it. */
+  /* The hatch plate, mark 7. `.plate` cannot be used here: the facade is
+     written into generated markdown by scripts/migrate-pages.mjs, so a class
+     added to it would be gone on the next migration run — and adding
+     presentational classes to content would be the wrong fix anyway. It reads
+     the same token instead, so there is still exactly one definition of the
+     texture. 4a's own video facade is a hatch plate, which is what makes this
+     the mark's home rather than a place it was extended to. */
   .legacy :global(.embed-facade) {
     display: flex;
     flex-direction: column;
     gap: var(--s-2);
-    background: var(--sf-raised);
+    background: var(--plate);
     border: 1px solid var(--ink-hairline);
     border-radius: var(--r-0);
     padding: var(--s-4);

@@ -209,6 +209,28 @@
   }
 }
 
+/* ---- the hatch plate — 4a's, collapsed onto surface roles ---------------- */
+
+/**
+ * `.plate`. The seventh mark, and the odd one out: it is a surface, not
+ * something laid on a word. Every value lives in tokens.css with the reasoning;
+ * this is the class the routes put on a media frame.
+ *
+ * It is deliberately not named `.mark--plate`. The neutralising rules below
+ * stand marks down at h2, in body copy and in a caption, which is right for a
+ * cut word and wrong for the surface a `<figcaption>`'s own thumbnail sits on —
+ * and the rules-of-use budget it would be counted against does not apply to a
+ * texture in the first place.
+ *
+ * `background-color` is not set alongside it. The bands are ink tints on dark
+ * and opaque on paper, so the plate composites onto whatever surface the page
+ * is already painting, which is what makes one declaration serve both.
+ */
+.plate {
+  background: var(--plate);
+  border-radius: var(--r-0);
+}
+
 /* ---- where marks are allowed --------------------------------------------- */
 
 /**

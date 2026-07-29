@@ -190,7 +190,7 @@ const downloads = [d.download, d.download2]
         the artwork. See src/components/patterns/Stamp.astro for why not over the
         image. `cover--stamped` opens the mount only on the covers that have one,
         so a card with no numeral is laid out exactly as it was. */}
-    <figure class:list={['cover', stampText(d.card_title) && 'cover--stamped']}>
+    <figure class:list={['cover', 'plate', stampText(d.card_title) && 'cover--stamped']}>
       <Stamp cardTitle={d.card_title} />
       <img src={d.card_image} alt={`${d.suit_title} ${d.card_title}`} loading="lazy" decoding="async" />
     </figure>
@@ -321,10 +321,12 @@ const downloads = [d.download, d.download2]
     margin: 0;
   }
 
-  /* Cover ratio is 3:2 everywhere except card.compact and card.place. */
+  /* Cover ratio is 3:2 everywhere except card.compact and card.place. The
+     plate is the hatch, not the flat tint it used to be — mark 7. The class
+     carries it, so the value lives in tokens.css and nothing here reaches for
+     a texture directly. */
   .cover {
     margin: 0;
-    background: var(--sf-raised);
     border-radius: var(--r-0);
   }
 

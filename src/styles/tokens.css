@@ -270,6 +270,38 @@
   --mark-stamp-rule-w: 2px;
   --mark-stamp-tilt: -4deg;
 
+  /**
+   * THE HATCH PLATE — mark 7, and the one member of the seven that is a SURFACE
+   * rather than a mark laid on a word. The rules-of-use table's mark budget
+   * counts marks in a heading; a texture under an image is not one of those, so
+   * a plate spends nothing and is allowed wherever media is.
+   *
+   * "A texture, not a wash." 4a draws every media frame this way — card art,
+   * list thumbnails, the video facade — as two flat colours in 8px diagonal
+   * bands with hard stops. It is a `repeating-linear-gradient` and it is NOT
+   * what the spec forbids: there is no diffusion anywhere in it. That
+   * distinction is the documentation bug recorded in
+   * docs/agent/VISUAL-LANGUAGE.md — an agent reading "the spec forbids
+   * gradients" deletes two of the seven marks. The test is diffusion, not the
+   * keyword; the radial pigment washes under `filter: blur()` are the forbidden
+   * thing and none of them is here.
+   *
+   * THE BANDS ARE ROLES, NOT 4a's LITERAL HEXES. 4a paints #1b1a23/#141319 on
+   * dark and #e6ddd0/#d5cabb on paper; those are near-misses of this system's
+   * own surface roles and VISUAL-LANGUAGE says to collapse them. What carries
+   * the effect is the separation between the two bands, and that survives the
+   * collapse: 4a's dark pair differ by about 7 per channel and --sf-raised and
+   * --sf-sunken differ by about 7 there too; on paper 4a's pair differ by about
+   * 17 and these by about 15. Using roles also means the plate inverts with the
+   * surface for nothing, which two hard-coded pairs would not.
+   */
+  --plate-band: 8px;
+  --plate: repeating-linear-gradient(
+    135deg,
+    var(--sf-raised) 0 var(--plate-band),
+    var(--sf-sunken) var(--plate-band) calc(var(--plate-band) * 2)
+  );
+
   /* ---- motion ---------------------------------------------------------- */
   /* Moves opacity, height and 2d transform only. No blur, no parallax, no
      colour animation. All motion is suppressed under prefers-reduced-motion. */
