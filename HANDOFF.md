@@ -1,6 +1,6 @@
 # Handoff
 
-**State:** tree clean at `4904a1a`. `npm run verify` = **71 passed, 2 failed, 1 skipped**.
+**State:** tree clean at `93dd1fc`. `npm run verify` = **71 passed, 2 failed, 1 skipped**.
 
 Both failures are known, deliberate and human-gated. Neither is a regression:
 
@@ -15,18 +15,12 @@ routes 8/8 · cards 20/20 (+1 skip, needs MW-10) · a11y 24/24.
 
 ## Next action
 
-1. **ONE OWNER DECISION BLOCKS TWO MARKS: may a `ui` element carry a tilt?**
-   The live spec's rules-of-use table says *"body, ui, labels, captions — tilt:
-   never"*, and it rotates no control anywhere: all five real `rotate()` uses in
-   it are heading-level. 4a tilts eight CTAs (primary −0.6/−0.7/−0.8/−1°,
-   secondary +0.5/+0.6°, a pair always leaning apart). The spec also contradicts
-   itself — its tilt-set prose says *"tilt applies to a containing block only"*,
-   and a button **is** a containing block.
-
-   Answering it settles **mark 6, tilted actions** (not started) and the held
-   half of **mark 5, opposed chips** (the opposition *is* the tilt). If the
-   answer is "4a wins", the spec's table should be corrected upstream rather
-   than quietly violated here. `ledger -- find tilted-actions`
+1. **Correct the spec upstream.** Its rules-of-use table row `body, ui, labels,
+   captions — tilt: never` does not say what it was written to say. The owner:
+   *"I only asked to not tilt the highlighted text."* The rule binds
+   `mark.highlight` alone. Reading it widely blocked two marks for a session;
+   the repo now follows the owner's scope, so the **table and the repo disagree
+   until someone edits the spec**. `ledger -- find tilt-rule-scope`
 2. **Dropbox card art** — the only red check that isn't check-side. Needs a human.
 3. **4 route groups**, 215 live URLs — theme assets, orphan files, deploy artifacts,
    `%20` card URLs. Need the owner's knowledge. `ledger -- find routes/`
@@ -34,17 +28,23 @@ routes 8/8 · cards 20/20 (+1 skip, needs MW-10) · a11y 24/24.
 
 ### Type marks — where they stand
 
-`docs/agent/VISUAL-LANGUAGE.md` names seven. Six are built.
+`docs/agent/VISUAL-LANGUAGE.md` names seven. **All seven are built.**
 
 | # | mark | state |
 |---|---|---|
-| 1 | cut word | built — 46 h1s |
-| 2 | highlighter | built — 11 h1s |
-| 3 | struck word | built — **1**, the 404, and one is the honest number |
-| 4 | stamp | built — 67 card covers |
-| 5 | opposed chips | **half** — fill vs outline built, the opposition needs the decision above |
-| 6 | tilted actions | **BLOCKED** — the decision above |
-| 7 | hatch plate | built — 79 plates + 17 facades |
+| 1 | cut word | 46 h1s |
+| 2 | highlighter | 11 h1s — **level, 0°, and it stays that way** |
+| 3 | struck word | **1**, the 404, and one is the honest number |
+| 4 | stamp | 67 card covers |
+| 5 | opposed chips | fill vs outline, leaning apart at −1.5° / +1° |
+| 6 | tilted actions | primary −0.6°, collect −0.8°, secondary +0.5°, text square |
+| 7 | hatch plate | 79 plates + 17 facades |
+
+The one thing not to "fix": **the highlight never rotates and everything else
+does.** A highlight is a pen stroke and a hand holds the pen level; a stamp, a
+chip and a button are objects someone placed. `.mark--highlight` counter-rotates
+by whatever its block sets, so a run of them down a tilted heading steps rather
+than skewing.
 
 Two of those placements are not where `VISUAL-LANGUAGE.md` asks for them, and
 the doc is wrong rather than the code: it puts the **stamp** on the card
@@ -139,8 +139,7 @@ that later work closed: `helix-diagram.html`, `shell/designsync-unavailable`,
 `design/page-bodies-unstyled`, `pages/missing-alt`, and `shell/lang-two-pages-unset`
 (half — `/esp-feedback` is fixed).
 
-Genuinely open: **tilt at `ui` level (blocks marks 5 and 6 — see Next action)** ·
-Dropbox card art · 34+9 lost cover thumbnails · Artizen URL · 4 route groups ·
+Genuinely open: Dropbox card art · 34+9 lost cover thumbnails · Artizen URL · 4 route groups ·
 `/resume` noindex · embeds click out not in · 5 assets over 2 MB · Tree hub image ·
 ip-orchestra avatar · 2 interpolated display line heights · the mark tilt set.
 

@@ -399,6 +399,48 @@
    */
   --chip-rule: color-mix(in srgb, var(--ink) 20%, transparent);
 
+  /**
+   * TILTED ACTIONS — mark 6 — and OPPOSED CHIPS — mark 5's other half.
+   *
+   * These were held for a session on a reading of the spec that turned out to
+   * be wrong, and the correction is the owner's: "I only asked to not tilt the
+   * highlighted text… with the tilt it looks bad, it looks like a star." The
+   * no-rotation rule was only ever about `mark.highlight`. The rules-of-use
+   * table's "body, ui, labels, captions — tilt: never" row is therefore not an
+   * intentional ban on tilting a control, and the spec's own tilt-set prose
+   * agrees: "tilt applies to a containing block only", and a button is a
+   * containing block. Recorded as `MW-11 NOTE design/tilt-rule-scope`.
+   *
+   * The highlight stays level and that is not a compromise — it is the point.
+   * `.mark--highlight` counter-rotates by whatever its block sets, so a run of
+   * highlights down a tilted heading steps rather than skewing. See mark.css.
+   *
+   * VALUES ARE 4a's, AND SO IS THE PATTERN. Filled actions lean negative
+   * (−0.6 "collect a card", −0.8 "buy on bandcamp", −0.7, −1), outlined ones
+   * lean positive (+0.5 "enter the lab", +0.6), and a pair sitting together
+   * leans APART, never the same way. That is what stops two stacked CTAs
+   * reading as one skewed block.
+   *
+   * The chips are steeper than the buttons because 4a's are: its `en`/`es` pair
+   * is −1.5 against +1, where its CTAs stay under a degree. A chip is small
+   * enough that a degree barely reads.
+   *
+   * A text button gets nothing. 4a never tilts an action with no box — a
+   * rotation reads as an object someone placed, and an underlined word is not
+   * an object. Its inactive filter chips are square for the same reason.
+   *
+   * AN ACTION ANGLE STAYS UNDER 1deg, which is --tilt-b, which is what the
+   * responsive table caps tilt at below 600px. All three below are inside it,
+   * so no breakpoint rule is needed and none exists — the constraint lives here,
+   * where the next value gets chosen, rather than as a media query that never
+   * fires. The chips are outside it and do carry one.
+   */
+  --action-tilt-primary: -0.6deg;
+  --action-tilt-collect: -0.8deg;
+  --action-tilt-secondary: 0.5deg;
+  --chip-tilt-selected: -1.5deg;
+  --chip-tilt-rest: 1deg;
+
   /* "press is a 1px downward nudge, no scale." */
   --press-nudge: 1px;
 }

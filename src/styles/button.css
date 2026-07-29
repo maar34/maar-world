@@ -23,9 +23,30 @@
  * Marks are not permitted here. The rules-of-use table allows them at h1 and
  * card-cover level and forbids them at "body, ui, label and caption" — a button
  * is ui.
+ *
+ * TILT IS NOT A MARK, and that distinction cost a session. The same table row
+ * says "tilt: never" for ui, and this file was written to obey it — but the
+ * owner's rule was only ever about `mark.highlight`: "I only asked to not tilt
+ * the highlighted text… with the tilt it looks bad, it looks like a star." So
+ * an action carries the small rotation everything else in the language does.
+ * The values and the pattern are 4a's — filled leans negative, outlined leans
+ * positive, and a pair leans apart. See the token block in tokens.css.
  */
 
 .btn {
+  /**
+   * Mark 6. Per variant, so a primary and a secondary standing together lean
+   * apart without either of them knowing about the other — and so the whole
+   * set is four values in one file rather than an angle repeated at every call
+   * site. Square is the default: a variant that wants a tilt says so.
+   *
+   * It is a custom property and not a `transform` on each variant because
+   * `:active` also transforms, and a second `transform` declaration replaces
+   * the first rather than adding to it: the press would silently straighten
+   * the button. Every rule below composes the two.
+   */
+  --btn-tilt: 0deg;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -47,12 +68,15 @@
   border: 0;
   border-radius: var(--r-1);
   cursor: pointer;
+  transform: rotate(var(--btn-tilt));
   transition: background var(--m-fast) var(--ease), color var(--m-fast) var(--ease);
 }
 
-/* "press is a 1px downward nudge, no scale." One rule for every variant. */
+/* "press is a 1px downward nudge, no scale." One rule for every variant. The
+   rotation is carried through, so a tilted button does not straighten as it is
+   pressed — the nudge is a nudge, not a correction. */
 .btn:active {
-  transform: translateY(var(--press-nudge));
+  transform: rotate(var(--btn-tilt)) translateY(var(--press-nudge));
 }
 
 /* The focus ring is the global one from --focus-*; it is not restated per
@@ -64,6 +88,8 @@
 .btn--primary {
   background: var(--c-maar);
   color: var(--pigment-ink);
+  /* 4a's "collect a card". */
+  --btn-tilt: var(--action-tilt-primary);
 }
 
 .btn--primary:hover {
@@ -80,6 +106,9 @@
   border: var(--btn-border-w) solid currentColor;
   padding-block: var(--btn-pad-block-outline);
   padding-inline: var(--btn-pad-inline-outline);
+  /* 4a's "enter the lab" — positive, so it leans away from the primary it is
+     stacked with rather than parallel to it. This is the whole mark. */
+  --btn-tilt: var(--action-tilt-secondary);
 }
 
 .btn--secondary:hover {
@@ -100,6 +129,9 @@
 .btn--collect {
   background: var(--c-collect);
   color: var(--pigment-ink);
+  /* 4a's "buy on bandcamp" — a different filled angle from the primary, so two
+     filled actions in one view are not parallel either. */
+  --btn-tilt: var(--action-tilt-collect);
 }
 
 .btn--collect:hover {
@@ -109,7 +141,10 @@
 
 /* ---- text --------------------------------------------------------------- */
 /* No field and no border: an underline until it is hovered, when it takes the
-   tree pigment as a flat field and drops the line. */
+   tree pigment as a flat field and drops the line.
+   Square, and deliberately: a rotation reads as an object someone placed, and
+   a text button has no box to be one. 4a leaves its own box-less actions —
+   the inactive filter chips — upright for the same reason. */
 .btn--text {
   background: transparent;
   color: currentColor;
@@ -148,9 +183,11 @@
   color: var(--ink-meta);
 }
 
+/* The nudge is suppressed and the tilt is not: a disabled control is still the
+   same object sitting at the same angle, it just does not respond. */
 .btn:disabled:active,
 .btn[aria-disabled='true']:active {
-  transform: none;
+  transform: rotate(var(--btn-tilt));
 }
 
 /* ---- legacy form controls ----------------------------------------------- */
@@ -168,6 +205,9 @@
  */
 .legacy button[type='submit'],
 .legacy input[type='submit'] {
+  /* Drawn as a primary, so it leans as one. */
+  --btn-tilt: var(--action-tilt-primary);
+  transform: rotate(var(--btn-tilt));
   min-height: var(--hit-min);
   padding-block: var(--btn-pad-block);
   padding-inline: var(--btn-pad-inline);
@@ -198,7 +238,7 @@
 
 .legacy button[type='submit']:active,
 .legacy input[type='submit']:active {
-  transform: translateY(var(--press-nudge));
+  transform: rotate(var(--btn-tilt)) translateY(var(--press-nudge));
 }
 
 /**
@@ -239,3 +279,17 @@
   gap: var(--s-4);
   align-items: flex-start;
 }
+
+/* ---- below 600px --------------------------------------------------------- */
+/**
+ * "< 600 … tilt max --tilt-b" — and there is deliberately no media query here.
+ *
+ * --tilt-b is 1deg, and every action angle is inside it by construction: -0.6,
+ * -0.8, +0.5. A rule capping them would be a rule that never fires, and this
+ * repo has already paid once for a declaration that looked done and did
+ * nothing. The constraint belongs where a new value is chosen, so it is stated
+ * in the token block in tokens.css instead: an action angle stays under 1deg.
+ *
+ * The chips are the case that genuinely exceeds it, at -1.5deg, and they carry
+ * a real media query of their own — see .lang-switch in pages/[...page].astro.
+ */

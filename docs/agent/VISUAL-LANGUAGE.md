@@ -72,12 +72,22 @@ horizontal and **step**, and a run of them down a tilted heading reads as a *sta
 staircase is the effect. Rotating the highlights with their block flattens it straight back into
 a plain skewed page, which is the thing the whole language exists to avoid.
 
+**The scope of the rule, in the owner's words, after a session read it too widely:**
+*"I only asked to not tilt the highlighted text… with the tilt it looks bad, it looks
+like a star."* It binds `mark.highlight` and nothing else. In particular it does **not**
+bind buttons, chips or any other control — the rules-of-use table's `body, ui, labels,
+captions — tilt: never` row is not an intentional prohibition on tilting a control, and
+the spec's own tilt-set prose agrees: *"tilt applies to a containing block only"*, and a
+button is a containing block. Marks 5 and 6 were blocked for a session on the wide
+reading. See `ledger -- find tilt-rule-scope`.
+
 So the rule is not "no rotation anywhere". It is:
 
 | | rotates with its block? | why |
 |---|---|---|
 | **highlight** | **never** — counter-rotates to stay level | it is a pen stroke, and a hand holds the pen level |
 | **cut word** | **yes** | it is a piece of paper someone put down, and paper does not land square |
+| **stamp, chip, button** | **yes** — its own frozen angle | each is an object someone placed, and none of them is a pen stroke |
 
 Implemented as CSS rather than as a convention: `.mark--highlight` carries
 `transform: rotate(calc(-1 * var(--tilt, 0deg)))`, so it stays level in the page whatever the

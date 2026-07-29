@@ -321,11 +321,12 @@ const readableDate = (iso: string) => {
    * switcher. Before this, a non-current language was plain meta text and the
    * pair did not read as two chips at all.
    *
-   * THE OPPOSITION IS NOT SHIPPED, and it is held for a reason rather than
-   * forgotten. The tilt is the part that makes them *opposed*, and a chip is
-   * ui: the rules-of-use table gives "body, ui, labels, captions" no tilt,
-   * ever. That is the same open owner decision as mark 6, tilted actions —
-   * `MW-11 BLOCKED design/tilted-actions-vs-ui-row`. One answer settles both.
+   * THE OPPOSITION now ships too. It was held for a session on a reading of the
+   * rules-of-use table's "ui — tilt: never" row; the owner's correction is that
+   * the no-rotation rule was only ever about `mark.highlight`. The angles are
+   * 4a's own `en`/`es` pair — the selected chip at -1.5deg against the resting
+   * one at +1deg — and they are steeper than the buttons because 4a's are: a
+   * chip is small enough that a degree barely reads on it.
    *
    * The transparent border on the base rule is not padding fiddling: it keeps
    * the filled and the outlined chip the same box, so the row does not shift by
@@ -344,17 +345,34 @@ const readableDate = (iso: string) => {
     color: var(--ink-meta);
   }
 
-  /* Rest — the outlined chip. */
+  /* Rest — the outlined chip, leaning one way. */
   .lang-switch a:not([aria-current]) {
     border-color: var(--chip-rule);
+    transform: rotate(var(--chip-tilt-rest));
   }
 
-  /* Selected — the filled chip. The field is not the only carrier: aria-current
-     and the underline say it too. */
+  /* Selected — the filled chip, leaning the other. The field is not the only
+     carrier: aria-current and the underline say it too. */
   .lang-switch a[aria-current] {
     background: var(--area-pigment, var(--c-maar));
     color: var(--pigment-ink);
     text-decoration: underline;
+    transform: rotate(var(--chip-tilt-selected));
+  }
+
+  /**
+   * "< 600 … tilt max --tilt-b".
+   *
+   * -1.5deg is outside the cap, so below 600px the selected chip comes back to
+   * --tilt-b. The resting chip is already at 1deg and is left alone: the pair
+   * still leans apart, just less far. Reducing rather than removing, for the
+   * reason the stamp does — a chip that stands fully upright stops being one of
+   * an opposed pair.
+   */
+  @media (max-width: 599px) {
+    .lang-switch a[aria-current] {
+      transform: rotate(var(--tilt-b));
+    }
   }
 
   /* Hover fills, so the edge joins the field rather than ruling a line through
