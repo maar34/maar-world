@@ -2,7 +2,8 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 
 /**
  * Pages carrying noindex must never appear in the sitemap.
@@ -22,6 +23,67 @@ const NOINDEX = new Set([
   // duplicate the issue exists to remove.
   '/interplanetary-players', '/interplanetary-players.html',
 ]);
+
+/**
+ * MAKE `npm run dev` SERVE THE URLS THE HOST SERVES.
+ *
+ * `build.format: 'file'` emits a page whose `outputPath` is `collect/index` as
+ * `collect/index.html`, and a static host — GitHub Pages today, `astro preview`
+ * locally — resolves `/collect` to it. Astro's dev server matches route params
+ * literally, so in dev only `/collect/index` answered and `/collect` was a 404.
+ *
+ * Three pages have that shape: `index`, `collect/index`, `tree/index` — the
+ * home page and the two area hubs, which is to say the three most linked URLs
+ * on the site. In dev, every one of them 404'd.
+ *
+ * This was in HANDOFF.md as a documented trap, and a documented footgun is a
+ * patch: it cost the owner real time — "it gives 404 all the time and I need to
+ * restart the server, sometimes works sometimes not". It was never intermittent.
+ * It was 404 on `dev` and 200 on `preview`, every time, and which one you had
+ * running decided which you saw.
+ *
+ * DEV ONLY, BY CONSTRUCTION. This is a Vite dev-server middleware. It cannot
+ * run at build time, so it cannot add, remove or rename a single route: the
+ * frozen manifest and `verify:contract` are untouchable from here. What it does
+ * is make dev *wrong in the same way production is right* — an internal rewrite,
+ * never a redirect, so the URL in the address bar stays exactly what the visitor
+ * typed and `trailingSlash: 'never'` still holds.
+ *
+ * The list is derived from the content records rather than hardcoded, so a
+ * fourth hub added later needs no edit here.
+ */
+function directoryIndexPages(root = new URL('./src/content/', import.meta.url).pathname) {
+  const found = new Set();
+  const walk = (dir) => {
+    for (const entry of readdirSync(dir)) {
+      const p = join(dir, entry);
+      if (statSync(p).isDirectory()) walk(p);
+      else if (entry.endsWith('.md') || entry.endsWith('.mdx')) {
+        const m = /^outputPath:\s*"?([^"\n]+)"?\s*$/m.exec(readFileSync(p, 'utf8'));
+        if (m && /(^|\/)index$/.test(m[1].trim())) found.add(`/${m[1].trim()}`);
+      }
+    }
+  };
+  try { walk(root); } catch { /* no content yet — dev has nothing to rewrite */ }
+  return found;
+}
+
+function devHostSemantics() {
+  return {
+    name: 'maar-dev-host-semantics',
+    apply: 'serve',
+    configureServer(server) {
+      const pages = directoryIndexPages();
+      server.middlewares.use((req, _res, next) => {
+        const [path, query = ''] = (req.url || '/').split('?');
+        // `/` is the one the host maps to `/index`; the rest map `/x` -> `/x/index`.
+        const target = path === '/' ? '/index' : `${path.replace(/\/$/, '')}/index`;
+        if (pages.has(target)) req.url = target + (query ? `?${query}` : '');
+        next();
+      });
+    },
+  };
+}
 
 /**
  * Two settings here are not negotiable, because 35 physical NFC cards depend
@@ -49,6 +111,8 @@ export default defineConfig({
     assets: '_assets',
   },
   trailingSlash: 'never',
+  // Dev-only. `apply: 'serve'` means it never participates in a build.
+  vite: { plugins: [devHostSemantics()] },
   // No analytics, no third-party anything. Prefetch is same-origin only.
   prefetch: false,
   devToolbar: { enabled: false },

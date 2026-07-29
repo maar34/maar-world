@@ -156,9 +156,11 @@ utilities, which are specified ahead of the page families that will use them.
   entirely, and every check reading body text sees an empty document.
 - **Card pages forward to Orbiter after 300 ms.** Use `/STW3344` or `/DWE1406` —
   neither forwards.
-- **`npm run dev`:** home is `/index`, not `/` (also `/collect/index`, `/tree/index`).
-  Dev-only; the build serves `/` correctly. Kill stale `astro preview` first — it
-  serves a stale `dist` and does not hot-reload.
+- **`npm run dev` now serves the same URLs the host does.** `/`, `/collect` and
+  `/tree` used to 404 in dev and 200 in preview — never intermittently, though it
+  looked that way. A dev-only Vite plugin in `astro.config.mjs` resolves the
+  directory-index form the way a static host does. Still kill a stale
+  `astro preview` first: it serves a stale `dist` and does not hot-reload.
 - **Quote the date.** `date: 2026-08-01` unquoted is a YAML date object; the schema
   wants a string.
 - **Design references live one directory UP**, in `../planning/design-references/`.
