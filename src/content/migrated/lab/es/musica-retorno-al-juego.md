@@ -11,10 +11,13 @@ lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2026-01-20-music-abstraction-return-playing.md"
 indexLabel: "Música, Abstracción y el Retorno al Juego"
+description: "Música, Abstracción y el Retorno al Juego Si el capital cultural se vuelve utilizable en lugar de encriptado, algo sutil comienza a cambiar: la participación deja de ser excepcional. La música es un…"
 date: "2026-01-20"
 ---
 
 # Música, <span class="mark mark--cut mark--tilt-1 mark--tear-2">Abstracción</span> y el Retorno al Juego
+
+Música, Abstracción y el Retorno al Juego Si el capital cultural se vuelve utilizable en lugar de encriptado, algo sutil comienza a cambiar: la participación deja de ser excepcional. La música es un…
 
 ![](/img/lab/orbital-workshop-1.jpg)
 

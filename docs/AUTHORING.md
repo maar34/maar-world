@@ -30,7 +30,9 @@ area: "maar"                        # maar | collect | tree
 kind: "lab"                         # lab | genesis | doc | index | page
 surface: "dark"
 lang: "en"                          # en | es
-date: 2026-08-01
+indexGroup: "lab"                   # put it in the /lab index
+indexLabel: "My new post"           # the title the index row shows
+date: "2026-08-01"
 ---
 
 # My new post
@@ -44,6 +46,10 @@ Then:
 npm run build
 npm run verify
 ```
+
+**Quote the date.** `date: 2026-08-01` unquoted is parsed by YAML as a
+date object, and the schema wants a string — the build fails with
+`InvalidContentEntryDataError` naming the file. `date: "2026-08-01"` is correct.
 
 That is the whole procedure. `verify:routes` reads `outputPath` straight out of
 this directory, so **a page is authorised by existing** — there is no second list

@@ -63,64 +63,7 @@
  * excerpt and tags at one uniform weight, which is a wall of text where the
  * spec asks for a scannable index.
  */
-.legacy .index {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-16);
-}
 
-.legacy .index-year {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-6);
-}
-
-/* The rule above a year group — the second of the two places one is allowed. */
-.legacy .index-year__rule {
-  margin-block: var(--s-2) 0;
-}
-
-.legacy .index-rows {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-8);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.legacy .index-row {
-  display: flex;
-  flex-direction: column;
-  /* "sibling groups use gap, never margins." */
-  gap: var(--s-2);
-}
-
-.legacy .index-row__title {
-  margin: 0;
-}
-
-.legacy .index-row__date {
-  color: var(--ink-meta);
-  font-family: var(--t-meta-face);
-  font-size: var(--t-meta-size);
-  line-height: var(--t-meta-line);
-  letter-spacing: var(--t-meta-track);
-}
-
-.legacy .index-row__excerpt {
-  color: var(--ink-muted);
-  margin: 0;
-}
-
-.legacy .index-row__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-2);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
 
 /**
  * Tags are chips, not links: production linked each to `/lab.html?tag=X` and a
@@ -322,4 +265,69 @@
   padding: var(--s-2) var(--s-3);
   border-block-end: 1px solid var(--ink-hairline);
   vertical-align: top;
+}
+
+/* ---- the year-grouped index ------------------------------------------------
+   NOT legacy names, despite living next to them. These were legacy class names
+   while the Lab index was ~104 lines of HTML baked into lab.md by the migration.
+   src/pages/[...page].astro now renders the index from the collection, so the
+   markup is first-party and sits OUTSIDE .legacy — which is why the `.legacy `
+   scope had to come off, not as a widening but because the elements moved. */
+.index {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-16);
+}
+
+.index-year {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+}
+
+/* The rule above a year group — the second of the two places one is allowed. */
+.index-year__rule {
+  margin-block: var(--s-2) 0;
+}
+
+.index-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-8);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.index-row {
+  display: flex;
+  flex-direction: column;
+  /* "sibling groups use gap, never margins." */
+  gap: var(--s-2);
+}
+
+.index-row__title {
+  margin: 0;
+}
+
+.index-row__date {
+  color: var(--ink-meta);
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: var(--t-meta-line);
+  letter-spacing: var(--t-meta-track);
+}
+
+.index-row__excerpt {
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+.index-row__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }

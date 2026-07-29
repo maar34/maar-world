@@ -11,10 +11,13 @@ lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2024-09-01-Taller de creación orbital.md"
 indexLabel: "Taller de creación orbital"
+description: "🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬 ¿Qué? \"Orbiters Orchestra\" es un taller de co-creación musical, un espacio creativo y transdisciplinario. Dura…"
 date: "2024-09-01"
 ---
 
 # Taller de <span class="mark mark--cut mark--tilt-4 mark--tear-3">creación</span> orbital
+
+🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬 ¿Qué? "Orbiters Orchestra" es un taller de co-creación musical, un espacio creativo y transdisciplinario. Dura…
 
 ## 🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬
 

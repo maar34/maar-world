@@ -11,10 +11,13 @@ lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2026-03-24-Helix-EAC-Montevideo.md"
 indexLabel: "Helix — Requisitos técnicos"
+description: "HELIX Documentación técnica de instalación Espacio de Arte Contemporáneo (EAC) Montevideo, Uruguay 2025 Helix es una obra de arte interactiva en tiempo real que requiere conexión a internet activa du…"
 date: "2026-03-24"
 ---
 
 # Helix — <span class="mark mark--highlight">Requisitos</span> técnicos
+
+HELIX Documentación técnica de instalación Espacio de Arte Contemporáneo (EAC) Montevideo, Uruguay 2025 Helix es una obra de arte interactiva en tiempo real que requiere conexión a internet activa du…
 
 ## HELIX
 

@@ -11,10 +11,13 @@ lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2023-08-25-01_IP3.md"
 indexLabel: "Interplanetary ancestors 3-3 (EN)"
+description: "Inspired by Tacuabé and his musical instrument, as well as Shika Shika's instrument library, Maar World Lab opens up as an open field for the exploration of new formats for the creation and dissemina…"
 date: "2023-08-25"
 ---
 
 # <span class="mark mark--highlight">Interplanetary</span> ancestors 3-3 (EN)
+
+Inspired by Tacuabé and his musical instrument, as well as Shika Shika's instrument library, Maar World Lab opens up as an open field for the exploration of new formats for the creation and dissemina…
 
 Inspired by Tacuabé and his musical instrument, as well as Shika Shika's instrument library, Maar World Lab opens up as an open field for the exploration of new formats for the creation and dissemination of sound, a logbook of experiments from all times united by listening as a leitmotif.
 

@@ -11,10 +11,13 @@ lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2024-09-01-Orbital Creation Workshop.md"
 indexLabel: "Orbital Creation Workshop"
+description: "🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬 What? The \"Orbiters Orchestra\" is a musical co-creation workshop, a creative and transdisciplinary…"
 date: "2024-09-01"
 ---
 
 # Orbital <span class="mark mark--highlight">Creation</span> Workshop
+
+🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬 What? The "Orbiters Orchestra" is a musical co-creation workshop, a creative and transdisciplinary…
 
 ## 🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬
 

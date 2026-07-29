@@ -11,10 +11,13 @@ lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2023-08-25-01_IP2.md"
 indexLabel: "Interplanetary ancestors 2-3 (EN)"
+description: "Sample Pack: Sound of the Americas by Shika Shika \"Musical instruments have helped us to communicate and express ourselves since the dawn of humanity and the forms, scales and sounds of these artifac…"
 date: "2023-08-25"
 ---
 
 # <span class="mark mark--highlight">Interplanetary</span> ancestors 2-3 (EN)
+
+Sample Pack: Sound of the Americas by Shika Shika "Musical instruments have helped us to communicate and express ourselves since the dawn of humanity and the forms, scales and sounds of these artifac…
 
 ## Sample Pack: Sound of the Americas by Shika Shika
 

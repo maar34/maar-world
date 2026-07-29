@@ -11,10 +11,13 @@ lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2023-08-25-01_IP2.md"
 indexLabel: "Ancestros interplanetarios 2-3 (ES)"
+description: "Sample Pack: Sonido de las Am​é​ricas by Shika Shika \"Los instrumentos musicales nos han ayudado a comunicarnos y expresarnos desde los albores de la humanidad y las formas, escalas y sonidos de esto…"
 date: "2023-08-25"
 ---
 
 # Ancestros <span class="mark mark--cut mark--tilt-1 mark--tear-3">interplanetarios</span> 2-3 (ES)
+
+Sample Pack: Sonido de las Am​é​ricas by Shika Shika "Los instrumentos musicales nos han ayudado a comunicarnos y expresarnos desde los albores de la humanidad y las formas, escalas y sonidos de esto…
 
 ## Sample Pack: Sonido de las Am​é​ricas by Shika Shika
 "Los instrumentos musicales nos han ayudado a comunicarnos y expresarnos desde los albores de la humanidad y las formas, escalas y sonidos de estos artefactos nos dan una idea de las extraordinarias culturas que los crearon.

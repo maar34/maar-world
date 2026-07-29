@@ -11,10 +11,13 @@ lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2025-08-24-01-Orbit-and-Bodies.md"
 indexLabel: "Órbitas y Cuerpos"
+description: "Una performance que conecta gestos humanos, datos orbitales y sistemas audiovisuales en tiempo real. 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 𝒞𝑜𝓁𝒶𝓈𝓈𝑜 – Maar World, Berlín Gabriel Vigliensoni – viglienson…"
 date: "2025-08-24"
 ---
 
 # <span class="mark mark--cut mark--tilt-1 mark--tear-2">Órbitas</span> y Cuerpos
+
+Una performance que conecta gestos humanos, datos orbitales y sistemas audiovisuales en tiempo real. 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 𝒞𝑜𝓁𝒶𝓈𝓈𝑜 – Maar World, Berlín Gabriel Vigliensoni – viglienson…
 
 Una performance que conecta gestos humanos, datos orbitales y sistemas audiovisuales en tiempo real.
 

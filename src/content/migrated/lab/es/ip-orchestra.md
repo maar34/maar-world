@@ -11,10 +11,13 @@ lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2024-08-30-IP_Orchestra.md"
 indexLabel: "Taller de creación orbital: Orbiters Orchestra (ES)"
+description: "🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬 Invitación Desde la Universidad de las Artes en Guayaquil, estamos emocionados de presentar Orbiters Orchestra…"
 date: "2024-08-30"
 ---
 
 # Taller de creación orbital: Orbiters <span class="mark mark--highlight">Orchestra</span> (ES)
+
+🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬 Invitación Desde la Universidad de las Artes en Guayaquil, estamos emocionados de presentar Orbiters Orchestra…
 
 ## 🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬
 

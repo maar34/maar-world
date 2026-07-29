@@ -11,10 +11,13 @@ lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2024-08-30-IP_Orchestra.md"
 indexLabel: "Orbital Creation Workshop: Orbiters Orchestra (EN)"
+description: "🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬 Invitation From the Universidad de las Artes in Guayaquil , we are excited to present the Orbiters…"
 date: "2024-08-30"
 ---
 
 # Orbital Creation Workshop: Orbiters <span class="mark mark--cut mark--tilt-2 mark--tear-3">Orchestra</span> (EN)
+
+🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬 Invitation From the Universidad de las Artes in Guayaquil , we are excited to present the Orbiters…
 
 ## 🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬
 

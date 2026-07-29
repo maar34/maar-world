@@ -11,6 +11,7 @@ lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2023-12-09-Dadada.md"
 indexLabel: "Dadada (EN)"
+description: "Maar World · 𝕄𝓌 🆁🅰🅳🅸🅾 | Episode 4.2 - Season 1 | Maar Live Set Dadada | Is it possible to slow down time? ⏳ Wagner, the Norns, and time in the world. Does it make sense to make sense? 4 the da…"
 date: "2023-12-09"
 ---
 

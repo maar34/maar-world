@@ -11,10 +11,13 @@ lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2025-08-24-01-Orbit-and-Bodies.md"
 indexLabel: "Orbits and Bodies"
+description: "A performance connecting human gestures, orbital data, and real-time audiovisual systems. 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 – Maar World, Berlin Gabriel Vigliensoni – vigliensoni.com – Concordia Universi…"
 date: "2025-08-24"
 ---
 
 # <span class="mark mark--cut mark--tilt-3 mark--tear-2">Orbits</span> and Bodies
+
+A performance connecting human gestures, orbital data, and real-time audiovisual systems. 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 – Maar World, Berlin Gabriel Vigliensoni – vigliensoni.com – Concordia Universi…
 
 A performance connecting human gestures, orbital data, and real-time audiovisual systems.
 

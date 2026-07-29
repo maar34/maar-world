@@ -11,10 +11,13 @@ lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2026-01-20-music-abstraction-return-playing.md"
 indexLabel: "Music, Abstraction, and the Return to Playing"
+description: "Music, Abstraction, and the Return to Playing If cultural capital becomes usable rather than encrypted, something subtle begins to change: participation stops being exceptional. Music is a good place…"
 date: "2026-01-20"
 ---
 
 # Music, <span class="mark mark--cut mark--tilt-4 mark--tear-2">Abstraction,</span> and the Return to Playing
+
+Music, Abstraction, and the Return to Playing If cultural capital becomes usable rather than encrypted, something subtle begins to change: participation stops being exceptional. Music is a good place…
 
 ![](/img/lab/orbital-workshop-1.jpg)
 

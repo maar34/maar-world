@@ -79,6 +79,36 @@ const hrefOf = (outputPath: string) =>
   encodeURI(`/${outputPath.replace(/(^|\/)index$/, '')}`.replace(/\/(?=$)/, '')) || '/';
 
 const isCard = d.kind === 'collect-card';
+
+/**
+ * The Lab reads as a dated bibliography, not a list of links, so it groups by
+ * year with a rule per group — the spec's page family 02, and what production
+ * served. Every other index is a flat list of titles.
+ *
+ * Grouping is derived from the records rather than declared, so nothing has to
+ * be updated when a year rolls over.
+ */
+const isYearIndex = d.indexOf === 'lab';
+
+const byYear: [string, typeof sorted][] = isYearIndex
+  ? [
+      ...sorted
+        .filter((p) => p.data.date)
+        .reduce((acc, p) => {
+          const year = String(p.data.date).slice(0, 4);
+          acc.set(year, [...(acc.get(year) ?? []), p]);
+          return acc;
+        }, new Map<string, typeof sorted>())
+        .entries(),
+    ].sort((a, b) => b[0].localeCompare(a[0]))
+  : [];
+
+/** "25 Aug 2023" — the form the legacy index printed under each title. */
+const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+const readableDate = (iso: string) => {
+  const [y, m, day] = iso.split('-');
+  return `${MONTHS[Number(m) - 1]} ${day.padStart(2, '0')}, ${y}`;
+};
 ---
 
 <BaseLayout
@@ -151,7 +181,48 @@ const isCard = d.kind === 'collect-card';
     }
 
     {
-      sorted.length > 0 && (
+      /* The year-grouped index — the Lab's shape.
+         This used to be ~104 lines of literal HTML baked into the body of
+         lab.md by the migration, derived from the read-only legacy checkout.
+         A post that was not in that checkout could not appear here. It is now
+         rendered from the collection, so a page written into
+         src/content/authored/ shows up with no script run at all.
+         The row markup is deliberately the shape production served: an <h2>
+         per year, an <h3> per article, a <time>, the excerpt and the tags. */
+      byYear.length > 0 && (
+        <div class="index index--lab">
+          {byYear.map(([year, rows]) => (
+            <section class="index-year" aria-labelledby={`lab-${year}`}>
+              <h2 class="index-year__label" id={`lab-${year}`}>{year}</h2>
+              <hr class="index-year__rule" />
+              <ul class="index-rows" role="list">
+                {rows.map((p) => (
+                  <li class="index-row" lang={p.data.lang}>
+                    <h3 class="index-row__title">
+                      <a href={hrefOf(p.data.outputPath)}>{p.data.indexLabel ?? p.data.title}</a>
+                    </h3>
+                    <time class="index-row__date" datetime={String(p.data.date).slice(0, 10)}>
+                      {readableDate(String(p.data.date).slice(0, 10))}
+                    </time>
+                    {p.data.description && <p class="index-row__excerpt">{p.data.description}</p>}
+                    {p.data.tags?.length > 0 && (
+                      <ul class="index-row__tags" role="list">
+                        {p.data.tags.map((t: string) => (
+                          <li class="index-row__tag">{t}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      )
+    }
+
+    {
+      sorted.length > 0 && !isYearIndex && (
         <ul role="list" class={d.indexCovers ? 'index-list index-list--covers' : 'index-list'}>
           {sorted.map((p) => (
             <li>

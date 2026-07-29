@@ -11,10 +11,13 @@ lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2026-01-07-Music-access-human-mind.md"
 indexLabel: "Music, Access, and the Human Mind"
+description: "When Cultural Capital Is Shared: Music, Access, and the Human Mind For a long time, cultural capital was encrypted. Tools, technologies, and know-how were difficult to access, difficult to understand…"
 date: "2026-01-07"
 ---
 
 # Music, <span class="mark mark--highlight">Access,</span> and the Human Mind
+
+When Cultural Capital Is Shared: Music, Access, and the Human Mind For a long time, cultural capital was encrypted. Tools, technologies, and know-how were difficult to access, difficult to understand…
 
 ![](/img/lab/orbital-workshop-1.jpg)
 

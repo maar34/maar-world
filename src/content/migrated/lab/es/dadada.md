@@ -11,6 +11,7 @@ lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2023-12-09-Dadada.md"
 indexLabel: "Dadada (ES)"
+description: "Maar World · 𝕄𝓌 🆁🅰🅳🅸🅾 | Episode 4.2 - Season 1 | Maar Live Set Dadada | Es posible desacelerar el tiempo? ⏳ Wagner las nornas y el tiempo en el mundo. Tiene sentido hacer sentido? Para lxs Dad…"
 date: "2023-12-09"
 ---
 

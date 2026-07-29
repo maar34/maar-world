@@ -1394,97 +1394,8 @@ function readableDate(iso) {
 const escapeText = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-/**
- * The Lab index, rendered into the page body.
- *
- * `{% include article-list.html … group_by='year' show_date=true show_excerpt=true %}`
- * rendered a year heading, a title heading, a formatted date, a 200-character
- * excerpt and a tag list per article — 26 headings and 20 excerpts. The
- * migration reduced the whole include to `indexOf: 'lab'`, and the generic index
- * the route renders from that is one flat `<ul>` of title · ISO date · language:
- * 1016 characters against production's 5792, with every excerpt and every tag
- * gone.
- *
- * It is written here, into the record's own body, because the generic index
- * lives in `src/pages/[...page].astro` and this session does not own that file.
- * `indexOf` is dropped from this one record so the two do not both render.
- *
- * The shape is the design spec's page family 02: year-grouped rows, one rule per
- * year group — the single place the spec allows a rule inside a page body — and
- * no rule between rows.
- *
- * Tags are chips, not links. Production linked each to `/lab.html?tag=X` and a
- * `<script>` on the page hid the non-matching rows; MW-7 forbids application
- * JavaScript outside the Helix island, so those links would land on an
- * unfiltered `/lab` and do nothing. The tag text is what carries the meaning and
- * it is all kept.
- */
-function labIndexHtml(entries) {
-  const byYear = new Map();
-  for (const e of entries) {
-    const year = e.date.slice(0, 4);
-    if (!byYear.has(year)) byYear.set(year, []);
-    byYear.get(year).push(e);
-  }
 
-  const out = ['<div class="index index--lab">'];
-  for (const year of [...byYear.keys()].sort().reverse()) {
-    out.push(`<section class="index-year" aria-labelledby="lab-${year}">`);
-    out.push(`<h2 class="index-year__label" id="lab-${year}">${year}</h2>`);
-    out.push('<hr class="index-year__rule" />');
-    out.push('<ul class="index-rows" role="list">');
-    for (const e of byYear.get(year)) {
-      out.push('<li class="index-row">');
-      out.push(`<h3 class="index-row__title"><a href="${escapeAttr(e.href)}">${escapeText(e.title)}</a></h3>`);
-      out.push(`<time class="index-row__date" datetime="${e.date}">${readableDate(e.date)}</time>`);
-      if (e.excerpt) out.push(`<p class="index-row__excerpt">${escapeText(e.excerpt)}</p>`);
-      if (e.tags.length) {
-        out.push(
-          '<ul class="index-row__tags" role="list">' +
-            e.tags.map((t) => `<li class="index-row__tag">${escapeText(t)}</li>`).join('') +
-            '</ul>',
-        );
-      }
-      out.push('</li>');
-    }
-    out.push('</ul>');
-    out.push('</section>');
-  }
-  out.push('</div>');
-  return out.join('\n');
-}
 
-/**
- * Every Lab article, in the order the index shows them: newest first, and inside
- * a day the order Jekyll itself used — the collection-relative source path.
- */
-function collectLabEntries() {
-  const entries = [];
-  for (const m of matched) {
-    if (!/^collections\/_lab\//.test(m.source.rel)) continue;
-    const raw = readFileSync(m.source.abs, 'utf8');
-    const { data, body } = parse(raw);
-    const date = dateOf(data, m.source.rel);
-    if (!date) continue;
-    entries.push({
-      href: encodeURI(`/${m.key}`),
-      title: pageTitleFrom(data, m.key),
-      date,
-      order: m.source.rel,
-      tags: typeof data.tags === 'string' ? data.tags.split(/\s+/).filter(Boolean) : [],
-      excerpt: truncate(bodyToText(body)),
-    });
-  }
-  /**
-   * `sort: 'date' | reverse` in the legacy include. Jekyll's stable sort leaves
-   * same-day articles in document order — which is source-path order — and
-   * `reverse` then flips the whole array, so within a day the *last* path comes
-   * first. That is why production lists es/ip-3, es/ip-2, es/ip-1, en/ip-3 …
-   */
-  return entries.sort((a, b) => (a.date === b.date ? b.order.localeCompare(a.order) : b.date.localeCompare(a.date)));
-}
-
-const LAB_ENTRIES = collectLabEntries();
 
 /**
  * A cover image that this repository can actually serve.
@@ -1605,8 +1516,21 @@ for (const m of matched) {
    * would render otherwise, and the generic one carries neither the excerpts
    * nor the tags.
    */
-  const ownIndex = t.wantsIndex?.name === 'lab' ? labIndexHtml(LAB_ENTRIES) : null;
-  if (t.wantsIndex && !ownIndex) {
+  /**
+   * Every index is rendered by the route, including the Lab's.
+   *
+   * The Lab index used to be BAKED into this body — `labIndexHtml()` read the
+   * legacy checkout and wrote ~104 lines of literal HTML into lab.md, and
+   * `indexOf` was deliberately dropped so the route's own list would not also
+   * render. That made a new Lab post invisible on /lab until someone added the
+   * article to a read-only legacy checkout and re-ran this script, which is
+   * exactly the thing that made publishing impossible.
+   *
+   * It is now data: each lab record carries its own `description` (below), and
+   * `src/pages/[...page].astro` groups by year and renders the rows. A page
+   * written by hand into src/content/authored/ appears on /lab for free.
+   */
+  if (t.wantsIndex) {
     record.indexOf = t.wantsIndex.name;
     if (t.wantsIndex.covers) record.indexCovers = true;
   }
@@ -1636,6 +1560,16 @@ for (const m of matched) {
   }
   if (typeof data.excerpt === 'string' && data.excerpt.trim() && !data.excerpt.includes('<')) {
     record.description = data.excerpt.trim();
+  }
+  /**
+   * The index row's excerpt, carried on the record rather than rendered into
+   * an index somewhere else. Derived from the body exactly as the old baked
+   * index derived it, so the rows read identically — but now it is a field, so
+   * a hand-written page sets it by writing `description:` and needs no script.
+   */
+  if (kind === 'lab' && !record.description) {
+    const excerpt = truncate(bodyToText(body));
+    if (excerpt) record.description = excerpt;
   }
   const recordDate = dateOf(data, m.source.rel);
   if (recordDate) record.date = recordDate;
@@ -1741,7 +1675,6 @@ for (const m of matched) {
     }
   }
 
-  if (ownIndex) finalBody = `${finalBody}\n\n${ownIndex}\n`;
 
   if (SPECIAL[m.key]) finalBody = SPECIAL[m.key](record);
 

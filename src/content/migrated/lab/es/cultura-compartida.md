@@ -11,10 +11,13 @@ lang: "es"
 indexGroup: "lab"
 indexOrder: "es/2026-01-07-Music-access-human-mind.md"
 indexLabel: "Música, Acceso y la Mente Humana"
+description: "Cuando el Capital Cultural es Compartido: Música, Acceso y la Mente Humana Durante mucho tiempo, el capital cultural estuvo encriptado. Las herramientas, tecnologías y conocimientos eran difíciles de…"
 date: "2026-01-07"
 ---
 
 # Música, Acceso y la Mente <span class="mark mark--cut mark--tilt-2 mark--tear-2">Humana</span>
+
+Cuando el Capital Cultural es Compartido: Música, Acceso y la Mente Humana Durante mucho tiempo, el capital cultural estuvo encriptado. Las herramientas, tecnologías y conocimientos eran difíciles de…
 
 ![](/img/lab/orbital-workshop-1.jpg)
 

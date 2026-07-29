@@ -11,10 +11,13 @@ lang: "en"
 indexGroup: "lab"
 indexOrder: "en/2023-08-25-01_IP1.md"
 indexLabel: "Interplanetary ancestors 1-3 (EN)"
+description: "Can sounds and musical instruments play a role in the recovery of hidden memories? Is it possible to call forth the memory of historically repressed cultures? From the musical bow of Tacuabé to the c…"
 date: "2023-08-25"
 ---
 
 # <span class="mark mark--cut mark--tilt-4 mark--tear-4">Interplanetary</span> ancestors 1-3 (EN)
+
+Can sounds and musical instruments play a role in the recovery of hidden memories? Is it possible to call forth the memory of historically repressed cultures? From the musical bow of Tacuabé to the c…
 
 *Can sounds and musical instruments play a role in the recovery of hidden memories? Is it possible to call forth the memory of historically repressed cultures?*
 
