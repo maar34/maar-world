@@ -19,6 +19,13 @@ import { resolveRoute } from './lib/routes.mjs';
 
 const VALID_POLICIES = new Set(['preserve', 'redirect', 'drop']);
 
+/**
+ * Endpoints production serves that are not pages, restored by this build.
+ * Declared here because two separate checks below need it: one asserts they are
+ * still served, the other must not count them as unbacked extras.
+ */
+const RESTORED = ['feed', 'feed.xml', 'robots.txt', 'sitemap.xml', '404.html'];
+
 const ALLOWLIST_REL = 'routes/scaffolding-allowlist.json';
 const ALLOWLIST_PATH = resolve(ROOT, ALLOWLIST_REL);
 
@@ -155,6 +162,36 @@ export async function checkRoutes(report) {
     report.pass('every preserved route exists in build output', `${wanted.length} distinct paths`);
   }
 
+  /**
+   * Endpoints production serves that are not pages.
+   *
+   * `/feed`, `/feed.xml`, `/robots.txt`, `/sitemap.xml` and `/404.html` are all
+   * live 200s on all three production origins, and the build emitted none of
+   * them. Three of the five fail SILENTLY when missing: an RSS reader that
+   * stops updating logs nothing, a search engine that cannot find a sitemap at
+   * the URL it has on file just crawls less, and a missing error page shows the
+   * host's default rather than a 404 anyone notices.
+   *
+   * They are asserted here rather than left to the extras check below, because
+   * that one only looks at `.html` files and only asks whether an emitted page
+   * is WANTED. This asks the opposite question: is something production served
+   * still being served. Nothing else in the suite would notice their removal.
+   *
+   * They remain `dropKind: unresolved` in routes/policy.json. Moving them to
+   * `preserve` changes the contract and needs `npm run contract:relock`, which
+   * is a deliberate human step — see MW-4 routes/syndication in the ledger.
+   */
+  const missingEndpoints = RESTORED.filter((f) => !set.has(f));
+  if (missingEndpoints.length) {
+    report.fail(
+      'endpoints production serves are still served',
+      `${missingEndpoints.length} missing: ${missingEndpoints.join(', ')} — ` +
+        'these fail silently for readers and crawlers, which is why they are asserted',
+    );
+  } else {
+    report.pass('endpoints production serves are still served', RESTORED.join(', '));
+  }
+
   // --- Extras: pages the build emits that no production route asks for -----
   // MW-4's acceptance criterion is "reports missing/extra routes". Only the
   // missing half existed, so dist/ could accumulate pages backed by nothing —
@@ -188,6 +225,14 @@ export async function checkRoutes(report) {
    * `backed` above is still built from the policy alone, and a preserved route
    * that stops resolving still fails.
    */
+  /**
+   * A restored endpoint is not an extra. `/404.html` is a page production
+   * serves on all three origins; emitting it again is the opposite of an
+   * unbacked page, and the policy still calling it `drop` is the open decision
+   * this restores rather than a reason to fail the build.
+   */
+  for (const f of RESTORED) if (set.has(f)) backed.add(f);
+
   const authored = authoredRoutes();
   for (const outputPath of authored) {
     const file = resolveRoute(`/${outputPath}`, set);

@@ -19,6 +19,7 @@ import { fileURLToPath } from 'node:url';
 
 import { CHECK_NAMES } from './verify.mjs';
 import { sha, plainText, bodyText, readableText, mainOf } from './lib/html-text.mjs';
+import { renderFeed, xmlEscape, rfc822 } from '../src/lib/feed.mjs';
 
 const SCRIPTS = resolve(dirname(fileURLToPath(import.meta.url)));
 
@@ -65,6 +66,20 @@ function goodFixture(root) {
     `<p>${'Card content for verification fixtures. '.repeat(8)}</p></body></html>`;
 
   for (const { code } of cards) writeFileSync(join(root, 'dist', `${code}.html`), page(code));
+
+  // The endpoints production serves that are not pages. A healthy build has
+  // them, so the fixture that stands for a healthy build must too — otherwise
+  // every case expecting exit 0 fails for a reason unrelated to what it tests.
+  for (const f of ['feed', 'feed.xml', 'robots.txt', 'sitemap.xml']) {
+    writeFileSync(join(root, 'dist', f), 'fixture');
+  }
+  // 404.html is a real page and verify:build holds it to the same standard as
+  // any other — a title and body text — so the fixture gives it both.
+  writeFileSync(
+    join(root, 'dist', '404.html'),
+    '<!doctype html><html><head><title>Not found</title></head><body><h1>Not found</h1>' +
+      `<p>${'That address does not exist here. '.repeat(8)}</p></body></html>`,
+  );
 
   return cards;
 }
@@ -702,6 +717,48 @@ check('an unbacked page still fails when an authored directory exists', (root) =
   const { code, out } = run(root, 'verify-routes.mjs');
   const ok = code === 1 && /leftover\.html/.test(out);
   return { ok, detail: ok ? 'exit 1, unbacked page still reported' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// --- the feed, and the endpoints that fail silently when absent ----------
+// A malformed feed is worse than no feed: a reader that hits a parse error may
+// unsubscribe on its own. These pin the two things most likely to break it.
+check('feed escaping does & before < — the classic double-escape bug', () => {
+  const got = xmlEscape('a & b <c> "d"');
+  const ok = got === 'a &amp; b &lt;c&gt; &quot;d&quot;';
+  return { ok, detail: ok ? got : `got ${JSON.stringify(got)}` };
+});
+
+check('feed dates are RFC-822, which RSS requires — not ISO-8601', () => {
+  const got = rfc822('2026-03-24');
+  const ok = got === 'Tue, 24 Mar 2026 00:00:00 GMT';
+  return { ok, detail: ok ? got : `got ${JSON.stringify(got)}` };
+});
+
+check('the feed is well-formed and drops undated items', () => {
+  const item = (outputPath, date, title) => ({ data: { outputPath, date, title, lang: 'en' } });
+  const xml = renderFeed({
+    origin: 'https://maar.world',
+    title: 'maar world',
+    description: 'x & y',
+    items: [item('lab/en/a', '2026-01-01', 'A <b>'), item('lab/en/undated', null, 'skip me')],
+  });
+  const ok =
+    xml.startsWith('<?xml') &&
+    (xml.match(/<item>/g) || []).length === 1 &&
+    xml.includes('A &lt;b&gt;') &&
+    xml.includes('x &amp; y') &&
+    !xml.includes('skip me') &&
+    xml.includes('rel="self"');
+  return { ok, detail: ok ? 'one item, escaped, self-referential' : xml.slice(0, 300) };
+});
+
+// The endpoints check must be able to fail, or it is decoration.
+check('a missing /feed.xml fails verify:routes', (root) => {
+  goodFixture(root);
+  rmSync(join(root, 'dist', 'feed.xml'));
+  const { code, out } = run(root, 'verify-routes.mjs');
+  const ok = code === 1 && /feed\.xml/.test(out) && /fail silently/.test(out);
+  return { ok, detail: ok ? 'exit 1, missing endpoint named' : `expected exit 1, got ${code}\n${out}` };
 });
 
 // --- lib/html-text: the three forms, and why they must stay three --------

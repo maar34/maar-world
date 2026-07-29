@@ -72,6 +72,9 @@ export default defineConfig({
         if (NOINDEX.has(path)) return false;
         // Route-shape proofs are build scaffolding, not content.
         if (path.startsWith('/route-proof/')) return false;
+      // The error page is a real URL production serves, but it is not a
+      // destination — listing it invites a crawler to index "page not found".
+      if (path === '/404' || path === '/404.html') return false;
         return true;
       },
     }),
