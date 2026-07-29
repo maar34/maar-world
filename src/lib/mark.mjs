@@ -187,6 +187,50 @@ export function chooseMark(text, seed) {
   };
 }
 
+/**
+ * A strict roman numeral, and only in the canonical subtractive spelling.
+ *
+ * Deliberately strict rather than "a run of the letters i v x l c d m": every
+ * card title in the collection ends in one of `I`–`XI`, but `WildCard` ends in
+ * a `d` and `SkySounds` in an `s`, and a loose test stamps the tail of an
+ * ordinary word. The lookahead rejects the empty match that the three optional
+ * groups would otherwise allow.
+ */
+const ROMAN = /^(?=[ivxlcdm])m*(c[md]|d?c{0,3})(x[cl]|l?x{0,3})(i[xv]|v?i{0,3})$/i;
+
+/**
+ * patterns/mark — the stamp. Which text a card's cover gets stamped with.
+ *
+ * The stamp is 4a's fourth mark: meta text in a heavy border, tilted hard,
+ * reading as a rubber stamp or a hand-numbered edition. 4a uses it for `i / xii`
+ * and for a timecode; `docs/agent/VISUAL-LANGUAGE.md` asks for it on "the card
+ * pages' suit/number line — `i / xii` is literally what those pages carry".
+ *
+ * THE NUMBER IS ALREADY IN THE TITLE. `card_title` is `Card IV`, so the edition
+ * numeral needs no new field, no denominator and no counting of records: it is
+ * the last token of a title that has more than one. Returning `null` for
+ * anything else is the point — `WildCard` is one token and is not an edition,
+ * and a card without a numeral gets no stamp rather than an invented one.
+ *
+ * Lowercased because the whole design is lowercase, and because 4a's own stamps
+ * are `i / xii` and `nfc`.
+ *
+ * NOTE ON PLACEMENT, because the doc's suggestion cannot be followed literally:
+ * the suit/number line is a LABEL line, and the spec's rules-of-use table gives
+ * "body, ui, labels, captions" no marks at all. The same rule is why the glyph
+ * runs were moved out of that line and into the `<h1>`. The stamp therefore goes
+ * to the nearest level that permits a mark and has an unused budget — the card
+ * cover, where the table allows two marks and a tilt and where `4b` draws a
+ * stamp in exactly that corner. The `<h1>` is already at its two.
+ */
+export function stampText(cardTitle) {
+  const tokens = String(cardTitle || '').trim().split(/\s+/).filter(Boolean);
+  if (tokens.length < 2) return null;
+  const last = tokens[tokens.length - 1];
+  if (!ROMAN.test(last)) return null;
+  return last.toLowerCase();
+}
+
 /** The class list for a chosen mark. No values — `mark.css` owns those. */
 export function markClass(choice) {
   if (choice.kind === 'highlight') return 'mark mark--highlight';

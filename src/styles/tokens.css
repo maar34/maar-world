@@ -245,6 +245,31 @@
   --mark-tilt-3: 1.4deg;
   --mark-tilt-4: 1.6deg;
 
+  /**
+   * THE STAMP — mark 4. Meta text in a heavy border, tilted hard.
+   *
+   * -4deg is the largest angle anywhere in 4a and it is used only here: the
+   * stamp is the one thing in the language allowed to be obviously crooked,
+   * which is exactly what makes the sub-2deg scatter everywhere else read as
+   * placement by hand rather than as a skewed page.
+   *
+   * THE RULE IS A PASTEL; THE TYPE IS NOT. 4a sets both the border and the
+   * letters in #e7c98f, and the letters cannot ship that way: the spec's colour
+   * section says "a pastel is always a background, never type", and gold
+   * letterforms are the one part of 4a's stamp that breaks a stated rule rather
+   * than filling a gap the spec leaves. So the border keeps the tree pigment —
+   * a 2px rule is a graphic, not type, and WCAG asks 3:1 of it — and the
+   * letters take --ink-meta, which is what every other meta line on the site
+   * already uses and is already asserted at 4.5:1.
+   *
+   * The paper override is not defensive tidying. --c-tree #e7c98f against
+   * --sf-paper #efe7da is about 1.35:1; on a paper route the gold rule would be
+   * a stamp nobody can see. Paper takes the ink hairline instead.
+   */
+  --mark-stamp-rule: var(--c-tree);
+  --mark-stamp-rule-w: 2px;
+  --mark-stamp-tilt: -4deg;
+
   /* ---- motion ---------------------------------------------------------- */
   /* Moves opacity, height and 2d transform only. No blur, no parallax, no
      colour animation. All motion is suppressed under prefers-reduced-motion. */
@@ -322,6 +347,10 @@
   --sf-sunken: #e3d9c8;
 
   --focus-c: var(--ink);
+
+  /* The tree pigment on paper is 1.35:1 — a stamp nobody can see. See the
+     stamp block above. */
+  --mark-stamp-rule: var(--ink-meta);
 }
 
 @media print {
@@ -332,5 +361,6 @@
     --sf-raised-2: #e8dfd0;
     --sf-sunken: #e3d9c8;
     --focus-c: var(--ink);
+    --mark-stamp-rule: var(--ink-meta);
   }
 }

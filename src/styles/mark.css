@@ -157,6 +157,58 @@
 .mark--tilt-3 { transform: rotate(var(--mark-tilt-3)); }
 .mark--tilt-4 { transform: rotate(var(--mark-tilt-4)); }
 
+/* ---- the stamp — 4a's, with one value corrected -------------------------- */
+
+/**
+ * `mark.stamp`. The spec never names a stamp, so its mechanics are 4a's: DM
+ * Mono meta text, a heavy border, hard tilt, no fill.
+ *
+ * ONE VALUE IS NOT 4a's, AND THE REASON IS A STATED RULE. 4a draws both the
+ * border and the letters in #e7c98f. The border keeps it — a 2px rule is a
+ * graphic. The letters do not: "a pastel is always a background, never type".
+ * They take --ink-meta, the same ink every other meta line on the site uses,
+ * which also means the stamp needs no new type-contrast pair to be honest about.
+ *
+ * The spec's outline badge is the nearest specified component — `border: 1px
+ * solid currentColor`, DM Mono 12px, no radius — and this is that badge with
+ * 4a's two stamp gestures on top of it: the border doubled, and the tilt.
+ *
+ * `.mark` sets the dark pigment ink for the field marks; a stamp has no field,
+ * so it sets its own colour back.
+ */
+.mark--stamp {
+  display: inline-block;
+  font-family: var(--t-meta-face);
+  font-weight: var(--t-meta-weight);
+  font-size: var(--t-meta-size);
+  letter-spacing: var(--t-meta-track);
+  /* Meta type at 1.8 leading inside a 2px box would print the border a long way
+     off the letters. A stamp is pressed tight to what it says. */
+  line-height: 1;
+  color: var(--ink-meta);
+  background: none;
+  border: var(--mark-stamp-rule-w) solid var(--mark-stamp-rule);
+  padding: var(--mark-pad-block) var(--mark-pad-inline);
+  transform: rotate(var(--mark-stamp-tilt));
+  /* The tracking is applied after the last glyph too, which reads as a wider
+     right margin inside the box than left. */
+  text-indent: var(--t-meta-track);
+}
+
+/**
+ * "< 600 … tilt max --tilt-b".
+ *
+ * The responsive table caps tilt at --tilt-b (-1deg) below 600px, and -4deg is
+ * the largest angle in the language. It is reduced rather than removed: a stamp
+ * that stands fully upright stops being a stamp, and --tilt-b is a value the
+ * spec names for exactly this case.
+ */
+@media (max-width: 599px) {
+  .mark--stamp {
+    transform: rotate(var(--tilt-b));
+  }
+}
+
 /* ---- where marks are allowed --------------------------------------------- */
 
 /**
@@ -173,7 +225,10 @@
   background: none;
   color: inherit;
   font: inherit;
+  letter-spacing: inherit;
+  text-indent: 0;
   padding: 0;
+  border: 0;
   clip-path: none;
   transform: none;
 }

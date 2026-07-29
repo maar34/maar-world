@@ -23,8 +23,10 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import GlyphRun from '../components/patterns/GlyphRun.astro';
 import TypeMark from '../components/patterns/TypeMark.astro';
+import Stamp from '../components/patterns/Stamp.astro';
 import HelixIsland from '../components/react/HelixIsland.astro';
 import { languageChoices, alternatesFor } from '../lib/translations.mjs';
+import { stampText } from '../lib/mark.mjs';
 
 export async function getStaticPaths() {
   const pages = await getCollection('pages');
@@ -169,8 +171,14 @@ const readableDate = (iso: string) => {
     }
 
     {
+      /* One mark at card-cover level, where the table allows two and nothing was
+         spending them: the edition numeral, stamped on the mount rather than on
+         the artwork. See src/components/patterns/Stamp.astro for why not over
+         the image. `cover--stamped` opens the mount only on the covers that have
+         one, so a card with no numeral is laid out exactly as it was. */
       isCard && d.card_image && (
-        <figure class="cover">
+        <figure class:list={['cover', stampText(d.card_title) && 'cover--stamped']}>
+          <Stamp cardTitle={d.card_title} />
           <img src={d.card_image} alt={`${d.suit_title} ${d.card_title}`} loading="lazy" decoding="async" />
         </figure>
       )
@@ -350,6 +358,32 @@ const readableDate = (iso: string) => {
     margin: 0;
     background: var(--sf-raised);
     border-radius: var(--r-0);
+  }
+
+  /**
+   * The mount the stamp is pressed on.
+   *
+   * `.cover` has always carried --sf-raised, and nothing has ever seen it: the
+   * image fills the figure edge to edge. A stamped cover opens that field by
+   * --s-2 on every side and puts the stamp in its top-right corner, so the mark
+   * sits on a flat surface whose contrast can be asserted rather than on a
+   * photograph whose contrast is whatever that card happens to be.
+   *
+   * Only stamped covers get the mount, so a card with no edition numeral — the
+   * one WildCard — is laid out exactly as it was.
+   */
+  .cover--stamped {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--s-2);
+    padding: var(--s-2);
+  }
+
+  /* `align-items: flex-end` is for the stamp; without this the image would
+     shrink-wrap to its intrinsic width instead of filling the mount. */
+  .cover--stamped img {
+    align-self: stretch;
   }
 
   .cover img {

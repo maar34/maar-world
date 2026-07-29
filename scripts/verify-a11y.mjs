@@ -441,6 +441,21 @@ const CONTRAST_PAIRS = [
    * single pair covers both.
    */
   { fg: '--pigment-ink', bg: '--sf-paper', min: 4.5, what: 'a cut word — dark type on the cream field' },
+  /**
+   * The stamp's border — `patterns/mark`, mark 4.
+   *
+   * Listed at 3 and not 4.5 because it is a rule and not type, and WCAG 2.2 asks
+   * 3:1 of a meaningful graphic. The stamp's LETTERS are `--ink-meta`, which the
+   * meta-line pair above already asserts at 4.5 — 4a draws them in the tree
+   * pigment and they do not ship that way, because "a pastel is always a
+   * background, never type".
+   *
+   * The pair is measured per surface, which is the point of it being here at
+   * all: `--c-tree` against `--sf-paper` is 1.30:1, so on a paper route the gold
+   * rule would be a stamp nobody could see, and `tokens.css` swaps it for the
+   * meta ink there. Without this line that swap would be an unverified claim.
+   */
+  { fg: '--mark-stamp-rule', bg: '--sf-base', min: 3, what: 'the stamp border — a rule, not type' },
 ];
 
 /**

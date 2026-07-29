@@ -865,6 +865,26 @@ check('languageChoices is empty when there is nothing to switch to', () => {
   return { ok, detail: ok ? 'empty for solo, two entries in language order for a pair' : `${none.length} / ${two.length}` };
 });
 
+// --- patterns/mark: the stamp only stamps an edition number --------------
+// The stamp reads its text out of `card_title` rather than out of a new field,
+// so the only thing that can go wrong is it reading a numeral where there is
+// none. Both cases below are real titles from src/content/cards.
+const M = await import('../src/lib/mark.mjs');
+
+check('the stamp takes the edition numeral out of a card title', () => {
+  const got = [M.stampText('Card IV'), M.stampText('Card I'), M.stampText('Card XI')];
+  const ok = got.join(',') === 'iv,i,xi';
+  return { ok, detail: ok ? 'Card IV / I / XI -> iv / i / xi' : `got ${JSON.stringify(got)}` };
+});
+
+// `WildCard` ends in a `d` and `SkySounds` in an `s`; a loose "run of roman
+// letters" test stamps the tail of both. A card with no numeral gets no stamp.
+check('the stamp refuses a title that carries no edition number', () => {
+  const got = [M.stampText('WildCard'), M.stampText('SkySounds 3'), M.stampText(''), M.stampText(undefined)];
+  const ok = got.every((g) => g === null);
+  return { ok, detail: ok ? 'WildCard, SkySounds 3, empty and undefined all unstamped' : `got ${JSON.stringify(got)}` };
+});
+
 // --- F8: the policy/manifest join is checked in both directions ----------
 
 check('a policy for a route not in the manifest fails verify:routes', (root) => {
@@ -1165,6 +1185,9 @@ const A11Y_CSS = [
   '--ink-muted: color-mix(in srgb, var(--ink) 75%, transparent);',
   '--ink-meta: color-mix(in srgb, var(--ink) 60%, transparent);',
   '--ink-faint: color-mix(in srgb, var(--ink) 40%, transparent);',
+  // The stamp's border. Here for the same reason as --sf-paper: the contrast
+  // table asks for it, so the fixture carries the real value from tokens.css.
+  '--mark-stamp-rule: var(--c-tree);',
   '--action-invert: var(--ink);--focus-c: var(--c-maar)}',
   ':focus-visible{outline:2px solid var(--focus-c)}',
   '@media (prefers-reduced-motion: reduce){*{transition-duration:.01ms !important}}',

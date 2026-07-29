@@ -1,0 +1,39 @@
+---
+/**
+ * patterns/mark — the stamp, on a card cover.
+ *
+ * `src/lib/mark.mjs` decides whether there is anything to stamp and what it
+ * says; `src/styles/mark.css` draws it. This component is only the placement,
+ * which is the part that had to be decided rather than measured:
+ *
+ * `docs/agent/VISUAL-LANGUAGE.md` asks for the stamp on "the card pages'
+ * suit/number line". That line is a LABEL line, and the spec's rules-of-use
+ * table gives "body, ui, labels, captions" no marks and no tilt. It is the same
+ * rule that moved the glyph runs out of that line and into the `<h1>` — see
+ * `MW-11 DONE marks/legal-position`. So the stamp goes to the nearest level
+ * that permits it: the card cover, where the table allows two marks and a tilt,
+ * where nothing is currently spending that budget, and where `4b` draws a stamp
+ * in exactly this corner.
+ *
+ * IT IS NOT DRAWN OVER THE ARTWORK, and that is not timidity. Contrast on this
+ * site is asserted pair by pair in `verify-a11y.mjs`, and type over an arbitrary
+ * photograph has no pair to assert — the ratio is whatever that card's image
+ * happens to be. 4a and 4b both place their stamps over a flat hatch-plate
+ * placeholder rather than over a photograph, so the mount is the closer reading
+ * of the mockup as well as the only measurable one.
+ *
+ * Not `aria-hidden`. The glyph runs are hidden because they are decoration that
+ * would announce as punctuation noise; this says "iv", which is the card's
+ * edition number and is worth hearing.
+ */
+interface Props {
+  /** The card's title, e.g. `Card IV`. The numeral is read out of it. */
+  cardTitle: string;
+}
+
+import { stampText } from '../../lib/mark.mjs';
+
+const { cardTitle } = Astro.props;
+const text = stampText(cardTitle);
+---
+{text && <span class="mark mark--stamp">{text}</span>}
