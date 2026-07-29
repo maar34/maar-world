@@ -209,6 +209,51 @@
   }
 }
 
+/* ---- the struck word — 4a's, drawn as a pseudo-element ------------------- */
+
+/**
+ * `mark.strike`. A line drawn over a word by hand.
+ *
+ * WHERE IT IS ALLOWED TO GO, which is the part that had to be settled before
+ * any of it was drawn. The spec's §02 opens with "marks … never indicate state
+ * or meaning", and a cross-out plainly means something — so a strike scattered
+ * on arbitrary headings would either be a lie about the copy or a breach of
+ * that sentence. It is therefore never chosen by `mark.mjs` the way a cut word
+ * is: nothing picks a word to strike.
+ *
+ * It is used where the COPY already says the thing, so the bar adds emphasis
+ * and no information — exactly the standing of `mark.face`, the spec's own
+ * italic swap, which is also rhetoric on one word. Today that is one heading in
+ * the whole site: the 404, whose `<h1>` reads "This page is not in the deck".
+ * The sentence carries the 404 with the bar removed, which is the test.
+ *
+ * DRAWN AS `::after`, NOT AS 4a's NESTED SPAN. 4a needs an element because it
+ * is inline styles on a mockup; here a pseudo-element is strictly better — it
+ * is not in the accessibility tree at all, so it cannot be announced and needs
+ * no `aria-hidden` to promise that it will not be.
+ *
+ * The word itself drops to the meta ink, as 4a drops it to #a39ead: a word
+ * being crossed out is on its way out of the sentence.
+ */
+.mark--strike {
+  position: relative;
+  color: var(--ink-meta);
+  background: none;
+}
+
+.mark--strike::after {
+  content: '';
+  position: absolute;
+  /* Both negative, so the bar runs past the word on each side. This is the
+     mark: a line that stops exactly at the glyphs is a text-decoration. */
+  left: var(--mark-strike-overhang);
+  right: var(--mark-strike-overhang);
+  top: var(--mark-strike-top);
+  height: var(--mark-strike-w);
+  background: var(--mark-strike-rule);
+  transform: rotate(var(--mark-strike-tilt));
+}
+
 /* ---- the hatch plate — 4a's, collapsed onto surface roles ---------------- */
 
 /**
@@ -253,6 +298,13 @@
   border: 0;
   clip-path: none;
   transform: none;
+}
+
+/* The struck word's bar is a pseudo-element, so the rule above cannot reach it
+   — containment has to name it separately or a strike would survive into body
+   copy that the same rule strips every other mark out of. */
+:where(h2, h3, h4, h5, h6, p, li, dd, dt, figcaption, label, th, td) .mark::after {
+  content: none;
 }
 
 /**

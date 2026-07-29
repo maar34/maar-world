@@ -295,6 +295,27 @@
    * 17 and these by about 15. Using roles also means the plate inverts with the
    * surface for nothing, which two hard-coded pairs would not.
    */
+  /**
+   * THE STRUCK WORD — mark 3. A hand-drawn cross-out.
+   *
+   * The overhang is the whole mark. A bar that stops at the word's edges is a
+   * `text-decoration: line-through` with extra steps; -4% past each side is what
+   * makes it read as a line drawn over the word afterwards, by someone who was
+   * not being careful. The 52% is 4a's too — just below the optical centre,
+   * where a pen crossing a word actually lands.
+   *
+   * The rule takes the page's own area pigment rather than 4a's flat #f0aecb,
+   * for the same reason mark.highlight does: "one pigment per component
+   * instance", and the area pigment is the one the page is already spending.
+   * On paper a pastel rule is about 1.4:1, so it becomes the dark ink there —
+   * the same swap, for the same reason, as the stamp's border.
+   */
+  --mark-strike-w: 2px;
+  --mark-strike-top: 52%;
+  --mark-strike-overhang: -4%;
+  --mark-strike-tilt: -2.4deg;
+  --mark-strike-rule: var(--area-pigment, var(--c-maar));
+
   --plate-band: 8px;
   --plate: repeating-linear-gradient(
     135deg,
@@ -381,8 +402,9 @@
   --focus-c: var(--ink);
 
   /* The tree pigment on paper is 1.35:1 — a stamp nobody can see. See the
-     stamp block above. */
+     stamp block above. A pastel rule on paper is the same problem. */
   --mark-stamp-rule: var(--ink-meta);
+  --mark-strike-rule: var(--pigment-ink);
 }
 
 @media print {
@@ -394,5 +416,6 @@
     --sf-sunken: #e3d9c8;
     --focus-c: var(--ink);
     --mark-stamp-rule: var(--ink-meta);
+    --mark-strike-rule: var(--pigment-ink);
   }
 }
