@@ -48,19 +48,51 @@ edges** — ragged top and bottom, straight-ish sides. Used on: `place`, `exopla
 
 ### 2. Highlighter word
 
-Softer than a cut word. A marker stroke that deliberately does **not** fill the line box:
+The spec specifies this one, so the spec is what shipped: a **flat pastel field**, `padding: 0
+8px`, no radius, ink type, `--r-0`. 4a's version is a marker stroke that deliberately misses the
+line box (`linear-gradient(transparent 8%, #a9d5e8 8%, #a9d5e8 92%, transparent 92%)`, three
+instances at 8/92, 9/91 and 10/90, rotated `-.8deg`). It is lovely, and it is **not** what
+`mark.highlight` is — a direction mockup does not overrule a specified component.
 
-```
-background: linear-gradient(transparent 8%, #a9d5e8 8%, #a9d5e8 92%, transparent 92%);
-color: #141319;
-padding: 0 .12em;
-display: inline-block;
-transform: rotate(-.8deg);
-```
+> The hard-stop gradient still matters for the **hatch plate**, mark 7. See the correction note
+> at the bottom: the test is diffusion, not the keyword.
 
-Three instances, at 8%/92%, 9%/91% and 10%/90%. **This is a hard-stop gradient, not a wash.**
-See the correction note at the bottom — a rule against "gradients" reads as a ban on this, and
-banning it removes half the language.
+#### THE STAIRCASE — why a highlight is never rotated
+
+*This is the owner's own explanation, recorded here because the spec states the rule and not the
+reason, and a rule without its reason reads as an arbitrary prohibition that the next session
+will "fix".*
+
+The spec says: *"tilt applies to a containing block only. **a highlighted span is never
+rotated**."*
+
+A highlight is a **marker stroke**. Someone drawing one holds the pen level and moves it along
+the line — so when the line itself is tilted, the strokes do not tilt with it. They stay
+horizontal and **step**, and a run of them down a tilted heading reads as a *staircase*. That
+staircase is the effect. Rotating the highlights with their block flattens it straight back into
+a plain skewed page, which is the thing the whole language exists to avoid.
+
+So the rule is not "no rotation anywhere". It is:
+
+| | rotates with its block? | why |
+|---|---|---|
+| **highlight** | **never** — counter-rotates to stay level | it is a pen stroke, and a hand holds the pen level |
+| **cut word** | **yes** | it is a piece of paper someone put down, and paper does not land square |
+
+Implemented as CSS rather than as a convention: `.mark--highlight` carries
+`transform: rotate(calc(-1 * var(--tilt, 0deg)))`, so it stays level in the page whatever the
+block it sits inside does. Unset, that is `rotate(0deg)` and costs nothing.
+
+#### One word is never highlighted
+
+A highlight on a heading with only one eligible word paints the **entire heading**, and it stops
+reading as a marked word and starts reading as a badge. `/lab`, whose `<h1>` is the single word
+"lab", is the case that showed it.
+
+A one-word heading takes the **cut word** instead. That is the right way round rather than an
+escape hatch: a highlight is a stroke laid *over running text* and needs text either side of it
+to read as one, while a cut word is a clipping that is complete on its own — 4a's own `sky` and
+`lab` are exactly that.
 
 ### 3. Struck word
 
@@ -133,9 +165,23 @@ against `#100f14`, `#1a1822`, `#8d8798`, `#d6d2cc`, `#a39ead`. Those should all 
 spec tokens; the difference is invisible. But 4a also carries genuine neon — `#ff3ec8`,
 `#35e8e0`, `#ffb340` — which the six-colour rule forbids outright. Drop those.
 
-**3. `font-stretch` on Archivo, 110–124%.** Not in the spec's type scale at all. It is part of
-why cut words read as clippings rather than as labels. Needs adding to the spec or accepting as
-a mark-only property.
+**3. `font-stretch` on Archivo, 110–124%. — RESOLVED.** Not in the spec's type scale at all, and
+it is part of why cut words read as clippings rather than as labels.
+
+It also could not work as installed, which is the part that mattered: the repo carried
+`@fontsource/archivo`, whose **static** weight files declare no width axis, so `font-stretch` on
+them is silently inert — the browser matches the one width it has and draws it, and nothing
+synthesises a wider face. A stylesheet asking for 120% would have looked done and changed
+nothing.
+
+No substitute typeface was needed. **Archivo itself has the axis**;
+`@fontsource-variable/archivo` (same family, same designer, same OFL licence, same 5.3.0)
+declares `font-weight: 100 900` and `font-stretch: 62% 125%`, covering 4a's range with room
+either side. Swapped in, static removed, `--mark-cut-width: 118%` — the middle of 4a's spread.
+
+**It costs 76 KB.** The latin subset is 90 KB against the static 600's 14 KB, and latin is the
+subset essentially every visitor fetches. That is the whole price of the width axis. Reversible
+by restoring two lines; recorded as `MW-11 NOTE design/archivo-variable-cost`.
 
 **4. DOCUMENTATION BUG — corrected in `DESIGN-REFERENCES.md`.** That file's table said 4a uses
 `radial-gradient(…)` pigment washes with `filter: blur(17px)`, and told the next session the

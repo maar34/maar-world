@@ -58,6 +58,28 @@
 .mark--highlight {
   background: var(--area-pigment, var(--c-maar));
   padding: 0 var(--mark-pad-inline);
+
+  /**
+   * THE STAIRCASE. This is what the spec's "a highlighted span is never
+   * rotated" is *for*, and the reason is worth writing down because the rule
+   * reads as an arbitrary prohibition without it.
+   *
+   * A highlight is a marker stroke. A hand drawing one holds the pen level and
+   * moves along the line — so when the line itself is tilted, the strokes do
+   * not tilt with it. They stay horizontal and step, and a run of them down a
+   * tilted heading reads as a staircase. That is the effect; rotating them with
+   * the block would flatten it back into a plain skewed page.
+   *
+   * So the highlight counter-rotates by exactly the tilt of the block it sits
+   * in, and stays level in the page no matter what the block does. `--tilt` is
+   * whatever the containing block set on itself; unset, this is `rotate(0deg)`
+   * and costs nothing.
+   *
+   * The cut word is the opposite and deliberately so: it is a piece of paper
+   * someone put down, and paper does not land square.
+   */
+  display: inline-block;
+  transform: rotate(calc(-1 * var(--tilt, 0deg)));
 }
 
 /* ---- the cut word — 4a's, measured --------------------------------------- */
@@ -92,6 +114,17 @@
   background: var(--sf-paper);
   font-family: var(--face-head);
   font-weight: 600;
+  /**
+   * The width axis, which is the last of the five things that make a cut word
+   * read as a clipping rather than as a chip — field, tear, tilt, scale, width.
+   * 4a runs 110–124% across its Archivo marks; this is the middle of that.
+   *
+   * It does nothing at all unless the variable Archivo is loaded, which is why
+   * that swap and this declaration landed together: a `font-stretch` on a static
+   * face is silently inert, and an inert declaration is worse than an absent one
+   * because the next session reads it as done.
+   */
+  font-stretch: var(--mark-cut-width);
   font-size: var(--mark-cut-scale);
   line-height: 1;
   padding: var(--mark-pad-block) var(--mark-pad-inline);

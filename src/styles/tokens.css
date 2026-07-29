@@ -78,7 +78,12 @@
   /* All type is lowercase. Bodoni is display only — never below 34px.
      Archivo never used for prose. DM Mono never used above 14px. */
   --face-display: 'Bodoni Moda', serif;
-  --face-head: 'Archivo', sans-serif;
+  /* 'Archivo Variable' is fontsource's family name for the variable build, and
+     it is the only Archivo this site serves — the static package was removed
+     when the variable one landed, so the two are never both downloaded. Plain
+     'Archivo' is kept in the stack only to catch a locally installed copy; it
+     resolves to no @font-face here. */
+  --face-head: 'Archivo Variable', 'Archivo', sans-serif;
   --face-body: 'Libre Franklin', sans-serif;
   --face-mono: 'DM Mono', monospace;
 
@@ -201,6 +206,17 @@
    * line box rather than growing it.
    */
   --mark-cut-scale: 0.68em;
+
+  /**
+   * The width axis on a cut word. 4a runs font-stretch 110–124% across its
+   * seven Archivo marks (110, 112, 118, 120, 122, 124); 118% is the middle of
+   * that spread.
+   *
+   * Needs the variable Archivo to do anything — `@fontsource-variable/archivo`
+   * declares `font-stretch: 62% 125%`, the static package declares no width at
+   * all. See the import comment in layouts/BaseLayout.astro for what that costs.
+   */
+  --mark-cut-width: 118%;
 
   /**
    * MARK TILT — AN OPEN OWNER DECISION. These are 4a's cut-word rotations, and

@@ -9,7 +9,7 @@ tags: []
 source: "maar.world/collections/_genesis/skyl00.md"
 ---
 
-# <span class="mark mark--highlight">Skylight.2</span>
+# <span class="mark mark--cut mark--tilt-4 mark--tear-4">Skylight.2</span>
 
 Soundscapes from the East of Maar World. Air creatures singing, landing into the surface of the exoplanet. 
 

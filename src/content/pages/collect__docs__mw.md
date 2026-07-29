@@ -13,7 +13,7 @@ indexLabel: "Information"
 cover: "/img/docs/covers/information-cover.jpg"
 ---
 
-# <span class="mark mark--highlight">Information</span>
+# <span class="mark mark--cut mark--tilt-2 mark--tear-2">Information</span>
 
 Maar World is an exoplanet located in the Cygnus constellation. It has four moons and two suns. The inhabitants of this planet are mainly eternal children, innocent, happy, kind, generous, loving, organic beings. They are also imperfect, and they have a lot of work to do to improve themselves.
 

@@ -9,7 +9,7 @@ tags: []
 source: "maar.world/collections/_pages/privacy.md"
 ---
 
-# <span class="mark mark--highlight">Privacy</span>
+# <span class="mark mark--cut mark--tilt-2 mark--tear-1">Privacy</span>
 
 ## Privacy and Cookies Policy  
 

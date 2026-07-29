@@ -10,6 +10,6 @@ source: "collect.maar.world/collections/_pages/suits.html"
 description: "Collect Suits with 11 cards."
 ---
 
-# <span class="mark mark--highlight">Suits</span>
+# <span class="mark mark--cut mark--tilt-3 mark--tear-4">Suits</span>
 
 Collect Suits with 11 cards.

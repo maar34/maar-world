@@ -16,7 +16,27 @@
 // word to italic bodoni; the other three need a single weight each.
 import '@fontsource/bodoni-moda/400.css';
 import '@fontsource/bodoni-moda/400-italic.css';
-import '@fontsource/archivo/600.css';
+/**
+ * Archivo, as a variable font — for one axis, `wdth`.
+ *
+ * `@fontsource/archivo` ships static weight files with no width axis, so
+ * `font-stretch` on them is silently inert: the browser matches the one width
+ * it has and draws it, and nothing synthesises a wider face. 4a sets
+ * font-stretch 110–124% on every Archivo mark, and it is part of why a cut word
+ * reads as a clipping rather than a chip, so the static package could not
+ * produce the language no matter what the stylesheet asked for.
+ *
+ * This is the SAME typeface, not a substitute — same family, same designer,
+ * same OFL licence, same 5.3.0 — with its axes intact: `font-weight: 100 900`
+ * and `font-stretch: 62% 125%`, which covers 4a's range with room either side.
+ *
+ * It costs. The latin subset is 90 KB against the static 600's 14 KB, and latin
+ * is the subset essentially every visitor fetches. That is the whole price of
+ * the width axis and it is recorded in MIGRATION-LEDGER.md as
+ * `MW-11 NOTE design/archivo-variable-cost` — reversible by restoring the two
+ * lines this replaced.
+ */
+import '@fontsource-variable/archivo/wdth.css';
 import '@fontsource/libre-franklin/400.css';
 import '@fontsource/dm-mono/400.css';
 

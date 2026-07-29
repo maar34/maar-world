@@ -34,7 +34,7 @@
   "dependencies": {
     "@astrojs/react": "^5.0.0",
     "@astrojs/sitemap": "^3.7.3",
-    "@fontsource/archivo": "^5.3.0",
+    "@fontsource-variable/archivo": "^5.3.0",
     "@fontsource/bodoni-moda": "^5.3.0",
     "@fontsource/dm-mono": "^5.3.0",
     "@fontsource/libre-franklin": "^5.3.0",

@@ -160,8 +160,21 @@ export function chooseMark(text, seed) {
    * word is the signature — it is the thing the owner means by the language.
    * An even split would make the page read as two treatments competing rather
    * than one with a quieter relative.
+   *
+   * ONE EXCEPTION, and it is the owner's call after seeing the first build:
+   * a highlight on a heading with only one word paints the entire heading, and
+   * it stops reading as a marked word and starts reading as a badge. `/lab`,
+   * whose `<h1>` is the single word "lab", was the case that showed it.
+   *
+   * So a one-word heading takes the cut word instead of the highlight. It is
+   * the right way round rather than an escape hatch: a highlight is a stroke
+   * laid *over* running text and needs text either side of it to read as one,
+   * while a cut word is a clipping that is complete on its own — 4a's own `sky`
+   * and `lab` are exactly that. The heading still gets a mark; it gets the mark
+   * that survives being the whole line.
    */
-  const kind = pick(seed, 'kind', 3, 7) === 1 ? 'highlight' : 'cut';
+  const alone = candidates.length === 1;
+  const kind = !alone && pick(seed, 'kind', 3, 7) === 1 ? 'highlight' : 'cut';
 
   return {
     index: best.index,
