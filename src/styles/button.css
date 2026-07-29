@@ -1,0 +1,241 @@
+/**
+ * The four button variants, transcribed from the design spec's button table.
+ *
+ * The spec gives this as a five-by-four grid — primary / secondary / collect /
+ * text across rest / hover / active / focus / disabled — so every rule below is
+ * a cell of that grid rather than a judgement call. Its own words for the
+ * behaviour:
+ *
+ *   "on dark, hover inverts to cream; on paper it inverts to ink. never a hue
+ *    shift, never a lighten. press is a 1px downward nudge, no scale. minimum
+ *    hit target 44px on touch. label is one or two words, verb first."
+ *
+ * Cream on dark and ink on paper are the same token — --action-invert — which
+ * is why one hover rule serves both surfaces and no rule here branches on which
+ * surface it is drawn on.
+ *
+ * Global rather than component-scoped, for the same reason styles/shell.css is:
+ * the treatment has to reach the submit controls inside migrated `.legacy`
+ * bodies, which no component of ours renders. Those are styled by element at
+ * the bottom of this file, so a form that came out of the legacy checkouts gets
+ * the same button as one we write.
+ *
+ * Marks are not permitted here. The rules-of-use table allows them at h1 and
+ * card-cover level and forbids them at "body, ui, label and caption" — a button
+ * is ui.
+ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* "minimum hit target 44px on touch" — applied at every pointer type, as the
+     navigation does, because a hit target is a hit target. The padding alone
+     leaves a 14px label about 39px tall. */
+  min-height: var(--hit-min);
+  padding-block: var(--btn-pad-block);
+  padding-inline: var(--btn-pad-inline);
+
+  /* Archivo 600 at 14px. Archivo is never used for prose; a button is not prose. */
+  font-family: var(--t-h3-face);
+  font-weight: var(--t-h3-weight);
+  font-size: var(--t-small-size);
+  line-height: var(--t-small-line);
+
+  text-align: center;
+  text-decoration-line: none;
+  border: 0;
+  border-radius: var(--r-1);
+  cursor: pointer;
+  transition: background var(--m-fast) var(--ease), color var(--m-fast) var(--ease);
+}
+
+/* "press is a 1px downward nudge, no scale." One rule for every variant. */
+.btn:active {
+  transform: translateY(var(--press-nudge));
+}
+
+/* The focus ring is the global one from --focus-*; it is not restated per
+   variant, and it is never removed. */
+
+/* ---- primary ------------------------------------------------------------ */
+/* A flat pastel field. "a pastel is always a background, never type", and
+   "type on any pastel is always dark, on both surfaces". */
+.btn--primary {
+  background: var(--c-maar);
+  color: var(--pigment-ink);
+}
+
+.btn--primary:hover {
+  background: var(--action-invert);
+  color: var(--sf-base);
+}
+
+/* ---- secondary ---------------------------------------------------------- */
+/* No field at rest — an outline in the current ink. The reduced padding plus
+   the border comes to the same box as a filled button. */
+.btn--secondary {
+  background: transparent;
+  color: currentColor;
+  border: var(--btn-border-w) solid currentColor;
+  padding-block: var(--btn-pad-block-outline);
+  padding-inline: var(--btn-pad-inline-outline);
+}
+
+.btn--secondary:hover {
+  background: var(--action-invert);
+  color: var(--sf-base);
+}
+
+/* The spec draws the pressed secondary at 80% rather than full ink, so the
+   nudge is felt as well as seen. */
+.btn--secondary:active {
+  background: color-mix(in srgb, var(--action-invert) 80%, transparent);
+  color: var(--sf-base);
+}
+
+/* ---- collect ------------------------------------------------------------ */
+/* The collect pigment, and only for the collect action — "one pigment per
+   component instance", and collect's role is "saving, sets, favourites". */
+.btn--collect {
+  background: var(--c-collect);
+  color: var(--pigment-ink);
+}
+
+.btn--collect:hover {
+  background: var(--action-invert);
+  color: var(--sf-base);
+}
+
+/* ---- text --------------------------------------------------------------- */
+/* No field and no border: an underline until it is hovered, when it takes the
+   tree pigment as a flat field and drops the line. */
+.btn--text {
+  background: transparent;
+  color: currentColor;
+  padding-inline: var(--btn-pad-inline-text);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.btn--text:hover {
+  background: var(--c-tree);
+  color: var(--pigment-ink);
+  text-decoration-line: none;
+}
+
+/* ---- disabled ----------------------------------------------------------- */
+/**
+ * One rule for every variant, because the spec draws all four the same way when
+ * disabled: the field collapses to a 10% ink tint and the label to 60% ink.
+ * `pointer-events: none` is deliberately NOT used — it would also suppress the
+ * cursor feedback that tells someone the control is unavailable, and a disabled
+ * <button> is already unclickable and unfocusable to the browser.
+ */
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  background: var(--disabled-bg);
+  color: var(--ink-meta);
+  border-color: color-mix(in srgb, var(--ink) 20%, transparent);
+  cursor: not-allowed;
+  text-decoration-line: none;
+}
+
+.btn:disabled:hover,
+.btn[aria-disabled='true']:hover {
+  background: var(--disabled-bg);
+  color: var(--ink-meta);
+}
+
+.btn:disabled:active,
+.btn[aria-disabled='true']:active {
+  transform: none;
+}
+
+/* ---- legacy form controls ----------------------------------------------- */
+/**
+ * The submit controls inside migrated bodies.
+ *
+ * `src/content/**` is generated from the read-only legacy checkouts, so a class
+ * cannot be added to these without the next migration run removing it again —
+ * and adding presentational classes to content would be the wrong fix anyway.
+ * They are selected by element instead. The two Formspree forms use
+ * `<button type="submit">`; both Mailchimp embeds use `<input type="submit">`,
+ * which cannot contain anything, so it is styled as a block rather than a flex
+ * box (`display: inline-flex` on an input is meaningless — it has no children
+ * to align).
+ */
+.legacy button[type='submit'],
+.legacy input[type='submit'] {
+  min-height: var(--hit-min);
+  padding-block: var(--btn-pad-block);
+  padding-inline: var(--btn-pad-inline);
+  font-family: var(--t-h3-face);
+  font-weight: var(--t-h3-weight);
+  font-size: var(--t-small-size);
+  line-height: var(--t-small-line);
+  background: var(--c-maar);
+  color: var(--pigment-ink);
+  text-align: center;
+  border: 0;
+  border-radius: var(--r-1);
+  cursor: pointer;
+  transition: background var(--m-fast) var(--ease), color var(--m-fast) var(--ease);
+}
+
+.legacy button[type='submit'] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.legacy button[type='submit']:hover,
+.legacy input[type='submit']:hover {
+  background: var(--action-invert);
+  color: var(--sf-base);
+}
+
+.legacy button[type='submit']:active,
+.legacy input[type='submit']:active {
+  transform: translateY(var(--press-nudge));
+}
+
+/**
+ * The fields those buttons submit.
+ *
+ * Not in the spec's button table — it specifies inputs separately — but a
+ * migrated form whose button is styled and whose fields are the browser's
+ * defaults reads as half-finished, and the defaults are white-on-white against
+ * the dark surface on four pages. Radius --r-1 is the spec's own value for
+ * "inputs, buttons, carousel controls".
+ */
+.legacy input[type='text'],
+.legacy input[type='email'],
+.legacy textarea {
+  display: block;
+  width: 100%;
+  min-height: var(--hit-min);
+  padding-block: var(--btn-pad-block-outline);
+  padding-inline: var(--btn-pad-inline-outline);
+  font-family: var(--t-body-face);
+  font-size: var(--t-body-size);
+  line-height: var(--t-body-line);
+  color: var(--ink);
+  background: var(--sf-sunken);
+  border: var(--btn-border-w) solid var(--ink-hairline);
+  border-radius: var(--r-1);
+}
+
+.legacy label {
+  display: block;
+  margin-block-end: var(--s-2);
+}
+
+.legacy form {
+  display: flex;
+  flex-direction: column;
+  /* "sibling groups use gap, never margins." */
+  gap: var(--s-4);
+  align-items: flex-start;
+}

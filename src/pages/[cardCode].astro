@@ -144,7 +144,7 @@ const downloads = [d.download, d.download2]
               is a labelled landmark instead, so it is still announced. */}
           <p class="orbiter__head">{orbiterLabel} is now playing on Maar Orbiter</p>
           <p class="orbiter__lede">We are redirecting you to the updated listening experience.</p>
-          <a class="orbiter__link" href={orbiterUrl} rel="noopener">
+          <a class="btn btn--primary orbiter__link" href={orbiterUrl} rel="noopener">
             Open Maar Orbiter
           </a>
           <p class="orbiter__hint">
@@ -276,22 +276,13 @@ const downloads = [d.download, d.download2]
     color: var(--ink-muted);
   }
 
+  /* The primary button now comes from styles/button.css, which is the spec's
+     own state table rather than a local approximation of it. What stays here is
+     the one thing that is about this layout and not about the button: where it
+     sits in the column. It used to restate the field, the face and the padding,
+     and it had no hover, no press nudge and no disabled state. */
   .orbiter__link {
     align-self: start;
-    padding: var(--s-3) var(--s-6);
-    border-radius: var(--r-1);
-    background: var(--c-maar);
-    color: var(--pigment-ink);
-    font-family: var(--t-h3-face);
-    font-weight: var(--t-h3-weight);
-    font-size: var(--t-h3-size);
-    line-height: var(--t-h3-line);
-    text-decoration: none;
-  }
-
-  .orbiter__link:focus-visible {
-    outline: var(--focus-w) solid var(--focus-c);
-    outline-offset: var(--focus-o);
   }
 
   .orbiter__hint,

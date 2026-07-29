@@ -94,6 +94,34 @@
   --t-h1-sm-line: 1.02;
   --t-h1-sm-track: -0.02em;
 
+  /**
+   * The two display steps the responsive table needs and the type-scale table
+   * does not name.
+   *
+   * The spec states this in two places and they do not cover the same ground.
+   * The type-scale table gives two display steps — 76/0.98 and 48/1.02, the
+   * second labelled "h1 below 900px". The responsive table gives *four* display
+   * sizes, one per breakpoint: 40, 48, 60, 76. So an h1 at 360px should be 40px
+   * and at 1024px should be 60px, and neither size appears in the scale.
+   *
+   * The sizes here are the spec's own, taken from the responsive table. The
+   * line heights are NOT stated for these two steps, so they are interpolated
+   * linearly between the two that are — 48 → 1.02 and 76 → 0.98 — which gives
+   * 1.03 at 40px and 1.00 at 60px. Tracking is -0.02em at both stated steps, so
+   * it is held constant rather than interpolated.
+   *
+   * That interpolation is the one value in this file not read off the spec.
+   * It is recorded in MIGRATION-LEDGER.md as `MW-11 NOTE design/display-steps`
+   * and needs an owner's confirmation. Shipping 48px where the spec says 40px
+   * was the alternative, and that is wrong at two of the four breakpoints.
+   *
+   * Both stay above the 34px floor: "bodoni is display only — never below 34px".
+   */
+  --t-display-xs-size: 40px;
+  --t-display-xs-line: 1.03;
+  --t-display-md-size: 60px;
+  --t-display-md-line: 1;
+
   --t-h2-face: var(--face-head);
   --t-h2-weight: 600;
   --t-h2-size: 34px;
@@ -191,6 +219,24 @@
 
   /* "touch targets 44px minimum" — accessibility, not decoration. */
   --hit-min: 44px;
+
+  /**
+   * Button metrics, from the spec's button table.
+   *
+   * A filled button is 11/18 and the outlined one is 10/17 with a 1px border,
+   * so the two occupy the same box and a row of mixed buttons keeps its
+   * baseline. Neither pair is a point on the spacing scale — like --gutter-xs,
+   * they are spelled here because this file is the only place a raw value may
+   * exist.
+   */
+  --btn-pad-block: 11px;
+  --btn-pad-inline: 18px;
+  --btn-pad-block-outline: 10px;
+  --btn-pad-inline-outline: 17px;
+  --btn-border-w: 1px;
+  /* The text button has no field, so it is inset only enough to keep its
+     underline clear of neighbouring words. */
+  --btn-pad-inline-text: var(--s-1);
 
   /* "press is a 1px downward nudge, no scale." */
   --press-nudge: 1px;

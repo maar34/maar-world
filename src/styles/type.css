@@ -25,22 +25,49 @@ body {
   background: var(--sf-base);
 }
 
+/**
+ * The display step, at all four of the breakpoints the responsive table names.
+ *
+ * "breakpoint / gutter / cards / display": 20/1/40, 32/1/48, 48/2/60, 64/3/76.
+ * This used to bind only two of them — 76 by default and 48 under 900px — so an
+ * h1 was 48px at 360 where the table says 40, and 48px at 1024 where it says 60.
+ *
+ * Written mobile-first so each query adds one step, in the same order and at the
+ * same three widths as the gutter bindings in styles/shell.css. The two middle
+ * sizes reuse --t-h1-sm-* and --t-display-*; the outer two are their own tokens
+ * and carry the note about their interpolated line heights.
+ */
 h1,
 .t-display {
   font-family: var(--t-display-face);
   font-weight: var(--t-display-weight);
-  font-size: var(--t-display-size);
-  line-height: var(--t-display-line);
+  font-size: var(--t-display-xs-size);
+  line-height: var(--t-display-xs-line);
   letter-spacing: var(--t-display-track);
 }
 
-/* h1 below 900px */
-@media (max-width: 899px) {
+@media (min-width: 600px) {
   h1,
   .t-display {
     font-size: var(--t-h1-sm-size);
     line-height: var(--t-h1-sm-line);
     letter-spacing: var(--t-h1-sm-track);
+  }
+}
+
+@media (min-width: 900px) {
+  h1,
+  .t-display {
+    font-size: var(--t-display-md-size);
+    line-height: var(--t-display-md-line);
+  }
+}
+
+@media (min-width: 1280px) {
+  h1,
+  .t-display {
+    font-size: var(--t-display-size);
+    line-height: var(--t-display-line);
   }
 }
 
