@@ -28,7 +28,7 @@ source: "maar.world/collections/_pages/radio.md"
 </div>
 
 <div class="container">
-<iframe class="responsive-radio-iframe " src="https://radio.maar.world" style="border: 0"></iframe>
+<iframe class="responsive-radio-iframe " src="https://radio.maar.world" style="border: 0" title="maar world radio"></iframe>
 </div>
 
 <div class="hero hero--center" style="background-color: #000000;">

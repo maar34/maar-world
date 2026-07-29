@@ -32,7 +32,7 @@ Todos los instrumentos musicales construidos y grabados por <a href="https://mel
 5.Vasija Silbadora Vicus
 
 <div class="container">
-<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=7" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=7" style="border: 0" title="5.Vasija Silbadora Vicus — player"></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=7 " rel="Maar World Player" target="_blank"> Play full screen</a> 
@@ -41,7 +41,7 @@ Todos los instrumentos musicales construidos y grabados por <a href="https://mel
 Flauta Doble de Jalisco
 
 <div class="container">
-<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=8" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=8" style="border: 0" title="Flauta Doble de Jalisco — player"></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=8 " rel="Maar World Player" target="_blank"> Play full screen</a> 
@@ -49,7 +49,7 @@ Flauta Doble de Jalisco
 7.Sonajero Calabaza Mochica
 
 <div class="container">
-<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=9" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=9" style="border: 0" title="7.Sonajero Calabaza Mochica — player"></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=9 " rel="Maar World Player" target="_blank"> Play full screen</a> 
@@ -57,7 +57,7 @@ Flauta Doble de Jalisco
 8.Zumbador Guaraní
 
 <div class="container">
-<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=10" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=10" style="border: 0" title="8.Zumbador Guaraní — player"></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=10 " rel="Maar World Player" target="_blank"> Play full screen</a> 
@@ -65,7 +65,7 @@ Flauta Doble de Jalisco
 9.Sonajero San Pedro
 
 <div class="container">
-<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=11" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=11" style="border: 0" title="9.Sonajero San Pedro — player"></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=11 " rel="Maar World Player" target="_blank"> Play full screen</a>

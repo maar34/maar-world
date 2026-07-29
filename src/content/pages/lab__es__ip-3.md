@@ -28,7 +28,7 @@ Este proyecto esta hecho con Amor, <a href="https://github.com/maar34/interplane
 10.Flauta Flor Azteca
 
 <div class="container">
-<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=12" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=12" style="border: 0" title="10.Flauta Flor Azteca — player"></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=12 " rel="Maar World Player" target="_blank"> Play full screen</a> 
@@ -36,7 +36,7 @@ Este proyecto esta hecho con Amor, <a href="https://github.com/maar34/interplane
 11.Flauta Poliglobular Maya
 
 <div class="container">
-<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=13" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=13" style="border: 0" title="11.Flauta Poliglobular Maya — player"></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=13 " rel="Maar World Player" target="_blank"> Play full screen</a> 
@@ -44,7 +44,7 @@ Este proyecto esta hecho con Amor, <a href="https://github.com/maar34/interplane
 12.Antara Nazca
 
 <div class="container">
-<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=14" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=14" style="border: 0" title="12.Antara Nazca — player"></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=14 " rel="Maar World Player" target="_blank"> Play full screen</a> 
@@ -52,7 +52,7 @@ Este proyecto esta hecho con Amor, <a href="https://github.com/maar34/interplane
 13.Silbato de la Muerte Azteca
 
 <div class="container">
-<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=15" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=15" style="border: 0" title="13.Silbato de la Muerte Azteca — player"></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=15 " rel="Maar World Player" target="_blank"> Play full screen</a>

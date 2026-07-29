@@ -29,7 +29,7 @@ Recent studies in the field of Archaeoastronomy indicate that Charrúa communiti
 1.Trompeta Mochica.
 
 <div class="container">
-<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=3" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=3" style="border: 0" title="1.Trompeta Mochica — player"></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=3 " rel="Maar World Player" target="_blank"> Play full screen</a> 
@@ -37,7 +37,7 @@ Recent studies in the field of Archaeoastronomy indicate that Charrúa communiti
 2.Vasija Silbadora Mochica
 
 <div class="container">
-<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=4" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=4" style="border: 0" title="2.Vasija Silbadora Mochica — player"></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=4 " rel="Maar World Player" target="_blank"> Play full screen</a> 
@@ -45,7 +45,7 @@ Recent studies in the field of Archaeoastronomy indicate that Charrúa communiti
 3.Turú
 
 <div class="container">
-<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=5" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=5" style="border: 0" title="3.Turú — player"></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=5 " rel="Maar World Player" target="_blank"> Play full screen</a> 
@@ -53,7 +53,7 @@ Recent studies in the field of Archaeoastronomy indicate that Charrúa communiti
 4.Silbato Doble Azteca
 
 <div class="container">
-<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=6" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=6" style="border: 0" title="4.Silbato Doble Azteca — player"></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=6 " rel="Maar World Player" target="_blank"> Play full screen</a>

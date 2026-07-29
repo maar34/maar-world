@@ -859,6 +859,88 @@ const IMAGE_ALT = new Map([
   ],
 ]);
 
+/**
+ * What a frame with no label of its own is called, by host.
+ *
+ * Reached only when the block above the frame is not a label — see
+ * `frameLabelBefore`. The two same-site hosts are the only ones that survive as
+ * plain frames; everything third-party is a click-to-load facade by the time
+ * this runs.
+ */
+const FRAME_FALLBACK = [
+  [/(^|\.)radio\.maar\.world$/i, 'maar world radio'],
+  [/(^|\.)play\.maar\.world$/i, 'maar world player'],
+];
+
+/** Visible text on one source line, with tags and entities gone. */
+const lineText = (line) =>
+  line
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&[a-zA-Z#0-9]+;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+/**
+ * The label a frame is introduced by, if it has one.
+ *
+ * Every `play.maar.world` frame in the Lab sits inside `<div class="container">`
+ * with its track name in the block immediately above — `1.Trompeta Mochica.`,
+ * `104.Dadada Live set Intro 4 IP`. A sighted reader gets the name from that
+ * line; without a `title`, a screen-reader user gets "frame" and nothing else,
+ * five times on one page.
+ *
+ * A label is a name, not a sentence, and the distinction matters because
+ * `/radio` puts an instruction paragraph in exactly the same position ("Press
+ * PLAY. Desktop recommended. Due to restrictions set by Apple, …"), which would
+ * make a terrible frame title. So a candidate is rejected if it runs past 120
+ * characters or contains an internal sentence boundary. `/music`'s 86-character
+ * track name has neither and is kept.
+ */
+function frameLabelBefore(body, at) {
+  const lines = body.slice(0, at).split('\n');
+  for (let i = lines.length - 1, steps = 0; i >= 0 && steps < 8; i -= 1, steps += 1) {
+    const text = lineText(lines[i]);
+    if (!text) continue;
+    if ([...text].length > 120) return null;
+    if (/[.!?]\s+[A-ZÁÉÍÓÚÑ]/.test(text)) return null;
+    return text.replace(/\.$/, '');
+  }
+  return null;
+}
+
+/**
+ * Give every frame an accessible name.
+ *
+ * `<iframe>` with no `title` is announced as an unnamed frame, and MW-11 asks
+ * for exactly this ("every embed facade is titled and keyboard-operable") —
+ * but the facades were always titled and these are the plain same-site frames
+ * that never were, 30 of them across 10 pages.
+ *
+ * Anything that falls through to a host name is reported, so a new untitled
+ * frame shows up in the migration output rather than shipping unnamed.
+ */
+function titleUntitledFrames(body, problems, where) {
+  return body.replace(/<iframe\b[^>]*>/gi, (tag, at) => {
+    if (/\btitle\s*=/i.test(tag)) return tag;
+    const src = /\bsrc\s*=\s*["']?([^"'\s>]+)/i.exec(tag);
+    let host = '';
+    try {
+      host = new URL(src ? src[1] : '', 'https://maar.world').hostname;
+    } catch {
+      /* an unparseable src is reported below by the empty fallback */
+    }
+    const fallback = (FRAME_FALLBACK.find(([re]) => re.test(host)) || [])[1];
+    const label = frameLabelBefore(body, at);
+    const title = label ? `${label} — player` : fallback;
+    if (!title) {
+      problems.push(`${where}: <iframe src="${src ? src[1] : '?'}"> has no title and no recorded fallback for ${host || 'an unparseable src'}`);
+      return tag;
+    }
+    if (!label) problems.push(`${where}: named an unlabelled <iframe> "${title}" from its host (${host})`);
+    return tag.replace(/\s*(\/?)>$/, ` title="${escapeAttr(title)}"$1>`);
+  });
+}
+
 function addMissingAlt(html, problems, where) {
   return html.replace(/<img\b[^>]*>/gi, (m) => {
     if (/\balt\s*=/i.test(m)) return m;
@@ -1018,6 +1100,16 @@ function transform(body, ctx) {
    * kramdown renders them as literal text. They carry no content.
    */
   out = out.replace(/\{:[.#][^}\n]*\}/g, '');
+
+  /**
+   * After `defuseThirdParty`, so the only frames left are same-site ones — and
+   * after the attribute lists above are gone, because every Lab frame has a
+   * `{:.success}` on the line between it and its track name. Titling before
+   * that point read the attribute list as the label, and then this very
+   * substitution deleted it back out of the title attribute it had just
+   * written, leaving `title=" — player"` on 29 frames.
+   */
+  out = titleUntitledFrames(out, problems, ctx.key);
 
   out = convertPipeTables(out, problems, ctx.key);
   out = dedentHtmlBlocks(clampListMarkerIndent(out), problems, ctx.key);

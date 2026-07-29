@@ -51,7 +51,7 @@ Gracias Gustavo Bravetti y Arturia por invitarme a disfrutar los sonidos de todo
 104.Dadada Live set Intro 4 orbiter
 
 <div class="container">
-<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=20" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=20" style="border: 0" title="104.Dadada Live set Intro 4 orbiter — player"></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=20 " rel="Maar World Player" target="_blank"> Play full screen</a> 

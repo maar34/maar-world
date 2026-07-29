@@ -51,7 +51,7 @@ Thanks to Gustavo Bravetti and Arturia for inviting me to enjoy the sounds of al
 104.Dadada Live set Intro 4 IP
 
 <div class="container">
-<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=20" style="border: 0" ></iframe>
+<iframe class="responsive-iframe" src="https://play.maar.world/?g=8&s=0&c=20" style="border: 0" title="104.Dadada Live set Intro 4 IP — player"></iframe>
 </div>
 
 <a href="https://play.maar.world/?g=8&s=0&c=20 " rel="Maar World Player" target="_blank"> Play full screen</a> 
