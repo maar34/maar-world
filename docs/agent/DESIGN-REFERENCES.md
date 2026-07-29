@@ -38,6 +38,14 @@ These are not matters of taste — the spec forbids them in as many words:
 |---|---|
 | `radial-gradient(...)` pigment washes behind headings | *"pigment appears only as flat fields — no diffusion washes, no gradients, no glows"* |
 | `filter: blur(17px)` on those washes | *"no diffusion washes anywhere: pigment is a hard-edged field or it is absent"*; motion moves *"opacity, height and 2d transform only. no blur"* |
+
+> **Read the gradient row narrowly. The test is diffusion, not the keyword.**
+> 4a's `linear-gradient`s are **not** washes: three are highlighter strokes
+> (`transparent 8%, #a9d5e8 8%, #a9d5e8 92%, transparent 92%` — hard stops, a marker stroke that
+> does not fill the line box) and two are 8px diagonal hatch patterns. Neither diffuses anything.
+> An agent that reads "the spec forbids gradients" and deletes them removes two of the seven
+> marks. Only the **radial** washes and the blur behind them are forbidden. See
+> `docs/agent/VISUAL-LANGUAGE.md`.
 | `#ff3ec8`, `#8d8798`, `#d6d2cc`, `#141319`, `#a39ead`, `#1a1822` | every value must be *"one of the six approved colours, or ink at a fixed opacity, or one measured step off a surface"* |
 | `'Chivo'` in one stylesheet block | the four faces are Bodoni Moda, Archivo, Libre Franklin, DM Mono |
 
