@@ -13,6 +13,8 @@ indexLabel: "Privacy"
 cover: "/img/docs/covers/terms-cover.jpg"
 ---
 
+# Privacy
+
 # Privacy and Cookies Policy  
 
 **Effective Date:** 08-09-2025  

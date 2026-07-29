@@ -9,6 +9,8 @@ tags: []
 source: "maar.world/collections/_pages/privacy.md"
 ---
 
+# Privacy
+
 # Privacy and Cookies Policy  
 
 **Effective Date:** 08-09-2025  

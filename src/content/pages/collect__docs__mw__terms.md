@@ -13,6 +13,8 @@ indexLabel: "TERMS AND CONDITIONS"
 cover: "/img/docs/covers/terms-cover.jpg"
 ---
 
+# TERMS AND CONDITIONS
+
 # Terms and Conditions
 
 #### 1. Sales

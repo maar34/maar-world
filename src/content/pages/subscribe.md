@@ -9,6 +9,8 @@ tags: []
 source: "maar.world/collections/_pages/subscribe.md"
 ---
 
+# Subscribe
+
 <!-- Begin Mailchimp Signup Form -->
 
 <div id="mc_embed_signup">

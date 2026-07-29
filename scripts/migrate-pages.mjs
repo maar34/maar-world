@@ -281,6 +281,35 @@ for (const r of manifest.routes) {
   if (!PRODUCTION_TITLE.has(key)) PRODUCTION_TITLE.set(key, r.title.trim());
 }
 
+/**
+ * The headings production served, in order, per page key.
+ *
+ * Only the first one is used, and only to answer one question: did the legacy
+ * theme print the page's own title as the first heading on the page? It did
+ * that whenever `layout: article` was in force, from the `title:` frontmatter
+ * and never from the body — so a body that opens with some *other* heading
+ * still had the title above it, and migrating the body alone drops it.
+ *
+ * The frozen manifest is the only record of that, which is why the question is
+ * asked of it rather than guessed from the source's frontmatter.
+ */
+const PRODUCTION_HEADINGS = new Map();
+for (const r of manifest.routes) {
+  if (r.status !== 200 || r.kind !== 'page' || !Array.isArray(r.headings)) continue;
+  const { key } = pageKeyOf(`${AREA_PREFIX[r.origin] ?? ''}${r.url}`);
+  if (!PRODUCTION_HEADINGS.has(key)) PRODUCTION_HEADINGS.set(key, r.headings);
+}
+
+/** The text of the first top-level heading in a migrated body, or null. */
+function firstTopHeading(body) {
+  const m = /^#[ \t]+(.+)$/m.exec(body);
+  const h = /<h1\b[^>]*>([\s\S]*?)<\/h1>/i.exec(body);
+  if (!m && !h) return null;
+  const useMd = m && (!h || m.index < h.index);
+  const raw = useMd ? m[1] : h[1];
+  return raw.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+}
+
 /** Brand suffix per origin, for the handful of pages the crawl never titled. */
 const BRAND = {
   'maar.world': 'MAAR WORLD',
@@ -1396,12 +1425,32 @@ for (const m of matched) {
    * Astro has no such layout, so the heading is materialised here rather than
    * shipping a page whose only visible text is a browser tab title.
    */
+  /**
+   * "Opens with its own heading" is not the same question as "contains an
+   * `<h1>` somewhere", and asking the second one is how `/collect/docs/mw/terms`
+   * lost `TERMS AND CONDITIONS` and both `dadada` articles lost their title.
+   * Terms opens with a body `# Terms and Conditions` — production printed the
+   * frontmatter title above it as well, differently cased, and both were on the
+   * page. Dadada carries `# 4 the dadadaistS` in the middle of the article, and
+   * that satisfied a test that only asked whether an `<h1>` existed anywhere.
+   *
+   * So the title is also materialised when production's own first heading was
+   * the title and the migrated body's first heading is something else. The
+   * manifest decides, so no page gains a heading production did not serve.
+   */
   // Collect card pages get their heading from the route, off the card fields.
-  if (kind !== 'collect-card' && !/^#\s|<h1\b/im.test(finalBody)) {
+  const bodyOpener = firstTopHeading(finalBody);
+  const productionLedWithTitle = (PRODUCTION_HEADINGS.get(m.key) || [])[0] === pageTitle;
+  if (kind !== 'collect-card' && (bodyOpener === null || (productionLedWithTitle && bodyOpener !== pageTitle))) {
     // The page's own name, never the branded `<title>` — an `<h1>` reading
     // "About - MAAR WORLD" would say the brand twice on every page.
     const lead = [`# ${pageTitle}`];
-    if (record.description) lead.push('', record.description);
+    // The excerpt the theme printed under the title stands in for a body that
+    // has none. A body that already has one does not need it repeated.
+    if (bodyOpener === null && record.description) lead.push('', record.description);
+    if (bodyOpener !== null) {
+      problems.push(`${outputPath}: restored the article title heading "${pageTitle}" — production led with it, the body opens with "${bodyOpener}"`);
+    }
     finalBody = `${lead.join('\n')}\n\n${finalBody}`.trim();
   }
 
