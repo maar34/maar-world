@@ -176,6 +176,11 @@ navigational only.
 - **Self-host every font. No analytics, no cookie banner. No third-party request
   on page load.**
 - **No Tailwind, no CSS-in-JS, no CMS, no backend.** React only in the Helix island.
+- **Application JavaScript on two things only: the Helix island and `ui/carousel`.**
+  The carousel exception is the owner's, after two no-script attempts failed — the
+  engine is Embla's plain-JS core (no React, no Tailwind), bundled by Vite, loaded on
+  the 5 pages that have a carousel. `ledger -- find carousel-embla`. A third is a
+  decision, not a precedent.
 - **Legacy checkouts one directory up are READ-ONLY.** Never touch DNS or the live sites.
 - Per unit: do the work, run the narrowest check, append **one** ledger line, commit.
   Stage your own paths — never `git add -A` at the repo root.

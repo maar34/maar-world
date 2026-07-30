@@ -1,0 +1,179 @@
+---
+/**
+ * ui/carousel — the part that needs a script, and the amendment that allows it.
+ *
+ * MW-7 allowed application JavaScript on exactly one page. It now allows this
+ * component as well, on the owner's decision, after two no-script attempts
+ * failed for the same structural reason: §06 asks for prev/next that are
+ * "disabled, not hidden" at the ends, "arrow keys move one slide, home and end
+ * jump to the ends", and "the counter in a polite live region". A stylesheet
+ * cannot do any of those. The first attempt faked them with eleven numbered
+ * in-page links per gallery and was rejected outright; the second removed them
+ * and left a track with no affordance.
+ *
+ * THE ENGINE IS EMBLA — the same one shadcn/ui's carousel is built on, taken as
+ * its framework-free core. That keeps every invariant except the one being
+ * amended: no React (the Helix island is still the only one), no Tailwind, and
+ * no third-party request on page load, because Vite bundles it out of
+ * node_modules and serves it from this origin.
+ *
+ * IT RENDERS NO MARKUP. The carousels are written into page bodies by
+ * scripts/migrate-pages.mjs — see lib/carousel.mjs — so this component exists
+ * only to carry the script, and `[...page].astro` includes it exactly on the
+ * pages whose body has a carousel in it. Five pages load it; the other 129 ship
+ * no JavaScript at all, which is the rule the amendment is narrowing, not
+ * abandoning.
+ */
+---
+
+<script>
+  import EmblaCarousel from 'embla-carousel';
+
+  /**
+   * "all motion is suppressed under prefers-reduced-motion, including the orbit
+   * and every carousel transition" — so the slide jumps rather than travels.
+   * Embla's `duration` is its own unit, not milliseconds; 0 is an instant jump.
+   */
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /** A slide index, said the way the live region should say it. */
+  const say = (i: number, n: number) => `slide ${i + 1} of ${n}`;
+
+  for (const root of document.querySelectorAll<HTMLElement>('.carousel')) {
+    const track = root.querySelector<HTMLElement>('.carousel__track');
+    if (!track) continue;
+
+    const count = track.querySelectorAll('.carousel__slide').length;
+    /* A carousel of one is not a carousel — the migration already declines to
+       build one, and this declines to drive one. */
+    if (count < 2) continue;
+
+    /**
+     * Embla owns a viewport whose first child is the track it translates, and
+     * the no-script markup has no such element — deliberately, because a
+     * wrapper that exists only for a library has no business in the emitted
+     * HTML. It is created here, so the static page stays exactly what it was.
+     */
+    const viewport = document.createElement('div');
+    viewport.className = 'carousel__viewport';
+    track.before(viewport);
+    viewport.append(track);
+
+    /* Stand the native scroller down only once Embla is actually driving. */
+    root.classList.add('carousel--live');
+
+    const embla = EmblaCarousel(viewport, {
+      loop: false,
+      align: 'start',
+      /* The photographs are not one width — five of the eleven on the home page
+         are square and six are 3:2 — so snap points are measured from the real
+         slides rather than assumed uniform. */
+      containScroll: 'trimSnaps',
+      duration: reduced.matches ? 0 : 25,
+    });
+
+    /* ---- controls ------------------------------------------------------- */
+
+    const controls = document.createElement('div');
+    controls.className = 'carousel__controls';
+
+    const button = (label: string) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'carousel__control';
+      /* The visible word IS the accessible name. No icon font — the theme's
+         Font Awesome is gone — and no glyph standing in for a verb. */
+      b.textContent = label;
+      return b;
+    };
+
+    const prev = button('prev');
+    const next = button('next');
+    controls.append(prev, next);
+
+    /**
+     * "the counter in a polite live region."
+     *
+     * Announced and never painted. The owner's verdict on the first version —
+     * "we have numbers, we have numbers everywhere" — was about eleven numbered
+     * boxes drawn under every gallery, and printing "3 of 10" would be the same
+     * mistake in smaller type. A screen reader still gets the position, which
+     * is the only place the spec asks for it.
+     */
+    const counter = document.createElement('p');
+    counter.className = 'carousel__counter';
+    counter.setAttribute('aria-live', 'polite');
+    counter.textContent = say(embla.selectedScrollSnap(), count);
+
+    root.append(controls, counter);
+
+    /* ---- state ---------------------------------------------------------- */
+
+    const sync = () => {
+      /* "at the first or last slide the matching control is disabled, not
+         hidden" — so the row never reflows as you move through the set. */
+      prev.disabled = !embla.canScrollPrev();
+      next.disabled = !embla.canScrollNext();
+      counter.textContent = say(embla.selectedScrollSnap(), count);
+    };
+
+    embla.on('select', sync).on('reInit', sync);
+    sync();
+
+    /**
+     * RE-MEASURE WHEN THE PHOTOGRAPHS ARRIVE.
+     *
+     * Embla measures slide widths once, at init. These slides are sized by
+     * their image — the frame fixes height and the width follows, because the
+     * set is mixed and nothing is cropped — so before the images load a slide
+     * has no width to measure and every snap point is wrong. It showed as the
+     * track visibly re-seating itself a moment after the page settled.
+     *
+     * No `width`/`height` attributes on these images to measure from instead:
+     * they are written by the migration out of the legacy body, which had none.
+     */
+    const media = track.querySelectorAll<HTMLImageElement | HTMLVideoElement>('img, video');
+    let queued = 0;
+    const remeasure = () => {
+      window.clearTimeout(queued);
+      queued = window.setTimeout(() => embla.reInit(), 50);
+    };
+    for (const m of media) {
+      const settled = m instanceof HTMLImageElement ? m.complete : m.readyState > 0;
+      if (settled) continue;
+      m.addEventListener('load', remeasure, { once: true });
+      m.addEventListener('loadedmetadata', remeasure, { once: true });
+      /* A photograph that fails still has to stop holding the track's geometry
+         hostage — its slide collapses, and the remaining snaps must be right. */
+      m.addEventListener('error', remeasure, { once: true });
+    }
+
+    prev.addEventListener('click', () => embla.scrollPrev());
+    next.addEventListener('click', () => embla.scrollNext());
+
+    /**
+     * "arrow keys move one slide, home and end jump to the ends."
+     *
+     * On the track, which already carries `tabindex="0"` from the migration and
+     * was the keyboard route when this was a native scroller. Taking the
+     * scroller away would otherwise have taken the keys with it.
+     */
+    track.addEventListener('keydown', (event) => {
+      const keys: Record<string, () => void> = {
+        ArrowLeft: () => embla.scrollPrev(),
+        ArrowRight: () => embla.scrollNext(),
+        Home: () => embla.scrollTo(0),
+        End: () => embla.scrollTo(count - 1),
+      };
+      const move = keys[event.key];
+      if (!move) return;
+      event.preventDefault();
+      move();
+    });
+
+    /* A visitor can turn reduced motion on while the page is open. */
+    reduced.addEventListener('change', () => {
+      embla.reInit({ duration: reduced.matches ? 0 : 25 });
+    });
+  }
+</script>

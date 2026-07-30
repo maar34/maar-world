@@ -102,6 +102,16 @@ These are not preferences. Work that can only pass by breaking one of these does
   `play.maar.world` embeds are fine as plain iframes — same registrable domain, same-site.
 - **No Tailwind, no shadcn/ui, no CSS-in-JS, no React app shell, no CMS, no backend.**
   React only inside the one approved island (the Helix diagram).
+- **Application JavaScript is allowed on two things and no others**: the Helix island, and
+  `ui/carousel`. The carousel exception is the owner's decision, taken after two no-script
+  attempts failed for the same structural reason — §06 asks for prev/next "disabled, not
+  hidden" at the ends, arrow keys, home and end, and "the counter in a polite live region",
+  and CSS can build none of those. The engine is **Embla**, the plain-JavaScript core of the
+  same library shadcn/ui's carousel wraps; React and Tailwind stay out. Vite bundles it from
+  `node_modules`, so no third-party request fires on load, and `[...page].astro` includes it
+  only on records whose body actually contains a carousel — 5 pages of 134. The no-script
+  carousel is still what ships in the HTML; the script enhances it, and the page works
+  without it. **A third exception is a decision to be taken, not a precedent to follow.**
 - **Never touch DNS, the live sites, or any legacy repository.** Read them, never write.
   The legacy checkouts in `../maar.world-site`, `../collect.maar.world` and
   `../tree.maar.world` are read-only source material.
