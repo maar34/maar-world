@@ -1,13 +1,43 @@
 # Handoff
 
-**State:** last work commit `7dae700`, plus the commit that updated this file.
-`npm run verify` = **73 passed, 2 failed, 1 skipped**.
+**State:** last work commit `af173c3`, plus the commit that updated this file.
+`npm run verify` = **73 passed, 2 failed, 1 skipped**. selftest 106/106.
+
+---
+
+## READ THIS BEFORE YOU WRITE ANY CSS
+
+The checks are green and the owner is unhappy. Both are true at once. Their words,
+after the first carousel shipped:
+
+> *"There's no one photo that looks good. We are not respecting any size. We have
+> numbers. We have numbers everywhere. I don't know how we can make this carousel
+> worse… It's really bad. This is not something you can give me after one day of
+> work."*
+
+They were right. It passed every check and it was ugly. So, before anything else:
+
+1. **Look at it.** Screenshot the page and judge it as a designer would. A green
+   `verify` is not evidence that anything looks good — no check here measures
+   taste and none can.
+2. **Measure the content before you frame it.** Five of the eleven home-page
+   photographs are square, six are 3:2. One forced ratio cropped a third off half
+   the set. That query took ten seconds and I ran it only after being told.
+3. **Never draw a constraint on the page.** Eleven numbered links existed because
+   a no-JavaScript carousel cannot track position. A limitation is something to
+   design around silently, not to render as chrome.
+4. **Reuse before inventing.** The owner: *"It's a carousel. Why don't we use a
+   carousel with cards? Do we need to invent it again?"* `patterns/card`, the
+   plate, the badge and the meta line all exist. Compose them.
+5. **Fewer, better.** Every unit costs the owner tokens, time and patience. One
+   thing that looks finished beats three that pass checks.
+
+---
 
 The 71 you may remember became 73 as `verify:build` gained two coverage
-assertions — prose elements, and mark classes. Both were **added**; no check was
-changed, relaxed or removed. Both exist for the same reason and it is worth
-knowing before writing another: a correspondence held between two files by hand
-is the failure mode this codebase has actually shipped, twice.
+assertions — prose elements, and component classes. Both were **added**; no check
+was changed, relaxed or removed. A correspondence held between two files by hand
+is the failure mode this codebase has actually shipped three times.
 
 Both failures are known, deliberate and human-gated. Neither is a regression:
 
@@ -15,7 +45,7 @@ Both failures are known, deliberate and human-gated. Neither is a regression:
 - **`verify:content`** — 49 problems / 48 pages. All check-side. **Do not edit content to fix them.**
   Why: `npm run ledger -- find residue-is-check-side`
 
-Everything else is green: selftest 100/100 · schemas 12/12 · build 8/8 · contract 3/3 ·
+Everything else is green: selftest 106/106 · schemas 12/12 · build 8/8 · contract 3/3 ·
 routes 8/8 · cards 20/20 (+1 skip, needs MW-10) · a11y 24/24.
 
 ---
@@ -30,17 +60,16 @@ page. The narrow column is family 03 behaving correctly on the wrong page.
 
 Build in dependency order, because four families consume the same component:
 
-1. **`patterns/card` — §04 of the spec.** `feature · entry · compact · place ·
-   collection`. Families 01, 04, 05 and 07 are all card grids; build the card once
-   and four skeletons become possible. Nothing else unblocks as much.
-2. **`ui/carousel` — §06.** `track · slide · controls · counter · caption`. The
-   owner: images "go into carousels, they do not go into a sequence of images —
-   this changed a lot the navigation". Family 03 already says *"carousel sits
-   inside the measure"*, so entry pages get it with no layout change.
-3. **Family 01 home** — *"one feature card, then three entry cards. no sidebar."*
-   The feature card is the closest thing the spec has to a hero, and it is what
-   stops `/` being an article.
-4. **Family 04 collection** for `/collect` — *"two-up card grid, pink badges,
+~~1. `patterns/card`~~ **BUILT** — five variants, live on both covered indexes.
+~~2. `ui/carousel`~~ **BUILT, then corrected once.** 8 carousels, 38 slides, no
+JavaScript. Read `ledger -- find carousel-corrected` before touching it.
+
+1. **Family 01 home** — *"one feature card, then three entry cards. no sidebar."*
+   This is the next unit and the one the owner is waiting for. `/` is still an
+   article: a 66ch column, no hero, the header twice as wide as the content.
+   `card.feature` is the spec's hero. **Compose the existing card — do not invent
+   a hero component.**
+2. **Family 04 collection** for `/collect` — *"two-up card grid, pink badges,
    collect action per card"*. Then **06 tree**, **05 place**, **07 search**,
    **08 form**.
 
