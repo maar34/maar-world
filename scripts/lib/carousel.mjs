@@ -115,20 +115,27 @@ export function swiperToCarousel(html, { label = 'photographs', idPrefix = 'caro
       return `<li class="carousel__slide" id="${id}-${i + 1}">${figure}</li>`;
     });
 
-    const controls = slides
-      .map(
-        (_, i) =>
-          `<li><a class="carousel__control" href="#${id}-${i + 1}" aria-label="go to slide ${i + 1} of ${slides.length}">${i + 1}</a></li>`,
-      )
-      .join('');
-
+    /**
+     * NO CONTROLS, NO ON-PAGE COUNTER — and this is a correction, not a
+     * simplification. The first version emitted a row of numbered links per
+     * carousel plus a "11 slides" line, and it looked exactly as bad as that
+     * sounds: eleven numbered boxes under every gallery. The owner's words were
+     * "we have numbers, we have numbers everywhere".
+     *
+     * The mistake underneath was drawing a CONSTRAINT on the page. Controls and
+     * a counter exist in the spec because a JavaScript carousel needs them to be
+     * operable and to say where you are. This one is a native scroll region: it
+     * is already operable by swipe, trackpad, scrollbar and — because the track
+     * is focusable — arrow keys. Adding eleven links to re-state that was
+     * chrome apologising for a limitation nobody had noticed.
+     *
+     * The count still exists where it is useful and invisible: in the group's
+     * accessible name. A screen reader hears "11 photographs, carousel"; the
+     * page shows photographs.
+     */
     const carousel =
-      `<section class="carousel" aria-roledescription="carousel" aria-label="${label}">` +
-      `<ul class="carousel__track" role="list">${items.join('')}</ul>` +
-      `<div class="carousel__chrome">` +
-      `<ul class="carousel__controls" role="list">${controls}</ul>` +
-      `<p class="carousel__counter" aria-live="polite">${slides.length} slides</p>` +
-      `</div>` +
+      `<section class="carousel" aria-roledescription="carousel" aria-label="${slides.length} ${label}">` +
+      `<ul class="carousel__track" role="list" tabindex="0">${items.join('')}</ul>` +
       `</section>`;
 
     out += html.slice(cursor, wrapper.start) + carousel;

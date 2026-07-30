@@ -441,6 +441,15 @@
   --chip-tilt-selected: -1.5deg;
   --chip-tilt-rest: 1deg;
 
+  /* ---- carousel -------------------------------------------------------- */
+  /**
+   * ui/carousel fixes the HEIGHT of a slide and lets the width follow the
+   * photograph, because the photographs are not one shape: five of the eleven
+   * on the home page are square and six are 3:2. Fixing the width instead
+   * cropped a third off every square one.
+   */
+  --carousel-height: 340px;
+
   /* ---- cards ----------------------------------------------------------- */
   /**
    * §04 of the spec — "the fundamental unit. five variants, one anatomy."

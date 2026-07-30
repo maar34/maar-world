@@ -1024,8 +1024,8 @@ check('every slide survives the swiper-to-carousel rebuild', () => {
   const out = C.swiperToCarousel(SWIPER(), { idPrefix: 't' });
   const slides = (out.match(/class="carousel__slide"/g) || []).length;
   const imgs = (out.match(/<img/g) || []).length;
-  const ok = slides === 2 && imgs === 2 && !/swiper__slide/.test(out) && /2 slides<\/p>/.test(out);
-  return { ok, detail: ok ? '2 slides, 2 images, counter says 2' : `${slides} slides / ${imgs} imgs\n${out}` };
+  const ok = slides === 2 && imgs === 2 && !/swiper__slide/.test(out);
+  return { ok, detail: ok ? '2 slides, 2 images, nothing left stacked' : `${slides} slides / ${imgs} imgs\n${out}` };
 });
 
 check('a slide with an extra class is still a slide', () => {
@@ -1038,13 +1038,17 @@ check('the carousel carries the accessibility contract the spec states', () => {
   const out = C.swiperToCarousel(SWIPER(), { idPrefix: 't' });
   const has = [
     /aria-roledescription="carousel"/.test(out),
-    /<ul class="carousel__track" role="list">/.test(out),
+    /<ul class="carousel__track"[^>]*role="list"/.test(out),
     /<li class="carousel__slide"/.test(out),
-    /aria-live="polite"/.test(out),
+    /aria-label="2 photographs"/.test(out),
+    /tabindex="0"/.test(out),
     !/autoplay|setInterval|<script/.test(out),
+    // The numbered controls were the owner's "numbers everywhere". They must
+    // not come back: the count belongs in the accessible name, not on the page.
+    !/carousel__control/.test(out),
   ];
   const ok = has.every(Boolean);
-  return { ok, detail: ok ? 'labelled group, list items, polite counter, no auto-advance' : `checks: ${has.join(',')}` };
+  return { ok, detail: ok ? 'labelled group, list items, focusable track, no controls, no auto-advance' : `checks: ${has.join(',')}` };
 });
 
 check('an empty swiper wrapper is left exactly as it was', () => {

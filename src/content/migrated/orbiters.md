@@ -34,13 +34,13 @@ Imagine turning your browser into a turntable from outer space.
 
 <!-- Primary Swiper (separated layout) -->
 <div class="swiper my-3 swiper-demo swiper-demo--image swiper-demo--orbiters swiper--tall swiper--separated">
-<section class="carousel" aria-roledescription="carousel" aria-label="photographs"><ul class="carousel__track" role="list"><li class="carousel__slide" id="carousel-orbiters-1-1"><div class="carousel__frame"><h2 class="orb-step">I</h2>
+<section class="carousel" aria-roledescription="carousel" aria-label="3 photographs"><ul class="carousel__track" role="list" tabindex="0"><li class="carousel__slide" id="carousel-orbiters-1-1"><div class="carousel__frame"><h2 class="orb-step">I</h2>
 <div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/07_ip-card.jpg" alt="Layering cards"/></div>
 <div class="orb-desc">Explore music like never before: layer sounds with controls that change based on the cards you play, creating rich and original sound experiences.</div></div></li><li class="carousel__slide" id="carousel-orbiters-1-2"><div class="carousel__frame"><h2 class="orb-step">II</h2>
 <div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/10_ip-transit.png" alt="Transit mapping"/></div>
 <div class="orb-desc">Intuitively remix music—sound creation becomes playful and accessible for everyone, with or without prior experience.</div></div></li><li class="carousel__slide" id="carousel-orbiters-1-3"><div class="carousel__frame"><h2 class="orb-step">III</h2>
 <div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/08_ip-max-24.jpg" alt="Workshop patch"/></div>
-<div class="orb-desc">We are at the beginning of this journey—<a href="https://maar.world/subscribe" target="_blank">stay connected</a> to follow the evolution of Orbiters Orchestra.</div></div></li></ul><div class="carousel__chrome"><ul class="carousel__controls" role="list"><li><a class="carousel__control" href="#carousel-orbiters-1-1" aria-label="go to slide 1 of 3">1</a></li><li><a class="carousel__control" href="#carousel-orbiters-1-2" aria-label="go to slide 2 of 3">2</a></li><li><a class="carousel__control" href="#carousel-orbiters-1-3" aria-label="go to slide 3 of 3">3</a></li></ul><p class="carousel__counter" aria-live="polite">3 slides</p></div></section>
+<div class="orb-desc">We are at the beginning of this journey—<a href="https://maar.world/subscribe" target="_blank">stay connected</a> to follow the evolution of Orbiters Orchestra.</div></div></li></ul></section>
 <div class="swiper__button swiper__button--prev fas fa-chevron-left"></div>
 <div class="swiper__button swiper__button--next fas fa-chevron-right"></div>
 </div>

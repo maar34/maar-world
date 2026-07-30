@@ -74,7 +74,7 @@ Explore a new musical dimension with Sky Sounds, a collection of cards that open
 </div>
 
 <div class="swiper my-3 swiper-demo swiper-demo--image swiper-demo--3">
-<section class="carousel" aria-roledescription="carousel" aria-label="photographs"><ul class="carousel__track" role="list"><li class="carousel__slide" id="carousel-collect-index-1-1"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/landing/2024_ss-12.jpeg" alt=""/>
+<section class="carousel" aria-roledescription="carousel" aria-label="5 photographs"><ul class="carousel__track" role="list" tabindex="0"><li class="carousel__slide" id="carousel-collect-index-1-1"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/landing/2024_ss-12.jpeg" alt=""/>
 <div class="text-content">
 <h2>I</h2>
 <p>Choose a Sky Sound card that resonates with you and tempts you to explore its soundscapes.</p>
@@ -94,7 +94,7 @@ Explore a new musical dimension with Sky Sounds, a collection of cards that open
 <div class="text-content">
 <h2>V</h2>
 <p>Transform the music using the effects and loops provided by the card, creating your own version or musical piece.</p>
-</div></div></li></ul><div class="carousel__chrome"><ul class="carousel__controls" role="list"><li><a class="carousel__control" href="#carousel-collect-index-1-1" aria-label="go to slide 1 of 5">1</a></li><li><a class="carousel__control" href="#carousel-collect-index-1-2" aria-label="go to slide 2 of 5">2</a></li><li><a class="carousel__control" href="#carousel-collect-index-1-3" aria-label="go to slide 3 of 5">3</a></li><li><a class="carousel__control" href="#carousel-collect-index-1-4" aria-label="go to slide 4 of 5">4</a></li><li><a class="carousel__control" href="#carousel-collect-index-1-5" aria-label="go to slide 5 of 5">5</a></li></ul><p class="carousel__counter" aria-live="polite">5 slides</p></div></section>
+</div></div></li></ul></section>
 <div class="swiper__button swiper__button--prev fas fa-chevron-left"></div>
 <div class="swiper__button swiper__button--next fas fa-chevron-right"></div>
 </div>

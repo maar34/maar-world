@@ -70,7 +70,7 @@
  */
 .carousel__slide {
   flex: 0 0 auto;
-  width: 86%;
+  max-width: 100%;
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
@@ -78,9 +78,11 @@
   margin: 0;
 }
 
+/* Below 600px the responsive table says "1 + swipe": one photograph fills the
+   frame and the swipe is the affordance, so the height comes down with it. */
 @media (max-width: 599px) {
-  .carousel__slide {
-    width: 100%;
+  .carousel {
+    --carousel-height: 220px;
   }
 }
 
@@ -95,23 +97,32 @@
 }
 
 /**
- * The frame owns the crop, which is the thing the audit said the old sites had
- * no system for: "artwork sits on the page without a frame". Mixed portrait and
- * landscape photographs in one track read as a broken grid otherwise. 3:2 is the
- * spec's cover ratio and the same one patterns/card uses.
+ * THE PHOTOGRAPH KEEPS ITS OWN SHAPE. This is the fix for the first version,
+ * which framed every slide at 3:2 with `object-fit: cover`.
+ *
+ * The set is mixed and measured: of the eleven photographs on the home page,
+ * FIVE ARE SQUARE and six are 3:2. A single forced ratio cropped a third off
+ * every square one — the owner's "there's no one photo that looks good, we are
+ * not respecting any size", and they were right.
+ *
+ * So the frame fixes only the HEIGHT. Width follows the image, nothing is
+ * cropped, and the slides still align on a common baseline because they share
+ * that height — which is what makes a mixed-ratio gallery read as deliberate
+ * rather than ragged. A square photo is simply narrower than a landscape one,
+ * and two of them fit where one landscape does.
  */
 .carousel__frame {
-  aspect-ratio: var(--card-cover-ratio);
-  overflow: hidden;
+  height: var(--carousel-height);
   border-radius: var(--r-0);
 }
 
 .carousel__frame img,
 .carousel__frame video {
   display: block;
-  width: 100%;
   height: 100%;
-  object-fit: cover;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
 }
 
 /* "caption sits below at --t-meta, no rule, no italics." */
@@ -125,61 +136,38 @@
   margin: 0;
 }
 
-/* ---- controls and counter ------------------------------------------------ */
+/* ---- no numbered controls, and why ---------------------------------------- */
 /**
- * The controls are in-page links to each slide, so they work with no script and
- * are in the tab order for free. They are numbered rather than dots because a
- * dot has no accessible name that says which slide it is, and "go to slide 4"
- * is the whole job.
+ * The first version drew a row of eleven numbered boxes and a "11 slides"
+ * counter under every track. The owner: "we have numbers, we have numbers
+ * everywhere… I don't know how we can make this carousel worse."
  *
- * They sit in a row with the counter, which is the spec's "counter" and
- * "controls" as one line of chrome under the track.
+ * They were right, and the reason it happened is worth keeping: the numbers
+ * existed to satisfy "controls" and "counter" without JavaScript, so a
+ * constraint got drawn on the page instead of being designed around. A gallery
+ * does not need eleven buttons to say it can scroll — the peek says it, and the
+ * scrollbar says it.
+ *
+ * What replaces them is nothing visible. The track is a focusable scroll
+ * region, so arrow keys, swipe, trackpad and the scrollbar all work; the count
+ * lives in the group's accessible name ("11 photographs"), where a screen
+ * reader gets it and the page does not have to shout it.
  */
-.carousel__chrome {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--s-3);
+.carousel__track:focus-visible {
+  outline: var(--focus-w) solid var(--focus-c);
+  outline-offset: var(--focus-o);
 }
 
-.carousel__controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-1);
-  list-style: none;
-  margin: 0;
-  padding: 0;
+/* A hairline scrollbar: the affordance stays, the chrome does not. */
+.carousel__track {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-hairline) transparent;
 }
 
-.carousel__control {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: var(--hit-min);
-  min-height: var(--hit-min);
-  font-family: var(--t-meta-face);
-  font-size: var(--t-meta-size);
-  letter-spacing: var(--t-meta-track);
-  color: var(--ink-meta);
-  text-decoration: none;
-  border: 1px solid var(--chip-rule);
-  border-radius: var(--r-0);
+.carousel__track::-webkit-scrollbar {
+  height: 3px;
 }
 
-.carousel__control:hover {
-  background: var(--area-pigment, var(--c-maar));
-  color: var(--pigment-ink);
-  border-color: transparent;
-}
-
-/* "the counter in a polite live region". It states the total: without
-   JavaScript nothing can follow the scroll position, and with no auto-advance
-   there is no change to announce. */
-.carousel__counter {
-  font-family: var(--t-meta-face);
-  font-size: var(--t-meta-size);
-  letter-spacing: var(--t-meta-track);
-  color: var(--ink-meta);
-  margin: 0;
-  margin-inline-start: auto;
+.carousel__track::-webkit-scrollbar-thumb {
+  background: var(--ink-hairline);
 }
