@@ -46,6 +46,7 @@ import { join, relative, sep, dirname } from 'node:path';
 import { ROOT } from './lib/artifacts.mjs';
 import { normaliseHeadingLevels } from './lib/headings.mjs';
 import { swiperToCarousel } from './lib/carousel.mjs';
+import { extractHomeFamily } from './lib/home-family.mjs';
 import { markHeadingText } from '../src/lib/mark.mjs';
 import { SCHEMAS } from '../src/content/schemas.mjs';
 
@@ -388,10 +389,29 @@ function facade(provider, href, label) {
 const YT_FACADE = (id) => facade('youtube', `https://youtu.be/${id}`, 'watch this video on youtube');
 const VM_FACADE = (id) => facade('vimeo', `https://vimeo.com/${id}`, 'watch this video on vimeo');
 
+/**
+ * The photograph page family 01 gives to `card.feature`, and why it is not in
+ * the carousel below.
+ *
+ * The eleven home-page photographs are not one set: five are square and six are
+ * exactly 3:2, and `card.feature`'s cover is 3:2 — "cover ratio is 3:2
+ * everywhere except card.compact and card.place". Of the six that fit the frame
+ * without a crop, `2024_ss-2` is the spread of the cards themselves, planet
+ * artwork face up, which is what the feature card's own heading says: "play
+ * music cards with exoplanets".
+ *
+ * It is PROMOTED, not copied. A photograph rendered in the hero and again in
+ * the carousel is the same picture twice on one page, and it would take the
+ * page's image count from eleven to twelve — `verify:content` asserts eleven,
+ * because production served eleven. Nothing is lost: the photograph is still on
+ * the page, doing more work than it did as slide two of eleven.
+ */
+const HOME_FEATURE_COVER = '/img/collect-landing/2024_ss-2.jpeg';
+
 /** The home page's photo swiper, which Jekyll built from an assign + for loop. */
 const HOME_SLIDES = [
   ['2024_ss-1.jpeg', 'Emergent layering session'],
-  ['2024_ss-2.jpeg', 'Gesture capture + sonic response'],
+  // 2024_ss-2 is HOME_FEATURE_COVER — see above.
   ['2024_ss-3.jpeg', 'Collective listening micro‑ritual'],
   ['2024_ss-4.jpeg', 'Interface prototyping table'],
   ['2024_ss-5.jpeg', 'Transduction + tactile mapping'],
@@ -1270,7 +1290,35 @@ const CARD_TAIL = [
  * Three pages cannot come out of the generic pipeline, and each says why.
  * Everything else in all three sites goes through `transform` untouched by hand.
  */
+/**
+ * Pages whose record the migration finishes by hand.
+ *
+ * Each entry receives the record and the body the pipeline has produced, and
+ * returns the body to write — or `{ body, problems }` when it has something to
+ * report. The record is mutated in place for fields the generic path cannot
+ * know about.
+ */
 const SPECIAL = {
+  /**
+   * The home page is page family 01, and family 01 is not prose.
+   *
+   * "01 home — one feature card, then three entry cards. no sidebar." Every
+   * other page this script writes is a document whose body the route renders
+   * inside one measure; this one is a composition, and its pieces have to be
+   * fields before `patterns/card` can be handed them. lib/home-family.mjs reads
+   * them out of the theme's own markup and takes those regions out of the body,
+   * so each renders exactly once.
+   *
+   * What stays in the body is what is still prose or still media: the
+   * photographs, the videos, and the row of links to the lab, the live dates
+   * and bookings.
+   */
+  index: (rec, body) => {
+    const { body: rest, fields, problems } = extractHomeFamily(body, { cover: HOME_FEATURE_COVER });
+    Object.assign(rec, fields);
+    return { body: rest, problems };
+  },
+
   // Production serves this as a 200 that meta-refreshes to /orbiters — not an
   // HTTP redirect, and the route policy says preserve. The <script> that also
   // did window.location.replace is dropped; the meta refresh works without JS.
@@ -1796,7 +1844,15 @@ for (const m of matched) {
   }
 
 
-  if (SPECIAL[m.key]) finalBody = SPECIAL[m.key](record);
+  if (SPECIAL[m.key]) {
+    const special = SPECIAL[m.key](record, finalBody);
+    if (typeof special === 'string') {
+      finalBody = special;
+    } else {
+      finalBody = special.body;
+      problems.push(...special.problems);
+    }
+  }
 
   const parsed = SCHEMAS.pages.safeParse(record);
   if (!parsed.success) {

@@ -1,0 +1,256 @@
+---
+/**
+ * Page family 01 — home. §08: "one feature card, then three entry cards. no
+ * sidebar."
+ *
+ * That sentence is the whole specification and this file is the whole of it: a
+ * page header, `card.feature`, three `card.entry`, and then whatever the body
+ * still holds. There is no hero component here, and there must not be one —
+ * `card.feature` IS the spec's hero ("one per page, full measure", "the only
+ * one at --t-display scale", "the only card that may carry tilt and two marks
+ * together"). Inventing a second full-width thing beside it would give the site
+ * two answers to the same question.
+ *
+ * WHAT THIS FIXES. `/` was rendering as family 03 — "single measure, 66ch max"
+ * — which is correct for an article and wrong for a landing. Everything the
+ * owner listed as separate faults ("missing cards, carousels, a hero; the
+ * content is narrower than the header") was that one substitution. The measure
+ * is not widened to compensate; the family is changed, and 66ch goes on meaning
+ * what it means on an entry page.
+ *
+ * NO SIDEBAR, and nothing is added to fill the width either. The column is
+ * --content-max, the same 1180 the header and footer sit in, so the page reads
+ * as one document rather than as chrome with a narrow article inside it.
+ */
+import Card from '../patterns/Card.astro';
+
+interface Feature {
+  title: string;
+  excerpt: string;
+  href: string;
+  meta?: string;
+  cover?: string;
+}
+
+interface Entry {
+  title: string;
+  excerpt: string;
+  href: string;
+  meta?: string;
+}
+
+interface Props {
+  /** The `<h1>`'s inner HTML. It already carries its type mark. */
+  headingHtml?: string;
+  /** Fallback when a record has no marked heading — the plain page title. */
+  title: string;
+  lede?: string;
+  feature?: Feature;
+  entries?: Entry[];
+  tonguesLabel?: string;
+  tongues?: string[];
+  /** Seed for the feature title's type mark — the page's own outputPath. */
+  seed: string;
+}
+
+const { headingHtml, title, lede, feature, entries = [], tonguesLabel, tongues = [], seed } =
+  Astro.props;
+
+const labelId = 'home-entries';
+---
+
+<div class="home shell__inner">
+  <header class="home__head">
+    {/* One mark, already chosen and frozen by the migration against this page's
+        own outputPath. Rendered as HTML rather than re-marked here so the word,
+        the tear and the angle cannot be rolled a second time from the same
+        seed and come out different. */}
+    <h1 class="home__title">
+      {headingHtml ? <Fragment set:html={headingHtml} /> : title}
+    </h1>
+
+    {/* The statement, at the prose measure. This is the one place on a family
+        01 page where 66ch applies: it is a sentence to read, and the rule
+        "prose measure never exceeds 66ch at any width" does not stop being true
+        because the page around it is a grid. */}
+    {lede && <p class="home__lede">{lede}</p>}
+  </header>
+
+  {
+    /* card.feature. Composed, not rebuilt — the owner's question about the
+       carousel ("do we need to invent it again?") is the same question here.
+       The whole card is the link, so the theme's "Collect" button is gone as a
+       button and survives as the meta line: it is the only place the page ever
+       said what following this link does. */
+    feature && (
+      <Card
+        variant="feature"
+        href={feature.href}
+        title={feature.title}
+        level={2}
+        cover={feature.cover}
+        excerpt={feature.excerpt}
+        meta={feature.meta}
+        seed={seed}
+      />
+    )
+  }
+
+  {
+    entries.length > 0 && (
+      <section class="home__entries" aria-labelledby={tonguesLabel ? labelId : undefined}>
+        {
+          /* "work in progress" — the theme's own label for exactly these three
+             cards, kept as the heading they sit under rather than left floating
+             above them as a paragraph. */
+          tonguesLabel && (
+            <h2 class="home__label" id={labelId}>
+              {tonguesLabel}
+            </h2>
+          )
+        }
+
+        {
+          /**
+           * The same three words in nineteen more languages.
+           *
+           * They were a JavaScript rotator that showed one at a time; with no
+           * script every one of them renders, and on the page today they run
+           * together into a paragraph that reads as a mistake. They are content
+           * and they stay, as a list — spaced, at meta scale, in the meta ink.
+           * A list is what they are, and space is what separates them: "list
+           * rows, panels, footers, figure captions, accordion items and card
+           * edges carry none — space does that work."
+           */
+          tongues.length > 0 && (
+            <ul class="home__tongues" role="list">
+              {tongues.map((t) => (
+                <li>{t}</li>
+              ))}
+            </ul>
+          )
+        }
+
+        {/* "cards: 1 / 1 / 2 / 3" across the four breakpoints — the responsive
+            table's own counts, bound in the stylesheet below. */}
+        <div class="home__grid">
+          {entries.map((e) => (
+            <Card
+              variant="entry"
+              href={e.href}
+              title={e.title}
+              level={3}
+              excerpt={e.excerpt}
+              meta={e.meta}
+            />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {/* Whatever the body still is after the family took its pieces out: the
+      photographs, the videos, and the row of links to the lab, the live dates
+      and bookings. Prose treatment, because that is what it still is. */}
+  <div class="prose">
+    <slot />
+  </div>
+</div>
+
+<style>
+  /**
+   * The page column. --content-max, not --measure: family 01 is not prose, and
+   * this is the narrow answer to "the content is not the same width as the
+   * header" — the header, the footer and this now share one column.
+   */
+  .home {
+    padding-block: var(--s-16) var(--s-24);
+    display: flex;
+    flex-direction: column;
+    /* "sibling groups use gap, never margins." */
+    gap: var(--s-16);
+  }
+
+  .home__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-6);
+  }
+
+  /**
+   * The display face at line-height 0.98 sets a line box SHORTER than its
+   * glyphs, so the descenders hang below the element. `.prose h1` pays for that
+   * overhang with --s-12 of bottom margin; here the flex gap above does the
+   * same job, and the title's own margin is zeroed so the two do not add up.
+   */
+  .home__title {
+    margin: 0;
+  }
+
+  /* "prose measure never exceeds 66ch at any width." */
+  .home__lede {
+    margin: 0;
+    max-width: var(--measure);
+    color: var(--ink-muted);
+  }
+
+  .home__entries {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-6);
+  }
+
+  .home__label {
+    margin: 0;
+  }
+
+  /**
+   * The nineteen translations. Meta scale, meta ink, separated by space and by
+   * nothing else — no chips, no rules, no bullets. They are a quiet band under
+   * the label, not nineteen controls.
+   */
+  .home__tongues {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--ink-meta);
+    font-family: var(--t-meta-face);
+    font-size: var(--t-meta-size);
+    line-height: var(--t-meta-line);
+    letter-spacing: var(--t-meta-track);
+  }
+
+  .home__tongues li {
+    margin: 0;
+  }
+
+  /**
+   * "breakpoint / cards: <600 → 1, 600–899 → 1, 900–1279 → 2, ≥1280 → 3."
+   *
+   * Written mobile-first in the same order and at the same widths as the gutter
+   * bindings in styles/shell.css, so the two sets of breakpoints cannot drift.
+   * Three cards in two columns leaves the third at column width rather than
+   * stretched across — the count is the spec's, and a card that changes size
+   * because of how many siblings it has is not the same component.
+   */
+  .home__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-6);
+  }
+
+  @media (min-width: 900px) {
+    .home__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .home__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

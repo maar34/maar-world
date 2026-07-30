@@ -83,6 +83,24 @@ const Title = `h${level}` as 'h2' | 'h3' | 'h4';
 const marked = seed && (variant === 'entry' || variant === 'feature')
   ? markHeadingText(title, seed).html
   : null;
+
+/**
+ * THE FEATURE CARD IS THE ONE VARIANT THAT IS NOT A SINGLE COLUMN.
+ *
+ * "card.feature — one per page, full measure", drawn as a cover beside its text
+ * and stacking "to image-over-text below 900px". Every other variant is a flex
+ * column, so its slots are siblings and that is the whole anatomy. Two columns
+ * needs one more thing: something for the text side to BE, or the badges land
+ * in the cover's column and the title lands under the cover.
+ *
+ * That is not hypothetical. `.card--feature` was written as a two-column grid
+ * over these same five flat children and had never been rendered by anything;
+ * the first page to use it put the excerpt under the image and the meta line
+ * beside it. The wrapper only exists for `feature` — a Fragment adds no element
+ * for the other four — so the twenty entry cards already shipped are unchanged.
+ */
+const Body = variant === 'feature' ? 'div' : Fragment;
+const bodyClass = variant === 'feature' ? 'card__body' : undefined;
 ---
 
 <a
@@ -112,42 +130,44 @@ const marked = seed && (variant === 'entry' || variant === 'feature')
     )
   }
 
-  {
-    /* "badges max two" — the props allow exactly two and no more. */
-    (badge || badgeOutline) && (
-      <div class="card__badges">
-        {badge && <span class="card__badge card__badge--pigment">{badge}</span>}
-        {badgeOutline && <span class="card__badge card__badge--outline">{badgeOutline}</span>}
-      </div>
-    )
-  }
-
-  {/* The feature card is the only one allowed to tilt, so it is the only one
-      that wraps its title in a containing block to rotate. */}
-  <Title class="card__title">
-    {variant === 'feature' ? (
-      <span class="card__tilt">{marked ? <Fragment set:html={marked} /> : title}</span>
-    ) : marked ? (
-      <Fragment set:html={marked} />
-    ) : (
-      title
-    )}
-  </Title>
-
-  {facts && facts.length > 0 && (
-    <dl class="card__dl">
-      {facts.map((f) => (
-        <div>
-          <dt>{f.term}</dt>
-          <dd>{f.value}</dd>
+  <Body class={bodyClass}>
+    {
+      /* "badges max two" — the props allow exactly two and no more. */
+      (badge || badgeOutline) && (
+        <div class="card__badges">
+          {badge && <span class="card__badge card__badge--pigment">{badge}</span>}
+          {badgeOutline && <span class="card__badge card__badge--outline">{badgeOutline}</span>}
         </div>
-      ))}
-    </dl>
-  )}
+      )
+    }
 
-  {excerpt && <p class="card__excerpt">{excerpt}</p>}
+    {/* The feature card is the only one allowed to tilt, so it is the only one
+        that wraps its title in a containing block to rotate. */}
+    <Title class="card__title">
+      {variant === 'feature' ? (
+        <span class="card__tilt">{marked ? <Fragment set:html={marked} /> : title}</span>
+      ) : marked ? (
+        <Fragment set:html={marked} />
+      ) : (
+        title
+      )}
+    </Title>
 
-  {/* The unavailable reason is text, never colour alone — the spec asks for it
-      in words, and it replaces the meta line rather than sitting beside it. */}
-  {unavailable ? <p class="card__meta">{unavailable}</p> : meta && <p class="card__meta">{meta}</p>}
+    {facts && facts.length > 0 && (
+      <dl class="card__dl">
+        {facts.map((f) => (
+          <div>
+            <dt>{f.term}</dt>
+            <dd>{f.value}</dd>
+          </div>
+        ))}
+      </dl>
+    )}
+
+    {excerpt && <p class="card__excerpt">{excerpt}</p>}
+
+    {/* The unavailable reason is text, never colour alone — the spec asks for it
+        in words, and it replaces the meta line rather than sitting beside it. */}
+    {unavailable ? <p class="card__meta">{unavailable}</p> : meta && <p class="card__meta">{meta}</p>}
+  </Body>
 </a>

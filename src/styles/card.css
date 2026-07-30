@@ -304,6 +304,28 @@
   padding: var(--card-pad-feature);
 }
 
+/**
+ * The text side, as ONE grid item.
+ *
+ * Two columns over the card's five flat slots does not lay out: the cover takes
+ * cell 1, the badges take cell 2, and the title drops under the image. This
+ * stylesheet said `grid-template-columns` for a variant nothing had rendered
+ * yet, so the first page to use it — the home page — is where that showed up.
+ * `Card.astro` wraps the non-cover slots in `.card__body` for this variant only,
+ * and the internal rhythm is the margins each slot already carries.
+ */
+.card--feature .card__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* The first slot in the body has the card's own padding above it; its own
+   top margin would add to that and push the column off centre. */
+.card--feature .card__body > :first-child {
+  margin-block-start: 0;
+}
+
 .card--feature .card__badges {
   margin-block-start: 0;
 }
@@ -319,11 +341,30 @@
   transform: rotate(var(--tilt-b));
 }
 
+/**
+ * THE FEATURE CARD'S EXCERPT IS NOT CLAMPED, and that is the one place this
+ * component departs from "excerpt two lines, truncated with an ellipsis".
+ *
+ * The clamp buys a common height so cards sitting beside each other in a grid
+ * line up — that is the whole of what it is for, and it is why the rule is
+ * stated in the paragraph about card states and grids. `card.feature` is "one
+ * per page, full measure": there is nothing beside it to line up with, so the
+ * clamp buys nothing there and costs the sentence.
+ *
+ * On the home page it cost exactly that. The page's only description of what
+ * Maar World sells ended "…allows you to listen to their music and transform
+ * the…" under the hero. A reader could not finish the sentence and there was no
+ * second place on the page that carried it.
+ */
 .card--feature .card__excerpt {
   font-size: var(--t-card-excerpt-lg-size);
   line-height: var(--t-card-excerpt-lg-line);
   max-width: var(--card-excerpt-measure);
   margin-block-start: var(--s-4);
+  display: block;
+  -webkit-line-clamp: none;
+  line-clamp: none;
+  overflow: visible;
 }
 
 .card--feature .card__meta {

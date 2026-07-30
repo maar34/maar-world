@@ -7,97 +7,35 @@ surface: "dark"
 tags: []
 source: "maar.world/index.md"
 lang: "en"
+family: "home"
+headingHtml: "Maar <span class=\"mark mark--cut mark--tilt-4 mark--tear-4\">World</span>"
+lede: "A space for fluid music‑making that moves beyond binaries, between physical and digital formats, a human–machine commonwealth, a blend of innovation and a continuation of tradition."
+tonguesLabel: "Work in progress"
+tongues: ["Trabajo en progreso", "Travail en cours", "Arbeit im Gange", "Lavoro in corso", "Trabalho em andamento", "Работа в процессе", "Prace w toku", "Werk in uitvoering", "Arbete pågår", "Çalışma devam ediyor", "العمل جارٍ", "कार्य प्रगति पर है", "工作进行中", "作業中", "Kazi inaendelea", "Umsebenzi uyaqhubeka", "Kei te haere tonu te mahi", "Rurayqa qhipaman ruwakusqa", "Ałchíní bee na’ídoolkah"]
+feature: {"title":"Play music cards with exoplanets","excerpt":"Sky Sounds introduces the first-ever card collection that when scanned allows you to listen to their music and transform them based on the movement of the exoplanets they belong.","href":"https://maar-world.bandcamp.com/merch","meta":"collect","cover":"/img/collect-landing/2024_ss-2.jpeg"}
+entries: [{"title":"plantasia.space","excerpt":"plantasia.space is a platform designed for interactive music releases. It simplifies the creation and customization of Orbiters and Entangled Worlds, and allows artists to upload music that users can listen to and remix in real time. The platform encourages innovation through playful music interaction and healthy sensory exploration.","href":"https://plantasia.space","meta":"visit"}, {"title":"Orbits & Bodies","excerpt":"Orbits and Bodies explores the entanglement of embodied gesture, astronomical data, and networked computation in real‑time audiovisual space.","href":"/lab/en/orbits-and-bodies.html","meta":"read"}, {"title":"Orbiters Orchestra","excerpt":"Collaborative workshop instrument: card‑driven layering generating an emergent orbital score.","href":"/lab/en/ip-orchestra","meta":"open"}]
 ---
 
-# Maar <span class="mark mark--cut mark--tilt-4 mark--tear-4">World</span>
-
 <!-- HERO (single rotating line, smooth slide+fade every 1.5s) -->
-<div class="hero hero--center hero--statement rotating-hero single-line">
-<div class="hero__content">
-<div class="rotator rotator--single rotator-sync" aria-live="polite">
-<div class="rotator-viewport">
-<div class="rotator-track">
-<span class="rot-line">A space for fluid music‑making</span>
-<span class="rot-line">that moves beyond binaries,</span>
-<span class="rot-line">between physical and digital formats,</span>
-<span class="rot-line">a human–machine commonwealth,</span>
-<span class="rot-line">a blend of innovation and</span>
-<span class="rot-line">a continuation of tradition.</span>
-</div>
-</div>
-</div>
-</div>
-</div>
 
 <!-- PHOTO SWIPER -->
 <section class="section-block section-block--photos">
 <div style="max-width:1180px;margin:0 auto;padding:0 0.0rem;">
 <div class="swiper my-3 swiper-demo swiper-demo--image swiper-demo--home">
-<section class="carousel" aria-roledescription="carousel" aria-label="11 photographs"><ul class="carousel__track" role="list" tabindex="0"><li class="carousel__slide" id="carousel-index-1-1"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-1.jpeg" alt="Emergent layering session"/></div><figcaption class="carousel__caption">Emergent layering session</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-2"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-2.jpeg" alt="Gesture capture + sonic response"/></div><figcaption class="carousel__caption">Gesture capture + sonic response</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-3"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-3.jpeg" alt="Collective listening micro‑ritual"/></div><figcaption class="carousel__caption">Collective listening micro‑ritual</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-4"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-4.jpeg" alt="Interface prototyping table"/></div><figcaption class="carousel__caption">Interface prototyping table</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-5"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-5.jpeg" alt="Transduction + tactile mapping"/></div><figcaption class="carousel__caption">Transduction + tactile mapping</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-6"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-6.jpeg" alt="Improvisation under orbital rules"/></div><figcaption class="carousel__caption">Improvisation under orbital rules</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-7"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-7.jpeg" alt="Hybrid instrument assembly"/></div><figcaption class="carousel__caption">Hybrid instrument assembly</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-8"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-8.jpeg" alt="Real‑time parameter negotiation"/></div><figcaption class="carousel__caption">Real‑time parameter negotiation</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-9"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-10.jpeg" alt="Multichannel rehearsal fragment"/></div><figcaption class="carousel__caption">Multichannel rehearsal fragment</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-10"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-11.jpeg" alt="Embodied timing exploration"/></div><figcaption class="carousel__caption">Embodied timing exploration</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-11"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-12.jpeg" alt="Closing resonance capture"/></div><figcaption class="carousel__caption">Closing resonance capture</figcaption></figure></li></ul></section>
+<section class="carousel" aria-roledescription="carousel" aria-label="10 photographs"><ul class="carousel__track" role="list" tabindex="0"><li class="carousel__slide" id="carousel-index-1-1"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-1.jpeg" alt="Emergent layering session"/></div><figcaption class="carousel__caption">Emergent layering session</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-2"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-3.jpeg" alt="Collective listening micro‑ritual"/></div><figcaption class="carousel__caption">Collective listening micro‑ritual</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-3"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-4.jpeg" alt="Interface prototyping table"/></div><figcaption class="carousel__caption">Interface prototyping table</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-4"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-5.jpeg" alt="Transduction + tactile mapping"/></div><figcaption class="carousel__caption">Transduction + tactile mapping</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-5"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-6.jpeg" alt="Improvisation under orbital rules"/></div><figcaption class="carousel__caption">Improvisation under orbital rules</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-6"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-7.jpeg" alt="Hybrid instrument assembly"/></div><figcaption class="carousel__caption">Hybrid instrument assembly</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-7"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-8.jpeg" alt="Real‑time parameter negotiation"/></div><figcaption class="carousel__caption">Real‑time parameter negotiation</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-8"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-10.jpeg" alt="Multichannel rehearsal fragment"/></div><figcaption class="carousel__caption">Multichannel rehearsal fragment</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-9"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-11.jpeg" alt="Embodied timing exploration"/></div><figcaption class="carousel__caption">Embodied timing exploration</figcaption></figure></li><li class="carousel__slide" id="carousel-index-1-10"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/collect-landing/2024_ss-12.jpeg" alt="Closing resonance capture"/></div><figcaption class="carousel__caption">Closing resonance capture</figcaption></figure></li></ul></section>
 <div class="swiper__button swiper__button--prev fas fa-chevron-left"></div>
 <div class="swiper__button swiper__button--next fas fa-chevron-right"></div>
 </div>
 </div>
 
-<div class="hero hero--center hero--dark hero-example--linear-gradient">
-<div class="hero__content">
-<h2>Play music cards with exoplanets</h2>
-<p>Sky Sounds introduces the first-ever card collection that when scanned allows you to listen to their music and transform them based on the movement of the exoplanets they belong. <br> <br> <a class="button button--primary button--rounded button--xl" href="https://maar-world.bandcamp.com/merch">Collect</a></p>
-</div>
-</div>
 </section>
 
 <!-- WORK IN PROGRESS -->
 <section class="section-block section-block--wip">
 <div class="wip-section" style="max-width:960px;margin:0 auto;padding:0 1.25rem;">
-<div class="hero hero--center hero--statement rotating-hero single-line hero--wip">
-<div class="hero__content">
-<div class="rotator rotator--wip rotator-sync" aria-label="Work in progress translations" aria-live="polite">
-<div class="rotator-viewport">
-<div class="rotator-track">
-<span class="rot-line">Work in progress</span>
-<span class="rot-line">Trabajo en progreso</span>
-<span class="rot-line">Travail en cours</span>
-<span class="rot-line">Arbeit im Gange</span>
-<span class="rot-line">Lavoro in corso</span>
-<span class="rot-line">Trabalho em andamento</span>
-<span class="rot-line">Работа в процессе</span>
-<span class="rot-line">Prace w toku</span>
-<span class="rot-line">Werk in uitvoering</span>
-<span class="rot-line">Arbete pågår</span>
-<span class="rot-line">Çalışma devam ediyor</span>
-<span class="rot-line">العمل جارٍ</span>
-<span class="rot-line">कार्य प्रगति पर है</span>
-<span class="rot-line">工作进行中</span>
-<span class="rot-line">作業中</span>
-<span class="rot-line">Kazi inaendelea</span>
-<span class="rot-line">Umsebenzi uyaqhubeka</span>
-<span class="rot-line">Kei te haere tonu te mahi</span>
-<span class="rot-line">Rurayqa qhipaman ruwakusqa</span>
-<span class="rot-line">Ałchíní bee na’ídoolkah</span>
-</div>
-</div>
-</div>
-</div>
-</div>
+
 <div style="display:grid;gap:1.6rem;">
-<div class="wip-card" style="background:#141820;padding:1.25rem 1.15rem;border:1px solid #232a33;border-radius:16px;">
-<h3 style="margin:.1rem 0 .55rem;font-size:1.15rem;">plantasia.space</h3>
-<p style="margin:0 0 .9rem;line-height:1.5;opacity:.9;">
-<strong>plantasia.space</strong> is a platform designed for interactive music releases. It simplifies the creation and customization of Orbiters and Entangled Worlds, and allows artists to upload music that users can listen to and remix in real time. The platform encourages innovation through playful music interaction and healthy sensory exploration.
-</p>
-<a href="https://plantasia.space" class="button button--outline button--rounded" style="font-size:.8rem;">Visit</a>
-</div>
-<div class="wip-card" style="background:#141820;padding:1.25rem 1.15rem;border:1px solid #232a33;border-radius:16px;">
-<h3 style="margin:.1rem 0 .55rem;font-size:1.15rem;">Orbits & Bodies</h3>
-<p style="margin:0 0 .9rem;line-height:1.5;opacity:.9;">Orbits and Bodies explores the entanglement of embodied gesture, astronomical data, and networked computation  in real‑time audiovisual space.</p>
-<a href="/lab/en/orbits-and-bodies.html" class="button button--outline button--rounded" style="font-size:.8rem;">Read</a>
-</div>
-<div class="wip-card" style="background:#141820;padding:1.25rem 1.15rem;border:1px solid #232a33;border-radius:16px;">
-<h3 style="margin:.1rem 0 .55rem;font-size:1.15rem;">Orbiters Orchestra</h3>
-<p style="margin:0 0 .9rem;line-height:1.5;opacity:.9;">Collaborative workshop instrument: card‑driven layering generating an emergent orbital score.</p>
-<a href="/lab/en/ip-orchestra" class="button button--outline button--rounded" style="font-size:.8rem;">Open</a>
-</div>
+
 <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-top:1.25rem;">
 <a href="/lab" class="button button--outline-error button--rounded">Lab</a>
 <a href="/landings" class="button button--outline-error button--rounded">Live</a>

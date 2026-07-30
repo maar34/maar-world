@@ -170,6 +170,70 @@ export const pageSchema = z
       .optional(),
 
     /**
+     * WHICH PAGE FAMILY RENDERS THIS RECORD — §08, "ten skeletons. every route
+     * resolves to one of these."
+     *
+     * An enum, and today an enum of exactly one value, for the reason `island`
+     * is: a family is a layout the route has to implement, so a new one is
+     * added by writing a component and naming it here, never by typing a string
+     * into a content file.
+     *
+     * Absent means family 03, entry — a single 66ch measure. That is the right
+     * default because it is what a document is, and it is what every migrated
+     * page except this one wants. `/` carrying no family is precisely the bug
+     * this field fixes: the home page was rendering as an article because
+     * "article" was the only thing the route knew how to be.
+     */
+    family: z.enum(['home']).optional(),
+
+    /**
+     * ── family 01 only ──────────────────────────────────────────────────────
+     *
+     * Written by scripts/lib/home-family.mjs, which reads them out of the dead
+     * theme's markup and removes those regions from the body so nothing renders
+     * twice. They are fields rather than markup because `patterns/card` takes
+     * props: the alternative is a script emitting `card__cover` and `card__title`
+     * by hand, which is the component's anatomy transcribed into a second file.
+     */
+    /** The `<h1>`'s inner HTML — it already carries its type mark. */
+    headingHtml: z.string().min(1).optional(),
+    /** The statement under the title. One measure, no marks. */
+    lede: z.string().min(1).optional(),
+    /** The label the entry cards sit under, and the same word in other tongues. */
+    tonguesLabel: z.string().min(1).optional(),
+    tongues: z.array(z.string().min(1)).optional(),
+
+    /** card.feature — "one per page, full measure". */
+    feature: z
+      .object({
+        title: z.string().min(1),
+        excerpt: z.string().min(1),
+        href: z.string().min(1),
+        meta: z.string().min(1).optional(),
+        cover: z
+          .string()
+          .regex(/^\/(img|assets)\//, 'a feature cover must be a root-relative first-party path')
+          .optional(),
+      })
+      .optional(),
+
+    /**
+     * card.entry × 3. Exactly three, because the family is "one feature card,
+     * then THREE entry cards" — a skeleton that accepts any number is not one.
+     */
+    entries: z
+      .array(
+        z.object({
+          title: z.string().min(1),
+          excerpt: z.string().min(1),
+          href: z.string().min(1),
+          meta: z.string().min(1).optional(),
+        }),
+      )
+      .length(3)
+      .optional(),
+
+    /**
      * `/interplanetary-players` is a deprecated address that production serves
      * as a meta-refresh stub, not an HTTP redirect. Preserved exactly, because
      * the route policy says preserve and a 200 is what is live.

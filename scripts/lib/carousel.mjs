@@ -24,55 +24,12 @@
  */
 
 /**
- * The index just past the `</div>` that closes the `<div …>` starting at
- * `open`.
- *
- * Depth-counted, and that is the whole point of it existing. The first version
- * of this transform used `<div class="swiper__wrapper">([\s\S]*?)</div>\s*</div>`
- * and a non-greedy match stops at the first `</div></div>` it meets — which,
- * inside a slide that holds an image AND a caption div, is the caption's. It
- * converted 2 of 6 carousels and left 28 slides behind, silently, because the
- * output was still valid HTML.
+ * `blocks`, and the depth-counted `matchingDivEnd` underneath it, were defined
+ * here and now live in `lib/html-blocks.mjs` — `lib/home-family.mjs` needs the
+ * same region finder, and the comment recording the bug a naive version of it
+ * shipped travels with the code rather than being left behind here.
  */
-function matchingDivEnd(html, open) {
-  let depth = 0;
-  let i = open;
-  for (;;) {
-    const next = html.slice(i).search(/<\/?div\b/);
-    if (next === -1) return -1;
-    i += next;
-    const closing = html.startsWith('</div', i);
-    depth += closing ? -1 : 1;
-    const tagEnd = html.indexOf('>', i);
-    if (tagEnd === -1) return -1;
-    i = tagEnd + 1;
-    if (depth === 0) return i;
-  }
-}
-
-/**
- * Every `<div>` region whose class list CONTAINS `className`.
- *
- * By token, not by exact attribute string. Nine of the 38 slides are
- * `class="swiper__slide orb-slide"` — the theme's own modifier — and an
- * exact-string matcher silently left every one of them stacked while reporting
- * five carousels built. A class attribute is a list; matching it as an opaque
- * string is matching the wrong thing.
- */
-function blocks(html, className) {
-  const out = [];
-  const token = new RegExp(`(^|\\s)${className}($|\\s)`);
-  for (const m of html.matchAll(/<div\b[^>]*>/g)) {
-    const cls = /class="([^"]*)"/.exec(m[0]);
-    if (!cls || !token.test(cls[1])) continue;
-    const start = m.index;
-    if (out.some((b) => start < b.end)) continue; // nested inside one already taken
-    const end = matchingDivEnd(html, start);
-    if (end === -1) continue;
-    out.push({ start, end, inner: html.slice(start + m[0].length, end - '</div>'.length) });
-  }
-  return out;
-}
+import { blocks } from './html-blocks.mjs';
 
 /**
  * Rewrite every populated `.swiper__wrapper` into the spec's carousel.

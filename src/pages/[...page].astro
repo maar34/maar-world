@@ -34,6 +34,7 @@ import GlyphRun from '../components/patterns/GlyphRun.astro';
 import TypeMark from '../components/patterns/TypeMark.astro';
 import Stamp from '../components/patterns/Stamp.astro';
 import Card from '../components/patterns/Card.astro';
+import Home from '../components/families/Home.astro';
 import HelixIsland from '../components/react/HelixIsland.astro';
 import { languageChoices, alternatesFor } from '../lib/translations.mjs';
 import { stampText } from '../lib/mark.mjs';
@@ -155,6 +156,39 @@ const readableDate = (iso: string) => {
   alternates={alternates.map((p) => ({ lang: p.data.lang, outputPath: p.data.outputPath }))}
   redirectTo={d.redirectTo}
 >
+  {
+    /**
+     * PAGE FAMILY 01 — home. §08 gives it one sentence: "one feature card, then
+     * three entry cards. no sidebar."
+     *
+     * Everything below this branch is family 03, entry — "single measure, 66ch
+     * max" — and that is the right default for a document. It was the wrong
+     * thing for `/`, which is a landing and not an article, and every symptom
+     * the owner listed followed from the substitution. So the fix is a family,
+     * not a width: `.measure` still means 66ch everywhere it applies.
+     *
+     * The dispatch is `family`, a schema enum, not `outputPath === 'index'`.
+     * Nine more skeletons are specified and four of them are card grids; a
+     * chain of URL comparisons is the thing to have avoided starting.
+     */
+    d.family === 'home' && (
+      <Home
+        headingHtml={d.headingHtml}
+        title={d.indexLabel ?? d.title}
+        lede={d.lede}
+        feature={d.feature}
+        entries={d.entries}
+        tonguesLabel={d.tonguesLabel}
+        tongues={d.tongues}
+        seed={d.outputPath}
+      >
+        <Content />
+      </Home>
+    )
+  }
+
+  {!d.family && (
+  <Fragment>
   {/* The shell owns <main>. This is the page family inside it.
 
       THE MEASURE IS FAMILY 03's, NOT EVERY PAGE'S. "03 entry — single measure,
@@ -356,6 +390,8 @@ const readableDate = (iso: string) => {
       )
     }
   </div>
+  </Fragment>
+  )}
 </BaseLayout>
 
 <style>
