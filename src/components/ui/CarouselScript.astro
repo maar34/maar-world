@@ -63,12 +63,24 @@
     root.classList.add('carousel--live');
 
     const embla = EmblaCarousel(viewport, {
-      loop: false,
-      align: 'start',
+      /**
+       * LOOP, on the owner's ask, and it supersedes one line of §06.
+       *
+       * The spec says "at the first or last slide the matching control is
+       * disabled, not hidden" — but a looping track has no first or last, so
+       * there is no end for a control to be disabled at. The buttons stay live
+       * and the dots carry position instead. Recorded rather than quietly
+       * dropped: `ledger -- find carousel-loop-supersedes-disabled`.
+       */
+      loop: true,
+      /* Centre, because the centre slide is the one that is scaled up and lit.
+         With `start` the emphasised slide would sit against the left edge. */
+      align: 'center',
       /* The photographs are not one width — five of the eleven on the home page
-         are square and six are 3:2 — so snap points are measured from the real
-         slides rather than assumed uniform. */
-      containScroll: 'trimSnaps',
+         are square and six are 3:2 — and Embla measures the real slides, so a
+         mixed set keeps its own widths. `containScroll` must be off for a loop;
+         it exists to stop over-scroll at ends this track does not have. */
+      containScroll: false,
       duration: reduced.matches ? 0 : 25,
     });
 
@@ -89,7 +101,33 @@
 
     const prev = button('prev');
     const next = button('next');
-    controls.append(prev, next);
+
+    /**
+     * ONE DOT PER SLIDE.
+     *
+     * A snap list, not a slide list — with variable-width slides Embla can put
+     * more than one slide on a snap, and a dot that scrolls to a position
+     * nothing snaps to is a dead control.
+     */
+    const dots = document.createElement('div');
+    dots.className = 'carousel__dots';
+    dots.setAttribute('role', 'group');
+    dots.setAttribute('aria-label', 'choose a slide');
+
+    const snaps = embla.scrollSnapList();
+    const dotButtons = snaps.map((_, index) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'carousel__dot';
+      /* The circle is drawn by CSS and carries no text, so the name is the
+         only thing a screen reader has — it says the position in words. */
+      dot.setAttribute('aria-label', `slide ${index + 1} of ${snaps.length}`);
+      dot.addEventListener('click', () => embla.scrollTo(index));
+      dots.append(dot);
+      return dot;
+    });
+
+    controls.append(prev, dots, next);
 
     /**
      * "the counter in a polite live region."
@@ -110,15 +148,78 @@
     /* ---- state ---------------------------------------------------------- */
 
     const sync = () => {
-      /* "at the first or last slide the matching control is disabled, not
-         hidden" — so the row never reflows as you move through the set. */
-      prev.disabled = !embla.canScrollPrev();
-      next.disabled = !embla.canScrollNext();
-      counter.textContent = say(embla.selectedScrollSnap(), count);
+      const selected = embla.selectedScrollSnap();
+      /* No disabled state: the track loops, so neither control is ever at an
+         end. See the `loop` option above for why that overrides §06's rule. */
+      dotButtons.forEach((dot, index) => {
+        if (index === selected) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+      counter.textContent = say(selected, count);
     };
 
-    embla.on('select', sync).on('reInit', sync);
+    /**
+     * THE CENTRE SLIDE GROWS AND LIGHTS UP.
+     *
+     * Embla's own scale/opacity examples, condensed into one pass: for each
+     * snap, how far it is from the current scroll position decides both the
+     * scale and the fade of the slides on it. The stylesheet owns the two
+     * values; this only writes where along them each slide sits.
+     *
+     * The loop correction is the fiddly part and it is not optional. On a
+     * looping track Embla moves slides across the seam, so a slide that has
+     * just wrapped reads as maximally distant and would flash dark at the exact
+     * moment it becomes the centre one. `loopPoints` says which slides are
+     * currently displaced and by how far, so the distance is measured to where
+     * the slide is DRAWN rather than to where its index says it is.
+     */
+    const clamp = (n: number, min: number, max: number) => Math.min(Math.max(n, min), max);
+    const FADE_FLOOR = 0.35;
+    const SCALE_FLOOR = 0.82;
+
+    const tween = (eventName?: string) => {
+      /* Suppressed entirely under reduced motion — every slide stays full size
+         and fully lit, which is the readable state. */
+      if (reduced.matches) return;
+
+      const engine = embla.internalEngine();
+      const progress = embla.scrollProgress();
+      const inView = embla.slidesInView();
+      const nodes = embla.slideNodes();
+      const isScroll = eventName === 'scroll';
+
+      embla.scrollSnapList().forEach((snap, snapIndex) => {
+        let distance = snap - progress;
+
+        for (const slideIndex of engine.slideRegistry[snapIndex]) {
+          if (isScroll && !inView.includes(slideIndex)) continue;
+
+          if (engine.options.loop) {
+            for (const point of engine.slideLooper.loopPoints) {
+              const target = point.target();
+              if (point.index !== slideIndex || target === 0) continue;
+              if (Math.sign(target) === -1) distance = snap - (1 + progress);
+              if (Math.sign(target) === 1) distance = snap + (1 - progress);
+            }
+          }
+
+          /* 0 at the centre, 1 by the time a slide is a full viewport away. */
+          const away = clamp(Math.abs(distance) * snaps.length * 0.5, 0, 1);
+          const slide = nodes[slideIndex];
+          slide.style.setProperty('--slide-fade', String(1 - away * (1 - FADE_FLOOR)));
+          slide.style.setProperty('--slide-scale', String(1 - away * (1 - SCALE_FLOOR)));
+        }
+      });
+    };
+
+    embla
+      .on('select', sync)
+      .on('reInit', sync)
+      .on('reInit', () => tween())
+      .on('scroll', () => tween('scroll'))
+      .on('slideFocus', () => tween());
     sync();
+    tween();
 
     /**
      * RE-MEASURE WHEN THE PHOTOGRAPHS ARRIVE.

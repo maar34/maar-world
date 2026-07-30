@@ -111,9 +111,27 @@
  * rather than ragged. A square photo is simply narrower than a landscape one,
  * and two of them fit where one landscape does.
  */
+/**
+ * A FLEX FRAME, so the height reaches the media however deep it sits.
+ *
+ * `height: 100%` on the media resolves against its PARENT, and on three of the
+ * 38 slides the parent is not this frame: the legacy body wraps each `<video>`
+ * in a `.video-frame` div, which has no rule anywhere and so is auto-height. A
+ * percentage against auto resolves to auto, so those videos rendered at their
+ * intrinsic 640×640 and were cut off by the 340px frame — the images were fine
+ * only because an `<img>` happens to be a direct child.
+ *
+ * Stretching whatever the direct child is makes the chain hold at any depth,
+ * rather than naming the one legacy wrapper that happens to exist today.
+ */
 .carousel__frame {
   height: var(--carousel-height);
   border-radius: var(--r-0);
+  display: flex;
+}
+
+.carousel .carousel__frame > * {
+  height: 100%;
 }
 
 /**
@@ -198,6 +216,43 @@
   scroll-snap-align: none;
 }
 
+/**
+ * THE CENTRE SLIDE IS THE BRIGHT ONE — the owner's ask, and Embla's own
+ * "scale"/"opacity" examples are where the tween comes from.
+ *
+ * The script writes two custom properties per slide from the scroll position;
+ * the values live here so the stylesheet still owns what the effect IS and the
+ * script only owns where along it each slide currently sits. `transform` and
+ * `opacity` are also the only two things §07 allows to move: "motion moves
+ * opacity, height and 2d transform only. no blur, no parallax."
+ *
+ * The scale is on the frame and the fade is on the whole slide, so a caption
+ * dims with its photograph but does not shrink away from it.
+ */
+.carousel--live .carousel__slide {
+  opacity: var(--slide-fade, 1);
+  transition: opacity var(--m-slide, 320ms) var(--ease, ease);
+}
+
+.carousel--live .carousel__frame {
+  transform: scale(var(--slide-scale, 1));
+  transform-origin: center;
+  transition: transform var(--m-slide, 320ms) var(--ease, ease);
+}
+
+/**
+ * "all motion is suppressed under prefers-reduced-motion, including … every
+ * carousel transition." The tween is motion, so it does not run at all — the
+ * script leaves the properties unset and every slide stays full size and fully
+ * lit, which is the readable state rather than a frozen mid-tween one.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .carousel--live .carousel__slide,
+  .carousel--live .carousel__frame {
+    transition: none;
+  }
+}
+
 /* ---- controls -------------------------------------------------------------- */
 /**
  * Two buttons and no more. The count is NOT drawn: "we have numbers everywhere"
@@ -208,7 +263,86 @@
  */
 .carousel__controls {
   display: flex;
-  gap: var(--s-2);
+  align-items: center;
+  gap: var(--s-4);
+}
+
+/**
+ * ONE CIRCLE PER SLIDE — the owner's ask, and not the thing that was rejected.
+ *
+ * What went wrong the first time was eleven NUMBERED boxes: chrome that printed
+ * a constraint and read as a control panel. A dot says the same thing without
+ * saying a number, and it earns its place by being the only indicator of where
+ * you are in a looping track, where "disabled at the end" no longer exists.
+ *
+ * The hit target is the full 44px the spec asks for; the painted circle is 8px
+ * inside it. A dot that is 8px to the finger is not a control.
+ */
+.carousel__dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.carousel__dot {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.carousel__dot::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-meta);
+  transition: background var(--m-fast) var(--ease);
+}
+
+/* The current slide, said twice: the filled circle and `aria-current`, because
+   a pigment or a fill is never the only carrier of a state. */
+.carousel__dot[aria-current]::before {
+  background: var(--area-pigment, var(--c-maar));
+  border-color: var(--area-pigment, var(--c-maar));
+}
+
+.carousel__dot:hover::before {
+  background: var(--ink-meta);
+}
+
+/**
+ * BELOW 600 THE ROW DOES NOT FIT, so it becomes two rows rather than one
+ * overflowing one.
+ *
+ * Ten dots at the full 44px target, plus both buttons and the gaps, is 472px of
+ * controls inside a 350px column. The dots take their own line — prev and next
+ * hold the ends of the line above, which is also where a thumb is — and the dot
+ * narrows to 32px so all ten still fit on one line at 390.
+ *
+ * The target stays 44px TALL and 32px wide. That is under the spec's 44 in one
+ * axis and above the WCAG 2.2 minimum of 24×24 in both; the alternative was two
+ * ragged rows of circles, which reads as a fault rather than as a control.
+ */
+@media (max-width: 599px) {
+  .carousel__controls {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .carousel__dots {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .carousel__dot {
+    width: 32px;
+  }
 }
 
 .carousel__control {
