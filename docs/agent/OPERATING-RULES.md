@@ -100,6 +100,9 @@ These are not preferences. Work that can only pass by breaking one of these does
 - **No analytics, no cookie banner.** Their absence is the design, and it depends on no
   third-party request firing on page load. Third-party embeds get click-to-load facades.
   `play.maar.world` embeds are fine as plain iframes — same registrable domain, same-site.
+  A facade may now open an in-page player *on a press* (see `ui/embed-consent` below); it
+  still may not request anything on load, and **consent is never persisted** — no cookie, no
+  storage — because persisting it would be the storage policy nobody has approved.
 - **No Tailwind, no shadcn/ui, no CSS-in-JS, no React app shell, no CMS, no backend.**
   React only inside the one approved island (the Helix diagram).
 - **Application JavaScript is allowed on two things and no others**: the Helix island, and
@@ -111,7 +114,15 @@ These are not preferences. Work that can only pass by breaking one of these does
   `node_modules`, so no third-party request fires on load, and `[...page].astro` includes it
   only on records whose body actually contains a carousel — 5 pages of 134. The no-script
   carousel is still what ships in the HTML; the script enhances it, and the page works
-  without it. **A third exception is a decision to be taken, not a precedent to follow.**
+  without it.
+- **The third exception is `ui/embed-consent`**, taken by the owner on 2026-07-30, clearing
+  the MW-9 BLOCKED line `embeds/click-out-not-load`. It is the per-embed consent gate: a
+  press builds a YouTube, Vimeo or SoundCloud player in the page, and nothing is requested
+  before that press. It renders no markup and invents no URL — it reads the provider address
+  off the anchor the migration already wrote — and `[...page].astro` includes it only on
+  records whose body carries one of those three facades, 9 pages of 134. Without the script
+  the click-out anchor is what ships, unchanged. **A fourth exception is a decision to be
+  taken, not a precedent to follow.**
 - **Never touch DNS, the live sites, or any legacy repository.** Read them, never write.
   The legacy checkouts in `../maar.world-site`, `../collect.maar.world` and
   `../tree.maar.world` are read-only source material.

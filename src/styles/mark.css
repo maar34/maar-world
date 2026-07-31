@@ -331,3 +331,53 @@
     transform: none;
   }
 }
+
+/* ---- mark.overprint — "a second impression, off-register" ----------------- */
+/**
+ * §02's sixth mark, and the one the Lab's heading is built on: the same word
+ * printed twice, the second impression 3px down and to the right in pigment.
+ * `docs/agent/DESIGN-REFERENCES.md` calls it the ECHO and names it as one of
+ * the two mechanics worth taking from "Maar World 4a".
+ *
+ * IT IS NOT A FIELD, so it undoes the two things the base `.mark` does for the
+ * marks that are: the word keeps the heading's own ink rather than flipping to
+ * `--pigment-ink`, because nothing sits behind it to flip against. That is the
+ * whole difference between an overprint and a highlight.
+ *
+ * The duplicate is a real element and `aria-hidden`, not a `::after` with
+ * `content: attr(...)`: generated content is announced by several screen
+ * readers, and a heading that says "seedseed" is exactly the failure §06 means
+ * by "marks never break a word into fragments".
+ *
+ * A misprint does not blur — "pigment appears as flat fields … no diffusion
+ * washes, no gradients, no blurred pigment clouds anywhere". The opacity is a
+ * flat 70%, which is ink density on a second pass, not a glow.
+ */
+.mark--overprint {
+  position: relative;
+  display: inline-block;
+  background: none;
+  color: inherit;
+  padding: 0;
+  /* An overprint is the word itself, so it takes the heading's face — italic
+     included, which is what the design sets the Lab's h1 in. */
+  font: inherit;
+}
+
+.mark__echo {
+  position: absolute;
+  inset-block-start: 2px;
+  inset-inline-start: 3px;
+  color: var(--area-pigment, var(--c-maar));
+  opacity: 0.7;
+  /* The echo must never affect layout or hit-testing: it is a second
+     impression of a word that is already there. */
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Containment, on the same terms as every other mark: outside a heading the
+   second impression is simply not printed. */
+:where(h2, h3, h4, h5, h6, p, li, dd, dt, figcaption, label, th, td) .mark__echo {
+  display: none;
+}

@@ -23,9 +23,9 @@
   /* ---- pigment roles -------------------------------------------------- */
   /* One pigment per component instance; never two pastels touching.
      A pastel is always a background, never type. */
-  --c-maar: #ff33cc;    /* maar — water, place, wayfinding */
-  --c-collect: #33ffff; /* collect — saving, sets, favourites */
-  --c-tree: #ff8833;    /* tree — growth, time, lineage */
+ --c-maar: #c36891;    /* maar — water, place, wayfinding */
+  --c-collect: #8cbdb3; /* collect — saving, sets, favourites */
+  --c-tree: #bdbd8c;    /* tree — growth, time, lineage */
   --c-dark: #000000;
 
   /* Type on any pastel is always dark, on both surfaces. */
@@ -246,6 +246,79 @@
   --mark-tilt-4: 1.6deg;
 
   /**
+   * THE SCATTERED DECK. Six angles for a card grid — see `cardTiltClass`.
+   *
+   * Bigger than a cut word's four because a card is a bigger object than a
+   * word, and smaller than they look written down: the two near-zero values
+   * are load-bearing. A deck where every card leans is not a deck, it is a
+   * texture; some cards have to sit almost straight for the leaning ones to
+   * read as having been put down by hand.
+   *
+   * The ceiling is 1.8deg and it is a MEASURED limit, not a taste one. A card
+   * rotating about its centre grows its bounding box by height x sin(angle) —
+   * on a phone, a ~700px-tall card at 1.8deg overhangs ~11px each side into a
+   * 20px gutter. Going to 3deg overhangs ~18px, and the grid starts pushing a
+   * horizontal scrollbar onto the page at the narrowest widths.
+   */
+  --card-tilt-1: -1.8deg;
+  --card-tilt-2: -1.1deg;
+  --card-tilt-3: -0.4deg;
+  --card-tilt-4: 0.5deg;
+  --card-tilt-5: 1.2deg;
+  --card-tilt-6: 1.7deg;
+
+  /**
+   * THE LEAN — the same six cards, but the angle they take ON HOVER instead of
+   * at rest. Every card outside the deck is square until you reach for it.
+   *
+   * A SEPARATE SET, AND THE NEAR-ZERO VALUES ARE GONE ON PURPOSE. Above, -0.4
+   * and 0.5 are load-bearing: a resting deck needs some cards sitting almost
+   * straight or the scatter reads as a texture. A hover is the opposite problem
+   * — it is a response to a gesture, and a response of 0.4deg is indistinguishable
+   * from no response at all, which reads as the card being broken rather than
+   * subtle. So the smallest lean here is 1.1deg and the largest 2.4.
+   *
+   * Still frozen per card, still drawn from the same seeded index, so the card
+   * under your cursor always leans the same way — a card that leaned differently
+   * on each hover would be a fidget, not a material.
+   *
+   * 2.4deg is within the overhang budget the block above measures: one card
+   * leans at a time, and at ~700px tall that is ~15px each side against a 20px
+   * gutter.
+   */
+  --card-lean-1: -2.4deg;
+  --card-lean-2: -1.7deg;
+  --card-lean-3: -1.1deg;
+  --card-lean-4: 1.1deg;
+  --card-lean-5: 1.7deg;
+  --card-lean-6: 2.4deg;
+
+  /* ---- paper phrase --------------------------------------------------- */
+  --paper-phrase-rail-pad-block: var(--s-2);
+  --paper-phrase-lane-gap: var(--s-12);
+  --paper-phrase-word-gap: var(--s-2);
+  --paper-phrase-cut-pad-inline: var(--s-1);
+  --paper-phrase-cut-pad-block: 2px;
+  --paper-phrase-duration-statement: 48s;
+  --paper-phrase-duration-translations: 72s;
+
+  /* ---- collage header ------------------------------------------------ */
+  --collage-header-height: clamp(420px, 78svh, 860px);
+
+  /* ---- navigation voices --------------------------------------------- */
+  /* The header varies type pressure, not link anatomy: every item keeps the
+     same touch target and state treatment while avoiding a typeset menu row. */
+  --nav-voice-wide: 112%;
+  --nav-voice-narrow: 88%;
+  --nav-voice-track-tight: 0.04em;
+  --nav-voice-track-open: 0.16em;
+  --nav-icon-size: 1.35em;
+
+  /* Chrome stays above moving page content while retaining normal document
+     flow. A named layer prevents future components guessing a z-index. */
+  --layer-header: 10;
+
+  /**
    * THE STAMP — mark 4. Meta text in a heavy border, tilted hard.
    *
    * -4deg is the largest angle anywhere in 4a and it is used only here: the
@@ -416,7 +489,7 @@
    * highlights down a tilted heading steps rather than skewing. See mark.css.
    *
    * VALUES ARE 4a's, AND SO IS THE PATTERN. Filled actions lean negative
-   * (−0.6 "collect a card", −0.8 "buy on bandcamp", −0.7, −1), outlined ones
+   * (−0.6 "collect cards", −0.8 "buy on bandcamp", −0.7, −1), outlined ones
    * lean positive (+0.5 "enter the lab", +0.6), and a pair sitting together
    * leans APART, never the same way. That is what stops two stacked CTAs
    * reading as one skewed block.
@@ -460,12 +533,28 @@
    * table. The card is specified as a component, so its component values win
    * inside it — the same standing `--btn-*` already has.
    *
-   * A card has NO BORDER AND NO SHADOW. It is defined by its raised field
-   * against the shell, and hover raises that field one step rather than
-   * scaling, tinting or shadowing anything.
+   * A card has NO BORDER AND NO SHADOW, and on the dark surface it now has no
+   * field either: it sits on the page's own black and is defined by its cover,
+   * its type and its lean. The spec's "defined by its raised field against the
+   * shell" was written for the component drawn in isolation; on a black page a
+   * 7% ink wash reads as a grey tile laid over the surface rather than as part
+   * of it, which is the note the owner made about /collect's plates and then
+   * about the cards themselves. Integration is the design, so rest is surface.
+   *
+   * "hover raises that field one step" is UNCHANGED, and is now the only thing
+   * that ever paints a field: black at rest, one raised step under the pointer.
+   * That makes the field a signal instead of permanent decoration, and it is
+   * why hover moved down a step too — from --sf-raised-2 to --sf-raised — so it
+   * is still ONE step away from rest rather than two.
+   *
+   * PAPER IS NOT CHANGED. There the raised step is a measured colour rather
+   * than an ink opacity, and it is what separates a card from the sheet, so the
+   * original pair is restored in the [data-surface='paper'] block below and in
+   * @media print. A black card on paper would be an inversion, not an
+   * integration.
    */
-  --card-field: var(--sf-raised);
-  --card-field-hover: var(--sf-raised-2);
+  --card-field: var(--sf-base);
+  --card-field-hover: var(--sf-raised);
   --card-pad: var(--s-6);           /* entry, place, collection — spec 24px */
   --card-pad-compact: 20px;         /* spec 20px; between --s-4 and --s-6 */
   --card-pad-feature: var(--s-8);   /* spec 32px */
@@ -483,8 +572,95 @@
   --card-cover-ratio: 3 / 2;
   --card-thumb-ratio: 4 / 3;
   --card-map-ratio: 16 / 9;
+  /**
+   * The Sky Sounds artwork's own ratio — a playing card, so PORTRAIT.
+   *
+   * 3:2 is right for an editorial cover, which is a band cropped out of a
+   * larger picture. A card face is a whole object: crop it to 3:2 and
+   * `object-fit: cover` throws away 58% of its height, which is what
+   * /collect/cards and every card page did on first render — all 34 previews
+   * were a horizontal slice with the suit wordmark in it and nothing else.
+   *
+   * The value is the artwork's true pixel ratio (1219x1717; the thumbnails are
+   * 263x371, the same shape to within 0.15%) rather than the nominal 5:7 of a
+   * physical card, so the frame matches the file and no band is left over.
+   */
+  --card-cover-ratio-card: 1219 / 1717;
   --card-thumb-w: 88px;             /* "thumb 4:3, fixed 88px" */
   --card-strip-gap: 4px;            /* "three-up cover strip, 4px gap" */
+
+  /* ---- card.article — the editorial entry, family 02 -------------------- */
+  /**
+   * The Lab index's card, and the one variant whose values come from the Lab
+   * design rather than from §04's five drawings.
+   *
+   * §04 of the spec draws the card cover as "frame 3:4, index numeral top-left,
+   * bodoni 34, 32% ink" — a portrait frame, not the 3:2 band `card.entry` uses.
+   * The Lab design applies exactly that anatomy to an article, so this variant
+   * is the two agreeing rather than a third opinion: the ratio and the numeral
+   * are the spec's, the type sizes and the grid rhythm are the Lab design's.
+   *
+   * The numeral is 30px here and not the spec's 34: the Lab design's own grid
+   * card draws it at 30 and its feature card at 40, because the numeral is
+   * sized to the frame it sits in and this variant has two frame sizes. 34 is
+   * the midpoint of a dial the design turns, so it is a dial here too.
+   */
+  /**
+   * 3:2, AND THE RATIO WAS CHOSEN BY MEASURING THE PICTURES — TWICE.
+   *
+   * The Lab design draws this frame 3:4, portrait, and its placeholders are
+   * portrait, so inside the mockup that is right. The actual pictures are not.
+   * Every Lab cover is the article's own image (config/site.ts), and with the
+   * owner's artwork of 2026-07-31 the full set measures:
+   *
+   *   nornas 0.81 · Orchestra poster 1.34 · Eac_maar 1.50 · csm_PP0228 1.51 ·
+   *   orbit-bodies 1.78 · ip-card 1.78 · orbital-workshop 1.79
+   *
+   * Six of the seven are landscape and the middle of the set is 1.5 exactly. A
+   * 0.75 frame would cut 58% off the widest of them, which is the mistake the
+   * home-page carousel shipped once already — one forced ratio across a set
+   * nobody had measured.
+   *
+   * It was 4:3 for one session, chosen the same way against the five images
+   * that existed then. The four new photographs moved the middle of the set:
+   * two of them are 3:2 to the pixel, and at 4:3 the three 1.78s lost 25% of
+   * their width against 16% here. Re-measuring when the content changed is the
+   * whole method, so the value moved with it.
+   *
+   * 3:2 is also the spec's default — "cover ratio is 3:2 everywhere except
+   * card.compact and card.place" — so the Lab now agrees with §04 rather than
+   * holding an exception.
+   *
+   * `nornas` at 0.81 is the one picture this frame does not suit, losing 46% of
+   * its height. It stays because it is dadada's OWN picture and a borrowed
+   * illustration that fits is worth less than the right one cropped.
+   */
+  --card-cover-ratio-article: 3 / 2;
+  --card-numeral-size: 30px;        /* grid card */
+  --card-numeral-size-lg: 40px;     /* feature card */
+  --card-numeral-ink: color-mix(in srgb, var(--ink) 32%, transparent);
+  --card-numeral-inset: 12px;
+  --card-numeral-inset-lg: 14px;
+  --t-card-title-article-size: 23px;
+  --t-card-title-article-line: 1.12;
+  /* The lead entry. The design's own "clamp(30px,3.2vw,38px)/1.06" — NOT
+     `--t-card-title-lg-size`, which is 44 and is `card.feature`'s display
+     scale. A lead entry is a bigger entry, not a different kind of type. */
+  --t-card-title-article-lg-size: clamp(30px, 3.2vw, 38px);
+  --t-card-title-article-lg-line: 1.06;
+  --t-card-excerpt-article-size: 13.5px;
+  --t-card-excerpt-article-line: 1.7;
+  --card-space-metalead: 13px;      /* cover -> the date line above the title */
+  --card-space-tags: 13px;          /* excerpt -> the tag chips */
+  --card-gap-article: 13px;         /* the design's own slot rhythm */
+  /* "grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap 40 30" */
+  --card-grid-article-min: 280px;
+  --card-grid-article-row-gap: 40px;
+  --card-grid-article-col-gap: 30px;
+  /* The feature's picture column — the design states 540px, and the text
+     column takes what is left rather than a second fraction of its own. */
+  --card-feature-article-cover: 540px;
+  --card-gap-feature-article: 40px;
 
   --t-card-title-size: 30px;        /* entry */
   --t-card-title-line: 1.08;
@@ -523,6 +699,10 @@
   --sf-raised-2: #e8dfd0;
   --sf-sunken: #e3d9c8;
 
+  /* The card keeps its field on paper — see the card block above. */
+  --card-field: var(--sf-raised);
+  --card-field-hover: var(--sf-raised-2);
+
   --focus-c: var(--ink);
 
   /* The tree pigment on paper is 1.35:1 — a stamp nobody can see. See the
@@ -538,6 +718,8 @@
     --sf-raised: var(--sf-paper-raised);
     --sf-raised-2: #e8dfd0;
     --sf-sunken: #e3d9c8;
+    --card-field: var(--sf-raised);
+    --card-field-hover: var(--sf-raised-2);
     --focus-c: var(--ink);
     --mark-stamp-rule: var(--ink-meta);
     --mark-strike-rule: var(--pigment-ink);

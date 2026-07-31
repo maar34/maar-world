@@ -173,6 +173,204 @@
   background: var(--sf-sunken);
 }
 
+/* PDF documents are reading objects, not media thumbnails. The old universal
+   containment rule gave every object `height: auto`, overriding the authored
+   PDF heights and leaving only a narrow strip of document visible. This shared
+   component restores one useful preview height for bookings, resumes and every
+   future local PDF embed. */
+.prose .pdf-embed {
+  --pdf-embed-height: clamp(760px, 105svh, 1280px);
+  inline-size: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-2);
+  background: var(--sf-sunken);
+  border: 1px solid var(--ink-hairline);
+}
+
+.prose .pdf-embed object,
+.prose .pdf-embed iframe {
+  display: block;
+  inline-size: 100%;
+  min-block-size: var(--pdf-embed-height);
+  block-size: var(--pdf-embed-height);
+  max-inline-size: none;
+  border: 0;
+  background: var(--sf-paper);
+}
+
+/* PDF.js owns this interface after enhancement. The scroll surface is inside
+   our document instead of a browser plugin, so its visual language and mobile
+   behaviour can be part of the site rather than vary by browser. */
+.prose .pdf-viewer {
+  inline-size: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.prose .pdf-viewer__toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  min-block-size: var(--hit-min);
+  color: var(--ink-meta);
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  letter-spacing: var(--t-meta-track);
+}
+
+.prose .pdf-viewer__status { margin: 0 auto 0 0; }
+
+.prose .pdf-viewer__control,
+.prose .pdf-viewer__download {
+  min-inline-size: var(--hit-min);
+  min-block-size: var(--hit-min);
+  display: inline-grid;
+  place-items: center;
+  padding-inline: var(--s-3);
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink-hairline);
+  border-radius: var(--r-1);
+  font: inherit;
+  text-decoration: none;
+}
+
+.prose .pdf-viewer__control { cursor: pointer; }
+.prose .pdf-viewer__control:disabled { opacity: 0.45; cursor: default; }
+.prose .pdf-viewer__control:not(:disabled):hover,
+.prose .pdf-viewer__download:hover { color: var(--pigment-ink); background: var(--area-pigment); }
+
+.prose .pdf-viewer__scroll {
+  block-size: var(--pdf-embed-height);
+  overflow: auto;
+  padding: var(--s-6);
+  background: var(--sf-ink);
+  scrollbar-color: var(--area-pigment) var(--sf-sunken);
+  scrollbar-width: thin;
+}
+
+.prose .pdf-viewer__scroll::-webkit-scrollbar { inline-size: 12px; block-size: 12px; }
+.prose .pdf-viewer__scroll::-webkit-scrollbar-track { background: var(--sf-sunken); }
+.prose .pdf-viewer__scroll::-webkit-scrollbar-thumb { background: var(--area-pigment); border: 3px solid var(--sf-sunken); }
+
+.prose .pdf-viewer__pages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-6);
+}
+
+.prose .pdf-viewer__page {
+  inline-size: min-content;
+  min-inline-size: min(100%, 16rem);
+  min-block-size: 12rem;
+  display: grid;
+  place-items: center;
+  background: var(--sf-paper);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--sf-paper) 30%, transparent);
+}
+
+.prose .pdf-viewer__page canvas { display: block; max-inline-size: none; }
+
+@media (max-width: 599px) {
+  .prose .pdf-embed { --pdf-embed-height: clamp(620px, 82svh, 860px); }
+}
+
+/* Legacy Orbiters embed v1.0. Both selectors intentionally map to the same
+   component: `.responsive-iframe` is the class in migrated legacy bodies,
+   while `.orbiter-embed` is used by page templates. Every play.maar.world
+   address therefore gets one responsive canvas without route-specific sizing.
+   The player is square on spacious screens and taller on narrow screens, where
+   its controls need room beside a person's thumb rather than a desktop cursor.
+
+   BOTH ROUTES SET scrolling="no", AND THE REASON IS MEASURED, NOT COSMETIC.
+   The player drew a scrollbar down its right edge and along its bottom on every
+   card page. The overflow is exactly 14px in each axis — the scrollbar's own
+   width — because play.maar.world sizes its p5 canvas to `window.innerWidth`
+   while the document's clientWidth is 14px narrower once a scrollbar exists:
+   each bar keeps the other alive. Measured in the frame at 1084x1084:
+   scrollWidth 1273 against clientWidth 1259, scrollHeight 785 against 771.
+
+   It is a defect in the embedded app and cannot be reached from this repo —
+   the frame is cross-origin, so no stylesheet or script here applies inside it.
+   `scrolling="no"` is the only lever the embedding page has. Nothing is lost
+   by clipping: the 14px being hidden IS the scrollbar gutter, not content. The
+   real fix belongs in play.maar.world, whose canvas should follow its element's
+   width and not the window's. */
+.prose iframe.responsive-iframe,
+iframe.orbiter-embed {
+  inline-size: 100%;
+  block-size: auto;
+  min-block-size: 0;
+  aspect-ratio: 1 / 1;
+  display: block;
+  border: 0;
+  background: var(--sf-sunken);
+}
+
+@media (max-width: 599px) {
+  .prose iframe.responsive-iframe,
+  iframe.orbiter-embed { aspect-ratio: 4 / 5; }
+}
+
+/* Editorial profile: one portrait and a statement form the magazine opening;
+   the founder biography then continues below the statement, rather than
+   collapsing all three pieces into an undifferentiated two-column block. */
+.prose .editorial-profile {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-8);
+}
+
+.prose .editorial-profile__portrait {
+  inline-size: min(100%, 22rem);
+  aspect-ratio: 3 / 4;
+  margin: 0;
+  justify-self: center;
+  overflow: hidden;
+  border-radius: 50%;
+  outline: 1px solid var(--ink-hairline);
+  outline-offset: var(--s-2);
+}
+
+.prose .editorial-profile__portrait img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.prose .editorial-profile__statement,
+.prose .editorial-profile__bio {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.prose .editorial-profile :is(h2, p) { margin: 0; }
+
+.prose .editorial-profile__statement h2 {
+  font-family: var(--t-display-face);
+  font-size: var(--t-h1-size);
+  font-weight: var(--t-h1-weight);
+  line-height: var(--t-h1-line);
+}
+
+@media (min-width: 800px) {
+  .prose .editorial-profile {
+    grid-template-columns: minmax(12rem, 4fr) minmax(0, 7fr);
+    align-items: start;
+    column-gap: var(--s-12);
+  }
+
+  .prose .editorial-profile__portrait { grid-row: span 2; inline-size: 100%; }
+  .prose .editorial-profile__statement,
+  .prose .editorial-profile__bio { grid-column: 2; }
+}
+
 .prose pre,
 .prose table {
   overflow-x: auto;

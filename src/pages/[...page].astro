@@ -13,8 +13,9 @@
  * Pages whose contract includes the literal `…/index.html` spelling carry an
  * `outputPath` ending `/index` for exactly that reason.
  *
- * Layout is page family 03 (entry) as used by the card pages: single measure,
- * h1 may carry marks, nothing below it does.
+ * Layout width is supplied by BaseLayout's shared content-frame contract. Every
+ * page defaults to the same standard column; a future reviewed exception is a
+ * schema value, not a route-local class.
  *
  * THE BODY WRAPPER IS `.prose`, AND IT IS NOT A MIGRATION ARTIFACT. Every page
  * this route renders goes through it — a migrated body and an authored one
@@ -35,23 +36,81 @@ import TypeMark from '../components/patterns/TypeMark.astro';
 import Stamp from '../components/patterns/Stamp.astro';
 import Card from '../components/patterns/Card.astro';
 import Home from '../components/families/Home.astro';
+import TreeHub from '../components/families/TreeHub.astro';
+import Collect from '../components/families/Collect.astro';
+import LabIndex from '../components/families/LabIndex.astro';
+import CollageField from '../components/patterns/CollageField.astro';
 import CarouselScript from '../components/ui/CarouselScript.astro';
+import PdfViewerScript from '../components/ui/PdfViewerScript.astro';
+import EmbedConsentScript from '../components/ui/EmbedConsentScript.astro';
 import HelixIsland from '../components/react/HelixIsland.astro';
-import { languageChoices, alternatesFor } from '../lib/translations.mjs';
+import { globalLanguageChoices, alternatesFor, validateTranslations, LANGS } from '../lib/translations.mjs';
 import { stampText } from '../lib/mark.mjs';
+import { collageFor, articleCoverFor, articleCoverFitFor, LAB_INTRO, LAB_PINNED } from '../config/site';
 
 export async function getStaticPaths() {
   const pages = await getCollection('pages');
   const byPath = new Map(pages.map((p) => [p.data.outputPath, p]));
 
+  /**
+   * A `translationOf` naming no page is reported HERE and asserted in
+   * verify:translations — loudly in both places, fatal in neither.
+   *
+   * The failure being guarded against is silent: a dangling relation does not
+   * error, it simply makes `alternatesFor` return nothing, so the page renders
+   * exactly like one that has no translation. A Spanish page would be
+   * published, reachable, and invisible from its English half — the shape of
+   * failure `translationKey` was made a stored field to avoid.
+   *
+   * THIS THREW UNTIL IT WAS SEEN TO MISFIRE, and the reason it does not now is
+   * worth keeping. `migrated/` is regenerated wholesale by migrate-pages.mjs,
+   * so the set of pages a translation can point at is legitimately absent for
+   * as long as that script is between runs. A throw here turns that ordinary
+   * window into "nobody can build anything" — which is what happened when 34
+   * collect card records were briefly regenerated away underneath 34 authored
+   * Spanish translations of them. The defect is real and needs saying; it is
+   * not worth taking the build down for, because `verify:translations` asserts
+   * exactly the same thing, it is composed into `npm run verify`, and CI runs
+   * it. Nothing ships past it.
+   *
+   * A build-time warning still gives the fast feedback a typo deserves, at
+   * `npm run dev`, without coupling every build to the completeness of a
+   * generated directory.
+   */
+  const danglingTranslations = validateTranslations(pages);
+  if (danglingTranslations.length) {
+    console.warn(
+      `\n[translations] ${danglingTranslations.length} translationOf value(s) name a page ` +
+        `that does not exist. verify:translations fails on this.\n  ` +
+        `${danglingTranslations.join('\n  ')}\n` +
+        '  Check the outputPath spelling — it is byte-for-byte — or check whether ' +
+        'src/content/migrated is mid-regeneration.\n',
+    );
+  }
+
+  /**
+   * suit + title -> the NFC card record's Orbiter track id.
+   *
+   * The id lives on the NFC record and is NOT copied onto the collect record:
+   * one card, one id, in one place. `suit_title` + `card_title` is the join
+   * because both collections carry them and the pair is unique across the deck
+   * — deriving it from a filename or a URL is what MW-7 spent a session undoing.
+   */
+  const cards = await getCollection('cards');
+  const trackIdBySuitAndTitle = Object.fromEntries(
+    cards
+      .filter((c) => c.data.track_v2_id)
+      .map((c) => [`${c.data.suit_title}|${c.data.card_title}`, c.data.track_v2_id]),
+  );
+
   return pages.map((entry) => ({
     // Byte-for-byte. No trimming, no slugifying, no case folding.
     params: { page: entry.data.outputPath },
-    props: { entry, all: [...byPath.values()] },
+    props: { entry, all: [...byPath.values()], trackIdBySuitAndTitle },
   }));
 }
 
-const { entry, all } = Astro.props;
+const { entry, all, trackIdBySuitAndTitle } = Astro.props;
 const d = entry.data;
 const { Content } = await render(entry);
 
@@ -64,7 +123,27 @@ const { Content } = await render(entry);
  * is published at the site root, so a URL-derived filter left it out and the
  * Documentation index rendered nine entries where production renders ten.
  */
-const listed = d.indexOf ? all.filter((p) => p.data.indexGroup === d.indexOf) : [];
+/**
+ * …in the index's OWN LANGUAGE, and only its own.
+ *
+ * That rule was already settled for the Lab a few lines down, in the owner's
+ * words — "if we have English selected we show the English articles" — and it
+ * is the same rule for every other index: a Spanish documentation index listing
+ * ten English documents beside ten Spanish ones is the twenty-entry Lab page
+ * that note describes, with the duplicates adjacent because they share a title.
+ *
+ * Applied here rather than per index so it holds for indexes that do not exist
+ * yet. It makes the Lab's own language filter below redundant; that one is left
+ * where it is because it states the reasoning at the place a reader of the Lab
+ * page will look for it.
+ *
+ * Nothing becomes unreachable: every entry is listed on the index in its own
+ * language, and both indexes are translations of each other, so the header's
+ * language chip reaches either.
+ */
+const listed = d.indexOf
+  ? all.filter((p) => p.data.indexGroup === d.indexOf && p.data.lang === d.lang)
+  : [];
 
 /**
  * Dated collections (the Lab) read newest first. Undated ones fall through to
@@ -96,7 +175,16 @@ const hrefOf = (outputPath: string) =>
 const isCard = d.kind === 'collect-card';
 
 /**
- * Which pages load the carousel script — five of the 134, and no others.
+ * The Orbiter address for this card, or null. Identical in shape to the one
+ * `[cardCode].astro` builds for the physical card's forward, so the page a
+ * visitor reaches by tapping the card and the player embedded here are the
+ * same address by construction rather than by coincidence.
+ */
+const cardTrackId = isCard ? trackIdBySuitAndTitle?.[`${d.suit_title}|${d.card_title}`] : null;
+const orbiterUrl = cardTrackId ? `https://orbiter.plantasia.space/?trackId=${cardTrackId}` : null;
+
+/**
+ * Which pages load the carousel script — only pages with a body carousel.
  *
  * MW-7's rule was "application JavaScript on exactly one page". The owner has
  * amended it for ui/carousel, and the amendment is narrowed here rather than
@@ -105,26 +193,31 @@ const isCard = d.kind === 'collect-card';
  * nothing else. Put in BaseLayout it would have shipped to all 134.
  */
 const hasCarousel = /class="carousel"/.test(entry.body ?? '');
+const hasPdfEmbed = /class="[^"]*pdf-embed/.test(entry.body ?? '');
 
 /**
- * A covered index renders patterns/card in a grid — page family 04's shape —
- * so it is not bound by family 03's prose measure. See the page container.
+ * Which pages load the embed consent gate — only pages with a facade the gate
+ * can actually open. The owner's third JavaScript exception (2026-07-30, see
+ * ui/EmbedConsentScript) is narrowed here on the same principle as the carousel:
+ * the test is this record's own body, and the provider list is the one the gate
+ * understands, so a page with only a Google Form or the radio stream on it stays
+ * click-out and ships nothing.
  */
-const isCardGrid = Boolean(d.indexCovers);
+const hasMediaEmbed = /data-embed-provider="(?:youtube|vimeo|soundcloud|google-calendar)"/.test(entry.body ?? '');
+/* Which sections carry a header, and which picture each one gets, both live in
+   SECTION_COLLAGE. A section is given a header by being in that map — there is
+   no second list here to fall out of step with it. */
+const sectionCollage = d.outputPath ? collageFor(d.outputPath) : null;
 
 /**
  * The language switcher, and the <link rel="alternate"> set.
- *
- * Empty for the 75 pages that exist in one language only — a switcher offering
- * one choice is a label, not a control, and rendering it would suggest a
- * Spanish version exists where none does.
  *
  * This replaces the two buttons the legacy body carried at /lab
  * (`?tag=EN` / `?tag=ES`). Those pointed at query-string filters on a static
  * build with no JavaScript, so both served the identical unfiltered page: a
  * visible, clickable, inert control. They are stripped by the migration now.
  */
-const langChoices = languageChoices(entry, all);
+const langChoices = globalLanguageChoices(entry, all);
 const alternates = alternatesFor(entry, all);
 
 /**
@@ -137,25 +230,87 @@ const alternates = alternatesFor(entry, all);
  */
 const isYearIndex = d.indexOf === 'lab';
 
-const byYear: [string, typeof sorted][] = isYearIndex
-  ? [
-      ...sorted
-        .filter((p) => p.data.date)
-        .reduce((acc, p) => {
-          const year = String(p.data.date).slice(0, 4);
-          acc.set(year, [...(acc.get(year) ?? []), p]);
-          return acc;
-        }, new Map<string, typeof sorted>())
-        .entries(),
-    ].sort((a, b) => b[0].localeCompare(a[0]))
+/**
+ * READING TIME, COUNTED RATHER THAN CLAIMED.
+ *
+ * The Lab design puts "9 min read" on its lead entry. It is one of the few
+ * figures in that design the site can actually produce, so it is produced: the
+ * record's own body, tags stripped, at 200 words a minute — the conventional
+ * rate, and the one worth stating here because a number with no stated basis is
+ * a number nobody can check. Floored at one, because "0 min read" is noise.
+ *
+ * Counted at build time from the same string `verify:content` measures, so it
+ * cannot drift from what the page actually says.
+ */
+const READING_WORDS_PER_MINUTE = 200;
+const readingMinutes = (body: string) => {
+  const words = body
+    .replace(/<[^>]*>/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean).length;
+  return Math.max(1, Math.round(words / READING_WORDS_PER_MINUTE));
+};
+
+/**
+ * The Lab's entries, as the plain data page family 02 renders.
+ *
+ * The mapping happens here rather than in the family because this is where a
+ * content record's shape is known — `hrefOf` and the collection's fields are
+ * route concerns, and `LabIndex` should be handed a list it can lay out without
+ * knowing what a content collection is.
+ */
+const labEntries = isYearIndex
+  ? sorted
+      /**
+       * THE INDEX SHOWS ITS OWN LANGUAGE, AND ONLY ITS OWN.
+       *
+       * Ten pieces, each written twice, were rendering as twenty entries on one
+       * page: every piece listed once in English and once in Spanish, with the
+       * pair adjacent because they share a date. The owner's words — "if we
+       * have English selected we show the English articles" — and the header's
+       * language chip already switches between `/lab` (en) and `/es/lab` (es),
+       * which are translations of each other, so the language filter the design
+       * draws as a chip is a control this site already has.
+       *
+       * Nothing becomes unreachable: each Spanish entry is on `/es/lab`, and
+       * each article's own page carries the switch to its twin.
+       */
+      .filter((p) => p.data.lang === d.lang)
+      .filter((p) => p.data.date)
+      .map((p) => {
+        const href = hrefOf(p.data.outputPath);
+        return {
+          href,
+          title: p.data.indexLabel ?? p.data.title,
+          date: String(p.data.date).slice(0, 10),
+          lang: p.data.lang,
+          /**
+           * THE LANGUAGE TAGS COME OFF.
+           *
+           * Every Lab record carries "EN" or "ES" in its tag list — hooks for
+           * production's `/lab.html?tag=EN` filter, which was a script MW-7
+           * forbids and which this index replaces with a real per-language
+           * page. On an index that is already one language, a chip saying "en"
+           * on all ten cards is the page telling the reader something they
+           * chose in the header.
+           *
+           * Only the language codes go. Every topical tag stays.
+           */
+          tags: (p.data.tags ?? []).filter(
+            (t: string) => !LANGS.includes(t.toLowerCase()),
+          ),
+          excerpt: p.data.description,
+          /* The record's own cover if it ever gains one; otherwise the collage
+             chosen for that destination in config/site.ts. */
+          cover: p.data.cover ?? articleCoverFor(href),
+          coverFit: articleCoverFitFor(href),
+          minutes: readingMinutes(p.body ?? ''),
+          /* What LAB_PINNED names — the piece, not one language of it. */
+          translationKey: p.data.translationKey,
+        };
+      })
   : [];
 
-/** "25 Aug 2023" — the form the legacy index printed under each title. */
-const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-const readableDate = (iso: string) => {
-  const [y, m, day] = iso.split('-');
-  return `${MONTHS[Number(m) - 1]} ${day.padStart(2, '0')}, ${y}`;
-};
 ---
 
 <BaseLayout
@@ -167,22 +322,25 @@ const readableDate = (iso: string) => {
   lang={d.lang}
   alternates={alternates.map((p) => ({ lang: p.data.lang, outputPath: p.data.outputPath }))}
   redirectTo={d.redirectTo}
+  contentWidth={d.contentWidth}
+  languageChoices={langChoices}
 >
   {
     /**
      * PAGE FAMILY 01 — home. §08 gives it one sentence: "one feature card, then
      * three entry cards. no sidebar."
      *
-     * Everything below this branch is family 03, entry — "single measure, 66ch
-     * max" — and that is the right default for a document. It was the wrong
-     * thing for `/`, which is a landing and not an article, and every symptom
-     * the owner listed followed from the substitution. So the fix is a family,
-     * not a width: `.measure` still means 66ch everywhere it applies.
+     * Every route enters through the same standard shell frame. A family changes
+     * structure, never the page's outer width; contentWidth is the one explicit
+     * schema-controlled exception point when a future design genuinely needs it.
      *
      * The dispatch is `family`, a schema enum, not `outputPath === 'index'`.
      * Nine more skeletons are specified and four of them are card grids; a
      * chain of URL comparisons is the thing to have avoided starting.
      */
+    d.family === 'tree' && <TreeHub headingHtml={d.headingHtml} title={d.indexLabel ?? d.title} lang={d.lang} />
+  }
+  {
     d.family === 'home' && (
       <Home
         headingHtml={d.headingHtml}
@@ -199,22 +357,54 @@ const readableDate = (iso: string) => {
     )
   }
 
-  {!d.family && (
+  {
+    /**
+     * The Collect landing. Its opening is still the migrated body and goes in
+     * through the slot; the family owns the closing section, which was three
+     * grey hero plates and a card the theme drew as nothing.
+     */
+    d.family === 'collect' && (
+      <Collect seed={d.outputPath} label={d.indexLabel ?? d.title} statement={d.description}>
+        <Content />
+      </Collect>
+    )
+  }
+
+  {
+    /**
+     * PAGE FAMILY 02 — editorial index. §05: "year groups with a single
+     * grouping hairline. filters as chips. no row separators."
+     *
+     * The Lab, and the only page that is one. The dispatch is `indexOf`, the
+     * schema field that already declares this page renders the Lab's list —
+     * not a comparison against its URL, and not a second `family` field saying
+     * the same thing a different way.
+     *
+     * The authored body — heading, statement, rule — goes into the family as a
+     * slot rather than being lifted into fields the way family 01's is. Family
+     * 01 had to: its heading and its three cards are `patterns/card` props, and
+     * a card takes props. This page's intro is prose, is already marked, and is
+     * one measure of text; making it two fields would put the Lab's opening
+     * sentence somewhere other than the Lab's page.
+     */
+    isYearIndex && (
+      <LabIndex
+        entries={labEntries}
+        collage={sectionCollage}
+        label={d.indexLabel ?? d.title}
+        headingHtml={(LAB_INTRO[d.lang] ?? LAB_INTRO.en).headingHtml}
+        lede={(LAB_INTRO[d.lang] ?? LAB_INTRO.en).lede}
+        strings={(LAB_INTRO[d.lang] ?? LAB_INTRO.en).strings}
+        pinnedKey={LAB_PINNED}
+      />
+    )
+  }
+
+  {!d.family && !isYearIndex && (
   <Fragment>
-  {/* The shell owns <main>. This is the page family inside it.
-
-      THE MEASURE IS FAMILY 03's, NOT EVERY PAGE'S. "03 entry — single measure,
-      66ch max" is the rule for an article, and it is why a lab post reads at a
-      sane line length. A covered index is not an article: family 04 collection
-      is "two-up card grid", and a two-up grid inside a 66ch column is a one-up
-      grid — measured, 644px of column against the 664px two 20rem cards and a
-      gap need.
-
-      So a card grid takes the full content column, which is the same 1180 the
-      header and footer use. This is also the narrow answer to "the width of the
-      content is not the same as the width of the header": it is correct for an
-      entry page and wrong for an index, and only the index changes. */}
-  <div class:list={['page', 'shell__inner', !isCardGrid && 'measure']}>
+  {/* The shell owns <main> and the standard content frame. This route supplies
+      structure only; no route or content type sets its own outer width. */}
+  <div class:list={['page', (sectionCollage || d.family === 'home') && 'page--hero']}>
     {
       /* The label line, with no mark on it.
          The rules-of-use table permits marks at h1 and card-cover level and
@@ -261,28 +451,15 @@ const readableDate = (iso: string) => {
     {isCard && d.card_description && <p class="description">{d.card_description}</p>}
 
     {
-      /* One link per language, the current one marked with aria-current rather
-         than by colour alone. It is a nav landmark so a screen-reader user can
-         reach it directly, and each link declares the language it leads TO —
-         `hreflang` for machines, `lang` so the label "español" is pronounced
-         as Spanish rather than read with English phonemes. */
-      langChoices.length > 1 && (
-        <nav class="lang-switch" aria-label="Language">
-          <ul role="list">
-            {langChoices.map((c) => (
-              <li>
-                <a
-                  href={hrefOf(c.outputPath)}
-                  hreflang={c.lang}
-                  lang={c.lang}
-                  aria-current={c.current ? 'page' : undefined}
-                >
-                  {c.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+      /* These five areas use the same compact visual introduction. The page H1
+         remains in its authored body below, so the hero is atmospheric rather
+         than a second, duplicate heading. */
+      sectionCollage && (
+        <CollageField
+          src={sectionCollage}
+          variant="section"
+          label={`${d.indexLabel ?? d.title} visual header`}
+        />
       )
     }
 
@@ -298,51 +475,35 @@ const readableDate = (iso: string) => {
     }
 
     {
-      /* play.maar.world shares the registrable domain, so it is same-site even
-         inside an iframe and needs no click-to-load facade. */
-      isCard && d.snip_player && (
-        <iframe src={d.snip_player} title={`${d.suit_title} ${d.card_title} player`} loading="lazy" class="player" />
-      )
-    }
-
-    {
-      /* The year-grouped index — the Lab's shape.
-         This used to be ~104 lines of literal HTML baked into the body of
-         lab.md by the migration, derived from the read-only legacy checkout.
-         A post that was not in that checkout could not appear here. It is now
-         rendered from the collection, so a page written into
-         src/content/authored/ shows up with no script run at all.
-         The row markup is deliberately the shape production served: an <h2>
-         per year, an <h3> per article, a <time>, the excerpt and the tags. */
-      byYear.length > 0 && (
-        <div class="index index--lab">
-          {byYear.map(([year, rows]) => (
-            <section class="index-year" aria-labelledby={`lab-${year}`}>
-              <h2 class="index-year__label" id={`lab-${year}`}>{year}</h2>
-              <hr class="index-year__rule" />
-              <ul class="index-rows" role="list">
-                {rows.map((p) => (
-                  <li class="index-row" lang={p.data.lang}>
-                    <h3 class="index-row__title">
-                      <a href={hrefOf(p.data.outputPath)}>{p.data.indexLabel ?? p.data.title}</a>
-                    </h3>
-                    <time class="index-row__date" datetime={String(p.data.date).slice(0, 10)}>
-                      {readableDate(String(p.data.date).slice(0, 10))}
-                    </time>
-                    {p.data.description && <p class="index-row__excerpt">{p.data.description}</p>}
-                    {p.data.tags?.length > 0 && (
-                      <ul class="index-row__tags" role="list">
-                        {p.data.tags.map((t: string) => (
-                          <li class="index-row__tag">{t}</li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
-        </div>
+      /**
+       * THE CARD'S PLAYER.
+       *
+       * The Plantasia Orbiter where the card has a track id — 33 of the 34; the
+       * wild card has none and keeps the play.maar.world snippet, which is also
+       * the fallback if an id is ever removed.
+       *
+       * Embedded on load rather than behind the consent gate, by the owner's
+       * decision of 2026-07-31: plantasia.space is the owner's own property, not
+       * a third party, and `verify:links` FIRST_PARTY was widened to say so.
+       * WHAT THAT DECISION BUYS AND COSTS IS RECORDED IN THE LEDGER —
+       * `ledger -- find orbiter-inline` — because the Orbiter does write device
+       * storage and does pull Google Fonts, and this file is where someone will
+       * come looking when they ask why.
+       *
+       * `loading="lazy"` is load-bearing here in a way it was not for the old
+       * player: the Orbiter is WebGL plus an audio engine and takes ~10s to
+       * boot, so it must not start until it is near the viewport.
+       */
+      isCard && (orbiterUrl || d.snip_player) && (
+        <iframe
+          src={orbiterUrl ?? d.snip_player}
+          title={`${d.suit_title} ${d.card_title} player`}
+          loading="lazy"
+          scrolling="no"
+          allow="accelerometer; autoplay; gyroscope; magnetometer; fullscreen; xr-spatial-tracking"
+          referrerpolicy="strict-origin-when-cross-origin"
+          class="player orbiter-embed"
+        />
       )
     }
 
@@ -377,6 +538,8 @@ const readableDate = (iso: string) => {
               title={p.data.indexLabel ?? p.data.title}
               level={2}
               cover={p.data.cover}
+              coverShape={d.indexCoverShape}
+              scatter={d.indexScatter}
               badge={p.data.suit_title}
               badgeOutline={p.data.date ? String(p.data.date).slice(0, 4) : undefined}
               excerpt={p.data.card_description ?? p.data.description}
@@ -406,103 +569,28 @@ const readableDate = (iso: string) => {
   )}
 
   {hasCarousel && <CarouselScript />}
+  {hasPdfEmbed && <PdfViewerScript />}
+  {hasMediaEmbed && <EmbedConsentScript />}
 </BaseLayout>
 
 <style>
-  /* The language switcher. A row of links, the current one carrying the same
-     pigment field the header uses for the current area — pigment plus
-     aria-current plus an underline, because a pigment field never carries
-     meaning alone. */
-  .lang-switch ul {
-    display: flex;
-    gap: var(--s-2);
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  /**
-   * OPPOSED CHIPS — mark 5, and only the half of it that is settled.
-   *
-   * 4a's pair is "one filled, one outlined, and they tilt in opposite
-   * directions". The fill-against-outline half is shipped here because it is
-   * the spec's own chip table — rest is `1px solid` ink at 20%, selected is a
-   * field — and 4a's `en`/`es` pair is that table drawn in the language
-   * switcher. Before this, a non-current language was plain meta text and the
-   * pair did not read as two chips at all.
-   *
-   * THE OPPOSITION now ships too. It was held for a session on a reading of the
-   * rules-of-use table's "ui — tilt: never" row; the owner's correction is that
-   * the no-rotation rule was only ever about `mark.highlight`. The angles are
-   * 4a's own `en`/`es` pair — the selected chip at -1.5deg against the resting
-   * one at +1deg — and they are steeper than the buttons because 4a's are: a
-   * chip is small enough that a degree barely reads on it.
-   *
-   * The transparent border on the base rule is not padding fiddling: it keeps
-   * the filled and the outlined chip the same box, so the row does not shift by
-   * a pixel when the current language changes.
-   */
-  .lang-switch a {
-    display: inline-block;
-    padding-inline: var(--s-2);
-    border: 1px solid transparent;
-    border-radius: var(--r-0);
-    font-family: var(--t-meta-face);
-    font-size: var(--t-meta-size);
-    line-height: var(--t-meta-line);
-    letter-spacing: var(--t-meta-track);
-    text-decoration: none;
-    color: var(--ink-meta);
-  }
-
-  /* Rest — the outlined chip, leaning one way. */
-  .lang-switch a:not([aria-current]) {
-    border-color: var(--chip-rule);
-    transform: rotate(var(--chip-tilt-rest));
-  }
-
-  /* Selected — the filled chip, leaning the other. The field is not the only
-     carrier: aria-current and the underline say it too. */
-  .lang-switch a[aria-current] {
-    background: var(--area-pigment, var(--c-maar));
-    color: var(--pigment-ink);
-    text-decoration: underline;
-    transform: rotate(var(--chip-tilt-selected));
-  }
-
-  /**
-   * "< 600 … tilt max --tilt-b".
-   *
-   * -1.5deg is outside the cap, so below 600px the selected chip comes back to
-   * --tilt-b. The resting chip is already at 1deg and is left alone: the pair
-   * still leans apart, just less far. Reducing rather than removing, for the
-   * reason the stamp does — a chip that stands fully upright stops being one of
-   * an opposed pair.
-   */
-  @media (max-width: 599px) {
-    .lang-switch a[aria-current] {
-      transform: rotate(var(--tilt-b));
-    }
-  }
-
-  /* Hover fills, so the edge joins the field rather than ruling a line through
-     the middle of it. */
-  .lang-switch a:hover {
-    background: var(--area-pigment, var(--c-maar));
-    border-color: var(--area-pigment, var(--c-maar));
-    color: var(--pigment-ink);
-  }
-
-  /* Page family 03 — entry. Single measure.
-     The measure is --measure (66ch), not 72ch: "prose measure never exceeds
-     66ch at any width". The horizontal padding is the shell's responsive
-     gutter, which .shell__inner supplies. */
+  /* The shell owns the shared width and gutters. This component owns only the
+     page's vertical rhythm and internal structure. */
   .page {
     padding-block: var(--s-16) var(--s-24);
     display: flex;
     flex-direction: column;
     /* Sibling groups use gap, never margins. Space is the primary separator. */
     gap: var(--s-6);
+  }
+
+  /* A page whose first element is the full-bleed collage starts the picture at
+     the header, not 64px below it. The gap read as a mistake: the image is the
+     page's opening, and a strip of background above it makes it look like a
+     figure that slipped down rather than a header. Only the top goes — the
+     bottom padding still separates the last block from the footer. */
+  .page--hero {
+    padding-block-start: 0;
   }
 
   .suit {
@@ -516,8 +604,18 @@ const readableDate = (iso: string) => {
   /* The plate is the hatch, not the flat tint it used to be — mark 7. The
      class carries it, so the value lives in tokens.css and nothing here
      reaches for a texture directly. */
+  /**
+   * A CARD IS SHOWN AT CARD SIZE, NOT AT FULL MEASURE.
+   *
+   * Once the imposed 3:2 crop came off, `width: 100%` made a portrait face
+   * 1.41x the content width — a 1180px column gave a 1662px-tall image that
+   * filled two screens and buried the description under it. The measure is the
+   * right width for a paragraph and the wrong width for a playing card, so the
+   * figure is capped and centred instead.
+   */
   .cover {
-    margin: 0;
+    margin: 0 auto;
+    inline-size: min(100%, 24rem);
     border-radius: var(--r-0);
   }
 
@@ -547,10 +645,19 @@ const readableDate = (iso: string) => {
     align-self: stretch;
   }
 
+  /**
+   * A card page shows ONE card face and has no siblings to line up with, so it
+   * needs no imposed ratio at all — the image is simply shown at its own shape.
+   *
+   * It was `aspect-ratio: 3/2; object-fit: cover`, which cropped a portrait
+   * card down to a horizontal strip: on /collect/cards/012 that strip was the
+   * SKYSOUNDS.2 wordmark and none of the artwork. `height: auto` cannot crop
+   * anything, and it is equally right for the square Stoney Way face.
+   */
   .cover img {
+    display: block;
     width: 100%;
-    aspect-ratio: 3 / 2;
-    object-fit: cover;
+    height: auto;
   }
 
   .description {
@@ -601,89 +708,4 @@ const readableDate = (iso: string) => {
     border-radius: var(--r-0);
   }
 
-  /* ---- the year-grouped Lab index ---------------------------------------
-   * First-party markup, rendered by this route from the collection — the
-   * template is 30 lines above. It lived in `legacy.css` because the index used
-   * to be ~104 lines of HTML baked into lab.md by the migration, and it stayed
-   * there after the route took the job over.
-   *
-   * Which is how `.index-row__tag` came to be dead code: it kept the
-   * `.legacy ` prefix while the element it names moved OUT of that wrapper, so
-   * it matched nothing and the tags have been rendering as plain text. Scoped
-   * to this component now, where the markup is, so a selector and the element
-   * it targets cannot drift into different files again.
-   */
-  .index {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s-16);
-  }
-
-  .index-year {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s-6);
-  }
-
-  /* The rule above a year group — the second of the two places one is allowed. */
-  .index-year__rule {
-    margin-block: var(--s-2) 0;
-  }
-
-  .index-rows {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s-8);
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .index-row {
-    display: flex;
-    flex-direction: column;
-    /* "sibling groups use gap, never margins." */
-    gap: var(--s-2);
-  }
-
-  .index-row__title {
-    margin: 0;
-  }
-
-  .index-row__date {
-    color: var(--ink-meta);
-    font-family: var(--t-meta-face);
-    font-size: var(--t-meta-size);
-    line-height: var(--t-meta-line);
-    letter-spacing: var(--t-meta-track);
-  }
-
-  .index-row__excerpt {
-    color: var(--ink-muted);
-    margin: 0;
-  }
-
-  .index-row__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--s-2);
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  /* Tags are chips, not links: production linked each to `/lab.html?tag=X` and
-     a script hid the non-matching rows; MW-7 forbids that script, and a link
-     that lands on an unfiltered index and does nothing is worse than a label.
-     A chip is a flat field with dark type on it. */
-  .index-row__tag {
-    background: var(--ink-tint);
-    color: var(--ink-muted);
-    border-radius: var(--r-0);
-    padding-inline: var(--s-2);
-    font-family: var(--t-meta-face);
-    font-size: var(--t-meta-size);
-    line-height: var(--t-meta-line);
-    letter-spacing: var(--t-meta-track);
-  }
 </style>

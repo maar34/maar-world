@@ -32,11 +32,65 @@ export const LANG_LABEL = { en: 'english', es: 'español' };
  * `data.lang` and `data.outputPath`. The page itself is never returned.
  */
 export function alternatesFor(page, pages) {
+  const self = page.data?.outputPath;
   const key = page.data?.translationKey;
-  if (!key) return [];
-  return pages
-    .filter((p) => p.data.translationKey === key && p.data.outputPath !== page.data.outputPath)
-    .sort((a, b) => LANGS.indexOf(a.data.lang) - LANGS.indexOf(b.data.lang));
+
+  /**
+   * The pair is stated in one of two forms, and this resolves both into one
+   * set so nothing downstream has to know which was used.
+   *
+   *   translationKey  a GROUP NAME on both halves. The ten Lab pairs, where
+   *                   both halves are migrated and the migration computes the
+   *                   key for both at once.
+   *   translationOf   an EDGE from the authored half to the page it translates.
+   *                   Every pair outside the Lab, because the English half is a
+   *                   migrated record that migrate-pages.mjs rewrites on every
+   *                   run — a key added there would not survive. See the field
+   *                   comment in src/content/schemas.mjs.
+   *
+   * `origin` is the page this group hangs off: the original for a translation,
+   * and the page itself for an original. Everything pointing at that origin,
+   * plus the origin itself, is the group.
+   */
+  const origin = page.data?.translationOf ?? self;
+
+  const group = pages.filter((p) => {
+    if (p.data.outputPath === self) return false;
+    if (key && p.data.translationKey === key) return true;
+    if (p.data.translationOf === origin) return true;
+    return p.data.outputPath === origin;
+  });
+
+  return group.sort((a, b) => LANGS.indexOf(a.data.lang) - LANGS.indexOf(b.data.lang));
+}
+
+/**
+ * Every `translationOf` that names a page which does not exist.
+ *
+ * A dangling relation renders as "this page has no translation" — the switcher
+ * simply does not appear — which is precisely the silent failure that made
+ * `translationKey` a stored field rather than a derived one. It has to be loud,
+ * so the page route calls this and throws; a typo in an `outputPath` fails the
+ * build instead of quietly unpublishing a translation.
+ *
+ * Returns a list of problems, so the caller decides how to report. Pure, like
+ * everything else here.
+ */
+export function validateTranslations(pages) {
+  const known = new Set(pages.map((p) => p.data.outputPath));
+  const problems = [];
+  for (const p of pages) {
+    const target = p.data.translationOf;
+    if (!target) continue;
+    if (!known.has(target)) {
+      problems.push(
+        `${p.data.outputPath}: translationOf "${target}" names no page`,
+      );
+    } else if (target === p.data.outputPath) {
+      problems.push(`${p.data.outputPath}: translationOf names the page itself`);
+    }
+  }
+  return problems;
 }
 
 /**
@@ -57,4 +111,29 @@ export function languageChoices(page, pages) {
       outputPath: p.data.outputPath,
       current: p.data.outputPath === page.data.outputPath,
     }));
+}
+
+/**
+ * The global picker always names the site's two published languages.
+ *
+ * An unavailable alternate remains visibly present, but is not a link: sending
+ * someone to an unrelated Spanish page would look like translation while
+ * breaking the relationship this module exists to protect. When translation
+ * coverage grows, the same function automatically turns that chip into a link.
+ */
+export function globalLanguageChoices(page, pages) {
+  const available = new Map(
+    [page, ...alternatesFor(page, pages)].map((p) => [p.data.lang, p]),
+  );
+
+  return LANGS.map((lang) => {
+    const match = available.get(lang);
+    return {
+      lang,
+      label: LANG_LABEL[lang] ?? lang,
+      outputPath: match?.data.outputPath,
+      current: page.data.lang === lang,
+      unavailable: !match,
+    };
+  });
 }

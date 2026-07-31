@@ -22,6 +22,13 @@ const NOINDEX = new Set([
   // address too would put the same page in the sitemap twice, which is the
   // duplicate the issue exists to remove.
   '/interplanetary-players', '/interplanetary-players.html',
+  // Retired 2026-07-30 by the owner: the newsletter sign-up. Redirect stub to /.
+  '/subscribe', '/subscribe.html',
+  // Retired 2026-07-30 by the owner: both were a Google Form and the content was
+  // out of date. They are redirect stubs to /bookings now, and a redirect has no
+  // business in a sitemap — the same reasoning as the line above.
+  '/eng-feedback', '/eng-feedback.html',
+  '/esp-feedback', '/esp-feedback.html',
 ]);
 
 /**

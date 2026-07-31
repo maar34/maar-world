@@ -20,8 +20,8 @@ const validCard = {
   suit_title: 'SkySounds.1',
   card_title: 'Card I',
   card_description: 'The north of Maar World is a place where the ground and water sing in harmony.',
-  cover: 'https://www.dropbox.com/s/annm9o8t07jxrzs/Thumb_SkySounds_1_1.png?raw=1',
-  card_image: 'https://www.dropbox.com/s/qfzath7lo2pisex/SkySounds_1_1.png?raw=1',
+  cover: '/img/cards/Thumb_SkySounds_1_1.webp',
+  card_image: '/img/cards/SkySounds_1_1.webp',
   player: 'https://play.maar.world/?g=334&s=0&c=1',
   track_v2_id: '6919a2fad44c12045386f4c7',
   noindex: true,
@@ -54,6 +54,25 @@ const cases = [
     'rejects a card whose noindex is not true',
     'cards',
     { ...validCard, noindex: false },
+    false,
+  ],
+  /**
+   * The two cases below are what the self-hosting change is worth keeping.
+   * Every card carried a www.dropbox.com card_image until 2026-07-30 — 73
+   * on-load third-party requests, the sole verify:links failure. The files are
+   * self-hosted now, and these assert that a hotlink cannot come back by
+   * someone pasting a URL into frontmatter the way every one of them arrived.
+   */
+  [
+    'rejects a third-party card_image — on-load images are first-party only',
+    'cards',
+    { ...validCard, card_image: 'https://www.dropbox.com/s/qfzath7lo2pisex/SkySounds_1_1.png?raw=1' },
+    false,
+  ],
+  [
+    'rejects a third-party cover — same rule, same reason',
+    'cards',
+    { ...validCard, cover: 'https://www.dropbox.com/s/annm9o8t07jxrzs/Thumb_SkySounds_1_1.png?raw=1' },
     false,
   ],
   [
@@ -133,5 +152,19 @@ for (const [name, collection, value, shouldPass] of cases) {
   }
 }
 
-console.log(`\n  ${cases.length - failed}/${cases.length} schema cases passed\n`);
+const widthDefault = SCHEMAS.pages.safeParse({
+  outputPath: 'layout-contract-proof',
+  title: 'layout contract proof',
+  area: 'maar',
+  kind: 'page',
+  lang: 'en',
+});
+if (widthDefault.success && widthDefault.data.contentWidth === 'standard') {
+  console.log('  PASS  defaults every page to the shared standard content width');
+} else {
+  failed += 1;
+  console.log('  FAIL  defaults every page to the shared standard content width');
+}
+
+console.log(`\n  ${cases.length + 1 - failed}/${cases.length + 1} schema cases passed\n`);
 process.exit(failed ? 1 : 0);

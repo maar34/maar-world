@@ -111,6 +111,31 @@ export function readableText(html) {
 }
 
 /**
+ * `plainText` output with entities decoded — for COMPARING two texts, never for
+ * fingerprinting one.
+ *
+ * `plainText` decodes nothing but `&nbsp;`, and it must not start: its exact
+ * output is baked into `routes/manifest.production.json`. That is correct for a
+ * fingerprint and wrong for a comparison, because the two sides of
+ * verify:content's heading assertion are serialised by different tools.
+ * Production's Jekyll HTML carries a bare `&` inside `<h3>soundscapes & music`;
+ * Astro escapes the same string to `soundscapes &amp; music`, as it must —
+ * emitting a bare `&` to satisfy a checker would be invalid HTML. A reader sees
+ * one ampersand either way, so the two are the same heading, and 33 NFC card
+ * pages reported it missing from a page that renders it.
+ *
+ * Applied to BOTH sides, so it normalises a serialisation difference and hides
+ * no content difference: a heading production has and the build does not still
+ * fails, because decoding cannot conjure a string that is not there.
+ *
+ * It is `readableText` under a name that says why it is being called. The
+ * question "what would a reader hear" and the question "are these two strings
+ * the same heading" have the same answer, and naming the second one keeps a
+ * later edit to either from silently changing the other.
+ */
+export const comparable = readableText;
+
+/**
  * Entities as they appear in ATTRIBUTE values.
  *
  * Separate from `readableText` because the question is different: an `href`

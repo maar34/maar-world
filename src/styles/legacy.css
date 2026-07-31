@@ -33,20 +33,18 @@
 
 /* ---- the card tail — 34 pages ------------------------------------------- */
 /**
- * The migration's own class names, written by CARD_TAIL in
+ * The migration's own class name, written by CARD_TAIL in
  * scripts/migrate-pages.mjs to restore the tail the `card.collect` layout used
- * to render. They were emitted with no styling at all, so the instruction to
- * unmute your device read at the same weight as the card's own description.
+ * to render.
+ *
+ * `.card-player-note` was here too and has gone with the markup it styled: the
+ * owner removed the Snippet heading and the unmute/PLAY note on 2026-07-31,
+ * because both described the old play.maar.world player rather than the Orbiter
+ * these pages now embed. A rule matching nothing is worse than no rule — it
+ * reads as live styling and hides that the element is gone.
  */
 .prose .card-unlock {
   color: var(--ink-muted);
-}
-
-.prose .card-player-note {
-  color: var(--ink-meta);
-  font-family: var(--t-small-face);
-  font-size: var(--t-small-size);
-  line-height: var(--t-small-line);
 }
 
 /* The Lab index tag chip used to be here, scoped to the body wrapper. It has
@@ -105,17 +103,53 @@
   align-items: center;
 }
 
+/**
+ * `--dark` was a theme modifier for a light page. It used to be drawn here as
+ * the sunken step — a 4% ink wash — which on a black surface is a grey band laid
+ * over the page: five of them down /collect, each one announcing that the thing
+ * inside it came from somewhere else. The owner's note is exactly that, that the
+ * plates read as "this grey thing" rather than as part of the page.
+ *
+ * So on a dark surface `--dark` is the surface, and the modifier is worth only
+ * its room. The block padding stays because that is the band's rhythm; the
+ * inline padding goes, so the text inside a hero lines up with the text above it
+ * instead of being indented by a plate that is no longer drawn.
+ *
+ * On paper the wash still separates, so it is kept there — one rule, scoped.
+ */
 .prose .hero--dark {
-  background: var(--sf-sunken);
-  padding: var(--s-8);
+  background: none;
+  padding-block: var(--s-8);
   border-radius: var(--r-0);
 }
 
+[data-surface='paper'] .prose .hero--dark {
+  background: var(--sf-sunken);
+  padding: var(--s-8);
+}
+
+/**
+ * `align-items` is the whole of the "some buttons are full width, some are
+ * small" note.
+ *
+ * This is a flex column at `width: 100%`, so its default `stretch` sized every
+ * direct child to the column. Two of /collect's three actions sat inside a `<p>`
+ * and came out at their label width; "What is an Orbiter?" is a direct child and
+ * came out at 926px — the same component, drawn as a banner, because of one
+ * level of legacy markup nesting. Aligning rather than stretching makes all
+ * three the same object again, and `min-inline-size` below still gives them a
+ * shared floor.
+ */
 .prose .hero__content {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: var(--s-4);
   width: 100%;
+}
+
+.prose .hero--center .hero__content {
+  align-items: center;
 }
 
 /* ---- player wrappers — 15 pages ----------------------------------------- */
@@ -193,6 +227,58 @@
   transform: translateY(var(--press-nudge));
 }
 
+/* The purchase card's photograph is a 3024x3024 square. Rendered at the full
+   measure it stood taller than the viewport and pushed the price out of sight,
+   so the frame is capped and the photo covers it. The FILE is still 2.7MB —
+   that is the ledger's media/assets-over-2mb, and a display size does not fix
+   it; re-encoding is still owed. */
+.prose .card__image {
+  max-inline-size: 22rem;
+  margin-inline: auto;
+}
+
+.prose .card__image .image {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---- the Collect calls to action ---------------------------------------
+   Three of these sit on /collect and they were 79px, 271px and 130px wide —
+   each sized to its own label, so they read as three unrelated things rather
+   than one set of choices. A shared floor makes them a row; the widest still
+   grows past it, which is why this is a min and not a width. */
+.prose a.button {
+  gap: var(--s-2);
+  min-inline-size: 11rem;
+}
+
+.prose a.button .button__icon {
+  flex: none;
+  inline-size: var(--s-6);
+  block-size: var(--s-6);
+  fill: currentColor;
+}
+
+/* ONE primary, and only one. The rule above deliberately makes every migrated
+   `.button` an outline, because those bodies marked six things primary and a
+   page with six primary actions has none. That still holds — this is the single
+   exception, hand-marked in the content: buying the cards is what /collect is
+   for, and it was competing on equal footing with "what is an Orbiter?". */
+.prose a.button--buy {
+  background: var(--c-collect);
+  color: var(--pigment-ink);
+  border-color: var(--c-collect);
+}
+
+.prose a.button--buy:hover {
+  background: transparent;
+  color: var(--c-collect);
+  border-color: var(--c-collect);
+}
+
 /* ---- click-to-load facades ----------------------------------------------
    Every third-party embed on this site is one of these. No YouTube, Vimeo,
    SoundCloud, Google Forms or radio-stream byte is requested until the visitor
@@ -266,4 +352,207 @@
 .prose .embed-facade__action:focus-visible {
   outline: var(--focus-w) solid var(--focus-c);
   outline-offset: var(--focus-o);
+}
+
+/* ---- the per-embed consent gate -----------------------------------------
+   ui/embed-consent builds all of this at runtime, so none of it exists for a
+   visitor without JavaScript — who keeps the click-out above, unchanged.
+
+   ONE FRAME. The gated state deliberately drops the plate: no border, no
+   padding, no background. The first version nested a bordered, hatched plate
+   inside the figure and then the player inside that, which read as three boxes
+   around one video. The poster IS the component now, and the player replaces it
+   at the same size, so nothing moves and nothing is drawn twice. */
+.prose .embed-facade--gated {
+  display: block;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  gap: 0;
+  /* Every facade on the site sits in a `.hero`, which is a column flex box that
+     centres its items — so an item is only as wide as its content, and the
+     poster's own `inline-size: 100%` resolved against that to nothing at all.
+     The poster was 0×0 and the lazy image consequently never loaded. Stated
+     here so the frame has a width to be a percentage of. */
+  inline-size: 100%;
+  max-inline-size: 100%;
+}
+
+/* The whole poster is the control: picture, play mark and one short line. */
+.prose .embed-facade__poster {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  color: var(--ink);
+  background: var(--sf-sunken);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.prose .embed-facade__poster-img {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Audio has no picture to show, so it gets a strip rather than a 16:9 hole. */
+.prose .embed-facade__poster--audio {
+  aspect-ratio: auto;
+  block-size: 7rem;
+}
+
+/* The booking calendar is a tool, not a picture: a labelled bar, no play mark,
+   no empty 16:9 frame waiting for an image that does not exist. */
+.prose .embed-facade__poster--panel {
+  aspect-ratio: auto;
+  block-size: auto;
+  padding: var(--s-4);
+  background: var(--plate);
+  border: 1px solid var(--ink-hairline);
+  text-align: center;
+}
+
+.prose .embed-facade__poster--panel .embed-facade__hint {
+  position: static;
+  padding: 0;
+  background: none;
+  color: var(--ink);
+  text-align: center;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.prose .embed-facade__poster--panel:hover .embed-facade__hint {
+  background: var(--c-maar);
+  color: var(--pigment-ink);
+  text-decoration: none;
+}
+
+/* An appointment grid needs room; 16:9 would crop it to a scrolling slot, and
+   44rem still made Google's own scheduler scroll inside itself. It is given the
+   viewport minus the header rather than a flat number, so a tall screen shows
+   the whole month and a laptop still gets a usable grid, with 46rem as the floor
+   under which the scheduler starts hiding its own controls.
+
+   NOTE: what renders INSIDE this frame is Google's, not ours. The scheduler
+   follows the visitor's own `prefers-color-scheme`, so on a dark-mode machine it
+   draws its own low-contrast dark theme. It is cross-origin, so neither a
+   `color-scheme` on this element nor a `bgcolor` parameter reaches it — both were
+   tried; the parameter blanked the embed outright. There is no fix on our side. */
+.prose .embed-facade[data-embed-provider='google-calendar'] .embed-facade__player {
+  aspect-ratio: auto;
+  block-size: clamp(46rem, 88svh, 68rem);
+}
+
+.prose .embed-facade__play {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  inline-size: var(--s-16);
+  block-size: var(--s-16);
+  color: var(--sf-paper);
+  /* The poster is someone else's photograph and its brightness is unknown, so
+     the mark carries its own shadow rather than trusting the picture behind. */
+  filter: drop-shadow(0 1px 6px rgb(0 0 0 / 0.55));
+  transition: scale var(--m-fast) var(--ease);
+}
+
+/* One line, bottom-left, over a gradient that only exists where type sits. */
+.prose .embed-facade__hint {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  padding: var(--s-6) var(--s-3) var(--s-2);
+  text-align: start;
+  color: var(--sf-paper);
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: var(--t-meta-line);
+  letter-spacing: var(--t-meta-track);
+  background: linear-gradient(to top, rgb(0 0 0 / 0.7), transparent);
+}
+
+.prose .embed-facade__poster:hover .embed-facade__play {
+  scale: 1.06;
+}
+
+.prose .embed-facade__poster:focus-visible {
+  outline: var(--focus-w) solid var(--focus-c);
+  outline-offset: var(--focus-o);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prose .embed-facade__play { transition: none; }
+  .prose .embed-facade__poster:hover .embed-facade__play { scale: 1; }
+}
+
+/* The player replaces the poster at exactly its size, so the page does not jump. */
+.prose .embed-facade__player {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 16 / 9;
+  display: block;
+  border: 0;
+  background: var(--sf-sunken);
+}
+
+/* SoundCloud's visual player is a fixed-height banner, not a 16:9 picture. */
+.prose .embed-facade[data-embed-provider='soundcloud'] .embed-facade__player {
+  aspect-ratio: auto;
+  block-size: 25rem;
+}
+
+.prose .embed-facade__player:focus-visible {
+  outline: var(--focus-w) solid var(--focus-c);
+  outline-offset: var(--focus-o);
+}
+
+/**
+ * The sponsor logo row on the two ip-orchestra pages.
+ *
+ * `.logo-grid` is a legacy class the migration carried over, and it has had no
+ * rule in this build at all — three logos simply stacked at whatever size each
+ * file happened to be. That was invisible while two of the three were broken
+ * Dropbox hotlinks; restoring the UArtes mark made it plain, because a 110px
+ * mark and a 3840px one in the same column read as a mistake rather than as a
+ * row of institutional credits.
+ *
+ * A common HEIGHT is what makes logos of different proportions sit together —
+ * matching their widths would make the wide one small and the square one huge.
+ * 72px is chosen so nothing is scaled UP: the smallest supplied file is 112px
+ * tall, and an upscaled logo looks soft in exactly the way a logo must not.
+ *
+ * The text credit is here because MMAT's file is still missing (ledger MW-6
+ * lab/mmat-logo-still-dead); it sits on the same baseline so the row does not
+ * look broken while that is outstanding.
+ */
+.logo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-8);
+  margin-block: var(--s-8);
+}
+
+.logo-grid img {
+  block-size: 72px;
+  inline-size: auto;
+  max-inline-size: 100%;
+  object-fit: contain;
+}
+
+.logo-grid__credit {
+  color: var(--ink-meta);
 }

@@ -101,6 +101,11 @@ ENT Worlds
   - 16/06/2016 📍 Pestana Palace, Lisbon, Portugal. 
   - 16/09/2016 📍 Sala Camacuá, Montevideo, Uruguay. 
 
+<div class="hero hero--center hero--dark" style="margin:.75rem 0 1rem;">
+<p class="embed-facade" data-embed-facade data-embed-provider="vimeo"><a class="embed-facade__action" href="https://vimeo.com/137703428" target="_blank" rel="noopener noreferrer"><span class="embed-facade__provider" aria-hidden="true">vimeo</span><span class="embed-facade__label">watch this video on vimeo</span></a><span class="embed-facade__note">opens in a new tab. nothing is requested from vimeo until you choose it.</span></p>
+<p style="text-align:center;font-size:.85rem;opacity:.85;margin:.35rem 0 0;">Luminiscencia Litoraleña (Vimeo)</p>
+</div>
+
   <br>
 
 -    <a href="https://vimeo.com/110938519" rel="Cruces Sonoros" target="_blank">Tembey Concierto Audiovisual</a>, Head Brothers
@@ -108,7 +113,13 @@ ENT Worlds
       - 10/2014 International Seminar on Hyper / Text Narratives NHT, 📍 UdelaR, Montevideo
       -  4/9/14  LabLT, laboratory of cross-language languages. 📍 Montevideo, Uruguay
       -23/9/14 INAE, Equinox Art and Science Festival, Montevideo, 📍 Uruguay. 
-      - 9/9/14 Cruces Sonoros. Museo de Arte Contemporáneo de la Universidad de Chile. 📍 Santiago de chile. 
+      - 9/9/14 Cruces Sonoros. Museo de Arte Contemporáneo de la Universidad de Chile. 📍 Santiago de chile.
+
+<div class="hero hero--center hero--dark" style="margin:.75rem 0 1rem;">
+<p class="embed-facade" data-embed-facade data-embed-provider="vimeo"><a class="embed-facade__action" href="https://vimeo.com/104399616" target="_blank" rel="noopener noreferrer"><span class="embed-facade__provider" aria-hidden="true">vimeo</span><span class="embed-facade__label">watch this video on vimeo</span></a><span class="embed-facade__note">opens in a new tab. nothing is requested from vimeo until you choose it.</span></p>
+<p style="text-align:center;font-size:.85rem;opacity:.85;margin:.35rem 0 0;">Tembey Concierto Audiovisual (Vimeo)</p>
+</div>
+ 
   
   <br>
 

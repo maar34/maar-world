@@ -86,48 +86,38 @@
 
     /* ---- controls ------------------------------------------------------- */
 
-    const controls = document.createElement('div');
-    controls.className = 'carousel__controls';
+    /**
+     * TWO ROUND ARROWS, ONE ON EACH SIDE OF THE PICTURES.
+     *
+     * The version this replaces put a boxed `prev`, ten circles and a boxed
+     * `next` in a row under the track. Three faults, all the owner's and all
+     * fair: it read as one connected widget rather than as two controls, it sat
+     * directly above the unrelated lab/live/bookings links so the two became a
+     * single cluster of boxes, and the dots were noise on a page that has no
+     * other row of circles anywhere.
+     *
+     * A carousel's controls belong beside the thing they move. These are
+     * absolutely positioned against the carousel and vertically centred on the
+     * image band, so nothing is added below the track at all.
+     */
+    const chevron = (d: string) =>
+      `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">` +
+      `<path d="${d}" fill="none" stroke="currentColor" stroke-width="1.6" ` +
+      `stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
-    const button = (label: string) => {
+    const arrow = (side: 'prev' | 'next', label: string, path: string) => {
       const b = document.createElement('button');
       b.type = 'button';
-      b.className = 'carousel__control';
-      /* The visible word IS the accessible name. No icon font — the theme's
-         Font Awesome is gone — and no glyph standing in for a verb. */
-      b.textContent = label;
+      b.className = `carousel__arrow carousel__arrow--${side}`;
+      /* The glyph is decorative, so the name is an attribute rather than text.
+         No icon font — the theme's Font Awesome is gone and is not coming back. */
+      b.setAttribute('aria-label', label);
+      b.innerHTML = chevron(path);
       return b;
     };
 
-    const prev = button('prev');
-    const next = button('next');
-
-    /**
-     * ONE DOT PER SLIDE.
-     *
-     * A snap list, not a slide list — with variable-width slides Embla can put
-     * more than one slide on a snap, and a dot that scrolls to a position
-     * nothing snaps to is a dead control.
-     */
-    const dots = document.createElement('div');
-    dots.className = 'carousel__dots';
-    dots.setAttribute('role', 'group');
-    dots.setAttribute('aria-label', 'choose a slide');
-
-    const snaps = embla.scrollSnapList();
-    const dotButtons = snaps.map((_, index) => {
-      const dot = document.createElement('button');
-      dot.type = 'button';
-      dot.className = 'carousel__dot';
-      /* The circle is drawn by CSS and carries no text, so the name is the
-         only thing a screen reader has — it says the position in words. */
-      dot.setAttribute('aria-label', `slide ${index + 1} of ${snaps.length}`);
-      dot.addEventListener('click', () => embla.scrollTo(index));
-      dots.append(dot);
-      return dot;
-    });
-
-    controls.append(prev, dots, next);
+    const prev = arrow('prev', 'previous slide', 'M15 5 L8 12 L15 19');
+    const next = arrow('next', 'next slide', 'M9 5 L16 12 L9 19');
 
     /**
      * "the counter in a polite live region."
@@ -143,19 +133,14 @@
     counter.setAttribute('aria-live', 'polite');
     counter.textContent = say(embla.selectedScrollSnap(), count);
 
-    root.append(controls, counter);
+    root.append(prev, next, counter);
 
     /* ---- state ---------------------------------------------------------- */
 
+    /* No disabled state on either arrow: the track loops, so neither is ever at
+       an end. See the `loop` option above for why that overrides §06's rule. */
     const sync = () => {
-      const selected = embla.selectedScrollSnap();
-      /* No disabled state: the track loops, so neither control is ever at an
-         end. See the `loop` option above for why that overrides §06's rule. */
-      dotButtons.forEach((dot, index) => {
-        if (index === selected) dot.setAttribute('aria-current', 'true');
-        else dot.removeAttribute('aria-current');
-      });
-      counter.textContent = say(selected, count);
+      counter.textContent = say(embla.selectedScrollSnap(), count);
     };
 
     /**
@@ -188,7 +173,11 @@
       const nodes = embla.slideNodes();
       const isScroll = eventName === 'scroll';
 
-      embla.scrollSnapList().forEach((snap, snapIndex) => {
+      /* Read live rather than captured at init: `reInit` fires when the images
+         land and change the slide widths, which can change the snap count. */
+      const snapList = embla.scrollSnapList();
+
+      snapList.forEach((snap, snapIndex) => {
         let distance = snap - progress;
 
         for (const slideIndex of engine.slideRegistry[snapIndex]) {
@@ -204,7 +193,7 @@
           }
 
           /* 0 at the centre, 1 by the time a slide is a full viewport away. */
-          const away = clamp(Math.abs(distance) * snaps.length * 0.5, 0, 1);
+          const away = clamp(Math.abs(distance) * snapList.length * 0.5, 0, 1);
           const slide = nodes[slideIndex];
           slide.style.setProperty('--slide-fade', String(1 - away * (1 - FADE_FLOOR)));
           slide.style.setProperty('--slide-scale', String(1 - away * (1 - SCALE_FLOOR)));
@@ -252,6 +241,25 @@
     prev.addEventListener('click', () => embla.scrollPrev());
     next.addEventListener('click', () => embla.scrollNext());
 
+    /* Only explicitly opted-in carousels advance on their own. This is the
+       homepage collage field: its images are decorative, it pauses for any
+       pointer or keyboard interaction, and reduced-motion users never get
+       auto-advance. Content carousels remain entirely visitor-driven. */
+    const autoplayMs = Number(root.dataset.autoplay);
+    let autoplay = 0;
+    const stopAutoplay = () => window.clearInterval(autoplay);
+    const startAutoplay = () => {
+      stopAutoplay();
+      if (!autoplayMs || reduced.matches || document.hidden) return;
+      autoplay = window.setInterval(() => embla.scrollNext(), autoplayMs);
+    };
+    root.addEventListener('pointerenter', stopAutoplay);
+    root.addEventListener('pointerleave', startAutoplay);
+    root.addEventListener('focusin', stopAutoplay);
+    root.addEventListener('focusout', startAutoplay);
+    document.addEventListener('visibilitychange', startAutoplay);
+    startAutoplay();
+
     /**
      * "arrow keys move one slide, home and end jump to the ends."
      *
@@ -275,6 +283,7 @@
     /* A visitor can turn reduced motion on while the page is open. */
     reduced.addEventListener('change', () => {
       embla.reInit({ duration: reduced.matches ? 0 : 25 });
+      startAutoplay();
     });
   }
 </script>

@@ -13,6 +13,26 @@
 import { z } from 'zod';
 
 const url = z.string().url();
+
+/**
+ * An image a page renders on load, and therefore a first-party path.
+ *
+ * Every card image was a `www.dropbox.com/...?raw=1` URL: 2.35 MB behind a 302
+ * chain, and 73 on-load requests to a third party across 71 pages — the single
+ * thing failing `verify:links`, and the one thing the no-analytics /
+ * no-cookie-banner posture depends on not happening. The owner approved
+ * self-hosting on 2026-07-30 and the files now live in media/collect/img/cards/.
+ *
+ * This is a regex rather than a note because the note is what failed the first
+ * time. `url` accepted any absolute URL, so the only thing standing between the
+ * build and a reinstated hotlink was that nobody typed one. The migrated-page
+ * schema below has always required first-party covers for exactly this reason;
+ * the card records now hold the same line.
+ */
+const imagePath = z
+  .string()
+  .regex(/^\/(img|assets)\//, 'an on-load image must be a root-relative first-party /img or /assets path');
+
 const permalink = z
   .string()
   .regex(/^\/[^\s]*$/, 'permalink must start with / and contain no spaces');
@@ -50,8 +70,8 @@ export const cardSchema = z
     suit_title: z.string().min(1),
     card_title: z.string().min(1),
     card_description: z.string().min(1),
-    cover: url,
-    card_image: url,
+    cover: imagePath,
+    card_image: imagePath,
     titles: z.record(z.string(), z.string()).optional(),
     key: z.string().optional(),
 
@@ -124,8 +144,43 @@ export const pageSchema = z
      */
     translationKey: z.string().min(1).optional(),
 
+    /**
+     * The `outputPath` of the page THIS record translates.
+     *
+     * A second way to say the same relation, and it exists for a structural
+     * reason rather than a stylistic one: `translationKey` has to be on BOTH
+     * halves of a pair, and for every page outside the Lab the English half is
+     * a MIGRATED record. `src/content/migrated/**` is wiped and rewritten by
+     * scripts/migrate-pages.mjs on every run, so a key hand-added there lasts
+     * until the next migration and no longer. Pairing the ten Lab articles was
+     * possible without this only because both halves are migrated and the
+     * migration could compute the key for both at once.
+     *
+     * So an authored translation names its counterpart instead, and the
+     * relation lives entirely in the one file that publishes it — which is the
+     * property the authored seam was built for. Nothing in `migrated/` changes,
+     * and no migration has to run to publish a translation.
+     *
+     * DIRECTIONAL, AND ONLY EVER SET ON THE AUTHORED SIDE. It names a page; it
+     * is not a group name. `translationKey` remains the grouping form and the
+     * two are resolved into one set by src/lib/translations.mjs, so nothing
+     * downstream has to know which form a given pair used.
+     *
+     * A value naming no existing page fails the build — see validateTranslations
+     * in src/lib/translations.mjs, called from the page route. A dangling
+     * relation would otherwise render as "this page has no translation", which
+     * is the silent-failure shape translationKey was stored to avoid.
+     */
+    translationOf: z.string().min(1).optional(),
+
     permalink: permalink.optional(),
     surface: z.enum(['dark', 'paper']).default('dark'),
+    /**
+     * The shared shell-width contract. Standard is deliberately the default
+     * for every route; a narrower reading page must name that exceptional
+     * choice in its record, then BaseLayout carries it to both shells.
+     */
+    contentWidth: z.enum(['standard', 'reading']).default('standard'),
     noindex: z.boolean().optional(),
     tags: z.array(z.string()).default([]),
     source: z.string().optional(),
@@ -146,6 +201,31 @@ export const pageSchema = z
      * nine thumbnails.
      */
     indexCovers: z.boolean().optional(),
+
+    /**
+     * What those covers ARE, which decides the shape the grid frames them in.
+     * Passed through to `coverShape` on patterns/card — see the prop there.
+     *
+     * A page-level declaration and not a per-entry one, because a grid whose
+     * cells were different shapes would not be a grid; and declared rather than
+     * inferred from `indexOf === 'collect-cards'`, because dispatch in this
+     * build is a schema value, never a string comparison against a URL or a
+     * collection name.
+     */
+    indexCoverShape: z.enum(['band', 'card']).optional(),
+
+    /**
+     * Whether that grid is a scattered DECK — resting at an angle and squaring
+     * up on hover — or the default, which rests square and leans on hover.
+     * Passed through to `scatter` on patterns/card.
+     *
+     * Separate from `indexCoverShape` rather than implied by it, because they
+     * answer different questions: one is what the picture is, the other is how
+     * the page arranges it. A future index could well want card-shaped covers
+     * laid out straight, and it should not have to lie about the first field to
+     * get the second.
+     */
+    indexScatter: z.boolean().optional(),
 
     /**
      * Membership of a legacy Jekyll output collection, and the position in it.
@@ -184,7 +264,7 @@ export const pageSchema = z
      * this field fixes: the home page was rendering as an article because
      * "article" was the only thing the route knew how to be.
      */
-    family: z.enum(['home']).optional(),
+    family: z.enum(['home', 'tree', 'collect']).optional(),
 
     /**
      * ── family 01 only ──────────────────────────────────────────────────────
@@ -253,7 +333,9 @@ export const pageSchema = z
     // URLs are absent by design — noCommerceFields rejects them.
     suit_title: z.string().optional(),
     card_title: z.string().optional(),
-    card_image: url.optional(),
+    // Self-hosted since 2026-07-30, same rule as `cover` above and as the card
+    // records — an image a page renders on load is first-party or it is nothing.
+    card_image: imagePath.optional(),
     card_description: z.string().optional(),
     snip_player: url.optional(),
   })

@@ -25,7 +25,7 @@
  * The route decides layout; this decides only what the pieces ARE.
  */
 
-import { blocks, cutBlocks } from './html-blocks.mjs';
+import { blocks, cutBlocks, matchingDivEnd } from './html-blocks.mjs';
 
 const collapse = (s) => s.replace(/\s+/g, ' ').trim();
 
@@ -75,6 +75,67 @@ const rotLines = (html) =>
   [...String(html).matchAll(/<span\b[^>]*class="[^"]*\brot-line\b[^"]*"[^>]*>([\s\S]*?)<\/span>/gi)]
     .map((m) => text(m[1]))
     .filter(Boolean);
+
+/**
+ * Legacy home quick links were navigation duplicated inside the page body.
+ *
+ * The global header now owns Lab, Landings and Bookings, so preserving this
+ * three-link row adds three weak controls without adding a destination. Match
+ * the complete, exact route set inside one leaf div rather than a presentational
+ * class: the legacy class names are disposable and the route set is the actual
+ * semantic identity of this obsolete component.
+ */
+function legacyQuickLinkBlocks(html) {
+  const expected = new Set(['/lab', '/landings', '/bookings']);
+  const matches = [];
+
+  for (const open of html.matchAll(/<div\b[^>]*>/gi)) {
+    const start = open.index;
+    const end = matchingDivEnd(html, start);
+    if (end === -1) continue;
+    const inner = html.slice(start + open[0].length, end - '</div>'.length);
+    const links = [...inner.matchAll(/<a\b[^>]*href="([^"]+)"[^>]*>[\s\S]*?<\/a>/gi)]
+      .map((m) => m[1]);
+
+    if (links.length === expected.size && links.every((href) => expected.has(href))) {
+      matches.push({ start, end });
+    }
+  }
+
+  return matches;
+}
+
+/** The home-only photo/video sections are replaced by `patterns/collage-field`.
+ * Matching the outer section by class, rather than deleting individual media,
+ * keeps this a reversible structural decision and prevents orphaned controls. */
+function matchingSectionEnd(html, open) {
+  let depth = 0;
+  let i = open;
+  for (;;) {
+    const next = html.slice(i).search(/<\/?section\b/i);
+    if (next === -1) return -1;
+    i += next;
+    const closing = html.startsWith('</section', i);
+    depth += closing ? -1 : 1;
+    const tagEnd = html.indexOf('>', i);
+    if (tagEnd === -1) return -1;
+    i = tagEnd + 1;
+    if (depth === 0) return i;
+  }
+}
+
+function homeMediaSections(html) {
+  const wanted = /(^|\s)section-block--(?:photos|videos)(?:\s|$)/;
+  const regions = [];
+  for (const open of html.matchAll(/<section\b[^>]*>/gi)) {
+    const className = /class="([^"]*)"/i.exec(open[0])?.[1];
+    if (!className || !wanted.test(className)) continue;
+    const start = open.index;
+    const end = matchingSectionEnd(html, start);
+    if (end !== -1) regions.push({ start, end });
+  }
+  return regions;
+}
 
 /**
  * Read family 01 out of the home body.
@@ -199,6 +260,12 @@ export function extractHomeFamily(body, { cover } = {}) {
   } else {
     problems.push(`index: family 01 wants three entry cards, the body offers ${entries.length}`);
   }
+
+  // The page chrome already provides these three destinations. Removing them
+  // here, before generated content is written, makes the decision survive every
+  // migration rather than becoming a manual edit to index.md.
+  cuts.push(...legacyQuickLinkBlocks(body));
+  cuts.push(...homeMediaSections(body));
 
   return { body: cutBlocks(body, cuts).replace(/\n{3,}/g, '\n\n').trim(), fields, problems };
 }

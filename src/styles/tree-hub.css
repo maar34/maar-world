@@ -1,0 +1,175 @@
+/* ---- the Tree hub -------------------------------------------------------
+   A link-in-bio page: one picture, one column, nothing else. Read on a phone by
+   someone who came to press one thing, so the targets are large, the contrast is
+   guaranteed rather than inherited from the picture, and nothing here needs
+   JavaScript. */
+
+.tree-hub {
+  position: relative;
+  /* NOT `100svh`. This block starts BELOW the header, so a viewport-tall block
+     here made the page a header-height taller than the screen on every visit —
+     measured at 128px of header, the column's last button fell 31px past the
+     fold and the page opened looking like it had started halfway down. The
+     backdrop is `fixed`, so it covers the viewport whatever height this is; the
+     content decides the height instead, and lands under the header. */
+  min-block-size: auto;
+  /* Full-bleed out of the shared content column. */
+  inline-size: 100vw;
+  margin-inline: calc(50% - 50vw);
+  display: grid;
+  place-items: center;
+  /* Breathing room that shrinks on a short screen rather than pushing the last
+     button out of sight. */
+  padding-block: clamp(var(--s-8), 6svh, var(--s-16));
+  padding-inline: var(--s-6);
+  isolation: isolate;
+}
+
+/* The picture is 1080×1920 and is used at that shape: fixed, covering, behind.
+   `fixed` keeps it still while a long list scrolls over it. */
+.tree-hub__backdrop {
+  position: fixed;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+
+/* The type sits on someone else's photograph, so the surface it needs is
+   supplied here rather than hoped for. Darkest at the top and bottom, where the
+   title and the last link sit. */
+.tree-hub::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 0.45),
+    rgb(0 0 0 / 0.28) 45%,
+    rgb(0 0 0 / 0.5)
+  );
+}
+
+.tree-hub__column {
+  /* Wide enough for the longest label to stay on one line. A label that wraps
+     makes its pill 30px taller than the rest and the set stops reading as a set,
+     which is why "Get Your Cards on Bandcamp" was shortened rather than the
+     column widened to fit it. */
+  inline-size: min(100%, 24rem);
+  display: flex;
+  flex-direction: column;
+  /* --s-10 does not exist on this scale (1,2,3,4,6,8,12,16,24) and an undefined
+     custom property invalidates the whole declaration, so this gap was silently
+     0 and the title sat on top of the first button. */
+  gap: var(--s-16);
+}
+
+.tree-hub__title {
+  margin: 0;
+  text-align: center;
+}
+
+/* The list is a set, and reads as one: more space above it than between its
+   own items, so the title is clearly a heading and not the first entry. */
+
+.tree-hub__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+
+/* One target, full width, tall enough to hit with a thumb without aiming. */
+.tree-hub__link {
+  display: flex;
+  align-items: center;
+  /* Centred as a group. Left-aligned, the icon sat hard against the edge and
+     the label trailed off into a wide empty right-hand side. */
+  justify-content: center;
+  gap: var(--s-3);
+  min-block-size: 4rem;
+  /* --s-5 does not exist either, so this padding was dropped entirely and the
+     type ran to the border. */
+  padding: var(--s-4) var(--s-6);
+  border: 1px solid var(--sf-paper);
+  border-radius: 999px;
+  /* The button carries its own surface rather than relying on the scrim. That
+     is what lets the scrim be light enough to see the picture through: on a
+     narrow screen `cover` crops to the dark middle of this collage and a heavy
+     blanket made the whole page read as black. */
+  background: rgb(0 0 0 / 0.55);
+  color: var(--sf-paper);
+  text-decoration: none;
+  transition: background var(--m-fast) var(--ease), color var(--m-fast) var(--ease);
+}
+
+.tree-hub__icon {
+  flex: none;
+  inline-size: var(--s-6);
+  block-size: var(--s-6);
+  display: grid;
+  place-items: center;
+}
+
+.tree-hub__icon svg {
+  inline-size: 100%;
+  block-size: 100%;
+  fill: currentColor;
+}
+
+.tree-hub__label {
+  font-family: var(--t-meta-face);
+  font-size: var(--t-body-size);
+  line-height: var(--t-meta-line);
+  letter-spacing: var(--t-meta-track);
+}
+
+/* The fill is the paper, so the pressed state is the inverse of the resting one
+   rather than a new colour nobody has seen. */
+.tree-hub__link:hover,
+.tree-hub__link:focus-visible {
+  background: var(--sf-paper);
+  color: var(--pigment-ink);
+}
+
+.tree-hub__link:focus-visible {
+  outline: var(--focus-w) solid var(--focus-c);
+  outline-offset: var(--focus-o);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tree-hub__link { transition: none; }
+}
+
+/* On a phone the column is the screen width, not the 24rem cap, and the longest
+   label ("Artizen Entangled Space") runs about 8px past the space left after the
+   gutters. Measured at 375px: the two paddings and the icon gap take 84px of a
+   327px column, and reclaiming 20px of that is enough for every label to stay on
+   one line — no smaller type, and no renaming anybody's link. */
+@media (max-width: 26rem) {
+  .tree-hub { padding-inline: var(--s-4); }
+  .tree-hub__link {
+    padding-inline: var(--s-4);
+    gap: var(--s-2);
+  }
+}
+
+/* Below about 22rem even the reclaimed gutters are not enough for the longest
+   label, so the type gives way rather than the layout: one wrapped pill stands
+   30px taller than its neighbours and the set stops reading as a set. */
+@media (max-width: 22rem) {
+  .tree-hub__label { font-size: var(--t-meta-size); }
+}
+
+/* A fixed backdrop is the one thing iOS gets wrong often enough to be worth a
+   fallback: it repaints badly against rubber-band scrolling. Scrolling with the
+   page is the lesser problem. */
+@supports (-webkit-touch-callout: none) {
+  .tree-hub__backdrop,
+  .tree-hub::before { position: absolute; }
+}

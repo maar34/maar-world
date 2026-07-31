@@ -9,6 +9,8 @@ source: "collect.maar.world/collections/_pages/cards.html"
 lang: "en"
 indexOf: "collect-cards"
 indexCovers: true
+indexCoverShape: "card"
+indexScatter: true
 description: "Collect your favorite cards."
 ---
 

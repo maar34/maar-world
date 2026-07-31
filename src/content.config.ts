@@ -41,11 +41,17 @@ export const collections = {
   /**
    * Every non-card page, from BOTH of its sources.
    *
-   *   src/content/migrated/**  written by scripts/migrate-pages.mjs, and wiped
-   *                            by it on every run. Never hand-edit — the next
-   *                            migration undoes it.
+   *   src/content/migrated/**  came out of the migration originally. NOTHING
+   *                            REGENERATES IT NOW — scripts/migrate-pages.mjs was
+   *                            deleted on 2026-07-31 because it had fallen behind
+   *                            the content and its "regeneration" had become a
+   *                            revert. Hand-edit freely; see docs/AUTHORING.md.
    *   src/content/authored/**  written by a person. No script touches it, ever.
    *                            This is where a new Lab post goes.
+   *
+   * The split is now historical rather than operational: both are hand-maintained
+   * and the loader treats them identically. `migrated/` records where a page came
+   * from, not who may edit it.
    *
    * One collection, one schema, one route: a migrated page and an authored one
    * are the same kind of record, and `[...page].astro` cannot tell them apart —

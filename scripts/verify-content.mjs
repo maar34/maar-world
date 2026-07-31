@@ -26,7 +26,7 @@
  */
 
 import { runStandalone } from './lib/report.mjs';
-import { plainText, mainOf } from './lib/html-text.mjs';
+import { plainText, mainOf, comparable } from './lib/html-text.mjs';
 import { ARTIFACTS, has, loadJson, indexDist, readDistFile } from './lib/artifacts.mjs';
 import { resolveRoute } from './lib/routes.mjs';
 
@@ -133,9 +133,13 @@ export async function checkContent(report) {
    * becomes a floor under whatever the migration happened to produce.
    */
   const fraction = expectations.textFraction;
+  const excludedText = (page) =>
+    (page.excludedPerPage || [])
+      .filter((exclusion) => exclusion.kind === 'text')
+      .reduce((sum, exclusion) => sum + exclusion.count, 0);
   const wrongFloor = pages.filter((p) => {
     if (!p.production || typeof p.minTextLength !== 'number') return false;
-    const expected = Math.floor(p.production.bodyTextLength * fraction);
+    const expected = Math.floor(Math.max(0, p.production.bodyTextLength - excludedText(p)) * fraction);
     return p.minTextLength !== expected;
   });
   if (typeof fraction !== 'number' || fraction <= 0 || fraction > 1) {
@@ -149,7 +153,7 @@ export async function checkContent(report) {
   } else {
     report.pass(
       'minTextLength is a fraction of production body text',
-      `${fraction} × production body length on ${pages.length} pages`,
+      `${fraction} × production body length (after explicit text exclusions) on ${pages.length} pages`,
     );
   }
 
@@ -171,10 +175,17 @@ export async function checkContent(report) {
 
     const html = mainContent(readDistFile(file));
     const text = stripTags(html);
+    /**
+     * The same text with entities decoded, for the two assertions that compare
+     * STRINGS rather than lengths. `text` stays the fingerprint form because
+     * `minTextLength` is a length taken from production with `plainText`, and
+     * decoding would move it. See `comparable` in lib/html-text.mjs.
+     */
+    const readable = comparable(html);
     checked += 1;
 
     for (const heading of page.headings || []) {
-      if (!text.includes(heading)) {
+      if (!readable.includes(comparable(heading))) {
         const p = `${page.url}: missing heading "${heading}"`;
         problems.push(p);
         byKind.headings.push(p);
@@ -182,7 +193,7 @@ export async function checkContent(report) {
     }
 
     for (const needle of page.contains || []) {
-      if (!text.includes(needle)) {
+      if (!readable.includes(comparable(needle))) {
         const p = `${page.url}: missing text "${needle.slice(0, 40)}"`;
         problems.push(p);
         byKind.contains.push(p);
@@ -197,8 +208,11 @@ export async function checkContent(report) {
 
     if (typeof page.images === 'number') {
       const actual = countMatches(html, /<img\b/gi);
-      if (actual !== page.images) {
-        const p = `${page.url}: ${actual} images, expected ${page.images}`;
+      // Production supplies a floor: an image disappearing is a content loss;
+      // additional first-party artwork is an intentional design addition, not
+      // evidence that production content vanished.
+      if (actual < page.images) {
+        const p = `${page.url}: ${actual} images, expected at least ${page.images}`;
         problems.push(p);
         byKind.images.push(p);
       }
@@ -206,8 +220,26 @@ export async function checkContent(report) {
 
     if (typeof page.embeds === 'number') {
       const actual = countMatches(html, /<iframe\b/gi) + countMatches(html, /data-embed-facade/gi);
-      if (actual !== page.embeds) {
-        const p = `${page.url}: ${actual} embeds, expected ${page.embeds}`;
+      /**
+       * A floor, for the same reason images are one, and it was an exact count
+       * for no reason anyone wrote down.
+       *
+       * The question this check asks is "did production content vanish", and a
+       * page with MORE embeds than production is not evidence that it did. The
+       * owner asked for three videos in MW-9 `content/videos-added` — two Vimeo
+       * on /landings, one YouTube on /lab/en and /lab/es/orbits-and-bodies —
+       * and all three were reported here as content loss on pages that had
+       * gained content.
+       *
+       * Nothing is given up. An embed DISAPPEARING still fails, which is the
+       * regression this exists to catch. The other thing an exact count could
+       * be read as guarding — an extra third-party request firing on page load
+       * — is verify:links' job, and it polices it by ORIGIN, which is the
+       * property that actually matters; a count cannot tell a self-hosted embed
+       * from a tracker.
+       */
+      if (actual < page.embeds) {
+        const p = `${page.url}: ${actual} embeds, expected at least ${page.embeds}`;
         problems.push(p);
         byKind.embeds.push(p);
       }

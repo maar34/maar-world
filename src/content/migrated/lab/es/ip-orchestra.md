@@ -39,13 +39,7 @@ En nuestro laboratorio de creación implementaremos un proceso de investigación
 
 <!-- Swiper Primario (tarjetas) -->
 <div class="swiper my-3 swiper-demo swiper-demo--image swiper-demo--es-primary swiper--tall swiper--separated">
-<section class="carousel" aria-roledescription="carousel" aria-label="3 photographs"><ul class="carousel__track" role="list" tabindex="0"><li class="carousel__slide" id="carousel-lab-es-ip-orchestra-1-1"><div class="carousel__frame"><h2 class="orb-step">I</h2>
-<div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/07_ip-card.jpg" alt="Carta layering"/></div>
-<div class="orb-desc">Explora la música superponiendo sonidos con controles que varían según las cartas que juegas, creando experiencias sonoras ricas y originales.</div></div></li><li class="carousel__slide" id="carousel-lab-es-ip-orchestra-1-2"><div class="carousel__frame"><h2 class="orb-step">II</h2>
-<div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/10_ip-transit.png" alt="Mapeo de tránsito"/></div>
-<div class="orb-desc">Recrea música de forma intuitiva; la creación sonora se vuelve accesible y divertida para todxs, desde músicos profesionales hasta quienes no tienen experiencia previa.</div></div></li><li class="carousel__slide" id="carousel-lab-es-ip-orchestra-1-3"><div class="carousel__frame"><h2 class="orb-step">III</h2>
-<div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/08_ip-max-24.jpg" alt="Patch taller"/></div>
-<div class="orb-desc">Estamos al inicio de este viaje. Inscríbete para co-crear la primera Orbiters Orchestra.</div></div></li></ul></section>
+<section class="carousel" aria-roledescription="carousel" aria-label="3 photographs"><ul class="carousel__track" role="list" tabindex="0"><li class="carousel__slide" id="carousel-lab-es-ip-orchestra-1-1"><figure class="carousel__figure"><div class="carousel__frame"><div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/07_ip-card.jpg" alt="Carta layering"/></div></div><figcaption class="carousel__caption"><span class="carousel__caption-step">I</span>Explora la música superponiendo sonidos con controles que varían según las cartas que juegas, creando experiencias sonoras ricas y originales.</figcaption></figure></li><li class="carousel__slide" id="carousel-lab-es-ip-orchestra-1-2"><figure class="carousel__figure"><div class="carousel__frame"><div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/10_ip-transit.png" alt="Mapeo de tránsito"/></div></div><figcaption class="carousel__caption"><span class="carousel__caption-step">II</span>Recrea música de forma intuitiva; la creación sonora se vuelve accesible y divertida para todxs, desde músicos profesionales hasta quienes no tienen experiencia previa.</figcaption></figure></li><li class="carousel__slide" id="carousel-lab-es-ip-orchestra-1-3"><figure class="carousel__figure"><div class="carousel__frame"><div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/08_ip-max-24.jpg" alt="Patch taller"/></div></div><figcaption class="carousel__caption"><span class="carousel__caption-step">III</span>Estamos al inicio de este viaje. Inscríbete para co-crear la primera Orbiters Orchestra.</figcaption></figure></li></ul></section>
 <div class="swiper__button swiper__button--prev fas fa-chevron-left"></div>
 <div class="swiper__button swiper__button--next fas fa-chevron-right"></div>
 </div>
@@ -148,9 +142,7 @@ Tu mensaje:
 <div class="p-5"></div>
 
 <div class="logo-grid">
-<img src="https://www.dropbox.com/scl/fi/nh8l7j56uidh2cdd4uut4/MMAT-BLANCO-2024.png?rlkey=jgmdll83abavbv06hnzn934jv&raw=1" alt="Logo MMAT">
-<a href="https://www.uartes.edu.ec" target="_blank">
-<img src="https://www.dropbox.com/scl/fi/h2x74tzmdz97nd871blek/LOGO-UARTES-BLANCO.png?rlkey=2qykue2qyo0zyt5ch4fkic7kd&st=01dslfp8&raw=1" alt="Logo UArtes">
-</a>
+<span class="logo-grid__credit">MMAT</span>
+<a href="https://www.uartes.edu.ec" target="_blank" rel="noopener noreferrer"><img src="/img/logos/uartes.webp" alt="Logo UArtes"></a>
 <img src="/img/about/mw-logo-transparent.png" alt="Logo Interplanetary Orchestra">
 </div>

@@ -20,7 +20,14 @@
  *
  * NO BORDER, NO SHADOW. "it is defined by its raised field against the shell."
  * Hover raises that field one step and underlines the title; it "never scales,
- * tints or shadows the card", so there is no transform here at all.
+ * tints or shadows the card".
+ *
+ * TWO TRANSFORMS ARE ALLOWED AND BOTH ARE NAMED IN THE SPEC. The press is "a 1px
+ * downward nudge, no scale". The lean is the owner's addition of 2026-07-31 — a
+ * card is paper and leans when you reach for it. Neither is a scale, a tint or a
+ * shadow, so the rule above stands; see the tilt section near the foot of this
+ * file, which composes the two through custom properties precisely so that
+ * pressing a leaning card still nudges it.
  */
 
 .card {
@@ -43,6 +50,10 @@
  */
 .card:hover {
   background: var(--card-field-hover);
+  /* Card is an anchor, but it is not a generic text link. The site-wide link
+     hover uses a pastel field with dark type; without this component-owned
+     colour, that black text leaks into the card's dark raised hover field. */
+  color: var(--ink);
 }
 
 .card:hover .card__title {
@@ -55,9 +66,13 @@
    variant and it is never removed. */
 
 /* "press is a 1px downward nudge, no scale." The card is a link, so it takes
-   the same press the buttons do — this is the one movement allowed, and it is
-   not a scale, a tint or a shadow. */
-.card:active {
+   the same press the buttons do.
+
+   Only for cards with no lean class. A leaning card composes the nudge with its
+   rotation through --card-nudge in the tilt section instead, because `transform`
+   is one property: this rule and the lean rule cannot both apply, and the later
+   one would silently drop the press. */
+.card:not([class*='card--lean-']):active {
   transform: translateY(var(--press-nudge));
 }
 
@@ -83,6 +98,44 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/**
+ * A cover that is a whole object, not a crop — see `coverShape` in Card.astro.
+ *
+ * `contain` rather than `cover` is the point of the variant: the frame already
+ * carries the artwork's own ratio, so the two agree and nothing is letterboxed
+ * in practice, but a cover that is a different shape (the one square Stoney Way
+ * face among 34 portrait Sky Sounds ones) then sits whole on the hatch plate
+ * instead of losing its top and bottom. Fitted, never cropped.
+ */
+.card--cover-card .card__cover {
+  aspect-ratio: var(--card-cover-ratio-card);
+}
+
+.card--cover-card .card__cover img {
+  object-fit: contain;
+}
+
+/**
+ * A picture shown WHOLE, on a field of its own.
+ *
+ * `contain` and not `cover`, because the thing in the frame is a designed
+ * object rather than a scene — see `coverFit` in Card.astro. The dark field is
+ * the other half of it and is not decoration: these files are transparent PNGs,
+ * and on the hatch plate alone the poster's own background fills with diagonal
+ * stripes.
+ *
+ * `--c-dark` rather than a surface token: this is a backing sheet for a piece
+ * of artwork, the same black on the paper shell as on the dark one, and it must
+ * not follow the surface the card happens to sit on.
+ */
+.card--cover-contain .card__cover {
+  background: var(--c-dark);
+}
+
+.card--cover-contain .card__cover img {
+  object-fit: contain;
 }
 
 /* ---- badges -------------------------------------------------------------- */
@@ -179,6 +232,227 @@
  */
 .card--entry {
   flex-direction: column;
+}
+
+/* ---- card.article — the editorial entry, page family 02 ------------------ */
+/**
+ * The Lab's card. §04's card-cover anatomy — "frame 3:4, index numeral
+ * top-left, bodoni 34, 32% ink" — applied to an article, at the proportions the
+ * Lab design draws.
+ *
+ * IT IS A SIXTH VARIANT AND NOT A RESHAPED `card.entry`, because the two
+ * genuinely differ in anatomy and not only in size: an editorial entry carries
+ * a date ABOVE its title and tags below its excerpt, and `card.entry` has
+ * neither slot. Reshaping entry would have changed the twenty cards already
+ * shipped on /collect/cards and /collect/documentation to buy that.
+ *
+ * WHAT IS DELIBERATELY NOT TAKEN FROM THE DESIGN. Its cards are transparent —
+ * cover flush on the page ground, no field. The spec says a card "is defined by
+ * its raised field against the shell", and DESIGN-REFERENCES.md settles the tie:
+ * where a reference and the spec disagree, the spec wins. So the field stays and
+ * the proportions change. Recorded rather than silently chosen.
+ */
+.card--article {
+  flex-direction: column;
+  gap: var(--card-gap-article);
+}
+
+/* Every slot's own top margin is replaced by the column gap, so the rhythm is
+   one number rather than five that have to be kept in agreement. */
+.card--article > .card__metalead,
+.card--article > .card__title,
+.card--article > .card__excerpt,
+.card--article > .card__tags,
+.card--article > .card__meta,
+.card--article .card__body > * {
+  margin-block-start: 0;
+}
+
+.card--article .card__cover {
+  aspect-ratio: var(--card-cover-ratio-article);
+}
+
+.card--article .card__title {
+  font-size: var(--t-card-title-article-size);
+  line-height: var(--t-card-title-article-line);
+}
+
+.card--article .card__excerpt {
+  font-size: var(--t-card-excerpt-article-size);
+  line-height: var(--t-card-excerpt-article-line);
+}
+
+/**
+ * The lead entry — "one per page, full measure", laid out picture beside text.
+ *
+ * The picture column is a fixed 540px and the text takes what is left, which is
+ * what the design draws. A second fraction would let the picture grow with the
+ * viewport, and this frame holds a 3:4 portrait: at 1400px wide that is a
+ * 900px-tall photograph, which is the mistake the home-page carousel already
+ * made once.
+ */
+.card--article-wide {
+  display: grid;
+  grid-template-columns: minmax(0, var(--card-feature-article-cover)) minmax(0, 1fr);
+  gap: var(--card-gap-feature-article);
+  align-items: start;
+  padding: var(--card-pad-feature);
+}
+
+.card--article-wide .card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--card-gap-article);
+  min-width: 0;
+}
+
+/* The lead keeps the grid's frame — see the ratio note in tokens.css. One
+   shape for the whole page, which is what the design draws too. */
+
+.card--article-wide .card__title {
+  font-size: var(--t-card-title-article-lg-size);
+  line-height: var(--t-card-title-article-lg-line);
+}
+
+.card--article-wide .card__excerpt {
+  font-size: var(--t-card-excerpt-lg-size);
+  line-height: var(--t-card-excerpt-lg-line);
+}
+
+/**
+ * THE LEAD ENTRY'S EXCERPT IS NOT CLAMPED, for the same reason `card.feature`'s
+ * is not: the clamp buys a common height so cards beside each other line up,
+ * and there is nothing beside this one to line up with. See the note on
+ * `.card--feature .card__excerpt`.
+ */
+.card--article-wide .card__excerpt {
+  max-width: var(--card-excerpt-measure);
+  display: block;
+  -webkit-line-clamp: none;
+  line-clamp: none;
+  overflow: visible;
+}
+
+.card--article-wide .card__numeral {
+  font-size: var(--card-numeral-size-lg);
+  inset-block-start: var(--card-numeral-inset-lg);
+  inset-inline-start: var(--card-numeral-inset-lg);
+}
+
+/* "stacks to image-over-text below 900px" — the same width `card.feature`
+   stacks at, because they are the same decision about the same column. */
+@media (max-width: 899px) {
+  .card--article-wide {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---- the cover numeral --------------------------------------------------- */
+/**
+ * §04 — "index numeral top-left, bodoni 34, 32% ink."
+ *
+ * On the cover and not above it: it is a plate number, printed on the picture's
+ * own field the way an edition numeral is. `.card__cover` already carries
+ * `overflow: hidden`, so this needs the cover to be a positioned box and
+ * nothing else.
+ *
+ * The ink is a fixed 32% of cream rather than a step off the surface, which
+ * means it sits at 4.7:1 on the hatch plate and lower on a bright photograph.
+ * That is acceptable only because it is `aria-hidden` and carries no meaning —
+ * "never colour alone" does not apply to something that says nothing.
+ */
+.card__cover {
+  position: relative;
+}
+
+.card__numeral {
+  position: absolute;
+  inset-block-start: var(--card-numeral-inset);
+  inset-inline-start: var(--card-numeral-inset);
+  font-family: var(--t-display-face);
+  font-weight: var(--t-display-weight);
+  font-size: var(--card-numeral-size);
+  line-height: 1;
+  color: var(--card-numeral-ink);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ---- the cover state badge ----------------------------------------------- */
+/**
+ * §04, "state badge bottom-right" — a flat pigment field with dark type, which
+ * is the one form §03 gives a badge.
+ *
+ * On the picture and not on the card's field, because it answers a question the
+ * reader is asking while looking at the picture. The Lab draws "pinned" here,
+ * and that badge earns its place the moment the lead stops being the newest
+ * entry: without it, an older piece at the top of the page reads as a sorting
+ * bug rather than as a choice.
+ *
+ * NOT the pill radius — "pill radius is reserved for language chips", and this
+ * is not one. Dark on ochre is 12.9:1 by the spec's own table.
+ */
+.card__state {
+  position: absolute;
+  inset-block-end: var(--card-numeral-inset);
+  inset-inline-end: var(--card-numeral-inset);
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: 1;
+  letter-spacing: var(--t-meta-track);
+  padding: 5px 10px;
+  border-radius: var(--r-0);
+  background: var(--area-pigment, var(--c-maar));
+  color: var(--pigment-ink);
+}
+
+/* Ochre — "tree — growth, stamps", and what the design draws "pinned" in. It
+   is deliberately NOT the area pigment: a pinned entry is the same state on a
+   maar page and a collect one, so it keeps one colour across the site. */
+.card__state--tree {
+  background: var(--c-tree);
+}
+
+/* ---- the lead meta line, and the tag chips ------------------------------- */
+
+.card__metalead {
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: 1;
+  letter-spacing: var(--t-meta-track);
+  color: var(--ink-meta);
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/**
+ * A chip is a flat field with muted ink on it — §03, "flat fields only. dm
+ * mono, lowercase". These are the same chips the Lab's rows used to draw, moved
+ * here with the element they label so a selector and its element cannot drift
+ * into different files again. That drift is exactly how `.index-row__tag` came
+ * to match nothing and render its tags as plain text.
+ */
+.card__tag {
+  background: var(--ink-tint);
+  color: var(--ink-muted);
+  border-radius: var(--r-0);
+  padding-inline: var(--s-2);
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: var(--t-meta-line);
+  letter-spacing: var(--t-meta-track);
 }
 
 /* ---- card.compact — list row with thumb ---------------------------------- */
@@ -417,6 +691,161 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
   gap: var(--s-6);
+}
+
+/**
+ * The editorial grid — the Lab design's own, "repeat(auto-fill, minmax(280px,
+ * 1fr))" at a 40/30 gap.
+ *
+ * The row gap is larger than the column gap on purpose and it is the design's
+ * number: these cards are ragged at the bottom (a two-line title beside a
+ * one-line one), so a row needs more air beneath it than a column needs beside
+ * it or the next row's covers read as belonging to the titles above them.
+ */
+.card-grid--article {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--card-grid-article-min)), 1fr));
+  gap: var(--card-grid-article-row-gap) var(--card-grid-article-col-gap);
+}
+
+/* ---- tilt: the lean, and the deck ---------------------------------------- */
+
+/**
+ * PAPER DOES NOT LAND SQUARE — `mark.css`, about the cut word. A card is paper,
+ * so it gets the same treatment. Two arrangements of one idea, and they are
+ * exact inverses of each other:
+ *
+ *   DEFAULT (`.card--lean-N` alone)  square at rest, LEANS when you reach for it.
+ *   DECK    (`+ .card--scatter`)     scattered at rest, SQUARES when you pick one up.
+ *
+ * The default is the common case — the home grid, the Documentation index, any
+ * grid of cards — where a leaning row at rest would just look like a mistake.
+ * The deck is /collect/cards, where the cards ARE a physical deck someone put
+ * down and perfect register is the arrangement no hand produces.
+ *
+ * One frozen angle per card drives both, chosen from the card's own seed in
+ * `cardTiltClass` (lib/mark.mjs); this file owns every value and the component
+ * owns neither. Two sets because a resting scatter and a hover response want
+ * different magnitudes — see the note in tokens.css.
+ *
+ * `transform` and not a rotated layout: it does not affect flow, so rows and
+ * columns stay exactly where they were and a card leans inside its own cell.
+ *
+ * NO SHADOW AND NO SCALE ON HOVER, deliberately. The card token block states
+ * "a card has NO BORDER AND NO SHADOW … hover raises that field one step rather
+ * than scaling, tinting or shadowing anything". The lean is the owner's addition
+ * to that; lifting or shadowing it as well would be quietly rewriting the rule.
+ */
+.card--lean-1 { --card-tilt: var(--card-tilt-1); --card-lean: var(--card-lean-1); }
+.card--lean-2 { --card-tilt: var(--card-tilt-2); --card-lean: var(--card-lean-2); }
+.card--lean-3 { --card-tilt: var(--card-tilt-3); --card-lean: var(--card-lean-3); }
+.card--lean-4 { --card-tilt: var(--card-tilt-4); --card-lean: var(--card-lean-4); }
+.card--lean-5 { --card-tilt: var(--card-tilt-5); --card-lean: var(--card-lean-5); }
+.card--lean-6 { --card-tilt: var(--card-tilt-6); --card-lean: var(--card-lean-6); }
+
+/**
+ * `position: relative` is here for the z-index below and nothing else: without a
+ * positioned box the raised card is painted in source order, so a card leaning
+ * over its neighbour would still be painted underneath it.
+ */
+[class*='card--lean-'] {
+  position: relative;
+  transform: rotate(0deg);
+  /**
+   * `transform` IS DELIBERATELY NOT TRANSITIONED HERE, AND IT COST AN HOUR TO
+   * LEARN WHY. Measured in Chrome 150: when `transform` is in the transition
+   * list and the incoming state's value contains an unresolved `var()` — which
+   * `rotate(var(--card-lean))` below does, because the angle is per card — the
+   * new value never applies at all. Not "applies without a tween": the computed
+   * transform stays the identity matrix and the card simply never leans. Adding
+   * `transition: background` only, and changing nothing else, makes it work.
+   *
+   * Two things made this expensive to see. It looks like a cascade problem —
+   * the rule matches, `z-index` from the same rule applies, and the custom
+   * property resolves to `-1.1deg` if you ask for it — and it starts working
+   * the moment devtools touches the element, because that forces the recalc.
+   *
+   * It is SYMMETRIC: the deck below fails the same way with the endpoints
+   * reversed — resting on `rotate(var(--card-tilt))` and hovering to a literal
+   * `rotate(0deg)` — so it does not transition transform either. The rule is
+   * simply: do not transition `transform` when EITHER endpoint contains a
+   * `var()`. Registering the property with `@property` was tried and did not
+   * fix it; raising the deck's specificity so it could not be a cascade problem
+   * did not fix it either. Removing `transform` from the transition is the only
+   * thing that did, and it fixes both.
+   *
+   * The lean therefore lands instantly. At 1.1–2.4deg that reads as crisp
+   * rather than abrupt, and it is what a piece of paper does when you touch it.
+   */
+  transition: background var(--m-fast) var(--ease);
+}
+
+/**
+ * The lean, on the card you are actually pointing at.
+ *
+ * EACH STATE DECLARES THE WHOLE `transform`, and that is not verbosity. The
+ * first version of this kept one `transform: rotate(var(--card-rot))` and had
+ * each state change only the custom property — which reads better and does not
+ * work: Chrome does not re-resolve a `var()` inside `transform` when only the
+ * custom property changes, so on a clean page load the cards never leaned at
+ * all. It only appeared to work once a devtools poke forced a style recalc,
+ * which is the worst way for a bug to behave. Setting the property itself is
+ * what the deck below has always done, and it is reliable.
+ *
+ * `:focus-within` is in the list so the keyboard path gets the same response —
+ * the whole card is one link, so this is the card's own focus either way.
+ *
+ * The rotation is NOT motion and is not suppressed under prefers-reduced-motion:
+ * it is a static end state, like the cut word's angle. Only the transition
+ * between the two is motion, and reset.css already reduces every
+ * transition-duration to nothing there — so a reduced-motion visitor still gets
+ * the lean, it simply arrives without the tween.
+ */
+[class*='card--lean-']:hover,
+[class*='card--lean-']:focus-visible,
+[class*='card--lean-']:focus-within {
+  transform: rotate(var(--card-lean));
+  z-index: 1;
+}
+
+/* The spec's 1px press, composed with the angle the card is holding. `transform`
+   is one property, so the press has to restate the rotation or pressing a
+   leaning card would silently snap it straight. */
+[class*='card--lean-']:active {
+  transform: rotate(var(--card-lean)) translateY(var(--press-nudge));
+}
+
+/**
+ * THE DECK INVERTS IT. Scattered at rest; the one you point at straightens and
+ * lifts above its neighbours, which is what picking a card out of a spread looks
+ * like. It also squares the focus ring to the page, which is the state
+ * verify:a11y cares about.
+ *
+ * These sit after the default on purpose: the two sets have equal specificity,
+ * so source order is what makes the deck win where they disagree.
+ */
+.card--scatter {
+  transform: rotate(var(--card-tilt));
+}
+
+/**
+ * Qualified with the lean class so these beat the default states on SPECIFICITY
+ * (0,3,0 against 0,2,0) rather than on source order.
+ *
+ * Order alone is too fragile to rely on: the two sets tie at 0,2,0, the bundler
+ * is free to concatenate the stylesheets in any order it likes, and the failure
+ * is silent — the losing declaration here contains a `var()`, so when the lean
+ * rule won instead, the deck simply stopped squaring up on hover and kept its
+ * resting angle. Specificity makes the intent explicit and bundler-proof.
+ */
+[class*='card--lean-'].card--scatter:hover,
+[class*='card--lean-'].card--scatter:focus-visible,
+[class*='card--lean-'].card--scatter:focus-within {
+  transform: rotate(0deg);
+}
+
+[class*='card--lean-'].card--scatter:active {
+  transform: rotate(0deg) translateY(var(--press-nudge));
 }
 
 .card-list {

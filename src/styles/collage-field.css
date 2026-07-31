@@ -1,0 +1,53 @@
+.collage-header {
+  --collage-active-height: var(--collage-header-height);
+  block-size: var(--collage-active-height);
+  min-block-size: 0;
+  inline-size: 100vw;
+  margin-inline: calc(50% - 50vw);
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  background: var(--sf-ink);
+}
+
+.collage-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--pigment-ink) 10%, transparent), color-mix(in srgb, var(--pigment-ink) 60%, transparent));
+}
+
+.collage-header__image {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.collage-header__statement {
+  position: absolute;
+  z-index: 1;
+  inset-inline: 0;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  color: var(--sf-paper);
+}
+
+.collage-header__statement .paper-phrase__word { color: inherit; }
+.collage-header__statement .paper-phrase__word--paper { color: var(--pigment-ink); }
+
+.collage-header__statement .paper-phrase--statement {
+  font-size: clamp(1.25rem, 2.6vw, 2.5rem);
+  line-height: 1.1;
+}
+
+/* All collage headers consume the same height token. Variants differ only in
+   whether Home supplies its moving statement, never in their media geometry. */
+.collage-header--section { --collage-active-height: var(--collage-header-height); }
+
+@media (max-width: 599px) {
+  .collage-header { --collage-active-height: clamp(390px, 72svh, 640px); }
+  .collage-header--section { --collage-active-height: clamp(390px, 72svh, 640px); }
+}

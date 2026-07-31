@@ -17,51 +17,57 @@ cover: "/img/docs/covers/terms-cover.jpg"
 
 ## Privacy and Cookies Policy  
 
-**Effective Date:** 08-09-2025  
+**Effective Date:** 30-07-2026  
 
-At Maar World, we respect your privacy and comply with the General Data Protection Regulation (GDPR). This policy explains how we collect and use personal data when you visit our website.  
+At Maar World, we respect your privacy and comply with the General Data Protection Regulation (GDPR). This policy explains what happens to your data when you visit this website. It is short because the site is built to collect as little as possible.  
 
 ### 1. Who We Are  
 Maar World is the data controller for this website.  
 Contact: **hello@maar.world**  
 
-### 2. What Data We Collect  
-- **Technical data:** anonymized IP address, browser type, operating system, pages visited (via Google Analytics).  
-- **Media delivery:** Dropbox may collect technical information to deliver files.  
-- **Embedded content:** When you watch a YouTube video on our site, YouTube/Google may collect usage data.  
-- **Purchases:** All sales are handled externally on **Bandcamp**. We do not process payments or store your payment details here.  
+### 2. Cookies  
+**This website sets no cookies.** It stores nothing in your browser — no cookies, no local storage, no session storage. There is no cookie banner on this site because there is nothing to ask you to accept, and no consent for you to give or withdraw.  
 
-### 3. Legal Basis for Processing  
-We process your data based on:  
-- **Consent** (for analytics and non-essential cookies).  
-- **Legitimate interest** (to keep our website functional and secure).  
+### 3. Analytics  
+**We run no analytics.** There is no Google Analytics, no tag manager and no tracking pixel anywhere on this site. We do not measure your visit and we do not build a profile of you.  
 
-### 4. Cookies  
-We use cookies to:  
-- Ensure the site works properly  
-- Improve your browsing experience  
-- Collect anonymous analytics (Google Analytics)  
+### 4. What Data We Collect  
+- **Server logs:** our hosting provider records standard technical data (IP address, browser type, pages requested) in order to serve the site and keep it secure. We do not use these logs to identify or profile visitors.  
+- **Fonts and assets:** every font, stylesheet and script is served from this domain. No third-party font service or CDN is contacted when a page loads.  
+- **Purchases:** all sales are handled externally on **Bandcamp** and **Gumroad**. We do not process payments or store payment details here.  
 
-When you first visit our site, you can choose which cookies to accept. You may withdraw consent at any time by changing your browser settings.  
+### 5. Embedded Video and Audio  
+Video and audio hosted by YouTube, Vimeo and SoundCloud are **not loaded when a page opens**. In their place we show a still frame from the video with a play button on it, and **nothing at all is requested from YouTube, Google, Vimeo or SoundCloud until you press it**. That still frame is our own copy, served from this domain, so showing it tells the provider nothing.  
 
-### 5. Data Retention  
-- Google Analytics data is stored for up to **14 months**.  
-- Technical logs may be stored for security purposes for a limited time.  
+If you press it, the player is built into the page at that moment and the provider is contacted for the first time. From then on that provider's own privacy policy applies and it may set its own cookies. We reduce what it learns as far as each provider allows: YouTube is loaded from **youtube-nocookie.com**, Vimeo is loaded with **Do Not Track** enabled, and the provider is told only that the request came from `maar.world` — never which page you were reading. YouTube's own embedding terms require us to identify the site this much; we send it nothing beyond that.  
+
+**This choice is not remembered.** We store nothing to record it, so it applies to that one player only, and reloading the page returns every player to its unloaded state. Each page also keeps a plain link to open the media on the provider's own site instead, and if you browse without JavaScript that link is all you get — no player is ever built.  
+
+### 6. Third-Party Content We Do Load  
+Two exceptions are worth naming plainly:  
+- **Dropbox:** a small number of card pages display artwork hosted on Dropbox, and some download links point at Dropbox. Where that artwork appears, Dropbox receives a request when the page loads and may collect technical information to deliver the file.  
+- **Maar Orbiter:** the pages reached from a physical Maar card automatically forward you to `orbiter.plantasia.space`, our listening application, a moment after they open. Each of those pages also shows a normal link, so you can see where you are going.  
+
+### 7. Legal Basis for Processing  
+We process the limited technical data described above on the basis of **legitimate interest** — keeping the website functional, available and secure. Because we set no cookies and run no analytics, we do not rely on consent as a legal basis.  
+
+### 8. Data Retention  
+- Server logs are kept by our host for a limited period for security purposes.  
+- We hold no analytics data, because none is collected.  
 - We do not keep personal data longer than necessary.  
 
-### 6. Data Transfers Outside the EU  
-Google and Dropbox may process data outside the EU (e.g. in the United States). In such cases, safeguards like **Standard Contractual Clauses (SCCs)** are applied to protect your data.  
+### 9. Data Transfers Outside the EU  
+Dropbox and our hosting provider may process data outside the EU, including in the United States. Where that happens, safeguards such as **Standard Contractual Clauses (SCCs)** are applied to protect your data.  
 
-### 7. Your Rights  
+### 10. Your Rights  
 Under GDPR, you have the right to:  
 - Access your data  
 - Correct your data  
 - Request deletion (“right to be forgotten”)  
 - Restrict or object to processing  
-- Withdraw consent (e.g. for analytics cookies)  
 - Lodge a complaint with a data protection authority  
 
 To exercise your rights, contact us at **hello@maar.world**.  
 
-### 8. Updates  
+### 11. Updates  
 We may update this policy occasionally. Changes will be posted here with a new effective date.

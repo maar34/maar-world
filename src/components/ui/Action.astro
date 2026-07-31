@@ -1,0 +1,20 @@
+---
+/**
+ * ui/action — the one semantic entry point for Maar World actions.
+ *
+ * `button.css` already owns the visual variants and their opposed tilts. This
+ * wrapper prevents every page family from spelling those classes independently
+ * while keeping an action a real link whenever it navigates.
+ */
+type Variant = 'primary' | 'secondary' | 'collect' | 'text';
+
+interface Props {
+  href: string;
+  label: string;
+  variant?: Variant;
+}
+
+const { href, label, variant = 'primary' } = Astro.props;
+---
+
+<a class:list={['btn', `btn--${variant}`]} href={href}>{label}</a>

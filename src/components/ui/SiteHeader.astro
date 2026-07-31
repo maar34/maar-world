@@ -1,31 +1,35 @@
 ---
 /**
- * The header, and the navigation across the three merged areas.
+ * The header, and the navigation across the merged areas.
  *
- * Three origins became one site. The thing that has to survive that merge is
- * that Maar, Collect and Tree are still legible as distinct areas — so the area
- * row is the primary navigation and each entry carries its area's own pigment
- * role, taken from AREAS in src/config/site.ts and from nowhere else.
+ * Three origins became one site. What has to survive that merge is that Maar,
+ * Collect and Tree stay legible as distinct areas — so every entry carries its
+ * area's own pigment role, taken from AREAS in src/config/site.ts and from
+ * nowhere else. WHICH areas appear is a separate decision and lives beside it in
+ * HEADER_AREAS: the brand link already is Maar, and Tree is a link-in-bio page
+ * reached directly, so `collect` is the only area the header lists.
  *
- * A pigment field never carries meaning alone, so the current area is marked
+ * A pigment field never carries meaning alone, so the current page is marked
  * three ways: the field, an underline, and `aria-current` in the markup.
  *
- * NO APPLICATION JAVASCRIPT. The small-screen menu is a <details> disclosure —
- * the browser's own control, no script. See styles/shell.css for why the wide
- * navigation is a separate element rather than the same <details> forced open.
+ * NO APPLICATION JAVASCRIPT. The compact menu is a <details> disclosure — the
+ * browser's own control, no script, no state to manage. See styles/shell.css for
+ * why the wide navigation is a separate element rather than the same <details>
+ * forced open, and why the compact panel is taken out of flow.
  */
-import { AREAS, SECTIONS, type AreaName } from '../../config/site';
+import { AREAS, HEADER_AREAS, SECTIONS, type AreaName } from '../../config/site';
 import BrandMark from './BrandMark.astro';
+import NavigationIcon from './NavigationIcon.astro';
+import { hash } from '../../lib/mark.mjs';
 
 interface Props {
   area?: AreaName;
   /** 'en' on the chrome when the page itself is not English. */
   chromeLang?: string;
+  languageChoices?: { lang: string; label: string; outputPath?: string; current: boolean; unavailable: boolean }[];
 }
 
-const { area = 'maar', chromeLang } = Astro.props;
-
-const ORDER: readonly AreaName[] = ['maar', 'collect', 'tree'];
+const { area = 'maar', chromeLang, languageChoices = [] } = Astro.props;
 
 /** An area's own root. Derived from AREAS.pathPrefix — never spelled twice. */
 const areaHome = (name: AreaName) => AREAS[name].pathPrefix || '/';
@@ -43,6 +47,54 @@ const here = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '') |
 
 const areaCurrent = (name: AreaName) =>
   here === areaHome(name) ? 'page' : name === area ? 'true' : undefined;
+
+/**
+ * The brand is now the only route to Maar's home, so it carries that entry's
+ * state as well as its own: on `/` it is the current page and says so.
+ */
+const brandCurrent = here === '/' ? 'page' : undefined;
+
+/**
+ * Navigation variation is structural but never random: the same destination
+ * always carries the same typographic voice across desktop and compact menus.
+ * These are type treatments only — navigation remains a conventional link with
+ * a consistent hit area and current-page state.
+ */
+const navVoice = (seed: string) => `nav-link--voice-${((hash(seed) >>> 9) % 4) + 1}`;
+const hrefOf = (outputPath: string) => (outputPath === 'index' ? '/' : `/${outputPath}.html`);
+const currentLanguage = languageChoices.find((choice) => choice.current) ?? languageChoices[0];
+const otherLanguages = languageChoices.filter((choice) => !choice.current);
+
+/** Both widths list the same destinations; only the arrangement differs. */
+const areaEntries = HEADER_AREAS.map((name) => ({
+  href: areaHome(name),
+  label: AREAS[name].label,
+  icon: AREAS[name].icon,
+  pigment: AREAS[name].pigment,
+  current: areaCurrent(name),
+}));
+
+const sectionEntries = sections.map((s) => ({
+  href: s.href,
+  label: s.label,
+  icon: s.icon,
+  pigment: AREAS[area].pigment,
+  current: here === s.href ? ('page' as const) : undefined,
+}));
+
+/**
+ * The compact panel holds the same three navs the wide row does, each still
+ * named after what is actually in it. Flattening them into one list would have
+ * to pick a single name for it, and on a Tree page — where the area row has an
+ * entry and the section row has none — every honest name for that mixture is
+ * either wrong or a word like "Site" that tells a screen-reader user nothing.
+ */
+const compactGroups = [
+  { label: 'Areas', entries: areaEntries },
+  { label: `${AREAS[area].label} pages`, entries: sectionEntries },
+].filter((group) => group.entries.length > 0);
+
+const hasLanguages = Boolean(currentLanguage && otherLanguages.length > 0);
 ---
 
 <header class="shell__header" lang={chromeLang}>
@@ -52,72 +104,165 @@ const areaCurrent = (name: AreaName) =>
         the same destination. The mark is aria-hidden; the link's name is the
         text. It takes the current area's pigment, so the header states which
         area you are in twice over: the mark and the current nav field. */}
-    <a class="shell__brand" href="/">
+    <a class="shell__brand" href="/" aria-current={brandCurrent}>
       <BrandMark size={22} />
       <span>Maar World</span>
     </a>
 
-    <nav class="nav-areas" aria-label="Areas">
-      <ul role="list" class="nav-list">
-        {
-          ORDER.map((name) => (
-            <li>
-              <a
-                class="nav-link"
-                href={areaHome(name)}
-                style={`--area-pigment: ${AREAS[name].pigment}`}
-                aria-current={areaCurrent(name)}
-              >
-                {AREAS[name].label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
-
-    {
-      sections.length > 0 && (
-        <Fragment>
-          {/* Wide: a plain list. Hidden below 900px, so never a second tab stop. */}
-          <nav class="nav-sections nav-sections--wide" aria-label={`${AREAS[area].label} pages`}>
+    {/* Wide: areas, sections and languages laid out in one row. Hidden below
+        900px, so it is never a second tab stop for the same links. */}
+    <div class="nav-wide">
+      {
+        areaEntries.length > 0 && (
+          <nav class="nav-areas" aria-label="Areas">
             <ul role="list" class="nav-list">
-              {sections.map((s) => (
+              {areaEntries.map((entry) => (
                 <li>
                   <a
-                    class="nav-link"
-                    href={s.href}
-                    style={`--area-pigment: ${AREAS[area].pigment}`}
-                    aria-current={here === s.href ? 'page' : undefined}
+                    class:list={['nav-link', navVoice(entry.href)]}
+                    href={entry.href}
+                    style={`--area-pigment: ${entry.pigment}`}
+                    aria-current={entry.current}
                   >
-                    {s.label}
+                    {entry.icon && <NavigationIcon name={entry.icon} />}
+                    {entry.label}
                   </a>
                 </li>
               ))}
             </ul>
           </nav>
+        )
+      }
 
-          {/* Compact: the browser's own disclosure. Hidden at 900px and above. */}
-          <details class="nav-sections nav-sections--compact">
-            <summary class="nav-disclosure">Menu</summary>
-            <nav class="nav-panel" aria-label={`${AREAS[area].label} pages`}>
-              <ul role="list" class="nav-list">
-                {sections.map((s) => (
+      {
+        sectionEntries.length > 0 && (
+          <nav class="nav-sections" aria-label={`${AREAS[area].label} pages`}>
+            <ul role="list" class="nav-list">
+              {sectionEntries.map((entry) => (
+                <li>
+                  <a
+                    class:list={['nav-link', navVoice(entry.href)]}
+                    href={entry.href}
+                    style={`--area-pigment: ${entry.pigment}`}
+                    aria-current={entry.current}
+                  >
+                    {entry.icon && <NavigationIcon name={entry.icon} />}
+                    {entry.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
+
+      {
+        hasLanguages && (
+          <nav class="nav-languages" aria-label="Language">
+            <details class="nav-languages__disclosure">
+              <summary
+                class="nav-language-trigger"
+                aria-label={`Change language — ${currentLanguage!.label}`}
+              >
+                <NavigationIcon name="language" />
+                <span lang={currentLanguage!.lang}>{currentLanguage!.lang}</span>
+                <NavigationIcon name="keyboard_arrow_down" class="nav-icon--chevron" />
+              </summary>
+              <ul role="list" class="nav-languages__list">
+                {otherLanguages.map((choice) => (
                   <li>
-                    <a
-                      class="nav-link"
-                      href={s.href}
-                      style={`--area-pigment: ${AREAS[area].pigment}`}
-                      aria-current={here === s.href ? 'page' : undefined}
-                    >
-                      {s.label}
-                    </a>
+                    {choice.unavailable ? (
+                      <span class="nav-language" lang={choice.lang} aria-disabled="true">
+                        {choice.lang}
+                      </span>
+                    ) : (
+                      <a
+                        class="nav-language"
+                        href={hrefOf(choice.outputPath!)}
+                        hreflang={choice.lang}
+                        lang={choice.lang}
+                      >
+                        {choice.lang}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
-            </nav>
-          </details>
-        </Fragment>
+            </details>
+          </nav>
+        )
+      }
+    </div>
+
+    {/* Compact: ONE control for the whole navigation, language included.
+        The header used to spend its narrow width on a text button reading
+        "Menu" plus a separate language disclosure beside it, which wrapped to a
+        second row on a phone and named itself after the widget rather than the
+        destinations. One hamburger, one panel, one row. Hidden at 900px+. */}
+    {
+      (compactGroups.length > 0 || hasLanguages) && (
+        <details class="nav-menu">
+          <summary class="nav-menu__trigger" aria-label="Navigation menu">
+            {/* Icon-only, so the accessible name comes from aria-label above.
+                Both glyphs ship and CSS shows one — swapping `set:html` on open
+                would need script, and the state is already in the DOM. */}
+            <NavigationIcon name="menu" class="nav-icon--menu" />
+            <NavigationIcon name="close" class="nav-icon--close" />
+          </summary>
+
+          <div class="nav-menu__panel">
+            {compactGroups.map((group) => (
+              <nav class="nav-menu__group" aria-label={group.label}>
+                <ul role="list" class="nav-list nav-list--stacked">
+                  {group.entries.map((entry) => (
+                    <li>
+                      <a
+                        class:list={['nav-link', navVoice(entry.href)]}
+                        href={entry.href}
+                        style={`--area-pigment: ${entry.pigment}`}
+                        aria-current={entry.current}
+                      >
+                        {entry.icon && <NavigationIcon name={entry.icon} />}
+                        {entry.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            ))}
+
+            {hasLanguages && (
+              <nav class="nav-menu__group nav-menu__group--languages" aria-label="Language">
+                {/* No nested disclosure here: the panel is already open, and a
+                    second one inside it would be a control to reveal two words. */}
+                <span class="nav-menu__label">
+                  <NavigationIcon name="language" />
+                  <span lang={currentLanguage!.lang}>{currentLanguage!.lang}</span>
+                </span>
+                <ul role="list" class="nav-menu__languages">
+                  {otherLanguages.map((choice) => (
+                    <li>
+                      {choice.unavailable ? (
+                        <span class="nav-language" lang={choice.lang} aria-disabled="true">
+                          {choice.lang}
+                        </span>
+                      ) : (
+                        <a
+                          class="nav-language"
+                          href={hrefOf(choice.outputPath!)}
+                          hreflang={choice.lang}
+                          lang={choice.lang}
+                        >
+                          {choice.lang}
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            )}
+          </div>
+        </details>
       )
     }
   </div>

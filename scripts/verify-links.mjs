@@ -72,8 +72,29 @@ const ON_LOAD_TAGS = new Set([
   'table',
 ]);
 
-/** Same-registrable-domain hosts. `play.maar.world` is same-site, not a third party. */
-const FIRST_PARTY = /(^|\.)maar\.world$/i;
+/**
+ * Hosts this project treats as its own. `play.maar.world` is same-site.
+ *
+ * `plantasia.space` was added on 2026-07-31 by the owner's decision, so the 33
+ * Sky Sounds card pages can embed the Maar Orbiter player on load instead of
+ * behind the click-to-load gate. Same operator, not a third party in the sense
+ * this check exists to police.
+ *
+ * READ THIS BEFORE TRUSTING THE GREEN. The gate scans the HTML and CSS *this
+ * build emits*. It cannot see inside a frame, so it never could — and now
+ * conspicuously does not — account for what an embedded app requests once it is
+ * running. The Orbiter, measured on 2026-07-31, pulls `fonts.googleapis.com`
+ * and `fonts.gstatic.com` on load and writes `localStorage.audioProfile`,
+ * `sessionStorage.uniqueId` and two Firebase IndexedDB stores. So on those 33
+ * pages "no third-party request fires on page load" now means *none that we
+ * emit*, which is a weaker claim than it was yesterday.
+ *
+ * That is the owner's call to make and it is made. It is recorded here rather
+ * than only in the ledger because this constant is what someone will read when
+ * they ask whether the privacy page is still true — and until the Orbiter
+ * self-hosts its fonts, on those pages it is not.
+ */
+const FIRST_PARTY = /(^|\.)(maar\.world|plantasia\.space)$/i;
 
 /** Every tag that can carry a URL, including the ones that were being skipped. */
 const TAG_RE = /<([a-zA-Z][a-zA-Z0-9:-]*)\b([^>]*?)\/?>/g;

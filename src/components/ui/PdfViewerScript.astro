@@ -1,0 +1,133 @@
+---
+/**
+ * Enhances same-origin PDF embeds into a small, site-owned PDF.js reader.
+ * The authored `<object>` remains the no-JavaScript fallback; this script only
+ * runs on routes containing `.pdf-embed`.
+ */
+---
+
+<script>
+  import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+  import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+
+  GlobalWorkerOptions.workerSrc = workerUrl;
+
+  const makeButton = (label: string, text: string) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'pdf-viewer__control';
+    button.setAttribute('aria-label', label);
+    button.textContent = text;
+    return button;
+  };
+
+  for (const embed of document.querySelectorAll<HTMLElement>('.pdf-embed')) {
+    const fallback = embed.querySelector<HTMLObjectElement>('object[data]');
+    const source = fallback?.data.split('#')[0];
+    if (!fallback || !source) continue;
+
+    const title = fallback.getAttribute('aria-label') || 'PDF document';
+    const viewer = document.createElement('section');
+    viewer.className = 'pdf-viewer';
+    viewer.setAttribute('aria-label', title);
+
+    const toolbar = document.createElement('div');
+    toolbar.className = 'pdf-viewer__toolbar';
+    const status = document.createElement('p');
+    status.className = 'pdf-viewer__status';
+    status.textContent = 'Loading document…';
+    const decrease = makeButton('Zoom out', '−');
+    const increase = makeButton('Zoom in', '+');
+    const download = document.createElement('a');
+    download.className = 'pdf-viewer__download';
+    download.href = source;
+    download.target = '_blank';
+    download.rel = 'noopener';
+    download.textContent = 'Open PDF';
+    toolbar.append(status, decrease, increase, download);
+
+    const scroll = document.createElement('div');
+    scroll.className = 'pdf-viewer__scroll';
+    scroll.tabIndex = 0;
+    scroll.setAttribute('aria-label', `${title}, document pages`);
+    const pages = document.createElement('div');
+    pages.className = 'pdf-viewer__pages';
+    scroll.append(pages);
+    viewer.append(toolbar, scroll);
+    fallback.replaceWith(viewer);
+
+    let zoom = 1;
+    let documentProxy: Awaited<ReturnType<typeof getDocument>['promise']> | undefined;
+    let observer: IntersectionObserver | undefined;
+
+    const render = async (pageNumber: number, mount: HTMLElement) => {
+      if (!documentProxy || mount.dataset.rendered === String(zoom)) return;
+      mount.dataset.rendered = String(zoom);
+      const page = await documentProxy.getPage(pageNumber);
+      const base = page.getViewport({ scale: 1 });
+      const available = Math.max(scroll.clientWidth - 2 * 24, 1);
+      const scale = (available / base.width) * zoom;
+      const viewport = page.getViewport({ scale });
+      const outputScale = Math.min(window.devicePixelRatio || 1, 2);
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.floor(viewport.width * outputScale);
+      canvas.height = Math.floor(viewport.height * outputScale);
+      canvas.style.width = `${viewport.width}px`;
+      canvas.style.height = `${viewport.height}px`;
+      const context = canvas.getContext('2d');
+      if (!context) return;
+      mount.replaceChildren(canvas);
+      await page.render({ canvasContext: context, viewport, transform: [outputScale, 0, 0, outputScale, 0, 0] }).promise;
+    };
+
+    const renderVisiblePages = () => {
+      observer?.disconnect();
+      pages.replaceChildren();
+      if (!documentProxy) return;
+      for (let page = 1; page <= documentProxy.numPages; page += 1) {
+        const mount = document.createElement('div');
+        mount.className = 'pdf-viewer__page';
+        mount.setAttribute('aria-label', `Page ${page}`);
+        pages.append(mount);
+        if ('IntersectionObserver' in window) {
+          observer ??= new IntersectionObserver((entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              const target = entry.target as HTMLElement;
+              void render(Number(target.dataset.page), target);
+              observer?.unobserve(target);
+            }
+          }, { root: scroll, rootMargin: '400px 0px' });
+          mount.dataset.page = String(page);
+          observer.observe(mount);
+        } else {
+          void render(page, mount);
+        }
+      }
+    };
+
+    const updateZoom = (delta: number) => {
+      zoom = Math.min(1.7, Math.max(0.7, Number((zoom + delta).toFixed(1))));
+      decrease.disabled = zoom <= 0.7;
+      increase.disabled = zoom >= 1.7;
+      renderVisiblePages();
+    };
+
+    decrease.addEventListener('click', () => updateZoom(-0.1));
+    increase.addEventListener('click', () => updateZoom(0.1));
+
+    try {
+      documentProxy = await getDocument(source).promise;
+      status.textContent = `${documentProxy.numPages} pages`;
+      updateZoom(0);
+    } catch {
+      status.textContent = 'Preview unavailable';
+      scroll.replaceChildren();
+      const note = document.createElement('p');
+      note.textContent = 'Open the PDF in a new tab to read it.';
+      scroll.append(note);
+      decrease.disabled = true;
+      increase.disabled = true;
+    }
+  }
+</script>

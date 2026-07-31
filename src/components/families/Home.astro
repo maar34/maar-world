@@ -4,12 +4,10 @@
  * sidebar."
  *
  * That sentence is the whole specification and this file is the whole of it: a
- * page header, `card.feature`, three `card.entry`, and then whatever the body
- * still holds. There is no hero component here, and there must not be one —
- * `card.feature` IS the spec's hero ("one per page, full measure", "the only
- * one at --t-display scale", "the only card that may carry tilt and two marks
- * together"). Inventing a second full-width thing beside it would give the site
- * two answers to the same question.
+ * page header, a visual carousel header, `card.feature`, three `card.entry`,
+ * and then whatever the body still holds. The carousel is deliberately not a
+ * second card: it establishes the page’s opening atmosphere, while the feature
+ * remains the first editorial destination and its only featured-card treatment.
  *
  * WHAT THIS FIXES. `/` was rendering as family 03 — "single measure, 66ch max"
  * — which is correct for an article and wrong for a landing. Everything the
@@ -23,6 +21,10 @@
  * as one document rather than as chrome with a narrow article inside it.
  */
 import Card from '../patterns/Card.astro';
+import CollageField from '../patterns/CollageField.astro';
+import PaperPhrase from '../patterns/PaperPhrase.astro';
+import Action from '../ui/Action.astro';
+import { articleCoverFor, collageFor, HOME_ACTIONS } from '../../config/site';
 
 interface Feature {
   title: string;
@@ -37,6 +39,7 @@ interface Entry {
   excerpt: string;
   href: string;
   meta?: string;
+  cover?: string;
 }
 
 interface Props {
@@ -59,40 +62,41 @@ const { headingHtml, title, lede, feature, entries = [], tonguesLabel, tongues =
 const labelId = 'home-entries';
 ---
 
-<div class="home shell__inner">
-  <header class="home__head">
-    {/* One mark, already chosen and frozen by the migration against this page's
-        own outputPath. Rendered as HTML rather than re-marked here so the word,
-        the tear and the angle cannot be rolled a second time from the same
-        seed and come out different. */}
-    <h1 class="home__title">
-      {headingHtml ? <Fragment set:html={headingHtml} /> : title}
-    </h1>
+<div class="home">
+  {/* The site name already lives in the global brand link; keep the page H1 for
+      document structure while its opening image carousel does the visual work. */}
+  <h1 class="home__title home__title--accessible">
+    {headingHtml ? <Fragment set:html={headingHtml} /> : title}
+  </h1>
 
-    {/* The statement, at the prose measure. This is the one place on a family
-        01 page where 66ch applies: it is a sentence to read, and the rule
-        "prose measure never exceeds 66ch at any width" does not stop being true
-        because the page around it is a grid. */}
-    {lede && <p class="home__lede">{lede}</p>}
-  </header>
+  <CollageField
+    src={collageFor('')!}
+    statement={lede}
+    statementSeed={`${seed}:statement`}
+  />
 
   {
-    /* card.feature. Composed, not rebuilt — the owner's question about the
-       carousel ("do we need to invent it again?") is the same question here.
-       The whole card is the link, so the theme's "Collect" button is gone as a
-       button and survives as the meta line: it is the only place the page ever
-       said what following this link does. */
+    /* The card remains one generous link target. Its two explicit next steps
+       sit beside it rather than inside it, so no interactive element is nested
+       inside another and the action system stays reusable. */
     feature && (
-      <Card
-        variant="feature"
-        href={feature.href}
-        title={feature.title}
-        level={2}
-        cover={feature.cover}
-        excerpt={feature.excerpt}
-        meta={feature.meta}
-        seed={seed}
-      />
+      <section class="home__feature" aria-label="Featured collection">
+        <Card
+          variant="feature"
+          href={feature.href}
+          title={feature.title}
+          level={2}
+          cover={feature.cover}
+          excerpt={feature.excerpt}
+          meta={feature.meta}
+          seed={seed}
+        />
+        <nav class="home__actions" aria-label="Featured collection actions">
+          {HOME_ACTIONS.map((action) => (
+            <Action href={action.href} label={action.label} variant={action.variant} />
+          ))}
+        </nav>
+      </section>
     )
   }
 
@@ -110,26 +114,9 @@ const labelId = 'home-entries';
           )
         }
 
-        {
-          /**
-           * The same three words in nineteen more languages.
-           *
-           * They were a JavaScript rotator that showed one at a time; with no
-           * script every one of them renders, and on the page today they run
-           * together into a paragraph that reads as a mistake. They are content
-           * and they stay, as a list — spaced, at meta scale, in the meta ink.
-           * A list is what they are, and space is what separates them: "list
-           * rows, panels, footers, figure captions, accordion items and card
-           * edges carry none — space does that work."
-           */
-          tongues.length > 0 && (
-            <ul class="home__tongues" role="list">
-              {tongues.map((t) => (
-                <li>{t}</li>
-              ))}
-            </ul>
-          )
-        }
+        {tongues.length > 0 && (
+          <PaperPhrase phrases={tongues} seed={`${seed}:translations`} variant="translations" />
+        )}
 
         {/* "cards: 1 / 1 / 2 / 3" across the four breakpoints — the responsive
             table's own counts, bound in the stylesheet below. */}
@@ -140,6 +127,7 @@ const labelId = 'home-entries';
               href={e.href}
               title={e.title}
               level={3}
+              cover={e.cover ?? articleCoverFor(e.href)}
               excerpt={e.excerpt}
               meta={e.meta}
             />
@@ -149,9 +137,8 @@ const labelId = 'home-entries';
     )
   }
 
-  {/* Whatever the body still is after the family took its pieces out: the
-      photographs, the videos, and the row of links to the lab, the live dates
-      and bookings. Prose treatment, because that is what it still is. */}
+  {/* Remaining authored prose only. Home media is structural content above,
+      rather than an inherited video/image carousel inside a prose slot. */}
   <div class="prose">
     <slot />
   </div>
@@ -164,17 +151,11 @@ const labelId = 'home-entries';
    * header" — the header, the footer and this now share one column.
    */
   .home {
-    padding-block: var(--s-16) var(--s-24);
+    padding-block: 0 var(--s-24);
     display: flex;
     flex-direction: column;
     /* "sibling groups use gap, never margins." */
     gap: var(--s-16);
-  }
-
-  .home__head {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s-6);
   }
 
   /**
@@ -187,11 +168,19 @@ const labelId = 'home-entries';
     margin: 0;
   }
 
-  /* "prose measure never exceeds 66ch at any width." */
-  .home__lede {
-    margin: 0;
-    max-width: var(--measure);
-    color: var(--ink-muted);
+  /* The site name already has a persistent home in the global brand link. The
+     H1 remains for document structure and assistive technology, without making
+     the first visible homepage section repeat the header. */
+  .home__title--accessible {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .home__entries {
@@ -200,30 +189,22 @@ const labelId = 'home-entries';
     gap: var(--s-6);
   }
 
-  .home__label {
-    margin: 0;
+  .home__feature {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-6);
   }
 
-  /**
-   * The nineteen translations. Meta scale, meta ink, separated by space and by
-   * nothing else — no chips, no rules, no bullets. They are a quiet band under
-   * the label, not nineteen controls.
-   */
-  .home__tongues {
+  /* The components carry their opposed lean; this group only establishes the
+     shared rhythm and remains usable if a future page supplies one action. */
+  .home__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--s-2) var(--s-4);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    color: var(--ink-meta);
-    font-family: var(--t-meta-face);
-    font-size: var(--t-meta-size);
-    line-height: var(--t-meta-line);
-    letter-spacing: var(--t-meta-track);
+    justify-content: flex-end;
+    gap: var(--s-4);
   }
 
-  .home__tongues li {
+  .home__label {
     margin: 0;
   }
 

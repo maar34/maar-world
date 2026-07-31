@@ -24,9 +24,9 @@
  * than usual here: the 34 Sky Sounds thumbnails are a standing BLOCKED item, so
  * "no cover" is the common case today, not the edge one.
  */
-import { markHeadingText } from '../../lib/mark.mjs';
+import { markHeadingText, cardTiltClass } from '../../lib/mark.mjs';
 
-type Variant = 'entry' | 'compact' | 'place' | 'collection' | 'feature';
+type Variant = 'entry' | 'compact' | 'place' | 'collection' | 'feature' | 'article';
 
 interface Props {
   variant?: Variant;
@@ -36,6 +36,50 @@ interface Props {
   level?: 2 | 3 | 4;
   /** Cover image. Omit for the hatch plate — that is a designed state. */
   cover?: string;
+  /**
+   * WHAT THE COVER IS, WHICH DECIDES ITS SHAPE.
+   *
+   * `band` — the default and the spec's 3:2 — treats the cover as a crop out of
+   * a larger picture, which is right for an editorial entry.
+   *
+   * `card` is for a cover that is a whole object photographed edge to edge: a
+   * portrait card face. It takes the artwork's own ratio and is fitted rather
+   * than cropped, because there is no part of a card you can cut off and still
+   * be showing the card. The ratio is already a per-variant property in this
+   * component — the spec sets 4:3 on compact and 16:9 on place — so this is
+   * that same dial, turned by the caller instead of by the variant.
+   */
+  coverShape?: 'band' | 'card';
+  /**
+   * HOW THE PICTURE MEETS THE FRAME, independently of what shape the frame is.
+   *
+   * `cover` crops to fill and is right for a photograph — the frame is a crop
+   * out of a larger scene, and the edges of a scene are not the scene.
+   *
+   * `contain` fits the whole picture inside the frame and paints a dark field
+   * behind it. It is for a picture that is a whole designed object: the Lab's
+   * workshop poster is a sheet with type on it, so cropping it cuts words off,
+   * and it is a transparent PNG, so without the field the hatch plate shows
+   * through its background and the sheet reads as damaged.
+   *
+   * Separate from `coverShape`, which answers a different question. `card`
+   * already implies contain because a playing card has its own ratio; this is
+   * the same dial for a picture whose ratio is not the frame's and must not be
+   * cut anyway.
+   */
+  coverFit?: 'cover' | 'contain';
+  /**
+   * SCATTER THIS CARD — the deck arrangement, and the inverse of the default.
+   *
+   * Every card leans when you reach for it and sits square at rest. A scattered
+   * card does the opposite: it rests at an angle and squares up when you point
+   * at it, which is what a deck of physical cards on a table does.
+   *
+   * Opt-in per grid, because a deck is scattered and a table of contents is not.
+   * The angle itself is frozen per card either way — see `cardTiltClass` in
+   * lib/mark.mjs for the choosing, card.css and tokens.css for the values.
+   */
+  scatter?: boolean;
   /** Three covers for `collection`'s cover strip. */
   strip?: string[];
   /** The pigment badge — an area, a suit, a set. */
@@ -45,12 +89,78 @@ interface Props {
   excerpt?: string;
   /** The meta line: kind, glyphs, reading time. */
   meta?: string;
+  /**
+   * THE META LINE THAT SITS ABOVE THE TITLE, and why it is a second slot
+   * rather than `meta` moved.
+   *
+   * An editorial index dates its entries before it names them — the Lab design
+   * draws "feb 02, 2026 ∷⌗ installations" between the cover and the title, and
+   * a reader scanning a year group is reading down that column of dates. The
+   * meta line under the excerpt answers a different question ("how long is
+   * this?") and both exist on the same card there.
+   *
+   * Opt-in, so the twenty entry cards already shipped are byte-identical: no
+   * caller that omits it renders an element. It takes markup rather than text
+   * because the separator inside it is a `GlyphRun`, which is a component.
+   */
+  metaLeadHtml?: string;
+  /**
+   * The index numeral, drawn on the cover — §04, "index numeral top-left,
+   * bodoni 34, 32% ink".
+   *
+   * A string and not a number because it is the caller's own counting and its
+   * padding is the caller's own decision ("01", not "1"); and `aria-hidden`
+   * when it renders, because it names a position in a grid rather than
+   * anything about the entry. Reordering the grid must not change what a
+   * screen reader hears.
+   */
+  numeral?: string;
+  /**
+   * THE STATE BADGE, BOTTOM-RIGHT OF THE COVER — §04's other cover slot.
+   *
+   * A word about this entry, on the picture: "pinned" on the Lab's lead. It is
+   * on the cover rather than in the meta line because the meta line answers
+   * "how long is this" and this answers "why is this one here" — which a
+   * reader asks while looking at the picture, and which the Lab has to answer
+   * as soon as the lead stops being the newest entry.
+   *
+   * It is NOT `aria-hidden`, unlike the numeral: the numeral names a position
+   * in a grid and this says something true about the entry.
+   */
+  state?: string;
+  /**
+   * The badge's pigment. `tree` is ochre, the spec's growth-and-stamps role
+   * and what the design draws "pinned" in; the default is the area's own.
+   * "one pigment per component instance; never two pastels touching."
+   */
+  stateTone?: 'area' | 'tree';
+  /**
+   * The entry's tags, as flat chips beneath the excerpt.
+   *
+   * Chips, never links. Production linked each tag to `/lab.html?tag=X` and a
+   * script hid the non-matching rows; MW-7 forbids that script, and a link that
+   * lands on an unfiltered index and does nothing is worse than a label. They
+   * are also outside the card's single link target for the same reason nothing
+   * else inside it is focusable.
+   */
+  tags?: string[];
   /** `place` only — "meta as a definition list, never as prose." */
   facts?: { term: string; value: string }[];
   /** "unavailable states say why in words." Supplying a reason marks it so. */
   unavailable?: string;
   /** Seed for the title's type mark. Marks are permitted at card-cover level. */
   seed?: string;
+  /**
+   * `article` only — the lead entry, "one per page, full measure".
+   *
+   * The same anatomy as the grid card, laid out as a picture beside its text
+   * instead of above it. It is a modifier and not the `feature` variant
+   * because `card.feature` is a different card: display-scale title, marks,
+   * tilt, no date line, no tags. The home page's feature must not change shape
+   * because the Lab acquired a lead entry, and this is what keeps the two
+   * apart.
+   */
+  wide?: boolean;
 }
 
 const {
@@ -59,14 +169,23 @@ const {
   title,
   level = 3,
   cover,
+  coverShape = 'band',
+  coverFit = 'cover',
+  scatter = false,
   strip,
   badge,
   badgeOutline,
   excerpt,
   meta,
+  metaLeadHtml,
+  numeral,
+  state,
+  stateTone = 'area',
+  tags,
   facts,
   unavailable,
   seed,
+  wide = false,
 } = Astro.props;
 
 const Title = `h${level}` as 'h2' | 'h3' | 'h4';
@@ -99,8 +218,9 @@ const marked = seed && (variant === 'entry' || variant === 'feature')
  * beside it. The wrapper only exists for `feature` — a Fragment adds no element
  * for the other four — so the twenty entry cards already shipped are unchanged.
  */
-const Body = variant === 'feature' ? 'div' : Fragment;
-const bodyClass = variant === 'feature' ? 'card__body' : undefined;
+const twoColumn = variant === 'feature' || (variant === 'article' && wide);
+const Body = twoColumn ? 'div' : Fragment;
+const bodyClass = twoColumn ? 'card__body' : undefined;
 ---
 
 <a
@@ -108,6 +228,16 @@ const bodyClass = variant === 'feature' ? 'card__body' : undefined;
   class:list={[
     'card',
     `card--${variant}`,
+    coverShape === 'card' && 'card--cover-card',
+    coverFit === 'contain' && 'card--cover-contain',
+    variant === 'article' && wide && 'card--article-wide',
+    /* EVERY card gets a frozen angle — leaning on hover is the default now, so
+       there is nothing to opt into. `href` is the fallback seed because it is
+       always present and unique per card, while `seed` is optional and exists
+       for the title mark. Without a fallback the home grid, which passes no
+       seed, would have been the one grid on the site that did not respond. */
+    cardTiltClass(seed ?? href),
+    scatter && 'card--scatter',
     unavailable && 'card--unavailable',
   ]}
   aria-disabled={unavailable ? 'true' : undefined}
@@ -126,11 +256,35 @@ const bodyClass = variant === 'feature' ? 'card__body' : undefined;
     ) : (
       <div class="card__cover plate">
         {cover && <img src={cover} alt="" loading="lazy" decoding="async" />}
+        {
+          /* §04, "index numeral top-left". Decorative: it names a position in
+             a grid, not anything about the entry, so reordering the grid must
+             not change what a screen reader hears. */
+          numeral && (
+            <span class="card__numeral" aria-hidden="true">
+              {numeral}
+            </span>
+          )
+        }
+        {
+          /* §04, "state badge bottom-right". NOT aria-hidden: unlike the
+             numeral this says something about the entry, and on the Lab it is
+             the only thing that explains why an older entry leads the page. */
+          state && (
+            <span class:list={['card__state', stateTone === 'tree' && 'card__state--tree']}>{state}</span>
+          )
+        }
       </div>
     )
   }
 
   <Body class={bodyClass}>
+    {
+      /* The date line, above the title — see `metaLeadHtml` above for why an
+         index dates an entry before it names it. */
+      metaLeadHtml && <p class="card__metalead" set:html={metaLeadHtml} />
+    }
+
     {
       /* "badges max two" — the props allow exactly two and no more. */
       (badge || badgeOutline) && (
@@ -165,6 +319,19 @@ const bodyClass = variant === 'feature' ? 'card__body' : undefined;
     )}
 
     {excerpt && <p class="card__excerpt">{excerpt}</p>}
+
+    {
+      /* Chips, not links — see `tags` above. A `ul` because it is a list of
+         several, and `role="list"` because `list-style: none` takes the
+         semantic away from VoiceOver otherwise. */
+      tags && tags.length > 0 && (
+        <ul class="card__tags" role="list">
+          {tags.map((t) => (
+            <li class="card__tag">{t}</li>
+          ))}
+        </ul>
+      )
+    }
 
     {/* The unavailable reason is text, never colour alone — the spec asks for it
         in words, and it replaces the meta line rather than sitting beside it. */}

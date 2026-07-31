@@ -74,42 +74,22 @@
 }
 
 /**
- * Prose measure. "prose measure never exceeds 66ch at any width" — including at
- * 1280 and above, where the column is wider than the measure and the measure
- * wins. Page families that are not prose (the two-up collection grid, the place
- * layout) bound themselves by --content-max instead.
+ * The one content-frame contract for every route. It deliberately mirrors the
+ * header and footer column, so page content cannot quietly acquire a narrower
+ * route-local wrapper. `--page-content-max` is the sole width variable: all
+ * pages are standard today, while a future reviewed record can opt into the
+ * reading measure through BaseLayout's `contentWidth` prop.
  */
-.measure {
-  max-width: var(--measure);
+.shell__content {
+  --page-content-max: var(--content-max);
+  width: 100%;
+  max-width: var(--page-content-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
 
-/**
- * Composed with .shell__inner, the measure wins over the column bound. Stated at
- * two-class specificity rather than relying on source order, because which of
- * two equally specific max-widths applies is otherwise decided by the order the
- * bundler happens to emit them in.
- *
- * The margin is the part that matters, and it was wrong. `.shell__inner` centres
- * its box with `margin-inline: auto`, so narrowing that same box to the measure
- * centred the prose in the *viewport* — at 1745px the header and footer sat in
- * the 1180 column starting at x=276 while the body text started at x=480. Every
- * page read as two documents that had never met: a line of chrome, then a column
- * of text floating 200px to the right of it, aligned with nothing.
- *
- * "content max 1180, prose measure still 66ch" is two bounds, not one. The
- * column is 1180 and centred; the measure is 66ch and sits at the *start* of
- * that column. So the inline-start margin is the column's own offset — the same
- * `(available - 1180) / 2` that `margin-inline: auto` computes for the header,
- * which is why the two now agree exactly rather than approximately — and the
- * end margin takes the remainder. Below 1180 the offset clamps to zero and the
- * gutter alone does the work, exactly as before.
- *
- * The spec's own header markup is built this way: a 1180 column with
- * `margin: 0 auto`, holding a 720px text block that is left-aligned inside it.
- */
-.shell__inner.measure {
-  max-width: var(--measure);
-  margin-inline: max(0px, (100% - var(--content-max)) / 2) auto;
+.shell__content[data-content-width='reading'] {
+  --page-content-max: var(--measure);
 }
 
 /* ---- skip link ---------------------------------------------------------- */
@@ -145,14 +125,27 @@
 
 .shell__header {
   width: 100%;
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--layer-header);
+  background: var(--sf-base);
 }
 
+/**
+ * One row, at every width.
+ *
+ * This used to be `flex-wrap: wrap` with a row-gap, which on a phone put the
+ * brand on one line and a "Menu" button plus a language disclosure on a second.
+ * A two-row header on a 360px screen spends a quarter of the viewport on chrome
+ * before the page has said anything. `nowrap` is the rule; what makes it hold is
+ * that below 1024px the entire navigation collapses into one hamburger, so there
+ * are only ever two children competing for the row.
+ */
 .shell__header-inner {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  column-gap: var(--s-6);
-  row-gap: var(--s-2);
+  column-gap: var(--s-4);
   padding-block: var(--s-4);
 }
 
@@ -169,6 +162,20 @@
      legible as two things rather than a collision. */
   gap: var(--s-2);
   min-height: var(--hit-min);
+  /* It is the only route to Maar's home now that the area row does not repeat
+     it, so it never shrinks to make room for the navigation beside it. */
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/**
+ * The brand absorbed the "maar" nav entry, so it absorbed that entry's job of
+ * saying you are on it. Quietly: an underline on the wordmark, which is the same
+ * second signal every current nav entry carries, without a pigment field behind
+ * a logo. `aria-current="page"` in the markup does the rest.
+ */
+.shell__brand[aria-current] span {
+  text-decoration-line: underline;
 }
 
 /**
@@ -186,13 +193,20 @@
 
 /* ---- navigation --------------------------------------------------------- */
 /**
- * Two navs, and they are not the same nav twice.
+ * Three navs, and none of them is another one twice.
  *
- *   nav-areas    the three merged areas — maar, collect, tree — each carrying
- *                its own pigment role. This is how three sites that used to be
- *                three origins stay legible as distinct areas inside one site.
- *   nav-sections the current area's own pages, which is what the legacy header
- *                of that origin carried.
+ *   nav-areas     the merged areas the header offers. Every area carries its own
+ *                 pigment role, which is how sites that used to be three origins
+ *                 stay legible as distinct areas inside one site; which areas are
+ *                 listed is HEADER_AREAS in config/site.ts, and today that is
+ *                 `collect` alone — the brand link is Maar, and Tree is reached
+ *                 directly rather than browsed to.
+ *   nav-sections  the current area's own pages, which is what the legacy header
+ *                 of that origin carried.
+ *   nav-languages the same page in another language.
+ *
+ * Above 1024px they sit side by side in `.nav-wide`. Below it they are rows in
+ * one `.nav-menu` disclosure, so the header is a single line on a phone.
  */
 
 .nav-list {
@@ -222,6 +236,47 @@
   transition: background var(--m-fast) var(--ease), color var(--m-fast) var(--ease);
 }
 
+.nav-icon {
+  display: inline-flex;
+  flex: 0 0 var(--nav-icon-size);
+  inline-size: var(--nav-icon-size);
+  block-size: var(--nav-icon-size);
+  margin-inline-end: var(--s-1);
+}
+
+/* The official Material Symbol source has no hard-coded fill. Giving the
+   embedded SVG `currentColor` makes it follow every nav-link state. */
+.nav-icon svg {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  fill: currentColor;
+}
+
+/* Four quiet, seeded voices give the navigation the hand-set cadence present
+   in the reference without turning controls into decorative marks. */
+.nav-link--voice-1 {
+  font-stretch: var(--nav-voice-wide);
+}
+
+.nav-link--voice-2 {
+  font-family: var(--t-h3-face);
+  font-weight: var(--t-h3-weight);
+  font-stretch: var(--nav-voice-wide);
+  letter-spacing: var(--nav-voice-track-tight);
+}
+
+.nav-link--voice-3 {
+  font-family: var(--t-h3-face);
+  font-weight: var(--t-h3-weight);
+  font-stretch: var(--nav-voice-narrow);
+  letter-spacing: var(--nav-voice-track-open);
+}
+
+.nav-link--voice-4 {
+  letter-spacing: var(--nav-voice-track-open);
+}
+
 /**
  * "on dark, hover inverts to cream; on paper it inverts to ink. never a hue
  * shift, never a lighten."
@@ -245,20 +300,50 @@
 }
 
 /**
- * Where you are.
+ * Where you are, and the two different answers to that question.
  *
- * "a pigment field never carries meaning alone" — so the current entry is marked
- * three ways: the pigment field, an underline, and aria-current in the markup.
- * Remove the colour and it still reads; remove the CSS and it still reads.
+ * The markup already made the distinction and the CSS did not: `aria-current`
+ * is `"page"` on the page you are actually on, and `"true"` on the area that
+ * page lives inside. One selector matched both, so on /collect/cards the words
+ * `collect` and `cards` sat next to each other wearing the identical filled
+ * field — two entries claiming to be the same one page. Adding Cards is what
+ * made it visible; it was wrong with one section link too.
+ *
+ * So `page` keeps the full treatment and `true` gets the quieter one.
+ */
+
+/**
+ * The page you are on.
+ *
+ * "a pigment field never carries meaning alone" — so it is marked three ways:
+ * the pigment field, an underline, and aria-current in the markup. Remove the
+ * colour and it still reads; remove the CSS and it still reads.
  */
 /* Longhand, not the `text-decoration` shorthand: the shorthand would reset the
    thickness and offset that styles/type.css sets once for every anchor on the
    site, and restating them here would put two raw pixel values outside
    tokens.css. Suppressing only the line keeps that one treatment authoritative. */
-.nav-link[aria-current] {
+.nav-link[aria-current='page'] {
   background: var(--area-pigment, var(--ink-tint));
   color: var(--pigment-ink);
   text-decoration-line: underline;
+}
+
+/**
+ * The area that page is inside.
+ *
+ * Full ink rather than muted, and an underline in the area's own pigment — a
+ * containing area is a weaker claim than a destination, so it gets the weaker
+ * signal. No field: the field is what "you are here" means in this header, and
+ * exactly one entry may say it.
+ *
+ * Still two signals without colour — full-contrast ink and the underline — so
+ * it survives the pigment being removed, same as the rule above.
+ */
+.nav-link[aria-current='true'] {
+  color: var(--ink);
+  text-decoration-line: underline;
+  text-decoration-color: var(--area-pigment, var(--ink-tint));
 }
 
 /* Hover still inverts on the current entry — the pigment is state, not a lock. */
@@ -268,30 +353,248 @@
 }
 
 /**
- * The compact navigation, and why there is no JavaScript in it.
+ * The two arrangements, and why they are two elements.
  *
- * No page on this site may gain application JavaScript, so the small-screen
- * menu is a <details> disclosure — the browser's own, no script, no state to
- * manage. The wide-screen navigation is NOT the same <details> forced open:
- * whether a closed <details> can be re-shown by CSS depends on how a given
- * engine implements the closed state, and the failure mode of getting that wrong
- * is a navigation that is invisible AND has no control to open it.
+ * `.nav-wide` lays the areas, the sections and the language picker out in one
+ * row. `.nav-menu` collapses all three into a single disclosure. Exactly one of
+ * them is `display: none` at any width, which removes it from the accessibility
+ * tree and the tab order entirely — so a link is never a second tab stop, and if
+ * every stylesheet failed to load both would simply be visible, which is the
+ * failure mode you want.
  *
- * So the two are separate elements, and exactly one of them is display:none at
- * any width. display:none removes an element from the accessibility tree and the
- * tab order entirely, so there is never a second tab stop for the same link —
- * and if every stylesheet failed to load, both would simply be visible, which is
- * the failure mode you want.
+ * The compact one is NOT the wide one forced open by CSS: whether a closed
+ * <details> can be re-shown depends on how a given engine implements the closed
+ * state, and the failure mode of getting that wrong is a navigation that is
+ * invisible AND has no control to open it.
  */
-.nav-sections--compact {
-  margin-inline-start: auto;
-}
 
-.nav-sections--wide {
+/**
+ * The switch is at 1024, and the number is measured rather than chosen.
+ *
+ * It used to be 900, which is where the gutter steps up — a tempting place to
+ * put it and the wrong one. Laid out at 900 the row wants
+ *
+ *   96 gutter + 116 brand + 16 gap + 100 areas + 495 sections + 73 language
+ *   + 48 of column gaps = 944px
+ *
+ * so between 900 and 943 the wide navigation appeared and immediately wrapped
+ * to a second line: a 128px header at exactly the width the media query had
+ * just declared wide enough for one. 1024 is the next standard step past 944 and
+ * leaves ~80px of headroom for a longer section label or a third language.
+ *
+ * If an entry is added to SECTIONS, re-measure. The failure is silent — the row
+ * wraps rather than overflowing — so nothing here will fail a build.
+ */
+.nav-wide {
   display: none;
 }
 
-.nav-disclosure {
+@media (min-width: 1024px) {
+  .nav-wide {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    column-gap: var(--s-6);
+    row-gap: var(--s-2);
+    /* Takes the rest of the row so the areas, the sections and the language
+       picker are one right-aligned group rather than three floated fragments. */
+    flex: 1 1 auto;
+    margin-inline-start: auto;
+  }
+}
+
+/* ---- the compact menu --------------------------------------------------- */
+/**
+ * One control for the whole navigation, and no JavaScript in it.
+ *
+ * No page on this site may gain application JavaScript, so this is a <details>
+ * disclosure — the browser's own, no script, no state to manage.
+ *
+ * What it replaced: a text button reading "Menu" sitting beside a separate
+ * language disclosure. Two controls, two tab stops, a second header row on a
+ * phone, and a label naming the widget rather than anywhere you could go. The
+ * language options are inside this panel now precisely because a second control
+ * in the header is what made the header wrap.
+ */
+.nav-menu {
+  margin-inline-start: auto;
+  flex: 0 0 auto;
+}
+
+.nav-menu__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Square, because it is an icon: the hit area is the token minimum in both
+     axes rather than a wide button around a small glyph. */
+  min-height: var(--hit-min);
+  min-width: var(--hit-min);
+  color: var(--ink-muted);
+  cursor: pointer;
+  border-radius: var(--r-1);
+  transition: background var(--m-fast) var(--ease), color var(--m-fast) var(--ease);
+  /* Both remove the native triangle; engines disagree about which one to obey. */
+  list-style: none;
+}
+
+.nav-menu__trigger::-webkit-details-marker {
+  display: none;
+}
+
+.nav-menu__trigger:hover,
+.nav-menu[open] > .nav-menu__trigger {
+  background: var(--action-invert);
+  color: var(--sf-base);
+}
+
+.nav-menu__trigger:active {
+  transform: translateY(var(--press-nudge));
+}
+
+/* The trigger's icon is the state. Both glyphs are in the markup and CSS shows
+   one, so opening the menu needs no script and no re-render. The icons are
+   `aria-hidden`; the control's name is its aria-label and does not change. */
+.nav-menu__trigger .nav-icon {
+  margin-inline-end: 0;
+}
+
+.nav-menu__trigger .nav-icon--close,
+.nav-menu[open] > .nav-menu__trigger .nav-icon--menu {
+  display: none;
+}
+
+.nav-menu[open] > .nav-menu__trigger .nav-icon--close {
+  display: inline-flex;
+}
+
+/**
+ * The panel is taken out of flow on purpose.
+ *
+ * In flow it would push the header open to the height of the whole menu, which
+ * is the two-row header this change exists to remove — just intermittently. Out
+ * of flow, the header is one row whether the menu is open or shut, and the panel
+ * hangs beneath it across the full bleed of the shell.
+ *
+ * `.shell__header` is sticky, so it is the containing block; the panel needs no
+ * positioning context of its own.
+ */
+.nav-menu__panel {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 100%;
+  z-index: var(--layer-header);
+  display: grid;
+  gap: var(--s-4);
+  /* Matches the column the header sits in, so the menu's links line up under
+     the brand instead of starting at the viewport edge. */
+  padding-inline: max(var(--gutter), calc((100% - var(--content-max)) / 2 + var(--gutter)));
+  padding-block: var(--s-2) var(--s-6);
+  /* Opaque, not --sf-raised: the page scrolls underneath a sticky header, and a
+     translucent panel would have body text reading through the navigation. */
+  background: var(--sf-base);
+  /* A long menu on a short phone in landscape scrolls rather than running off
+     the bottom of the screen with no way to reach the last link. */
+  max-height: calc(100vh - 100%);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* "panels carry no rule" — space does the separating. The exception is here,
+     where the panel is over the page rather than before it in a sequence, and
+     needs an edge for the page not to start mid-menu. */
+  border-block-end: 1px solid var(--chip-rule);
+}
+
+.nav-menu__group {
+  display: grid;
+  gap: var(--s-2);
+}
+
+/* Stacked, so every destination is a full-width row with the token hit height
+   rather than three-per-line chips a thumb has to aim at. */
+.nav-list--stacked {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+
+.nav-list--stacked .nav-link {
+  justify-content: flex-start;
+}
+
+.nav-menu__group--languages {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-4);
+}
+
+/* The current language, stated rather than offered — it is where you already
+   are, so it is a label and not a link. */
+.nav-menu__label {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--hit-min);
+  padding-inline: var(--s-2);
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: var(--t-meta-line);
+  letter-spacing: var(--t-meta-track);
+  color: var(--ink-muted);
+}
+
+.nav-menu__languages {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu__languages .nav-language {
+  min-height: var(--hit-min);
+  display: inline-flex;
+  align-items: center;
+}
+
+/* The pair to `.nav-wide`'s query, and it must stay the same number: at any
+   width where both were visible a link would be two tab stops, and at any width
+   where neither was there would be no navigation at all. */
+@media (min-width: 1024px) {
+  .nav-menu {
+    display: none;
+  }
+}
+
+/* ---- the wide language picker ------------------------------------------- */
+/* An icon, the current ISO code and a chevron. Its native disclosure holds the
+   alternatives without permanently spending header space on two language names.
+   Below 1024px this is not rendered at all — the same choices are rows in the
+   compact panel, which is why the header no longer carries two controls. */
+.nav-languages {
+  position: relative;
+}
+
+.nav-languages__list {
+  position: absolute;
+  inset-block-start: calc(100% + var(--s-1));
+  inset-inline-end: 0;
+  display: grid;
+  gap: var(--s-1);
+  list-style: none;
+  margin: 0;
+  padding: var(--s-2);
+  background: var(--sf-raised);
+  border: 1px solid var(--chip-rule);
+  z-index: var(--layer-header);
+}
+
+.nav-languages__disclosure {
+  position: relative;
+}
+
+.nav-language-trigger {
   display: inline-flex;
   align-items: center;
   min-height: var(--hit-min);
@@ -302,38 +605,51 @@
   letter-spacing: var(--t-meta-track);
   color: var(--ink-muted);
   cursor: pointer;
-  border-radius: var(--r-1);
-  list-style-position: inside;
+  list-style: none;
 }
 
-.nav-disclosure:hover {
+.nav-language-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.nav-language-trigger:hover,
+.nav-languages__disclosure[open] > .nav-language-trigger {
   background: var(--action-invert);
   color: var(--sf-base);
 }
 
-.nav-sections--compact[open] > .nav-disclosure {
-  background: var(--ink-tint);
+.nav-language-trigger .nav-icon {
+  margin-inline-end: var(--s-1);
 }
 
-/* The disclosure panel is a panel, and "panels carry no rule" — space only. */
-.nav-sections--compact > .nav-panel {
-  padding-block: var(--s-2) var(--s-4);
+.nav-language-trigger .nav-icon--chevron {
+  margin-inline: var(--s-1) 0;
 }
 
-.nav-sections--compact .nav-list {
-  flex-direction: column;
-  align-items: flex-start;
+.nav-language {
+  display: inline-block;
+  padding-inline: var(--s-2);
+  border: 1px solid transparent;
+  border-radius: var(--r-0);
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: var(--t-meta-line);
+  letter-spacing: var(--t-meta-track);
+  color: var(--ink-meta);
+  text-decoration: none;
 }
 
-@media (min-width: 900px) {
-  .nav-sections--compact {
-    display: none;
-  }
+.nav-language[aria-disabled='true'] {
+  /* Still a visible language option on paper; unavailable is conveyed by the
+     disabled state and lack of link, never by contrast that falls below UI AA. */
+  color: var(--ink-meta);
+  cursor: not-allowed;
+}
 
-  .nav-sections--wide {
-    display: block;
-    margin-inline-start: auto;
-  }
+.nav-language:hover:not([aria-disabled='true']) {
+  background: var(--area-pigment, var(--c-maar));
+  border-color: var(--area-pigment, var(--c-maar));
+  color: var(--pigment-ink);
 }
 
 /* ---- footer ------------------------------------------------------------- */

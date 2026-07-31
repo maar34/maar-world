@@ -128,10 +128,21 @@
   height: var(--carousel-height);
   border-radius: var(--r-0);
   display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .carousel .carousel__frame > * {
   height: 100%;
+}
+
+/* Some legacy slides wrap their media in `.orb-media`; it must occupy the
+   stage and centre its own image, rather than shrink-wrap at the start edge. */
+.carousel .carousel__frame > .orb-media {
+  inline-size: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /**
@@ -166,13 +177,34 @@
 
 /* "caption sits below at --t-meta, no rule, no italics." */
 .carousel__caption {
+  display: grid;
+  gap: var(--s-1);
+  /* Captions are a reading measure beneath a visual slide. Without an explicit
+     cap, a long sentence can make the slide wider than its image and appear to
+     spill out to one side. The image stays the visual centre; the copy centres
+     beneath it and wraps within a stable measure. */
+  inline-size: min(100%, 38rem);
+  margin-inline: auto;
   font-family: var(--t-meta-face);
   font-size: var(--t-meta-size);
   line-height: var(--t-meta-line);
   letter-spacing: var(--t-meta-track);
   color: var(--ink-meta);
   font-style: normal;
+  margin-block: 0;
+}
+
+/* Legacy slide bodies sometimes carried a heading and paragraph. Once those
+   become a figure caption they should inherit the caption rhythm, not the
+   page's prose heading scale. */
+.carousel__caption :is(h1, h2, h3, h4, h5, h6, p) {
+  font: inherit;
+  letter-spacing: inherit;
   margin: 0;
+}
+
+.carousel__caption-step {
+  color: var(--ink);
 }
 
 /* ---- enhanced: the Embla track -------------------------------------------- */
@@ -191,7 +223,8 @@
  * engine is Embla, the same one shadcn/ui's carousel wraps, imported as its
  * plain-JavaScript core. No React, no Tailwind, no CDN — Vite bundles it from
  * node_modules, so the no-third-party-request-on-page-load rule is untouched,
- * and only the five pages that carry a carousel load it.
+ * and it loads only on routes whose page body or family component owns a
+ * carousel.
  *
  * PROGRESSIVE ENHANCEMENT, NOT REPLACEMENT. Everything above this comment is
  * the no-script carousel and still ships: a native scroll-snap track that
@@ -253,130 +286,86 @@
   }
 }
 
-/* ---- controls -------------------------------------------------------------- */
+/* ---- controls: two arrows, beside the pictures ---------------------------- */
 /**
- * Two buttons and no more. The count is NOT drawn: "we have numbers everywhere"
- * was a fair verdict on eleven numbered boxes, and nothing about a gallery is
- * improved by printing its length. The spec's counter is an accessibility
- * requirement — "the counter in a polite live region" — so it is exactly that,
- * announced and unpainted; see `.carousel__counter` below.
+ * WHAT THIS REPLACES, AND WHY.
+ *
+ * A boxed `prev`, ten circles and a boxed `next` in a row under the track. The
+ * owner's verdict, and every part of it was right: the row read as ONE
+ * connected widget rather than two controls; it sat directly above the
+ * unrelated lab / live / bookings links, so the two became a single cluster of
+ * boxes with nothing to say which belonged to the gallery; and the dots were a
+ * row of circles on a site that has no other row of circles anywhere.
+ *
+ * The count is not drawn at all now — not as numbers, which was rejected once,
+ * and not as dots, which was rejected again. It stays where the spec actually
+ * asks for it, in the polite live region below, and the page shows photographs.
+ *
+ * The arrows sit beside the pictures because that is what they move. Absolutely
+ * positioned against `.carousel`, vertically centred on the image band, so
+ * nothing is added under the track and the space below the gallery belongs to
+ * whatever comes next.
  */
-.carousel__controls {
-  display: flex;
-  align-items: center;
-  gap: var(--s-4);
+.carousel {
+  position: relative;
 }
 
-/**
- * ONE CIRCLE PER SLIDE — the owner's ask, and not the thing that was rejected.
- *
- * What went wrong the first time was eleven NUMBERED boxes: chrome that printed
- * a constraint and read as a control panel. A dot says the same thing without
- * saying a number, and it earns its place by being the only indicator of where
- * you are in a looping track, where "disabled at the end" no longer exists.
- *
- * The hit target is the full 44px the spec asks for; the painted circle is 8px
- * inside it. A dot that is 8px to the finger is not a control.
- */
-.carousel__dots {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0;
-}
+.carousel__arrow {
+  position: absolute;
+  /* Centred on the frame, not on the carousel: the caption sits below the
+     picture and an arrow halfway down the caption is halfway down nothing. */
+  top: calc(var(--carousel-height) / 2);
+  transform: translateY(-50%);
+  z-index: 1;
 
-.carousel__dot {
   width: 44px;
   height: 44px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
+  border-radius: 50%;
   display: grid;
   place-items: center;
-}
-
-.carousel__dot::before {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: 1px solid var(--ink-meta);
-  transition: background var(--m-fast) var(--ease);
-}
-
-/* The current slide, said twice: the filled circle and `aria-current`, because
-   a pigment or a fill is never the only carrier of a state. */
-.carousel__dot[aria-current]::before {
-  background: var(--area-pigment, var(--c-maar));
-  border-color: var(--area-pigment, var(--c-maar));
-}
-
-.carousel__dot:hover::before {
-  background: var(--ink-meta);
-}
-
-/**
- * BELOW 600 THE ROW DOES NOT FIT, so it becomes two rows rather than one
- * overflowing one.
- *
- * Ten dots at the full 44px target, plus both buttons and the gaps, is 472px of
- * controls inside a 350px column. The dots take their own line — prev and next
- * hold the ends of the line above, which is also where a thumb is — and the dot
- * narrows to 32px so all ten still fit on one line at 390.
- *
- * The target stays 44px TALL and 32px wide. That is under the spec's 44 in one
- * axis and above the WCAG 2.2 minimum of 24×24 in both; the alternative was two
- * ragged rows of circles, which reads as a fault rather than as a control.
- */
-@media (max-width: 599px) {
-  .carousel__controls {
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-
-  .carousel__dots {
-    order: 3;
-    width: 100%;
-    justify-content: center;
-  }
-
-  .carousel__dot {
-    width: 32px;
-  }
-}
-
-.carousel__control {
-  font-family: var(--t-meta-face);
-  font-size: var(--t-meta-size);
-  line-height: var(--t-meta-line);
-  letter-spacing: var(--t-meta-track);
-  color: var(--ink-meta);
-  background: transparent;
-  border: 1px solid var(--chip-rule);
-  border-radius: var(--r-0);
-  padding: var(--s-2) var(--s-3);
+  padding: 0;
   cursor: pointer;
-  /* "touch targets 44px minimum". */
-  min-height: 44px;
-  min-width: 44px;
+
+  /* It is read against a photograph, which can be any colour, so it carries its
+     own ground rather than trusting the image behind it. */
+  color: var(--ink);
+  background: color-mix(in srgb, var(--sf-base) 72%, transparent);
+  border: 1px solid var(--ink-hairline);
+  backdrop-filter: blur(2px);
+  transition:
+    background var(--m-fast) var(--ease),
+    color var(--m-fast) var(--ease);
 }
 
-.carousel__control:hover:not(:disabled) {
+.carousel__arrow--prev {
+  left: var(--s-2);
+}
+
+.carousel__arrow--next {
+  right: var(--s-2);
+}
+
+.carousel__arrow:hover {
   background: var(--area-pigment, var(--c-maar));
   border-color: var(--area-pigment, var(--c-maar));
   color: var(--pigment-ink);
 }
 
-/**
- * "at the first or last slide the matching control is disabled, not hidden."
- *
- * Disabled, and it still says so in words: a `<button disabled>` is announced
- * as unavailable, so the state is not carried by the dimmed ink alone.
- */
-.carousel__control:disabled {
-  color: var(--ink-faint, var(--ink-meta));
-  opacity: 0.4;
-  cursor: not-allowed;
+/* "press is a 1px downward nudge, no scale." */
+.carousel__arrow:active {
+  transform: translateY(calc(-50% + var(--press-nudge)));
+}
+
+/* Below 600 the photograph fills the frame, so the arrows sit tight to the
+   edges while keeping the required 44px touch target. */
+@media (max-width: 599px) {
+  .carousel__arrow--prev {
+    left: 4px;
+  }
+
+  .carousel__arrow--next {
+    right: 4px;
+  }
 }
 
 /**

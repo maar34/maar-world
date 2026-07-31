@@ -10,15 +10,12 @@ lang: "en"
 indexGroup: "collect-cards"
 indexOrder: "024_-maar-sky-sounds.3-card II.md"
 indexLabel: "Card II"
+cover: "/img/cards/Thumb_SkySounds_3_2.webp"
 suit_title: "SkySounds.3"
 card_title: "Card II"
-card_image: "https://www.dropbox.com/s/vmyhdqozq6woo0f/SkySounds3_2.png?raw=1"
+card_image: "/img/cards/SkySounds3_2.webp"
 card_description: "In the south, life thrives in the vast expanse of the sky and the depths of the sea. The warm winds and endless horizon of the southern skies are home to a diversity of winged creatures, from the tiniest kind of hummingbirds to the majestic kind of condors. Similarly, the warm waters of the southern seas are teeming with an abundance of life, from the tiniest plankton to the largest sort of whales. Both the air and the water are essential for the survival of these creatures and the balance of life on this planet. The southern skies and seas are not only a source of life, but also a source of inspiration, from the traditional indigenous songs and dances that celebrate the winged creatures of the sky to the jazzy rhythms that pay homage to the ocean's inhabitants. They remind us of the importance of preserving these ecosystems for future generations and the interconnectedness of all living things."
 snip_player: "https://play.maar.world/?g=333&s=2&c=2"
 ---
 
 <p class="card-unlock">Collect this card to unlock access to the<br /> Orbiter and download high-quality audio files.</p>
-
-<h2 class="card-snippet">Snippet</h2>
-
-<p class="card-player-note">Please <a href="https://support.apple.com/en-gb/HT208353" target="_blank" rel="noopener noreferrer">unmute</a> your device and press PLAY ▶️ button.<br /> Player optimized for Chrome and Firefox browsers</p>

@@ -64,7 +64,7 @@ import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { ROOT, indexDist, readDistFile } from './lib/artifacts.mjs';
 import { resolveRoute } from './lib/routes.mjs';
-import { plainText, decodeAttrEntities } from './lib/html-text.mjs';
+import { plainText, decodeAttrEntities, comparable } from './lib/html-text.mjs';
 import { mainContent } from './verify-content.mjs';
 
 /**
@@ -92,6 +92,48 @@ const TEXT_FRACTION = 0.85;
  * assert a decision already taken rather than the content of the page.
  */
 const CHROME = [
+  /**
+   * `<head>` is not body content, and it was being counted as body text.
+   *
+   * `plainText()` strips tags but keeps the text INSIDE them, so
+   * `<title>Music - MAAR WORLD</title>` contributed 19 characters to what this
+   * file called production's *body* length — on all 130 pages. The build side
+   * of the same comparison is measured inside `<main>`, which can never contain
+   * a `<title>`, so every page's `minTextLength` floor was inflated by the
+   * length of its own document title and the comparison was not like for like.
+   *
+   * It went unnoticed because it only bites where the title is a large share of
+   * a short page: `/collect/about` asserted 27 characters of body against a page
+   * whose entire body is the word "About", and production's 32 was exactly
+   * `"About - COLLECT.MAAR.WORLD"` + `"About"`. Four of the eight text
+   * shortfalls were this, to the character.
+   *
+   * Removed first, before every other region, so nothing below has to reason
+   * about head markup.
+   */
+  ['document-head', 'head', /<head\b[^>]*>/gi,
+    'the document <head> — <title> and metadata. plainText() keeps the text inside a tag, so ' +
+    'the page title counted as body text on the production side of a comparison whose build ' +
+    'side is measured inside <main>. Not body content on either side'],
+  /**
+   * Material Symbols ligature names, for the reason already stated for headings.
+   *
+   * `normaliseHeading` has always removed these spans from headings — the first
+   * of the three NORMALISATIONS — because `<span class="material-symbols-outlined">
+   * speaker_group</span> Bookings` reached a reader as a glyph plus "Bookings",
+   * and the font is banned here, so "speaker_group Bookings" is not a string
+   * anyone ever saw. The identical span in body copy was left in, and its
+   * ligature name counted as body text: `/music` carried a 14-character
+   * `nature_people` nobody read, and `/tree/max-network-berlin` six of them.
+   *
+   * The same argument cannot be true for a heading and false for a paragraph.
+   * Applying it to the whole body also makes the heading rule redundant rather
+   * than contradicted, which is the direction that leaves both stated.
+   */
+  ['icon-glyphs', 'span', /<span\b[^>]*material-symbols[^>]*>/gi,
+    'Material Symbols icon spans — they reached a reader as a glyph, never as the ligature ' +
+    'name in the markup, and the font is banned here. normaliseHeading has always removed ' +
+    'them from headings for this reason; body copy was the half that was missed'],
   ['site-header', 'div', /<div\b[^>]*class="[^"]*\bpage__header\b[^"]*"[^>]*>/gi,
     'site header and primary nav — BaseLayout ships no nav; the page shell is MW-11'],
   ['site-footer', 'div', /<div\b[^>]*class="[^"]*\bpage__footer\b[^"]*"[^>]*>/gi,
@@ -137,31 +179,339 @@ const HIDDEN_REASON =
  * that quietly suppresses a new regression.
  */
 const EXCLUSIONS = [
+  /**
+   * THE SNIPPET BLOCK, REMOVED FROM ALL 34 COLLECT CARD PAGES BY THE OWNER.
+   *
+   * Production printed a heading "Snippet" and, under it, "Please unmute your
+   * device and press PLAY ▶️ button. Player optimized for Chrome and Firefox
+   * browsers". Every word of that described the play.maar.world player, which
+   * these pages no longer carry: 33 of them embed the Maar Orbiter instead, and
+   * the Orbiter has its own transport, is not a snippet, and is not
+   * Chrome-and-Firefox-only. Keeping the copy would have made the page instruct
+   * the visitor to press a button that is not there.
+   *
+   * Three entries because the block was three assertions — a heading, an
+   * outbound link and 108 characters of body text. They are separate so that if
+   * the heading came back tomorrow the *other two* would still be enforced.
+   *
+   * Ledger: MW-9 content/snippet-note-retired.
+   */
   {
-    url: '/collect/cards',
-    kind: 'images',
-    count: 34,
+    url: /^\/collect\/cards\/.+/,
+    kind: 'heading',
+    value: 'Snippet',
     reason:
-      'production renders 34 card thumbnails and every one is a www.dropbox.com URL. ' +
-      'Restoring them takes the on-load third-party reference count verify:links reports ' +
-      'from 75 to 109. Ledger MW-8 collect/cards-covers (BLOCKED): self-host the 34 ' +
-      'thumbnails or accept the exception.',
+      'the "Snippet" heading named the play.maar.world excerpt player. 33 of these pages now ' +
+      'embed the full Maar Orbiter, which is not a snippet, so the heading described nothing ' +
+      'on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired.',
+  },
+  {
+    url: /^\/collect\/cards\/.+/,
+    kind: 'link',
+    value: 'https://support.apple.com/en-gb/HT208353',
+    reason:
+      'the Apple "unmute your iPhone" help link, which only existed inside the removed player ' +
+      'note. It is not lost content in its own right — it was the note\'s only link, and the ' +
+      'note is gone. Ledger MW-9 content/snippet-note-retired.',
+  },
+  {
+    url: /^\/collect\/cards\/.+/,
+    kind: 'text',
+    count: 108,
+    reason:
+      'the 108 characters of the removed block, measured with the same plainText() this file ' +
+      'fingerprints production with: "Snippet Please unmute your device and press PLAY ▶️ ' +
+      'button. Player optimized for Chrome and Firefox browsers". Ledger MW-9 ' +
+      'content/snippet-note-retired.',
+  },
+  {
+    url: '/',
+    kind: 'text',
+    count: 297,
+    reason:
+      'the ten home-carousel captions were invented migration copy that does not describe the ' +
+      'photographs. The owner removed them; the images remain, with empty alt text because no ' +
+      'accurate textual alternative is available. This is an intentional content correction, not loss.',
+  },
+  /**
+   * `/collect/cards` had an `images: 34` exclusion here until 2026-07-30. The
+   * owner approved self-hosting, the 34 thumbnails are in media/collect/img/cards/
+   * as webp, and the grid asserts all 34 again. The exclusion is gone rather
+   * than zeroed: this table is a list of things not being checked, and an
+   * entry that excludes nothing is the shape a suppression hides in.
+   */
+  /**
+   * THE DISQUS MOUNT THAT IS NOT IN THE DISQUS REGION.
+   *
+   * `page__comments` is already a named CHROME region, so the theme's comments
+   * section is excluded on all 130 pages and always has been. On these eight
+   * Lab articles the embed was ALSO pasted into the article body — a
+   * `<div id="disqus_thread">` inside `article__content`, above the theme's own
+   * mount — so the region strip never reached it and its `<noscript>` fallback
+   * link survived into the expectation.
+   *
+   * It is the same decision as the region, at a different place in the DOM: no
+   * Disqus, because a third-party embed firing on page load is what the
+   * no-analytics / no-cookie-banner invariant forbids, and the comments were
+   * deliberately not ported. One RegExp rather than eight copies — the four
+   * articles exist in both languages.
+   *
+   * Ledger: MW-7 lab/disqus-and-continue-reading.
+   */
+  {
+    url: /^\/lab\/(en|es)\/(dadada|ip-1|ip-2|ip-3)$/,
+    kind: 'link',
+    value: 'https://disqus.com/?ref_noscript',
+    reason:
+      'the "comments powered by Disqus" <noscript> fallback link. These eight articles carry ' +
+      'the Disqus embed inside the article body as well as in the theme\'s page__comments ' +
+      'section, which is already excluded as chrome on every page, so the body copy of it ' +
+      'outlived the region strip. Disqus is a third-party embed the on-load gate forbids and ' +
+      'the comments were deliberately not ported. Ledger MW-7 lab/disqus-and-continue-reading.',
+  },
+  /**
+   * THE TWO RETIRED FEEDBACK FORMS.
+   *
+   * Both were a Google Form iframe wrapping out-of-date questions. They are now
+   * 200 + instant meta-refresh stubs to /bookings — the house pattern
+   * /interplanetary-players already used, and the pattern production itself uses
+   * to retire a URL, because a static host cannot serve a true 301. The routes
+   * stay `preserve`, so nothing about the contract moved; what went is the
+   * embed, on purpose.
+   *
+   * The ledger entry recording this says the expectation was moved from 1 to 0
+   * "with a reason". The reason never reached this table, so both pages have
+   * been reported as content loss ever since. It is written down now.
+   *
+   * Ledger: MW-9 pages/feedback-retired.
+   */
+  {
+    url: '/eng-feedback',
+    kind: 'embeds',
+    count: 1,
+    reason:
+      'the Google Form iframe. The form asked out-of-date questions and the page is now a ' +
+      '200 + meta-refresh stub to /bookings, which is how production retires a URL on a ' +
+      'static host. The form URL is recorded in routes/external-link-removals.json. ' +
+      'Ledger MW-9 pages/feedback-retired.',
+  },
+  {
+    url: '/esp-feedback',
+    kind: 'embeds',
+    count: 1,
+    reason:
+      'the Google Form iframe — the Spanish half of the same retirement. Ledger MW-9 ' +
+      'pages/feedback-retired.',
   },
   {
     url: '/lab/en/ip-orchestra',
     kind: 'images',
-    count: 1,
+    count: 2,
     reason:
       '/img/about/Bruna.jpeg is referenced by production and exists in no read-only ' +
-      'checkout — it is a broken image in production too. Ledger MW-7 pages/dead-legacy-img.',
+      'checkout — it is a broken image in production too (Ledger MW-7 pages/dead-legacy-img). ' +
+      'The MMAT sponsor logo is the other: its Dropbox link answers "File Deleted", so it ' +
+      'is broken in production as well and there is nothing to self-host. It is a text ' +
+      'credit until the file is supplied. UArtes was the same case and is restored — the ' +
+      'owner sent the file 2026-07-31. Ledger MW-6 lab/dead-sponsor-logos.',
   },
   {
     url: '/lab/es/ip-orchestra',
     kind: 'images',
-    count: 1,
+    count: 2,
     reason:
       '/img/about/Bruna.jpeg is referenced by production and exists in no read-only ' +
-      'checkout — it is a broken image in production too. Ledger MW-7 pages/dead-legacy-img.',
+      'checkout — it is a broken image in production too (Ledger MW-7 pages/dead-legacy-img). ' +
+      'The MMAT sponsor logo is the other: its Dropbox link answers "File Deleted", so it ' +
+      'is broken in production as well and there is nothing to self-host. It is a text ' +
+      'credit until the file is supplied. UArtes was the same case and is restored — the ' +
+      'owner sent the file 2026-07-31. Ledger MW-6 lab/dead-sponsor-logos.',
+  },
+  /**
+   * THE LAB'S TEN SPANISH ENTRIES, WHICH MOVED RATHER THAN LEFT.
+   *
+   * Production's /lab listed all twenty Lab records — ten pieces, each written
+   * twice — one after another, with each pair adjacent because the two halves
+   * share a date. The owner's instruction of 2026-07-31, in their own words:
+   * "if we have English selected we show the English articles, if we have
+   * Spanish selected we show the Spanish articles."
+   *
+   * So page family 02 lists the entries in ITS OWN language. Every one of the
+   * ten headings below is now on /es/lab, the Spanish translation of this page,
+   * which the header's language chip links to and which `translationOf` in
+   * src/content/authored/es/lab.md relates to it. Each Spanish article also
+   * remains reachable from its English twin's own language switch, and no URL
+   * changed.
+   *
+   * This is the SECOND entry in this table that records real content leaving a
+   * page rather than a check disagreeing with itself — see the home page's ten
+   * photographs below. It differs from that one in that the content did not
+   * stop being served: it is on another page of this build, and /es/lab has no
+   * production baseline only because production had no Spanish Lab index.
+   *
+   * The text figure is derived, not tuned. Production's /lab body is 5783
+   * characters, of which roughly 250 is the heading and statement; the twenty
+   * entries are the remaining ~5533, so the ten Spanish ones are ~2766.
+   *
+   * Ledger: MW-11 design/page-family-02-lab.
+   */
+  {
+    url: '/lab',
+    kind: 'heading',
+    values: [
+      'Helix — Requisitos técnicos',
+      'Música, Abstracción y el Retorno al Juego',
+      'Música, Acceso y la Mente Humana',
+      'Órbitas y Cuerpos',
+      'Taller de creación orbital',
+      'Taller de creación orbital: Orbiters Orchestra (ES)',
+      'Dadada (ES)',
+      'Ancestros interplanetarios 3-3 (ES)',
+      'Ancestros interplanetarios 2-3 (ES)',
+      'Ancestros interplanetarios 1-3 (ES)',
+    ],
+    reason:
+      'the ten Spanish Lab entries. Page family 02 lists an index in its own language, by the ' +
+      "owner's instruction of 2026-07-31; all ten are served on /es/lab, the translation of " +
+      'this page that the header language chip links to. Content moved, not removed. ' +
+      'Ledger MW-11 design/page-family-02-lab.',
+  },
+  {
+    url: '/lab',
+    kind: 'text',
+    count: 2766,
+    reason:
+      'the body text of those same ten Spanish entries — title, date, excerpt and tags each. ' +
+      "Derived: production's /lab body is 5783 chars, ~250 of it the heading and statement, so " +
+      'the twenty entries are ~5533 and the Spanish half ~2766. Same decision as the heading ' +
+      'exclusion above; the text is served on /es/lab.',
+  },
+  /**
+   * THE HOME PAGE'S TEN PHOTOGRAPHS.
+   *
+   * Production's home page carried eleven photographs stacked one under
+   * another, which the migration turned into `ui/carousel`. Family 01 replaced
+   * that: the spec for a home page is "one feature card, then three entry
+   * cards, no sidebar", and `homeMediaSections()` in scripts/lib/home-family.mjs
+   * cuts the whole `section-block--photos` / `--videos` region in favour of
+   * `patterns/collage-field`. It matches the outer section rather than
+   * individual media so the decision stays reversible in one place.
+   *
+   * Ten, not eleven: `2024_ss-2.jpeg` was PROMOTED to the feature card's cover
+   * and is still on the page. The build serves five images — that cover, the
+   * collage header and three entry-card covers.
+   *
+   * THIS IS THE ONE ENTRY IN THIS TABLE THAT RECORDS REAL CONTENT LEAVING A
+   * PAGE rather than a check disagreeing with itself, and it is worth the
+   * owner's eye: ten photographs of the cards is a substantial thing for a home
+   * page to stop showing, and the ledger note on the carousel captions (below)
+   * was written when the images were still there and says so.
+   *
+   * Ledger: MW-11 design/page-family-01-home, design/home-content-is-fields.
+   */
+  {
+    url: '/',
+    kind: 'images',
+    count: 10,
+    reason:
+      'ten of production\'s eleven home photographs. Family 01 replaced the photo section with ' +
+      'patterns/collage-field — see homeMediaSections() in scripts/lib/home-family.mjs, which ' +
+      'cuts the section as a whole. The eleventh, 2024_ss-2.jpeg, is promoted to the feature ' +
+      'card cover and is still served. Ledger MW-11 design/page-family-01-home. This one is a ' +
+      'design decision about content, not a check artifact — worth re-confirming with the owner.',
+  },
+  /**
+   * PRODUCTION SERVES A BROKEN PAGE HERE AND THE STUB IS THE FIX.
+   *
+   * Jekyll printed the entire redirect document as ESCAPED VISIBLE TEXT. What
+   * production's 148 characters of "body" actually are, in full:
+   *
+   *   &lt;!DOCTYPE html&gt;&lt;html lang="en"&gt;&lt;head&gt; Redirecting…
+   *   &lt;/head&gt;&lt;body&gt; Redirecting to /orbiters …
+   *   &lt;/body&gt;&lt;/html&gt;
+   *
+   * A visitor sees raw markup. Only the 26 characters "Redirecting to /orbiters
+   * …" were ever meant to be read, and the build's stub serves exactly that
+   * line and performs the redirect properly. The count is the other 122 — the
+   * escaped markup and the duplicated title inside the escaped head — measured,
+   * not estimated.
+   */
+  {
+    url: '/interplanetary-players',
+    kind: 'text',
+    count: 122,
+    reason:
+      'the escaped literal of a redirect document that Jekyll printed as visible text on ' +
+      'production — "&lt;!DOCTYPE html&gt;…&lt;/html&gt;" — leaving only the 26 characters ' +
+      '"Redirecting to /orbiters …" that a reader was meant to see. The migrated stub serves ' +
+      'that line and redirects properly, so this is production\'s defect being fixed, not ' +
+      'content lost. Ledger MW-7 sitemap/orbiters-once.',
+  },
+  /**
+   * /subscribe IS RETIRED, AND THE MAILCHIMP FORM IS WHAT WENT.
+   *
+   * Three entries because the signup was three assertions: the heading, the
+   * copy and form, and the outbound eepurl.com action. Separate so that if the
+   * heading came back tomorrow the other two would still be enforced.
+   *
+   * The images exclusion below is older and covers the fourth piece, Mailchimp's
+   * eep.io attribution logo — a third-party request on page load, which the
+   * no-analytics / no-cookie-banner invariant forbids. Its emptied anchor is the
+   * a11y defect recorded under MW-11 a11y/emptied-anchors.
+   */
+  {
+    url: '/subscribe',
+    kind: 'heading',
+    value: 'Join mail list',
+    reason:
+      'the Mailchimp signup form\'s own heading. The page is retired to a 200 + meta-refresh ' +
+      'stub and there is no form under the heading to name. Ledger MW-11 a11y/emptied-anchors.',
+  },
+  {
+    url: '/subscribe',
+    kind: 'text',
+    count: 274,
+    reason:
+      'the Mailchimp signup body, measured with the same plainText() this file fingerprints ' +
+      'production with: the "Thank you for subscribing…" blurb, "* indicates required" and the ' +
+      '"Email *" field label — 274 characters, the whole of the page apart from its heading. ' +
+      'The page is retired; what remains is a stub saying so. Ledger MW-11 a11y/emptied-anchors.',
+  },
+  {
+    url: '/subscribe',
+    kind: 'link',
+    value: 'http://eepurl.com/if7emL',
+    reason:
+      'the Mailchimp attribution link. Its only child was the eep.io logo <img>, which cannot ' +
+      'be served without a third-party request on page load, and an anchor with no content is ' +
+      'a zero-size tab stop — so the anchor went with it rather than shipping empty. Recorded ' +
+      'in routes/external-link-removals.json. Ledger MW-11 a11y/emptied-anchors.',
+  },
+  /**
+   * THE /tree CHECKOUT IS AHEAD OF THE FROZEN MANIFEST, SO ITS LENGTH IS WRONG.
+   *
+   * `/tree` is the one page in the corpus whose `_site` checkout disagrees with
+   * `routes/manifest.production.json` on TEXT LENGTH, not merely on hash: 398
+   * characters against production's 354. The 44-character difference is the old
+   * link-in-bio set — "Orbits and Bodies (IRCAM)", "Explore SkySounds Cards",
+   * "Listen to SoundCloud Sets" — which live production no longer serves. The
+   * manifest's `outboundLinks` for `tree.maar.world/` lists exactly the four
+   * destinations in `TREE_LINKS` and no SoundCloud, and the link half of this is
+   * already handled structurally by the manifest intersection above.
+   *
+   * The count is that measured difference, `legacySiteTextLength -
+   * production.textLength`, not a number chosen to make the page pass.
+   */
+  {
+    url: '/tree',
+    kind: 'text',
+    count: 44,
+    reason:
+      'the ../tree.maar.world/_site checkout is STALE for this page — 398 characters against ' +
+      'the frozen manifest\'s 354, the only page in the corpus where the two disagree on ' +
+      'length. The 44 characters are the retired link-in-bio labels the checkout still ' +
+      'carries and live production does not. The manifest records the four destinations the ' +
+      'build serves. Ledger MW-7 content/residue-is-check-side.',
   },
   {
     url: '/radio',
@@ -426,7 +776,18 @@ for (const url of [...production.keys()].sort()) {
     fp = bodyFingerprint(html);
   }
 
-  const excl = EXCLUSIONS.filter((e) => e.url === url);
+  /**
+   * `url` matches one page as a string, or a set of them as a RegExp.
+   *
+   * The set form exists because a block removed from all 34 Collect card pages is
+   * ONE editorial decision, and writing it out 34 times — 102 entries once the
+   * heading, the link and the text are each accounted for — would bury the six
+   * genuine one-off exclusions in noise and make the table unreadable, which is
+   * the state this whole file exists to prevent. The staleness check below keys
+   * on the pattern's source, so a set exclusion that stops applying is still
+   * reported exactly like a single one.
+   */
+  const excl = EXCLUSIONS.filter((e) => (e.url instanceof RegExp ? e.url.test(url) : e.url === url));
   const applied = [];
   const take = (kind, value) => {
     const e = excl.find((x) => x.kind === kind);
@@ -436,10 +797,79 @@ for (const url of [...production.keys()].sort()) {
     return Math.max(0, value - e.count);
   };
 
-  const headings = fp ? fp.headings : prod.route.headings.map((h) => normaliseHeading(h)).filter(Boolean);
-  const rawLinks = fp ? fp.links : prod.route.outboundLinks || [];
-  const links = rawLinks.filter((l) => !OWN_PROPERTY.test(l));
+  /**
+   * The same idea for the two assertions that are LISTS rather than counts.
+   *
+   * `headings` and `links` had no exclusion path at all: `take` subtracts a
+   * number, and you cannot subtract a number from "the page must contain this
+   * heading". So a heading the owner deliberately removed could only be handled
+   * by editing the production manifest — i.e. by lying about what production
+   * served — which is the one thing the two meta-checks in verify:content exist
+   * to make impossible.
+   *
+   * `value` names the exact string to stop asserting, and the entry is only
+   * marked used if that string was actually there. An exclusion for a heading
+   * production never had is reported stale rather than passing silently.
+   */
+  const drop = (kind, list) => {
+    const e = excl.find((x) => x.kind === kind);
+    if (!e) return list;
+    /**
+     * `value` names one string; `values` names a set of them that leave a page
+     * together as ONE editorial decision.
+     *
+     * The set form was added for the Lab, where the ten Spanish entries moved
+     * to /es/lab in a single change. Ten separate entries could not express it
+     * anyway: this lookup is `find`, so only the first exclusion of a kind per
+     * page was ever applied, and the other nine would have been silently
+     * ignored — a suppression that looks like a table.
+     *
+     * ALL of them must still be present, or the exclusion does not apply at
+     * all and the check fails. A partially-stale exclusion is the shape a
+     * suppression hides in: the entry would go on passing while quietly
+     * covering less than it claims.
+     */
+    const wanted = e.values ?? [e.value];
+    if (!wanted.every((v) => list.includes(v))) return list;
+    usedExclusions.add(`${e.url}|${e.kind}`);
+    applied.push({ kind, value: wanted.join(' | '), reason: e.reason });
+    return list.filter((x) => !wanted.includes(x));
+  };
+
+  const headings = drop(
+    'heading',
+    fp ? fp.headings : prod.route.headings.map((h) => normaliseHeading(h)).filter(Boolean),
+  );
+  /**
+   * A link the legacy checkout carries and the FROZEN MANIFEST does not is not
+   * production's link. It is a stale checkout.
+   *
+   * `routes/manifest.production.json` is this file's stated authority, and its
+   * `outboundLinks` is a WHOLE-PAGE list — chrome included — so it is a strict
+   * superset of any link production's body serves. Intersecting with it can
+   * therefore only remove a link production does not serve at all; it can never
+   * remove one the body has. That makes it a safe filter rather than a weakening.
+   *
+   * It exists because of `/tree`, the one page whose `_site` checkout does not
+   * even agree with the manifest on length (398 against 354) and whose baseline
+   * is `legacy-site-approximate` for that reason. The checkout still carries the
+   * OLD link-in-bio set — "Listen to SoundCloud Sets" among it — while the
+   * frozen manifest records the four destinations the page serves today, which
+   * are exactly the four in `TREE_LINKS`. The build matched production and the
+   * baseline did not.
+   *
+   * Across all 130 pages this drops exactly one assertion, that one. It is
+   * written as a rule rather than a per-page exclusion because "assert only what
+   * production is recorded as serving" is the property, and a stale checkout is
+   * a thing that can happen again to any page.
+   */
+  const inManifest = new Set(prod.route.outboundLinks || []);
+  const checkoutLinks = fp ? fp.links : prod.route.outboundLinks || [];
+  const rawLinks = fp ? checkoutLinks.filter((l) => inManifest.has(l)) : checkoutLinks;
+  const notInManifest = checkoutLinks.length - rawLinks.length;
+  const links = drop('link', rawLinks.filter((l) => !OWN_PROPERTY.test(l)));
   const bodyTextLength = fp ? fp.textLength : prod.route.textLength;
+  const assertedTextLength = take('text', bodyTextLength);
 
   pages.push({
     url,
@@ -462,8 +892,9 @@ for (const url of [...production.keys()].sort()) {
     excludedRegions: fp ? fp.excludedRegions : [],
     excludedPerPage: applied,
     ownPropertyLinksNotAsserted: rawLinks.length - links.length,
+    ...(notInManifest ? { staleCheckoutLinksNotAsserted: notInManifest } : {}),
     headings,
-    minTextLength: Math.floor(bodyTextLength * TEXT_FRACTION),
+    minTextLength: Math.floor(assertedTextLength * TEXT_FRACTION),
     images: take('images', fp ? fp.images : prod.route.imageCount),
     embeds: take('embeds', fp ? fp.embeds : prod.route.iframeCount),
     links,
@@ -522,8 +953,8 @@ writeFileSync(
         'incapable of failing; regenerating this file must never consult the build again. ' +
         'headings, images, embeds and links are what production serves, minus the legacy ' +
         'theme chrome named per page in excludedRegions and minus the per-page exclusions ' +
-        'named in excludedPerPage. minTextLength is a fraction of PRODUCTION body text, ' +
-        'not of the build. Regenerate with scripts/author-content-expectations.mjs.',
+        'named in excludedPerPage. minTextLength is a fraction of production body text after any ' +
+        'explicit text exclusion, never of the build. Regenerate with scripts/author-content-expectations.mjs.',
       authoredAt: new Date().toISOString(),
       derivedFrom: 'routes/manifest.production.json',
       legacyBaseline:
@@ -546,6 +977,12 @@ writeFileSync(
         'Links to *.maar.world are not asserted: the migration rewrote them to merged-site ' +
         'paths, so the production spelling cannot appear in the build. Every page records ' +
         'how many it had under ownPropertyLinksNotAsserted.',
+      staleCheckoutLinkNote:
+        'A link is asserted only if routes/manifest.production.json also records it for that ' +
+        'route. The manifest list is whole-page, so it is a superset of the body links a ' +
+        'legacy _site checkout yields, and the intersection can only drop a link production ' +
+        'does not serve at all. Pages where the checkout is ahead of or behind the frozen ' +
+        'manifest record the count under staleCheckoutLinksNotAsserted.',
       pageCount: pages.length,
       migratedPagesWithoutProduction: withoutProduction.length,
       baselines,
@@ -590,17 +1027,32 @@ for (const page of pages) {
   }
   const html = mainContent(readDistFile(file));
   const text = stripTags(html);
-  for (const h of page.headings) if (!text.includes(h)) failures.push(`${page.url}: missing heading "${h}"`);
+  // Headings compare on decoded text, lengths on the fingerprint form — the
+  // same split verify:content makes. See `comparable` in lib/html-text.mjs.
+  const readable = comparable(html);
+  for (const h of page.headings) {
+    if (!readable.includes(comparable(h))) failures.push(`${page.url}: missing heading "${h}"`);
+  }
   if (typeof page.minTextLength === 'number' && text.length < page.minTextLength) {
     failures.push(`${page.url}: text ${text.length} chars < ${page.minTextLength} required`);
   }
+  /**
+   * A FLOOR, matching verify:content exactly.
+   *
+   * This audit asked for equality while the check it audits asks for at-least,
+   * so it printed six pages — /about, /bookings, /calendar, /collect, /lab,
+   * /orbiters — as unsatisfied assertions that verify:content passes, every one
+   * of them a page that gained first-party artwork in MW-11. An audit that is
+   * stricter than the check it reports on cannot ever print "the current build
+   * satisfies every assertion", which is the line a reader trusts.
+   */
   if (typeof page.images === 'number') {
     const n = (html.match(/<img\b/gi) || []).length;
-    if (n !== page.images) failures.push(`${page.url}: ${n} images, expected ${page.images}`);
+    if (n < page.images) failures.push(`${page.url}: ${n} images, expected at least ${page.images}`);
   }
   if (typeof page.embeds === 'number') {
     const n = (html.match(/<iframe\b/gi) || []).length + (html.match(/data-embed-facade/gi) || []).length;
-    if (n !== page.embeds) failures.push(`${page.url}: ${n} embeds, expected ${page.embeds}`);
+    if (n < page.embeds) failures.push(`${page.url}: ${n} embeds, expected at least ${page.embeds}`);
   }
   for (const href of page.links || []) if (!html.includes(href)) failures.push(`${page.url}: missing link ${href}`);
 }

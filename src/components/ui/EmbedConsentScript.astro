@@ -1,0 +1,262 @@
+---
+/**
+ * ui/embed-consent — the per-embed consent gate, and the amendment that allows it.
+ *
+ * THE AMENDMENT. OPERATING-RULES allowed application JavaScript on exactly two
+ * things — the Helix island and ui/carousel — and said in as many words that "a
+ * third exception is a decision to be taken, not a precedent to follow". This is
+ * that third exception, taken by the owner on 2026-07-30. It clears the MW-9
+ * BLOCKED line `embeds/click-out-not-load`, which recorded that in-page
+ * click-to-load "needs an owner".
+ *
+ * WHAT IT LOOKS LIKE, AND WHY THAT IS THE POINT. A poster with a play button, one
+ * short line naming the provider, and nothing else. The first version of this
+ * shipped a provider chip, two links and a two-line note stacked inside a
+ * bordered plate, nested inside the figure — the owner's word for it was "the
+ * strangest process I have ever seen", and they were right: four frames deep and
+ * the offer was invisible. A press on a poster is the pattern every visitor
+ * already knows, and it is legally the same consent the wordier version asked
+ * for. The consent is real; only the ceremony is gone.
+ *
+ * WHAT IT DOES NOT CHANGE. The hard gate is untouched: no third-party byte is
+ * requested until a visitor presses. The iframe does not exist in the emitted
+ * HTML — it is constructed here, on the press — so verify:links still sees zero
+ * third-party on-load references, and the site ships no cookie banner.
+ *
+ * THE POSTER IS FIRST-PARTY. Every one is self-hosted under /img/embed-posters,
+ * which is what makes the poster possible at all: the MW-9 note `embeds/no-poster`
+ * rejected posters because the only source was the provider, and fetching one is
+ * the request the facade exists to prevent. Serving our own copy answers that.
+ * It is injected here rather than written into the markdown because verify:content
+ * asserts an exact image count per page, and a poster in the HTML would break it.
+ *
+ * NOTHING IS PERSISTED. No cookie, no localStorage, no sessionStorage. Consent is
+ * per embed and per page view. Reloading returns every embed to its poster.
+ *
+ * THE NO-JS FALLBACK IS THE ORIGINAL. If this never runs, the click-out anchor
+ * written by the migration is what the visitor gets, unmodified.
+ */
+---
+
+<script>
+  /**
+   * Where each provider's player lives, how to derive it from the click-out
+   * address the migration already wrote, and where our own poster for it sits.
+   *
+   * youtube-nocookie.com does not write its tracking cookie until playback, and
+   * Vimeo's `dnt=1` suppresses its analytics. Neither removes the need for the
+   * press — loading either player sends the visitor's IP to the provider, which
+   * is personal data whatever the cookie situation is — but both are strictly
+   * better once the visitor has chosen.
+   */
+  type Provider = {
+    name: string;
+    host: string;
+    /** The player address, or null if this is not an address we understand. */
+    embed: (href: string, autoplay: boolean) => string | null;
+    /** Our own copy of the poster frame, or null where none exists. */
+    poster: (href: string) => string | null;
+    /** Audio has no picture, so it does not get a 16:9 hole in the page. */
+    audio?: boolean;
+    /**
+     * Not media. A booking calendar is a tool, not something you watch, so it
+     * gets a plain labelled strip and no play triangle — a play mark on a
+     * calendar promises a video that never arrives.
+     */
+    panel?: boolean;
+    /** What the button says. Defaults to "plays from <provider>". */
+    action?: string;
+  };
+
+  const YT_ID = (href: string) =>
+    /youtu\.be\/([\w-]+)/.exec(href)?.[1] ?? /[?&]v=([\w-]+)/.exec(href)?.[1] ?? null;
+
+  const PROVIDERS: Record<string, Provider> = {
+    youtube: {
+      name: 'youtube',
+      host: 'youtube-nocookie.com',
+      embed: (href, autoplay) => {
+        const id = YT_ID(href);
+        return id ? `https://www.youtube-nocookie.com/embed/${id}?rel=0${autoplay ? '&autoplay=1' : ''}` : null;
+      },
+      poster: (href) => {
+        const id = YT_ID(href);
+        return id ? `/img/embed-posters/${id}.jpg` : null;
+      },
+    },
+    vimeo: {
+      name: 'vimeo',
+      host: 'player.vimeo.com',
+      embed: (href, autoplay) => {
+        const id = /vimeo\.com\/(?:video\/)?(\d+)/.exec(href)?.[1];
+        return id ? `https://player.vimeo.com/video/${id}?dnt=1${autoplay ? '&autoplay=1' : ''}` : null;
+      },
+      /* Vimeo has no public thumbnail URL of YouTube's shape, so each poster is
+         fetched once from their oEmbed endpoint and committed. Two of the four
+         Vimeo videos on this site have no oEmbed record at all and so have no
+         poster; the `onerror` below is what covers them. */
+      poster: (href) => {
+        const id = /vimeo\.com\/(?:video\/)?(\d+)/.exec(href)?.[1];
+        return id ? `/img/embed-posters/vimeo-${id}.jpg` : null;
+      },
+    },
+    soundcloud: {
+      name: 'soundcloud',
+      host: 'soundcloud.com',
+      embed: (href, autoplay) =>
+        /w\.soundcloud\.com\/player/.test(href)
+          ? autoplay
+            ? href.replace(/auto_play=false/, 'auto_play=true')
+            : href
+          : null,
+      poster: () => null,
+      audio: true,
+    },
+    /**
+     * The booking calendar, embedded in the page on a press instead of sending
+     * the visitor to Google. The facade href is already the `?gv=true` embed
+     * address the migration preserved, so it is used unchanged.
+     *
+     * It is gated like everything else, and that is deliberate even though this
+     * page is only given to people the owner knows: loading it unasked would be
+     * a third-party request on page load, which is the one thing the whole
+     * arrangement rests on not happening. One press costs the visitor nothing
+     * and keeps verify:links honest.
+     */
+    'google-calendar': {
+      name: 'google calendar',
+      host: 'calendar.google.com',
+      embed: (href) => (/calendar\.google\.com/.test(href) ? href : null),
+      poster: () => null,
+      panel: true,
+      action: 'open the booking calendar here',
+    },
+  };
+
+  /**
+   * A player the visitor asked for is content, not decoration — but the site
+   * suppresses motion when asked, so a reduced-motion visitor gets the player
+   * parked rather than playing, and presses play themselves.
+   */
+  const autoplay = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /**
+   * One triangle. The only glyph this component owns.
+   *
+   * The disc is filled with a black scrim rather than left transparent, and that
+   * is not decoration. The mark is drawn in `--sf-paper` over someone else's
+   * photograph, and two of the posters on this site are bright: measured against
+   * the centre of each frame, the Tembey still gave 1.92:1 and Luminiscencia
+   * 2.16:1, both below the 3:1 a non-text control needs. A drop-shadow alone did
+   * not carry them. The scrim makes the contrast a property of the component
+   * instead of a property of whichever frame the provider happened to pick — the
+   * eight dark posters measure 4.6:1 to 17:1 without it, and would keep passing,
+   * but the next video added could be brighter still.
+   */
+  const PLAY_GLYPH =
+    '<svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true" focusable="false">' +
+    '<circle cx="50" cy="50" r="48" fill="#000" fill-opacity=".55" stroke="currentColor" stroke-width="4"/>' +
+    '<path d="M40 30 L72 50 L40 70 Z" fill="currentColor"/></svg>';
+
+  /**
+   * Selected on `data-embed-provider`, not on the `data-embed-facade` marker.
+   *
+   * It is the more precise selector — the provider is what this branches on —
+   * and, load-bearingly, verify:content counts embeds per page with a raw
+   * `/data-embed-facade/gi` match over the built HTML, so writing that marker's
+   * name literally here would be counted as an extra embed on every page this
+   * inlines into. It was: 9 pages reported one embed too many before this was
+   * narrowed. Do not put the string `data-embed-facade` back into this file.
+   */
+  for (const facade of document.querySelectorAll<HTMLElement>('[data-embed-provider]')) {
+    const provider = PROVIDERS[facade.dataset.embedProvider ?? ''];
+    if (!provider) continue; // forms, calendar and the radio stream stay click-out.
+
+    const anchor = facade.querySelector<HTMLAnchorElement>('.embed-facade__action');
+    if (!anchor) continue;
+
+    const label = anchor.querySelector('.embed-facade__label')?.textContent?.trim() ?? '';
+    /* The attribute, not the resolved `.href`, so what is embedded is exactly
+       what the migration wrote and reviewed. */
+    const href = anchor.getAttribute('href') ?? '';
+    const src = provider.embed(href, autoplay);
+    if (!src) continue; // an address this gate does not understand stays click-out.
+
+    /* ---- the gate: one button, and nothing else ------------------------- */
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'embed-facade__poster';
+    if (provider.audio) button.classList.add('embed-facade__poster--audio');
+    if (provider.panel) button.classList.add('embed-facade__poster--panel');
+    /* The visible line is deliberately three words. The full sentence — what
+       loads, from where — is the button's accessible name instead, so a screen
+       reader gets the whole offer and the page stays quiet. */
+    button.setAttribute('aria-label', `${label} — loads the player from ${provider.host}`);
+
+    const posterSrc = provider.poster(href);
+    if (posterSrc) {
+      const img = document.createElement('img');
+      img.className = 'embed-facade__poster-img';
+      img.src = posterSrc;
+      img.alt = ''; // decorative: the button already carries the name.
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      /* Not every video has a poster committed — a Vimeo video with no oEmbed
+         record has none to fetch. Rather than leave a broken image over the
+         plate, drop it and let the button fall back to its plain surface, which
+         still reads as a play control. */
+      img.addEventListener('error', () => img.remove());
+      button.append(img);
+    }
+
+    const hint = document.createElement('span');
+    hint.className = 'embed-facade__hint';
+    hint.textContent = provider.action ?? `plays from ${provider.name}`;
+
+    if (provider.panel) {
+      button.append(hint);
+    } else {
+      const glyph = document.createElement('span');
+      glyph.className = 'embed-facade__play';
+      glyph.innerHTML = PLAY_GLYPH;
+      button.append(glyph, hint);
+    }
+
+    /* Everything the wordier version stacked under the plate goes now: the
+       provider chip, the click-out link and the two-line note are all replaced
+       by the button above. The anchor stays in the DOM for no-JS visitors only
+       up to this point — once we are running, it has been superseded. */
+    facade.classList.add('embed-facade--gated');
+    anchor.remove();
+    facade.querySelector('.embed-facade__note')?.remove();
+    facade.prepend(button);
+
+    button.addEventListener('click', () => {
+      const frame = document.createElement('iframe');
+      frame.className = 'embed-facade__player';
+      frame.src = src;
+      /* The accessible name of the frame. Without it a screen reader announces
+         only "frame", which is the one thing it already knew. */
+      frame.title = label || `${provider.name} player`;
+      frame.setAttribute('allow', 'accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen');
+      frame.setAttribute('allowfullscreen', '');
+      /**
+       * The origin, and never the page. This was `no-referrer`, which broke
+       * playback outright: YouTube's embedder terms REQUIRE a HTTP Referer, and
+       * a player that receives none refuses to play with "error 153 — video
+       * player configuration error". The same header is what Vimeo checks for
+       * domain-restricted videos, so all three providers get the same policy.
+       * `strict-origin-when-cross-origin` sends `https://maar.world/` and the
+       * path of nothing: the provider learns the site, not the page.
+       */
+      frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+
+      /* Focus follows the thing the press created, so a keyboard visitor is not
+         returned to the top of the document by the button vanishing. */
+      frame.tabIndex = -1;
+      button.replaceWith(frame);
+      frame.focus({ preventScroll: true });
+    });
+  }
+</script>

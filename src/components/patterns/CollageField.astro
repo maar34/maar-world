@@ -1,0 +1,59 @@
+---
+/**
+ * A full-bleed header carrying the one collage that belongs to this section.
+ *
+ * IT USED TO PICK AT RANDOM, and that is the change. The component took a pool
+ * of four pictures, emitted an `<img>` with no `src`, and a script chose one per
+ * visit. Every header drew from the same pool, so six surfaces showed the same
+ * four pictures as each other, and the same surface showed a different one to
+ * the same visitor each time. A section header exists to make a section
+ * recognisable; a picture that changes on reload cannot do that.
+ *
+ * The picture now comes from SECTION_COLLAGE, keyed by section — see
+ * src/config/site.ts, which is the only place the mapping lives.
+ *
+ * THAT REMOVED THE SCRIPT. A random choice has to happen in the browser; a
+ * fixed one is known here, so the `src` is in the emitted HTML. The header no
+ * longer needs JavaScript, no longer needs a `<noscript>` twin, and the browser
+ * can start the image before the document finishes parsing — which is why the
+ * `<img>` is eager and carries `fetchpriority`: it is the largest thing on the
+ * page and, above the fold, the one worth loading first.
+ */
+import PaperPhrase from './PaperPhrase.astro';
+
+interface Props {
+  src: string;
+  statement?: string;
+  statementSeed?: string;
+  variant?: 'home' | 'section';
+  label?: string;
+}
+
+const {
+  src,
+  statement,
+  statementSeed = 'collage-header',
+  variant = 'home',
+  label = 'Maar World',
+} = Astro.props;
+---
+
+<section class:list={['collage-header', `collage-header--${variant}`]} aria-label={label}>
+  {/* Decorative: the section is already named by `aria-label` above, and the
+      page's own H1 says what the page is. An alt here would repeat both. */}
+  <img
+    class="collage-header__image"
+    src={src}
+    alt=""
+    loading="eager"
+    fetchpriority="high"
+    decoding="async"
+  />
+  {
+    statement && (
+      <div class="collage-header__statement">
+        <PaperPhrase phrases={[statement]} seed={statementSeed} variant="statement" />
+      </div>
+    )
+  }
+</section>

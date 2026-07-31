@@ -36,13 +36,7 @@ In our creation lab, we will implement a research process designed to form an en
 
 <!-- Primary Swiper (cards) -->
 <div class="swiper my-3 swiper-demo swiper-demo--image swiper-demo--3 swiper--tall swiper--separated">
-<section class="carousel" aria-roledescription="carousel" aria-label="3 photographs"><ul class="carousel__track" role="list" tabindex="0"><li class="carousel__slide" id="carousel-lab-en-ip-orchestra-1-1"><div class="carousel__frame"><h2 class="orb-step">I</h2>
-<div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/07_ip-card.jpg" alt="Card layering"/></div>
-<div class="orb-desc">Explore music by layering sounds with controls that vary depending on the cards you play, creating rich and original sonic experiences.</div></div></li><li class="carousel__slide" id="carousel-lab-en-ip-orchestra-1-2"><div class="carousel__frame"><h2 class="orb-step">II</h2>
-<div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/10_ip-transit.png" alt="Transit mapping"/></div>
-<div class="orb-desc">Recreate music intuitively, making sound creation accessible and fun for everyone, from professional musicians to those with no prior experience.</div></div></li><li class="carousel__slide" id="carousel-lab-en-ip-orchestra-1-3"><div class="carousel__frame"><h2 class="orb-step">III</h2>
-<div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/08_ip-max-24.jpg" alt="Workshop patch"/></div>
-<div class="orb-desc">We are at the beginning of this journey. Sign up for the workshop to help create the first Orbiters Orchestra.</div></div></li></ul></section>
+<section class="carousel" aria-roledescription="carousel" aria-label="3 photographs"><ul class="carousel__track" role="list" tabindex="0"><li class="carousel__slide" id="carousel-lab-en-ip-orchestra-1-1"><figure class="carousel__figure"><div class="carousel__frame"><div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/07_ip-card.jpg" alt="Card layering"/></div></div><figcaption class="carousel__caption"><span class="carousel__caption-step">I</span>Explore music by layering sounds with controls that vary depending on the cards you play, creating rich and original sonic experiences.</figcaption></figure></li><li class="carousel__slide" id="carousel-lab-en-ip-orchestra-1-2"><figure class="carousel__figure"><div class="carousel__frame"><div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/10_ip-transit.png" alt="Transit mapping"/></div></div><figcaption class="carousel__caption"><span class="carousel__caption-step">II</span>Recreate music intuitively, making sound creation accessible and fun for everyone, from professional musicians to those with no prior experience.</figcaption></figure></li><li class="carousel__slide" id="carousel-lab-en-ip-orchestra-1-3"><figure class="carousel__figure"><div class="carousel__frame"><div class="orb-media"><img class="lightbox-ignore" src="/img/interplanetary-players/08_ip-max-24.jpg" alt="Workshop patch"/></div></div><figcaption class="carousel__caption"><span class="carousel__caption-step">III</span>We are at the beginning of this journey. Sign up for the workshop to help create the first Orbiters Orchestra.</figcaption></figure></li></ul></section>
 <div class="swiper__button swiper__button--prev fas fa-chevron-left"></div>
 <div class="swiper__button swiper__button--next fas fa-chevron-right"></div>
 </div>
@@ -123,7 +117,7 @@ We would like to invite students and professionals from various disciplines to j
 <div class="p-5"></div>
 
 <div class="logo-grid">
-<img src="https://www.dropbox.com/scl/fi/nh8l7j56uidh2cdd4uut4/MMAT-BLANCO-2024.png?rlkey=jgmdll83abavbv06hnzn934jv&raw=1" alt="Logo MMAT">
-<a href="https://www.uartes.edu.ec" target="_blank"><img src="https://www.dropbox.com/scl/fi/h2x74tzmdz97nd871blek/LOGO-UARTES-BLANCO.png?rlkey=2qykue2qyo0zyt5ch4fkic7kd&st=01dslfp8&raw=1" alt="Logo UArtes"></a>
+<span class="logo-grid__credit">MMAT</span>
+<a href="https://www.uartes.edu.ec" target="_blank" rel="noopener noreferrer"><img src="/img/logos/uartes.webp" alt="Logo UArtes"></a>
 <img src="/img/about/mw-logo-transparent.png" alt="Logo Interplanetary Orchestra">
 </div>

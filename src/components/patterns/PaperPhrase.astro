@@ -1,0 +1,43 @@
+---
+/**
+ * A moving field of cut words. The visible rail is duplicated for a seamless
+ * loop and hidden from assistive technology; the full text is read once.
+ */
+import { paperPhraseWords } from '../../lib/paper-phrase.mjs';
+
+interface Props {
+  phrases: string[];
+  /** Stable route/component identifier. */
+  seed: string;
+  variant?: 'statement' | 'translations';
+}
+
+const { phrases, seed, variant = 'statement' } = Astro.props;
+const readable = phrases.join(' — ');
+---
+
+<div class={`paper-phrase paper-phrase--${variant}`}>
+  <p class="paper-phrase__reading">{readable}</p>
+  <div class="paper-phrase__viewport" aria-hidden="true">
+    <div class="paper-phrase__rail">
+      {[0, 1].map(() => (
+        <div class="paper-phrase__lane">
+          {phrases.map((phrase, phraseIndex) => (
+            <span class="paper-phrase__phrase">
+              {paperPhraseWords(phrase, `${seed}:${phraseIndex}`).map((word) => (
+                <span
+                  class:list={[
+                    'paper-phrase__word',
+                    `paper-phrase__word--${word.style}`,
+                  ]}
+                >
+                  {word.token}
+                </span>
+              ))}
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+</div>

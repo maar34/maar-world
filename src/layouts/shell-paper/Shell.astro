@@ -21,16 +21,20 @@ import type { AreaName } from '../../config/site';
 interface Props {
   area?: AreaName;
   chromeLang?: string;
+  contentWidth?: 'standard' | 'reading';
+  languageChoices?: { lang: string; label: string; outputPath?: string; current: boolean; unavailable: boolean }[];
 }
 
-const { area, chromeLang } = Astro.props;
+const { area, chromeLang, contentWidth = 'standard', languageChoices = [] } = Astro.props;
 ---
 
 <div class="shell" data-shell="paper">
   <SkipLink />
-  <SiteHeader area={area} chromeLang={chromeLang} />
+  <SiteHeader area={area} chromeLang={chromeLang} languageChoices={languageChoices} />
   <main id="content" class="shell__main">
-    <slot />
+    <div class="shell__content" data-content-width={contentWidth}>
+      <slot />
+    </div>
   </main>
   <SiteFooter chromeLang={chromeLang} />
 </div>

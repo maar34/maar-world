@@ -1,0 +1,193 @@
+---
+/**
+ * The Collect landing.
+ *
+ * THE SECTION COLLAGE IS THIS FAMILY'S JOB NOW, and forgetting that is what
+ * removed it. `/collect` is one of the six surfaces with a picture chosen for it
+ * in SECTION_COLLAGE — `24-archive-explosion` — and that hero was rendered by the
+ * route's default branch. Declaring `family: "collect"` took the page out of that
+ * branch, so the header silently went with it. A family that renders a page
+ * header has to render the whole page header.
+ *
+ * The page's opening — the video, the exoplanet card pitch, the Orbiter link,
+ * the five-step carousel — is still the migrated body and renders through the
+ * slot. What this family owns is the closing section, which was three
+ * `.hero--dark` plates and a `div.card` the theme drew as nothing:
+ *
+ *   "This method is designed to be…" + Watch Tutorials   → card.entry
+ *   "25 physical cards available. Purchase in our…"      → deleted, see site.ts
+ *   "Get 11 cards envelope 33€"                          → card.entry
+ *
+ * ONE ROW, ONE COMPONENT, TWICE. These first shipped as a full-width `article`
+ * card above a single `entry` card, and the two read as unrelated things that
+ * happened to be adjacent — one banner, one object. They are a pair: learn how,
+ * then get the deck. So they are the same variant at the same size, side by side,
+ * which is the home page's own grid and the answer to "they complement each
+ * other".
+ *
+ * NO SEPARATE ACTION BUTTONS. Each card is one link target, so the words that
+ * used to sit on a button beneath it — "watch tutorials", "collect" — are the
+ * card's meta line instead. That is exactly what the home page's entry cards do
+ * with "visit" and "read", and it is why this section now has no loose buttons
+ * to be inconsistent with each other.
+ *
+ * The plates were `--sf-sunken`, a 4% ink wash that reads as a grey band laid
+ * over the page rather than part of it. A card is the component this site
+ * already has for "a picture, a line of text, and somewhere to go".
+ */
+import Card from '../patterns/Card.astro';
+import CollageField from '../patterns/CollageField.astro';
+import { COLLECT_LANDING, collageFor } from '../../config/site';
+
+interface Props {
+  /** Seed for the cards' type marks — the page's own outputPath. */
+  seed: string;
+  /** The page's own label, for the visual header's accessible name. */
+  label: string;
+  /**
+   * The page's opening sentence, which rides the collage as a moving field of
+   * cut words rather than sitting under it as a paragraph.
+   *
+   * Same component and same movement as the home page — `patterns/PaperPhrase`
+   * through `CollageField`'s `statement` slot. The sentence is NOT duplicated:
+   * migrate-pages.mjs lifts it out of the body, exactly as lib/home-family.mjs
+   * does for family 01, so it renders once and is read once.
+   */
+  statement?: string;
+}
+
+const { seed, label, statement } = Astro.props;
+const { method, offer } = COLLECT_LANDING;
+const collage = collageFor(seed);
+---
+
+<div class="collect">
+  {
+    /* The same compact visual introduction the other five section pages use.
+       It now carries the page's opening sentence as a moving field of cut
+       words, so it is the page's whole header: the H1 below is kept for
+       document structure and taken out of sight. */
+    collage && (
+      <CollageField
+        src={collage}
+        variant="section"
+        label={`${label} visual header`}
+        statement={statement}
+        statementSeed={`${seed}:statement`}
+      />
+    )
+  }
+
+  <div class="prose collect__body">
+    <slot />
+  </div>
+
+  {/* Learn how, then get the deck. One grid, one variant, two cards. */}
+  <section class="collect__pair" aria-label="Start collecting">
+    <Card
+      variant="entry"
+      href={method.href}
+      title={method.title}
+      level={2}
+      cover={method.cover}
+      excerpt={method.excerpt}
+      meta={method.meta}
+      seed={`${seed}:method`}
+    />
+    <Card
+      variant="entry"
+      href={offer.href}
+      title={offer.title}
+      level={2}
+      cover={offer.cover}
+      excerpt={offer.excerpt}
+      meta={offer.meta}
+      seed={`${seed}:offer`}
+    />
+  </section>
+
+  {/* Unchanged markup from the body, in a `.prose` wrapper so every rule
+      styles/button.css already writes for `.prose .form-container`, its grid and
+      its fields applies exactly as before. It moved position, not shape. */}
+  <div class="prose">
+    <div class="form-container">
+      <h2>Contact us</h2>
+      <p>Curious about something? Let us know by filling out the form.</p>
+
+      <form action="https://formspree.io/f/xjvneyen" method="POST" class="contact-form">
+        <label>
+          Your name:
+          <input type="text" name="name" required />
+        </label>
+        <label>
+          Your email:
+          <input type="email" name="email" required />
+        </label>
+        <label>
+          Your message:
+          <textarea name="message" required></textarea>
+        </label>
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  /**
+   * THE PAGE HAS AN H1 AND DOES NOT SHOW IT.
+   *
+   * The owner's call, 2026-07-31: once the collage carries the wordmark and the
+   * opening sentence rides it as a marquee, a second "collect" underneath is the
+   * page naming itself twice.
+   *
+   * It is HIDDEN, NEVER REMOVED. `verify:a11y` asserts every page has exactly
+   * one `<h1>`, and that check is right — a document with no first heading is
+   * unnavigable by heading, and the assertion would have caught deleting it.
+   * The same reasoning and the same treatment as `.home__title--accessible` on
+   * family 01, which hides its H1 because the brand link already says the word.
+   *
+   * `clip` rather than `display: none` for exactly that reason: the heading
+   * stays in the accessibility tree and in the text `verify:content` measures.
+   */
+  .collect__body > :global(h1:first-child) {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* The same rhythm the home family uses — "sibling groups use gap, never
+     margins" — so the two landings read as one site rather than two. */
+  .collect {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-16);
+    padding-block: 0 var(--s-24);
+  }
+
+  /**
+   * Two cards, side by side from 900px.
+   *
+   * The pair is deliberately NOT the home grid's three-at-1280 step: there are
+   * two of these and there will stay two, so a third column would leave a gap
+   * where a card is not. Below 900px they stack, which is the same width every
+   * other grid on this site stacks at.
+   */
+  .collect__pair {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-6);
+  }
+
+  @media (min-width: 900px) {
+    .collect__pair {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

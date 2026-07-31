@@ -11,8 +11,8 @@
  * this dynamic route cannot accidentally claim any other URL. Static routes take
  * priority in Astro, so later pages (/about, /lab…) are unaffected.
  *
- * Layout is page family 03 (entry): single measure, 66ch max, h1 may carry
- * marks and nothing below it does.
+ * Layout width comes from BaseLayout's shared standard content frame, just as
+ * it does for every other route. This page owns only its card-specific anatomy.
  *
  * There is deliberately no commerce link. MW-6 and MW-1 both say no Bandcamp,
  * storefront or checkout integration is introduced; the destination is the
@@ -138,7 +138,7 @@ const downloads = [d.download, d.download2]
     pages. They carry no `lang`, and every one of them is English. */}
 <BaseLayout title={cardName} description={d.card_description} noindex={true} area="maar">
   {/* The shell owns <main>. This is the page family inside it. */}
-  <div class="card-page shell__inner measure">
+  <div class="card-page">
     {
       orbiterUrl && (
         <section class="orbiter" aria-label="now playing on Maar Orbiter">
@@ -209,7 +209,8 @@ const downloads = [d.download, d.download2]
                 src={p.src}
                 title={`${cardName} — ${p.label}`}
                 loading="lazy"
-                class="player"
+                scrolling="no"
+                class="player orbiter-embed"
               />
             </div>
           ))}
@@ -254,8 +255,8 @@ const downloads = [d.download, d.download2]
 </BaseLayout>
 
 <style>
-  /* Page family 03 — entry. Single measure, 66ch max — supplied by
-     .shell__inner.measure, along with the shell's responsive gutter. */
+  /* The shared shell supplies width and gutters; this route owns only its
+     card-specific vertical rhythm. */
   .card-page {
     padding-block: var(--s-16) var(--s-24);
     display: flex;
@@ -321,12 +322,16 @@ const downloads = [d.download, d.download2]
     margin: 0;
   }
 
-  /* Cover ratio is 3:2 everywhere except card.compact and card.place. The
-     plate is the hatch, not the flat tint it used to be — mark 7. The class
+  /* The plate is the hatch, not the flat tint it used to be — mark 7. The class
      carries it, so the value lives in tokens.css and nothing here reaches for
-     a texture directly. */
+     a texture directly.
+
+     Capped and centred: a portrait card face at full measure is 1.41x the
+     content width and buries the page under itself. Same note as the collect
+     card route. */
   .cover {
-    margin: 0;
+    margin: 0 auto;
+    inline-size: min(100%, 24rem);
     border-radius: var(--r-0);
   }
 
@@ -356,10 +361,13 @@ const downloads = [d.download, d.download2]
     align-self: stretch;
   }
 
+  /* One card face, nothing beside it to align with, so no imposed ratio. It was
+     3:2 with object-fit: cover, which cropped these portrait cards to a strip.
+     See the same note on the collect card route. */
   .cover img {
+    display: block;
     width: 100%;
-    aspect-ratio: 3 / 2;
-    object-fit: cover;
+    height: auto;
   }
 
   .description {

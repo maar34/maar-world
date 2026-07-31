@@ -29,7 +29,43 @@
  * same region finder, and the comment recording the bug a naive version of it
  * shipped travels with the code rather than being left behind here.
  */
-import { blocks } from './html-blocks.mjs';
+import { blocks, cutBlocks } from './html-blocks.mjs';
+
+/**
+ * Split legacy slide copy from its media before emitting the carousel.
+ *
+ * The old swiper accepted a free-form mixture of children. In practice that
+ * means a photograph plus a `.text-content` or `.orb-desc` block. Keeping that
+ * mixture inside the fixed-height frame makes Flexbox place the copy beside the
+ * image, where it is squeezed into the remaining few pixels. A caption is not
+ * presentation-only: it belongs after a figure's media in the document too.
+ *
+ * Keep this list deliberately small and source-shaped. It is a migration
+ * contract for the old site, not a loose attempt to guess whether arbitrary
+ * content is "text". New carousel content is already authored as a
+ * `.slide-caption` and takes the same route.
+ */
+const LEGACY_CAPTION_BLOCKS = ['slide-caption', 'text-content', 'orb-desc'];
+
+function captionFromSlide(body) {
+  const captionRegions = LEGACY_CAPTION_BLOCKS.flatMap((className) => blocks(body, className));
+  let media = cutBlocks(body, captionRegions);
+
+  // Orbiter slides use a standalone Roman-numeral heading before `.orb-desc`.
+  // It is slide metadata, not a section in the page outline, so retain its
+  // content as a caption label rather than leaving an empty frame sibling.
+  const steps = [];
+  media = media.replace(
+    /<h[1-6]\b(?=[^>]*\bclass="[^"]*\borb-step\b[^"]*")[^>]*>([\s\S]*?)<\/h[1-6]>/gi,
+    (_match, inner) => {
+      steps.push(`<span class="carousel__caption-step">${inner.trim()}</span>`);
+      return '';
+    },
+  );
+
+  const caption = [...steps, ...captionRegions.map((region) => region.inner.trim()).filter(Boolean)].join('');
+  return { media: media.trim(), caption };
+}
 
 /**
  * Rewrite every populated `.swiper__wrapper` into the spec's carousel.
@@ -58,14 +94,8 @@ export function swiperToCarousel(html, { label = 'photographs', idPrefix = 'caro
     const id = `${idPrefix}-${n}`;
 
     const items = slides.map((slide, i) => {
-      let body = slide.inner;
-      let caption = '';
-      const caps = blocks(body, 'slide-caption');
-      if (caps.length > 0) {
-        caption = caps[0].inner.trim();
-        body = body.slice(0, caps[0].start) + body.slice(caps[0].end);
-      }
-      const media = `<div class="carousel__frame">${body.trim()}</div>`;
+      const { media: slideMedia, caption } = captionFromSlide(slide.inner);
+      const media = `<div class="carousel__frame">${slideMedia}</div>`;
       const figure = caption
         ? `<figure class="carousel__figure">${media}<figcaption class="carousel__caption">${caption}</figcaption></figure>`
         : media;

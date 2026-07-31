@@ -4,8 +4,11 @@ There are two page sources, and the difference between them is the whole point.
 
 | Directory | Written by | Wiped by a script? |
 |---|---|---|
-| `src/content/migrated/**` | `scripts/migrate-pages.mjs` | **Yes — every run.** Never hand-edit. |
+| `src/content/migrated/**` | originally the migration, now **you** | **No.** The migration is gone — see below. |
 | `src/content/authored/**` | you | **Never.** No script writes or deletes here. |
+
+`migrated/` is a historical name now, not a live pipeline. Both directories are
+hand-maintained and equally safe to edit.
 
 Both are globbed into the one `pages` collection by `src/content.config.ts`, so a
 page you write is the same kind of record as a migrated one — same schema, same
@@ -62,7 +65,6 @@ to update, and deleting the file de-authorises it again.
   and it is not supposed to appear there.
 - Add anything to `routes/policy.json`.
 - Run `npm run contract:relock`.
-- Run `npm run migrate:pages`.
 - Touch the read-only legacy checkouts one directory up.
 
 Until MW-11 all of the above *were* required to publish anything, because the
@@ -84,11 +86,31 @@ was right only until cutover. `scripts/verify-routes.mjs` now separates them.
 
 ## Fixing a migrated page
 
-Do **not** edit `src/content/migrated/**` — the next `npm run migrate:pages` run
-deletes the directory and rewrites it.
+Edit it. That is the whole instruction now.
 
-Fix `scripts/migrate-pages.mjs` instead and re-run it. If the fix is genuinely
-one page's own content rather than a migration rule, the page can be moved out of
-`migrated/` into `authored/`, at which point it is yours and the migration stops
-producing it. Move the file, do not copy it: two records claiming one
-`outputPath` fails the build.
+**This reversed on 2026-07-31, and the old rule is the opposite of the new one.**
+It used to read "do not edit `src/content/migrated/**` — fix
+`scripts/migrate-pages.mjs` and re-run it", because the migration deleted and
+rewrote that directory on every run. `scripts/migrate-pages.mjs` has been
+DELETED and `npm run migrate:pages` no longer exists.
+
+Why: the script had fallen behind the content it generated, so running it was no
+longer a regeneration but a revert. In one afternoon it twice destroyed live work
+— including all 34 `collect/cards/` records, which are the URLs printed on
+physical NFC cards — and reverted hand-made page structure back to dead Jekyll
+markup. A generator that reproduces an older tree than the one it overwrites is
+not a source of truth; it is a rollback with a build step. The site is past
+cutover and is now built on top of its content rather than out of it.
+
+The legacy checkouts one directory up remain the historical record of what the
+three sites served, and `routes/manifest.production.json` still freezes their
+URLs. Neither is regenerated from anything.
+
+The script itself is kept, out of the project, at `../_retired/migrate-pages.mjs`
+with a README saying why. It is outside `maar-world/` deliberately: no npm
+script, no CI job and no import can reach it from there. Git history is the other
+copy (`git log --diff-filter=D -- scripts/migrate-pages.mjs`).
+
+Do not simply re-run it. Reconcile it with the current content first — that
+reconciliation is the work it was skipping, and is why running it destroys
+things.

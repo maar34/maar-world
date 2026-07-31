@@ -1,0 +1,97 @@
+---
+/**
+ * The Tree hub — a link-in-bio page, and the only page treated as one.
+ *
+ * WHY IT IS ITS OWN FAMILY. Tree is handed out directly and sits in a social
+ * profile as "the link". It is read on a phone, held in one hand, by someone who
+ * arrived to press exactly one thing. That is a different job from every other
+ * page here, which is why it gets a full-bleed picture and a single column of
+ * targets rather than the shared section header and a prose column.
+ *
+ * THE PICTURE IS THE PAGE. `16-cabinet-of-signals` is 1080×1920 — made vertical,
+ * so it is used vertically: it fills the viewport behind the column instead of
+ * being cropped into a wide banner, which is what the shared header would have
+ * done to it. It is `position: fixed`, so the list scrolls over a still image on
+ * a short screen.
+ *
+ * IT ALSO CLEARS A BLOCKED LINE. MIGRATION-LEDGER records MW-8
+ * `tree/sunflower-image` (BLOCKED): production's Tree page shows an image
+ * hotlinked from herbarium.plantasia.space, which is a third-party request on
+ * page load, and the file was in no read-only checkout so it could not be
+ * self-hosted. This picture is ours and is served from this origin, so the page
+ * has its image back without the request.
+ *
+ * THE LINKS ARE CONFIGURATION. They live in TREE_LINKS in src/config/site.ts —
+ * see the note there. This file owns how a link looks, not which links exist.
+ *
+ * NO JAVASCRIPT. Every part of this is a link and a stylesheet.
+ */
+import volunteerActivism from '@material-symbols/svg-400/outlined/volunteer_activism.svg?raw';
+import hub from '@material-symbols/svg-400/outlined/hub.svg?raw';
+import pottedPlant from '@material-symbols/svg-400/outlined/potted_plant.svg?raw';
+import album from '@material-symbols/svg-400/outlined/album.svg?raw';
+import { TREE_LINKS, TREE_HUB_STRINGS, type TreeIconName } from '../../config/site';
+
+interface Props {
+  headingHtml?: string;
+  title: string;
+  /**
+   * The page's own language. The hub is one of two pages whose content is not
+   * in its record — the destinations are configuration — so the language has to
+   * reach it as a prop or the Spanish hub renders English labels.
+   */
+  lang?: string;
+}
+
+const { headingHtml, title, lang = 'en' } = Astro.props;
+
+const strings = TREE_HUB_STRINGS[lang as keyof typeof TREE_HUB_STRINGS] ?? TREE_HUB_STRINGS.en;
+
+/** A link's label in this page's language, falling back to its only one. */
+const labelOf = (link: (typeof TREE_LINKS)[number]) =>
+  (lang === 'es' && 'labelEs' in link ? link.labelEs : link.label);
+
+/**
+ * Vite inlines a `?raw` import only when the path is a literal, so the symbols
+ * are registered here by hand. A new icon in TREE_LINKS needs a line in both.
+ */
+const SYMBOLS: Record<TreeIconName, string> = {
+  volunteer_activism: volunteerActivism,
+  hub,
+  potted_plant: pottedPlant,
+  album,
+};
+---
+
+<div class="tree-hub">
+  {/* Decorative: the page is titled below and every destination names itself. */}
+  <img
+    class="tree-hub__backdrop"
+    src="/img/collages/16-cabinet-of-signals.webp"
+    alt=""
+    loading="eager"
+    fetchpriority="high"
+    decoding="async"
+  />
+
+  <div class="tree-hub__column">
+    <h1 class="tree-hub__title">
+      {headingHtml ? <Fragment set:html={headingHtml} /> : title}
+    </h1>
+
+    <nav class="tree-hub__links" aria-label={strings.navLabel}>
+      <ul class="tree-hub__list">
+        {
+          TREE_LINKS.map((link) => (
+            <li>
+              <a class="tree-hub__link" href={link.href} target="_blank" rel="noopener noreferrer">
+                <span class="tree-hub__icon" aria-hidden="true" set:html={SYMBOLS[link.icon]} />
+                <span class="tree-hub__label">{labelOf(link)}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</div>

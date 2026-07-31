@@ -986,6 +986,81 @@ check('languageChoices is empty when there is nothing to switch to', () => {
   return { ok, detail: ok ? 'empty for solo, two entries in language order for a pair' : `${none.length} / ${two.length}` };
 });
 
+/**
+ * The SECOND form of the relation — an authored translation naming the migrated
+ * page it translates.
+ *
+ * It exists because `translationKey` needs the key on both halves, and outside
+ * the Lab the English half is a migrated record that migrate-pages.mjs rewrites
+ * on every run, so a key added there does not survive. These assert that the
+ * two forms resolve to the same thing and that the edge is followed in BOTH
+ * directions — an original finding its translation is the direction that
+ * renders the switcher on the English page, and it is the one a
+ * translation-side-only implementation silently gets wrong.
+ */
+const recOf = (outputPath, lang, translationOf) => ({ data: { outputPath, lang, translationOf } });
+
+check('alternatesFor follows translationOf from the original', () => {
+  const en = rec('about', 'en', undefined);
+  const es = recOf('es/about', 'es', 'about');
+  const got = T.alternatesFor(en, [en, es, rec('music', 'en', undefined)]);
+  const ok = got.length === 1 && got[0].data.outputPath === 'es/about';
+  return { ok, detail: ok ? 'the English half finds its translation' : `got ${JSON.stringify(got.map((g) => g.data.outputPath))}` };
+});
+
+check('alternatesFor follows translationOf from the translation', () => {
+  const en = rec('about', 'en', undefined);
+  const es = recOf('es/about', 'es', 'about');
+  const got = T.alternatesFor(es, [en, es]);
+  const ok = got.length === 1 && got[0].data.outputPath === 'about';
+  return { ok, detail: ok ? 'the Spanish half finds its original' : `got ${JSON.stringify(got.map((g) => g.data.outputPath))}` };
+});
+
+/**
+ * A dangling relation is the silent failure this whole design exists to avoid:
+ * it does not error, it just makes the switcher not render, so a published
+ * translation becomes unreachable from its original and looks like a page that
+ * was never translated.
+ */
+check('validateTranslations catches a translationOf naming no page', () => {
+  const problems = T.validateTranslations([rec('about', 'en', undefined), recOf('es/about', 'es', 'abuot')]);
+  const ok = problems.length === 1 && /names no page/.test(problems[0]);
+  return { ok, detail: ok ? 'a typo in an outputPath is caught' : `got ${JSON.stringify(problems)}` };
+});
+
+check('validateTranslations catches a page naming itself', () => {
+  const problems = T.validateTranslations([recOf('es/about', 'es', 'es/about')]);
+  const ok = problems.length === 1 && /names the page itself/.test(problems[0]);
+  return { ok, detail: ok ? 'self-reference caught' : `got ${JSON.stringify(problems)}` };
+});
+
+check('validateTranslations passes a sound relation', () => {
+  const problems = T.validateTranslations([rec('about', 'en', undefined), recOf('es/about', 'es', 'about')]);
+  return { ok: problems.length === 0, detail: problems.length === 0 ? 'no false positive' : `got ${JSON.stringify(problems)}` };
+});
+
+/**
+ * verify:translations resolves both forms into one list of pairs, so the
+ * assertions downstream of it do not care which form a pair used. If this ever
+ * returned only one form, half the site's pairs would stop being checked and
+ * the suite would still be green.
+ */
+const VT = await import('./verify-translations.mjs');
+
+check('pairsOf resolves both forms of the relation', () => {
+  const records = [
+    { outputPath: 'about', lang: 'en' },
+    { outputPath: 'es/about', lang: 'es', translationOf: 'about' },
+    { outputPath: 'lab/en/a', lang: 'en', translationKey: 'k' },
+    { outputPath: 'lab/es/a', lang: 'es', translationKey: 'k' },
+    { outputPath: 'music', lang: 'en' },
+  ];
+  const pairs = VT.pairsOf(records);
+  const vias = pairs.map((p) => p.via).sort();
+  const ok = pairs.length === 2 && vias[0] === 'translationKey' && vias[1] === 'translationOf';
+  return { ok, detail: ok ? 'one pair from each form, and the untranslated page is not one' : `got ${JSON.stringify(pairs.map((p) => [p.via, p.translation.outputPath]))}` };
+});
+
 // --- patterns/mark: the stamp only stamps an edition number --------------
 // The stamp reads its text out of `card_title` rather than out of a new field,
 // so the only thing that can go wrong is it reading a numeral where there is
@@ -1049,6 +1124,23 @@ check('the carousel carries the accessibility contract the spec states', () => {
   ];
   const ok = has.every(Boolean);
   return { ok, detail: ok ? 'labelled group, list items, focusable track, no controls, no auto-advance' : `checks: ${has.join(',')}` };
+});
+
+check('legacy carousel copy becomes a caption below the media', () => {
+  const legacy =
+    '<div class="swiper__wrapper">' +
+    '<div class="swiper__slide"><img src="/a.jpg" alt="A"><div class="text-content"><h2>I</h2><p>Caption copy</p></div></div>' +
+    '<div class="swiper__slide orb-slide"><h2 class="orb-step">II</h2><div class="orb-media"><img src="/b.jpg" alt="B"></div><div class="orb-desc"><p>Orbiter copy</p></div></div>' +
+    '</div>';
+  const out = C.swiperToCarousel(legacy, { idPrefix: 't' });
+  const frames = [...out.matchAll(/<div class="carousel__frame">([\s\S]*?)<\/div><figcaption class="carousel__caption">([\s\S]*?)<\/figcaption>/g)];
+  const ok =
+    frames.length === 2 &&
+    !/text-content|orb-desc|orb-step/.test(frames.map(([, frame]) => frame).join('')) &&
+    /Caption copy/.test(frames[0][2]) &&
+    /carousel__caption-step">II/.test(frames[1][2]) &&
+    /Orbiter copy/.test(frames[1][2]);
+  return { ok, detail: ok ? 'text-content and orbiter copy become figure captions' : out };
 });
 
 check('an empty swiper wrapper is left exactly as it was', () => {
@@ -1232,8 +1324,15 @@ check('a page missing a production heading fails verify:content', (root) => {
 check('a page with fewer images than production fails verify:content', (root) => {
   contentFixture(root, { page: { images: 1 } });
   const { code, out } = run(root, 'verify-content.mjs');
-  const ok = code === 1 && /1 images, expected 2/.test(out);
+  const ok = code === 1 && /1 images, expected at least 2/.test(out);
   return { ok, detail: ok ? 'exit 1, image shortfall reported' : `expected exit 1, got ${code}\n${out}` };
+});
+
+check('a page with additional first-party images passes verify:content', (root) => {
+  contentFixture(root, { page: { images: 3 } });
+  const { code, out } = run(root, 'verify-content.mjs');
+  const ok = code === 0;
+  return { ok, detail: ok ? 'production image count is a floor, not a maximum' : `expected exit 0, got ${code}\n${out}` };
 });
 
 // 49. A page whose body collapsed but whose headings all survived — /lab kept
@@ -1257,8 +1356,49 @@ check('a page missing a production link fails verify:content', (root) => {
 check('a page missing a production embed fails verify:content', (root) => {
   contentFixture(root, { page: { embeds: 0 } });
   const { code, out } = run(root, 'verify-content.mjs');
-  const ok = code === 1 && /0 embeds, expected 1/.test(out);
+  const ok = code === 1 && /0 embeds, expected at least 1/.test(out);
   return { ok, detail: ok ? 'exit 1, embed shortfall reported' : `expected exit 1, got ${code}\n${out}` };
+});
+
+// 51b. The other half of making the embed count a floor, and the reason it is
+//      one: the owner added three videos in MW-9 content/videos-added and all
+//      three were reported as content loss on pages that had gained content.
+//      Paired with 51 so the loosening cannot quietly become "embeds unchecked".
+check('a page with an additional embed passes verify:content', (root) => {
+  contentFixture(root, { page: { embeds: 3 } });
+  const { code, out } = run(root, 'verify-content.mjs');
+  const ok = code === 0;
+  return { ok, detail: ok ? 'production embed count is a floor, not a maximum' : `expected exit 0, got ${code}\n${out}` };
+});
+
+/**
+ * 51c/51d. THE ENTITY-ENCODING PAIR.
+ *
+ * Production's Jekyll HTML carries a bare `&` inside a heading; Astro escapes
+ * the same string to `&amp;`, as it must. `plainText` decodes neither, so 33
+ * NFC card pages reported a heading missing from a page that renders it. The
+ * comparison is entity-insensitive now — and 51d is the half that matters,
+ * because a decode applied to both sides must not be able to conjure a heading
+ * the build does not have.
+ */
+check('an entity-escaped heading still satisfies verify:content', (root) => {
+  contentFixture(root, {
+    page: { headings: ['Orbits and Bodies', 'soundscapes &amp; music'] },
+    page_: { headings: ['Orbits and Bodies', 'soundscapes & music'] },
+  });
+  const { code, out } = run(root, 'verify-content.mjs');
+  const ok = code === 0;
+  return { ok, detail: ok ? '&amp; and & compare as one heading' : `expected exit 0, got ${code}\n${out}` };
+});
+
+check('a genuinely different heading still fails verify:content', (root) => {
+  contentFixture(root, {
+    page: { headings: ['Orbits and Bodies', 'soundscapes and music'] },
+    page_: { headings: ['Orbits and Bodies', 'soundscapes & music'] },
+  });
+  const { code, out } = run(root, 'verify-content.mjs');
+  const ok = code === 1 && /missing heading "soundscapes & music"/.test(out);
+  return { ok, detail: ok ? 'exit 1, decoding conjures nothing' : `expected exit 1, got ${code}\n${out}` };
 });
 
 // 52. The defect itself: an expectation file whose heading list was filtered

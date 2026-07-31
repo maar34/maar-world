@@ -1,0 +1,391 @@
+---
+/**
+ * Page family 02 — editorial index. §05: "year groups with a single grouping
+ * hairline. filters as chips. no row separators."
+ *
+ * The Lab, and the only page on the site that is a dated bibliography. Its
+ * layout and its sizes come from `Maar World Lab.dc.html` in the design
+ * project; every component in it is one this repo already had.
+ *
+ * WHAT THIS REPLACES. Twenty rows of title / date / excerpt / tags in a 66ch
+ * column under a full-width header — the same substitution the home page had,
+ * where an article layout was doing an index's job. The measure is not widened
+ * to compensate: the family changes, and 66ch goes on meaning what it means on
+ * an entry page.
+ *
+ * WHAT THE DESIGN ASKS FOR THAT IS NOT HERE, AND WHY. Each of these is data the
+ * site does not have or a control this build may not ship, so each would have
+ * meant inventing rather than rendering:
+ *
+ *   filter chips (all / installations / essays / …)
+ *       Interactive filtering needs either JavaScript — allowed on the Helix
+ *       island, ui/carousel and ui/embed-consent, and nothing else — or a route
+ *       per filter, and routes are a frozen contract. Production shipped
+ *       `?tag=EN` links that a script filtered; MW-7 forbids that script, and a
+ *       chip that lands on an unfiltered index and does nothing is worse than
+ *       no chip. The tags render as labels on each card instead.
+ *   sort by date / by series, "series ∷ helix", "03 of 05", "6 series"
+ *       There is no series field on a Lab record. Nothing groups these ten
+ *       pieces into series, so the control would have had one setting.
+ *   the language filter
+ *       Not a control here either, and it does not need to be: the index shows
+ *       the entries in ITS OWN language, and the header's language chip
+ *       switches between `/lab` and `/es/lab`, which are translations of each
+ *       other. The filter the design draws as a chip is the site's existing
+ *       language switch, so building a second one would have been two controls
+ *       for one decision.
+ *   category (installations / essays / field notes / technical)
+ *       The records carry free tags, not a category enum. Twenty records use
+ *       forty-odd distinct tags and no closed set is derivable from them.
+ *   "pinned"
+ *       BUILT, as `LAB_PINNED` in src/config/site.ts — it is the one thing on
+ *       that list the owner asked for by name. It names a `translationKey`
+ *       rather than a URL, so one pin resolves in both languages.
+ *   "older entries"
+ *       Every entry is on this page. A button that pages through nothing is a
+ *       constraint drawn on the page, and there is no constraint to draw.
+ *
+ * The design's counts — "42 entries, 6 series" — describe a Lab with twice the
+ * writing and a taxonomy. The stat block renders what is true of this one.
+ */
+import Card from '../patterns/Card.astro';
+import CollageField from '../patterns/CollageField.astro';
+import GlyphRun from '../patterns/GlyphRun.astro';
+
+export interface LabEntry {
+  href: string;
+  title: string;
+  /** ISO `YYYY-MM-DD`. Every Lab record carries one; the schema allows none. */
+  date: string;
+  lang: string;
+  tags: string[];
+  excerpt?: string;
+  cover?: string;
+  /** Whether that cover is cropped to the frame or fitted whole on a field. */
+  coverFit?: 'cover' | 'contain';
+  /** Reading time in whole minutes, counted from the entry's own body. */
+  minutes: number;
+  /** The piece this entry is a language of — what `LAB_PINNED` names. */
+  translationKey?: string;
+}
+
+interface Props {
+  entries: LabEntry[];
+  /** The section's picture, or null. Same source as every other section. */
+  collage?: string | null;
+  /** The page's own label, for the collage's accessible name. */
+  label: string;
+  /** The page's heading, already carrying its overprint mark. */
+  headingHtml: string;
+  /** The statement under it. One measure, no marks. */
+  lede: string;
+  /** Every word this family prints, in the page's language. See LAB_INTRO. */
+  strings: {
+    entries: string;
+    years: string;
+    oldest: string;
+    updated: string;
+    readTime: string;
+    pinned: string;
+    months: string[];
+  };
+  /**
+   * The `translationKey` of the piece to lead with, or null for "the most
+   * recent". See LAB_PINNED in src/config/site.ts.
+   */
+  pinnedKey?: string | null;
+}
+
+const { entries, collage, label, headingHtml, lede, strings, pinnedKey } = Astro.props;
+
+const readableDate = (iso: string) => {
+  const [y, m, d] = iso.split('-');
+  return `${strings.months[Number(m) - 1]} ${d.padStart(2, '0')}, ${y}`;
+};
+
+/**
+ * THE LEAD ENTRY IS PINNED, NOT MERELY NEWEST.
+ *
+ * `LAB_PINNED` names a `translationKey`, so the same pin resolves to the
+ * English half on `/lab` and the Spanish half on `/es/lab` — one decision, both
+ * pages. It falls back to the most recent entry when nothing is pinned or the
+ * key names nothing in this language, because a page with no lead is worse than
+ * a page led by the newest thing.
+ *
+ * It is `card.article` with `wide`, not `card.feature`: same anatomy as the
+ * grid beneath it, laid out picture-beside-text. See the note on `wide` in
+ * Card.astro for why the home page's feature is a different card.
+ */
+const pinnedIndex = pinnedKey ? entries.findIndex((e) => e.translationKey === pinnedKey) : -1;
+const leadIndex = pinnedIndex >= 0 ? pinnedIndex : 0;
+const isPinned = pinnedIndex >= 0;
+const lead = entries[leadIndex];
+const rest = entries.filter((_, i) => i !== leadIndex);
+
+const byYear: [string, LabEntry[]][] = [
+  ...rest
+    .reduce((acc, e) => {
+      const year = e.date.slice(0, 4);
+      acc.set(year, [...(acc.get(year) ?? []), e]);
+      return acc;
+    }, new Map<string, LabEntry[]>())
+    .entries(),
+].sort((a, b) => b[0].localeCompare(a[0]));
+
+/**
+ * The numeral on each cover — §04, "index numeral top-left".
+ *
+ * Counted in READING ORDER — the lead first, then each year group as it
+ * appears — rather than in date order, and not restarted per year, so it reads
+ * as a plate number in one sequence down the page.
+ *
+ * Reading order is the load-bearing part now that the lead is pinned rather
+ * than newest: numbering the entries by date and then lifting one out of the
+ * middle put 02 at the top of the page followed by 01, which reads as a sorting
+ * bug. The lead is 01 because it is first, whatever its date.
+ *
+ * Zero-padded to two because the design draws two digits, and because a column
+ * of "1, 2, … 10" ragged left is not what a printed plate number looks like.
+ */
+const numerals = new Map<string, string>();
+let counter = 0;
+for (const e of [lead, ...byYear.flatMap(([, rows]) => rows)]) {
+  if (!e) continue;
+  counter += 1;
+  numerals.set(e.href, String(counter).padStart(2, '0'));
+}
+
+/**
+ * The stat block, which is derived and never written down.
+ *
+ * The design puts "42 entries ⁂∴ 6 series / oldest ≡⌗ 2019 / updated ∷⁂ mar 24,
+ * 2026" here. Series do not exist, so the second figure is the one that is true
+ * of this set and not already obvious from the page: how many years it spans.
+ * Nothing here is a number anyone has to remember to update.
+ */
+const years = entries.map((e) => e.date.slice(0, 4));
+const stats = {
+  total: entries.length,
+  years: new Set(years).size,
+  oldest: years.length > 0 ? years.reduce((a, b) => (a < b ? a : b)) : '',
+  updated: entries.length > 0 ? entries[0].date : '',
+};
+
+/**
+ * The line under the excerpt. Reading time only — the language moved to the
+ * cover badge, and stating it in both places would be the same fact twice.
+ */
+const metaOf = (e: LabEntry) => `${e.minutes} ${strings.readTime}`;
+---
+
+<div class="lab">
+  {
+    /* The section's own picture, unchanged: `/lab` has been the earth receiver
+       since section headers were keyed to the section, and a returning visitor
+       recognising the page is the one job it has. The design opens on the
+       heading instead; keeping this costs the design nothing, because its
+       header row is what sits directly beneath. */
+    collage && <CollageField src={collage} variant="section" label={`${label} visual header`} />
+  }
+
+  {
+    /* The header row — heading and statement on the left, the stat block right
+       and bottom-aligned with them, which is the design's own arrangement.
+
+       THE HEADING AND THE STATEMENT COME FROM CONFIG, NOT FROM THE PAGE BODY.
+       `/lab` is a generated record, so copy edited in it is wiped by the next
+       migration run, and `/es/lab` is authored — the two would drift the moment
+       either was touched. LAB_INTRO in src/config/site.ts holds both languages
+       side by side. The bodies of those two records are no longer rendered
+       here; making migrate-pages.mjs stop emitting the old statement is a
+       follow-up, not this unit. */
+  }
+  <div class="lab__head">
+    <div class="lab__intro">
+      <h1 class="lab__title" set:html={headingHtml} />
+      <p class="lab__lede">{lede}</p>
+    </div>
+
+    <p class="lab__stats">
+      {stats.total} {strings.entries} <GlyphRun seed="lab:entries" /> {stats.years} {strings.years}<br />
+      {strings.oldest} <GlyphRun seed="lab:oldest" /> {stats.oldest}<br />
+      {strings.updated} <GlyphRun seed="lab:updated" /> {readableDate(stats.updated)}
+    </p>
+  </div>
+
+  {
+    lead && (
+      <Card
+        variant="article"
+        wide
+        href={lead.href}
+        title={lead.title}
+        level={2}
+        cover={lead.cover}
+        coverFit={lead.coverFit}
+        numeral={numerals.get(lead.href)}
+        metaLeadHtml={readableDate(lead.date)}
+        state={isPinned ? strings.pinned : undefined}
+        stateTone="tree"
+        excerpt={lead.excerpt}
+        tags={lead.tags}
+        meta={metaOf(lead)}
+      />
+    )
+  }
+
+  {
+    byYear.map(([year, rows]) => (
+      <section class="lab__year" aria-labelledby={`lab-${year}`}>
+        {/* "the one place a hairline is allowed: 1px cream 14% above each year,
+            because it carries grouping." §04, year group. It is a border and
+            not an <hr>, because the rule belongs to the group rather than
+            standing between two of them as a sibling. */}
+        <div class="lab__year-head">
+          <h2 class="lab__year-label" id={`lab-${year}`}>
+            {year}
+          </h2>
+          <span class="lab__year-count">
+            {String(rows.length).padStart(2, '0')} {strings.entries}
+          </span>
+        </div>
+
+        <div class="card-grid--article">
+          {rows.map((e) => (
+            <Card
+              variant="article"
+              href={e.href}
+              title={e.title}
+              level={3}
+              cover={e.cover}
+              coverFit={e.coverFit}
+              numeral={numerals.get(e.href)}
+              metaLeadHtml={readableDate(e.date)}
+              excerpt={e.excerpt}
+              tags={e.tags}
+              meta={metaOf(e)}
+            />
+          ))}
+        </div>
+      </section>
+    ))
+  }
+</div>
+
+<style>
+  /**
+   * The page column is the shell's own — the same --content-max the header and
+   * the footer sit in. Family 02 is an index, not prose, so it is not held to
+   * the 66ch measure that family 03 is.
+   */
+  .lab {
+    padding-block: 0 var(--s-24);
+    display: flex;
+    flex-direction: column;
+    /* "sibling groups use gap, never margins." */
+    gap: var(--s-12);
+  }
+
+  /**
+   * "display:grid; grid-template-columns: minmax(0,1fr) 300px; gap:56px;
+   * align-items:end" — the design's header row.
+   *
+   * Bottom-aligned, so the last line of the stat block sits on the same
+   * baseline as the last line of the statement. That is the whole reason the
+   * stats are a block of three short lines rather than one long one.
+   */
+  .lab__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: var(--s-16);
+    align-items: end;
+    padding-block: var(--s-16) 0;
+  }
+
+  .lab__intro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+  }
+
+  /**
+   * "font: 400 italic clamp(48px,6vw,72px)/1" — the design's own heading, and
+   * the one place italic is allowed: "italic bodoni is available for h1 only".
+   *
+   * It is NOT --t-display: that is 76px flat, which is the home page's scale
+   * and would set this line at four words a row in the left column of a
+   * two-column header. The clamp is the design's.
+   */
+  .lab__title {
+    margin: 0;
+    font-family: var(--t-display-face);
+    font-weight: var(--t-display-weight);
+    font-style: italic;
+    font-size: clamp(48px, 6vw, 72px);
+    line-height: 1;
+    letter-spacing: var(--t-display-track);
+  }
+
+  /* The statement is read at a measure; the grid below it is not. */
+  .lab__lede {
+    margin: 0;
+    max-width: var(--measure);
+    color: var(--ink-muted);
+  }
+
+  .lab__stats {
+    margin: 0;
+    text-align: right;
+    font-family: var(--t-meta-face);
+    font-size: var(--t-meta-size);
+    line-height: 1.9;
+    letter-spacing: var(--t-meta-track);
+    color: var(--ink-meta);
+  }
+
+  .lab__year {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-6);
+  }
+
+  /* The one hairline the spec allows, and the year that sits on it. */
+  .lab__year-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-4);
+    border-block-start: 1px solid var(--ink-hairline);
+    padding-block-start: var(--s-4);
+  }
+
+  .lab__year-label {
+    margin: 0;
+    font-family: var(--t-display-face);
+    font-weight: var(--t-display-weight);
+    font-size: var(--t-display-xs-size);
+    line-height: 1;
+    letter-spacing: var(--t-display-track);
+  }
+
+  .lab__year-count {
+    font-family: var(--t-meta-face);
+    font-size: var(--t-meta-size);
+    line-height: 1;
+    letter-spacing: var(--t-meta-track);
+    color: var(--ink-meta);
+  }
+
+  /* "tilt is dropped entirely below m — small screens set flat", and a 300px
+     column beside a statement is a desktop arrangement. Below the design's own
+     stacking width the stat block goes under the statement and reads left. */
+  @media (max-width: 899px) {
+    .lab__head {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-6);
+    }
+
+    .lab__stats {
+      text-align: left;
+    }
+  }
+</style>

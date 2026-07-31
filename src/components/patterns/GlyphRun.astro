@@ -11,7 +11,30 @@
  * from Math.random — same seed, same glyphs, forever, with no state to persist.
  */
 
-const GLYPHS = ['⌁', '⋄', '⎔', '⌗', '⏣', '⍜'] as const;
+/**
+ * THE SET IS WHAT DM MONO ACTUALLY SHIPS, AND IT WAS MEASURED.
+ *
+ * The spec's rule: "the set is restricted to glyphs dm mono ships, so runs
+ * never fall back to another face." The set this file had — ⌁ ⋄ ⎔ ⌗ ⏣ ⍜ —
+ * satisfied none of it. Measured in the browser against the bundled font by
+ * comparing each glyph's advance to the monospace advance (9.6px at 16px, which
+ * every glyph a monospace font contains shares):
+ *
+ *   ⌁ 9.63   ⋄ 6.09   ⎔ 12.01   ⌗ 10.66   ⏣ 10.66   ⍜ 9.63    — none is 9.6
+ *
+ * All six were being drawn by a fallback face in the middle of a DM Mono line,
+ * which is the exact thing that rule exists to prevent, on all 46 marked
+ * headings. The spec names five — ⌗ ≡ ∴ ∷ ⁂ — and the same measurement says
+ * only three of those are in the font either:
+ *
+ *   ⌗ 10.66   ≡ 9.63   ∴ 9.6 ✓   ∷ 9.6 ✓   ⁂ 9.6 ✓
+ *
+ * So the set is those three. A run of two to four still reads as a run, and
+ * every glyph in it is drawn by the face the line is set in. If ⌗ and ≡ are
+ * wanted, the font subset has to carry them first — a set cannot name a glyph
+ * and hope.
+ */
+const GLYPHS = ['∴', '∷', '⁂'] as const;
 
 interface Props {
   seed: string;

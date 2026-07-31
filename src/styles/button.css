@@ -88,7 +88,7 @@
 .btn--primary {
   background: var(--c-maar);
   color: var(--pigment-ink);
-  /* 4a's "collect a card". */
+  /* 4a's "collect cards". */
   --btn-tilt: var(--action-tilt-primary);
 }
 
@@ -258,6 +258,9 @@
  */
 .prose input[type='text'],
 .prose input[type='email'],
+.prose input[type='tel'],
+.prose input[type='url'],
+.prose select,
 .prose textarea {
   display: block;
   width: 100%;
@@ -274,16 +277,75 @@
 }
 
 .prose label {
-  display: block;
-  margin-block-end: var(--s-2);
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  font-family: var(--t-meta-face);
+  font-size: var(--t-meta-size);
+  line-height: var(--t-meta-line);
+  letter-spacing: var(--t-meta-track);
+  color: var(--ink-meta);
 }
 
 .prose form {
+  inline-size: min(100%, 60rem);
+  margin-inline: auto;
   display: flex;
   flex-direction: column;
   /* "sibling groups use gap, never margins." */
   gap: var(--s-4);
   align-items: flex-start;
+}
+
+/* A contact form is a deliberate, readable unit within a wide page, rather
+   than a set of browser-default controls stretched across the whole measure. */
+.prose .form-container {
+  inline-size: 100%;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+  padding-block: clamp(var(--s-6), 4vw, var(--s-12));
+  padding-inline: clamp(var(--s-6), 6vw, var(--s-12));
+  background: var(--sf-sunken);
+  border: 1px solid var(--ink-hairline);
+}
+
+.prose .form-container :is(h2, h3, p) { margin: 0; }
+
+/* Contact fields are a page-level interaction, not a narrow sidebar form.
+   The grid keeps name and email in a useful relationship while letting a
+   message become the generous writing field it needs to be. */
+.prose .form-container .contact-form {
+  inline-size: 100%;
+  max-inline-size: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: var(--s-6);
+}
+
+.prose .form-container .contact-form label:has(textarea),
+.prose .form-container .contact-form :is(button[type='submit'], input[type='submit']) {
+  grid-column: 1 / -1;
+}
+
+.prose .form-container .contact-form :is(button[type='submit'], input[type='submit']) {
+  justify-self: end;
+}
+
+.prose textarea {
+  min-block-size: 10rem;
+  resize: vertical;
+}
+
+.prose :is(input, textarea, select)::placeholder { color: var(--ink-muted); opacity: 1; }
+
+@media (max-width: 699px) {
+  .prose .form-container { padding: var(--s-6); }
+  .prose .form-container .contact-form { grid-template-columns: minmax(0, 1fr); }
+  .prose .form-container .contact-form :is(label:has(textarea), button[type='submit'], input[type='submit']) { grid-column: auto; }
+  .prose .form-container .contact-form :is(button[type='submit'], input[type='submit']) { justify-self: start; }
 }
 
 /* ---- below 600px --------------------------------------------------------- */

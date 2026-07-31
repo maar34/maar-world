@@ -1,6 +1,6 @@
 {
-  "note": "Per-page content-presence assertions for the migrated pages (MW-7 / MW-8). Every figure here is derived from PRODUCTION — routes/manifest.production.json, refined by the read-only legacy _site builds that reproduce its textSha256 — and never from dist/. An earlier version filtered each candidate heading through the build and kept only the ones that survived, which made verify:content structurally incapable of failing; regenerating this file must never consult the build again. headings, images, embeds and links are what production serves, minus the legacy theme chrome named per page in excludedRegions and minus the per-page exclusions named in excludedPerPage. minTextLength is a fraction of PRODUCTION body text, not of the build. Regenerate with scripts/author-content-expectations.mjs.",
-  "authoredAt": "2026-07-28T23:45:47.647Z",
+  "note": "Per-page content-presence assertions for the migrated pages (MW-7 / MW-8). Every figure here is derived from PRODUCTION — routes/manifest.production.json, refined by the read-only legacy _site builds that reproduce its textSha256 — and never from dist/. An earlier version filtered each candidate heading through the build and kept only the ones that survived, which made verify:content structurally incapable of failing; regenerating this file must never consult the build again. headings, images, embeds and links are what production serves, minus the legacy theme chrome named per page in excludedRegions and minus the per-page exclusions named in excludedPerPage. minTextLength is a fraction of production body text after any explicit text exclusion, never of the build. Regenerate with scripts/author-content-expectations.mjs.",
+  "authoredAt": "2026-07-31T20:03:25.153Z",
   "derivedFrom": "routes/manifest.production.json",
   "legacyBaseline": "the read-only _site builds in ../maar.world-site, ../collect.maar.world and ../tree.maar.world, used only where they reproduce the frozen production fingerprint; each page records which, under production.baseline",
   "textFraction": 0.85,
@@ -10,6 +10,14 @@
     "a single trailing colon removed"
   ],
   "chromeExcluded": [
+    {
+      "region": "document-head",
+      "reason": "the document <head> — <title> and metadata. plainText() keeps the text inside a tag, so the page title counted as body text on the production side of a comparison whose build side is measured inside <main>. Not body content on either side"
+    },
+    {
+      "region": "icon-glyphs",
+      "reason": "Material Symbols icon spans — they reached a reader as a glyph, never as the ligature name in the markup, and the font is banned here. normaliseHeading has always removed them from headings for this reason; body copy was the half that was missed"
+    },
     {
       "region": "site-header",
       "reason": "site header and primary nav — BaseLayout ships no nav; the page shell is MW-11"
@@ -69,16 +77,17 @@
   ],
   "chromeExcludedNote": "Each page lists, under excludedRegions, which of these regions its production HTML actually carried and this file therefore does not assert.",
   "ownPropertyLinkNote": "Links to *.maar.world are not asserted: the migration rewrote them to merged-site paths, so the production spelling cannot appear in the build. Every page records how many it had under ownPropertyLinksNotAsserted.",
+  "staleCheckoutLinkNote": "A link is asserted only if routes/manifest.production.json also records it for that route. The manifest list is whole-page, so it is a superset of the body links a legacy _site checkout yields, and the intersection can only drop a link production does not serve at all. Pages where the checkout is ahead of or behind the frozen manifest record the count under staleCheckoutLinksNotAsserted.",
   "pageCount": 130,
-  "migratedPagesWithoutProduction": 0,
+  "migratedPagesWithoutProduction": 11,
   "baselines": {
     "legacy-site-exact": 116,
     "legacy-site-approximate": 14
   },
-  "headingsAsserted": 429,
-  "imagesAsserted": 157,
-  "embedsAsserted": 160,
-  "linksAsserted": 223,
+  "headingsAsserted": 384,
+  "imagesAsserted": 179,
+  "embedsAsserted": 158,
+  "linksAsserted": 179,
   "pages": [
     {
       "url": "/",
@@ -88,7 +97,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 2174,
         "textSha256": "8c92b193dbd706c1",
-        "bodyTextLength": 1771,
+        "bodyTextLength": 1739,
         "headings": 2,
         "bodyHeadings": 1,
         "imageCount": 11,
@@ -96,6 +105,8 @@
         "outboundLinks": 5
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -104,13 +115,24 @@
         "search-modal",
         "hidden-elements x2"
       ],
-      "excludedPerPage": [],
+      "excludedPerPage": [
+        {
+          "kind": "text",
+          "count": 297,
+          "reason": "the ten home-carousel captions were invented migration copy that does not describe the photographs. The owner removed them; the images remain, with empty alt text because no accurate textual alternative is available. This is an intentional content correction, not loss."
+        },
+        {
+          "kind": "images",
+          "count": 10,
+          "reason": "ten of production's eleven home photographs. Family 01 replaced the photo section with patterns/collage-field — see homeMediaSections() in scripts/lib/home-family.mjs, which cuts the section as a whole. The eleventh, 2024_ss-2.jpeg, is promoted to the feature card cover and is still served. Ledger MW-11 design/page-family-01-home. This one is a design decision about content, not a check artifact — worth re-confirming with the owner."
+        }
+      ],
       "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Play music cards with exoplanets"
       ],
-      "minTextLength": 1505,
-      "images": 11,
+      "minTextLength": 1225,
+      "images": 1,
       "embeds": 0,
       "links": [
         "https://maar-world.bandcamp.com/merch",
@@ -125,7 +147,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1594,
         "textSha256": "e471a10b797a3d95",
-        "bodyTextLength": 1310,
+        "bodyTextLength": 1234,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -133,6 +155,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -146,7 +170,7 @@
         "Card IV",
         "spoken word"
       ],
-      "minTextLength": 1113,
+      "minTextLength": 1048,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -163,7 +187,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1644,
         "textSha256": "47c8e6d96d771735",
-        "bodyTextLength": 1361,
+        "bodyTextLength": 1286,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -171,6 +195,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -184,7 +210,7 @@
         "Card X",
         "spoken word"
       ],
-      "minTextLength": 1156,
+      "minTextLength": 1093,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -201,7 +227,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1389,
         "textSha256": "a40513526037f886",
-        "bodyTextLength": 1104,
+        "bodyTextLength": 1027,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -209,6 +235,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -222,7 +250,7 @@
         "Card VII",
         "spoken word"
       ],
-      "minTextLength": 938,
+      "minTextLength": 872,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -239,7 +267,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1395,
         "textSha256": "8558ac50ede7e3b8",
-        "bodyTextLength": 1112,
+        "bodyTextLength": 1037,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -247,6 +275,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -260,7 +290,7 @@
         "Card X",
         "spoken word"
       ],
-      "minTextLength": 945,
+      "minTextLength": 881,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -277,7 +307,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1306,
         "textSha256": "1310bc4259c63ee6",
-        "bodyTextLength": 1021,
+        "bodyTextLength": 944,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -285,6 +315,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -298,7 +330,7 @@
         "Card III",
         "spoken word"
       ],
-      "minTextLength": 867,
+      "minTextLength": 802,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -315,7 +347,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1480,
         "textSha256": "d32e71684daeb80b",
-        "bodyTextLength": 1196,
+        "bodyTextLength": 1120,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -323,6 +355,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -336,7 +370,7 @@
         "Card VI",
         "spoken word"
       ],
-      "minTextLength": 1016,
+      "minTextLength": 952,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -353,7 +387,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1513,
         "textSha256": "d65e13e6fc4d1b95",
-        "bodyTextLength": 1230,
+        "bodyTextLength": 1155,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -361,6 +395,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -374,7 +410,7 @@
         "Card V",
         "spoken word"
       ],
-      "minTextLength": 1045,
+      "minTextLength": 981,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -391,7 +427,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1352,
         "textSha256": "492c78f28d6ee34d",
-        "bodyTextLength": 1068,
+        "bodyTextLength": 992,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -399,6 +435,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -412,7 +450,7 @@
         "Card II",
         "spoken word"
       ],
-      "minTextLength": 907,
+      "minTextLength": 843,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -429,7 +467,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1642,
         "textSha256": "3c4dee34988930ee",
-        "bodyTextLength": 1358,
+        "bodyTextLength": 1282,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -437,6 +475,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -450,7 +490,7 @@
         "Card XI",
         "spoken word"
       ],
-      "minTextLength": 1154,
+      "minTextLength": 1089,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -467,7 +507,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 3027,
         "textSha256": "3d9bfbe390520da8",
-        "bodyTextLength": 2730,
+        "bodyTextLength": 2659,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -475,6 +515,8 @@
         "outboundLinks": 37
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -489,7 +531,7 @@
         "SkySounds.2",
         "SkySounds.3"
       ],
-      "minTextLength": 2320,
+      "minTextLength": 2260,
       "images": 1,
       "embeds": 0,
       "links": [
@@ -506,7 +548,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1745,
         "textSha256": "2cf318065ea732c7",
-        "bodyTextLength": 1462,
+        "bodyTextLength": 1387,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -514,6 +556,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -527,7 +571,7 @@
         "Card I",
         "spoken word"
       ],
-      "minTextLength": 1242,
+      "minTextLength": 1178,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -544,7 +588,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1539,
         "textSha256": "99b506ef285cdefc",
-        "bodyTextLength": 1255,
+        "bodyTextLength": 1179,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -552,6 +596,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -565,7 +611,7 @@
         "Card VI",
         "spoken word"
       ],
-      "minTextLength": 1066,
+      "minTextLength": 1002,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -582,7 +628,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1678,
         "textSha256": "2ed19063b11ef4ef",
-        "bodyTextLength": 1394,
+        "bodyTextLength": 1318,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -590,6 +636,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -603,7 +651,7 @@
         "Card II",
         "spoken word"
       ],
-      "minTextLength": 1184,
+      "minTextLength": 1120,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -620,7 +668,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1729,
         "textSha256": "e54e264f9c5e786c",
-        "bodyTextLength": 1445,
+        "bodyTextLength": 1369,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -628,6 +676,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -641,7 +691,7 @@
         "Card IX",
         "spoken word"
       ],
-      "minTextLength": 1228,
+      "minTextLength": 1163,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -658,7 +708,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1524,
         "textSha256": "573df8e959e45a5b",
-        "bodyTextLength": 1241,
+        "bodyTextLength": 1166,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -666,6 +716,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -679,7 +731,7 @@
         "Card V",
         "spoken word"
       ],
-      "minTextLength": 1054,
+      "minTextLength": 991,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -696,7 +748,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1488,
         "textSha256": "059299b07b2f439e",
-        "bodyTextLength": 1202,
+        "bodyTextLength": 1124,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -704,6 +756,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -717,7 +771,7 @@
         "Card VIII",
         "spoken word"
       ],
-      "minTextLength": 1021,
+      "minTextLength": 955,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -734,7 +788,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1493,
         "textSha256": "75213dc2cc988ea2",
-        "bodyTextLength": 1210,
+        "bodyTextLength": 1135,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -742,6 +796,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -755,7 +811,7 @@
         "Card I",
         "spoken word"
       ],
-      "minTextLength": 1028,
+      "minTextLength": 964,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -772,7 +828,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1583,
         "textSha256": "75225b764025fa1c",
-        "bodyTextLength": 1299,
+        "bodyTextLength": 1223,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -780,6 +836,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -793,7 +851,7 @@
         "Card XI",
         "spoken word"
       ],
-      "minTextLength": 1104,
+      "minTextLength": 1039,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -810,7 +868,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1470,
         "textSha256": "01b12c68dfe9a7aa",
-        "bodyTextLength": 1186,
+        "bodyTextLength": 1110,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -818,6 +876,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -831,7 +891,7 @@
         "Card XI",
         "spoken word"
       ],
-      "minTextLength": 1008,
+      "minTextLength": 943,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -848,7 +908,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1410,
         "textSha256": "788f66c37ca4e066",
-        "bodyTextLength": 1126,
+        "bodyTextLength": 1050,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -856,6 +916,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -869,7 +931,7 @@
         "Card IV",
         "spoken word"
       ],
-      "minTextLength": 957,
+      "minTextLength": 892,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -886,7 +948,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1768,
         "textSha256": "25988450c0daf7e8",
-        "bodyTextLength": 1484,
+        "bodyTextLength": 1408,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -894,6 +956,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -907,7 +971,7 @@
         "Card II",
         "spoken word"
       ],
-      "minTextLength": 1261,
+      "minTextLength": 1196,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -924,7 +988,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1627,
         "textSha256": "01881caf42d52819",
-        "bodyTextLength": 1342,
+        "bodyTextLength": 1265,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -932,6 +996,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -945,7 +1011,7 @@
         "Card VII",
         "spoken word"
       ],
-      "minTextLength": 1140,
+      "minTextLength": 1075,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -962,7 +1028,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1286,
         "textSha256": "b36f3df68086453a",
-        "bodyTextLength": 1001,
+        "bodyTextLength": 924,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -970,6 +1036,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -983,7 +1051,7 @@
         "Card III",
         "spoken word"
       ],
-      "minTextLength": 850,
+      "minTextLength": 785,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -1000,7 +1068,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1500,
         "textSha256": "8037114477624aac",
-        "bodyTextLength": 1216,
+        "bodyTextLength": 1140,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -1008,6 +1076,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -1021,7 +1091,7 @@
         "Card IX",
         "spoken word"
       ],
-      "minTextLength": 1033,
+      "minTextLength": 969,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -1038,7 +1108,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 631,
         "textSha256": "1354d40a0f261ffe",
-        "bodyTextLength": 356,
+        "bodyTextLength": 303,
         "headings": 4,
         "bodyHeadings": 3,
         "imageCount": 1,
@@ -1046,6 +1116,8 @@
         "outboundLinks": 5
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -1059,7 +1131,7 @@
         "music",
         "Card I"
       ],
-      "minTextLength": 302,
+      "minTextLength": 257,
       "images": 1,
       "embeds": 1,
       "links": [
@@ -1076,7 +1148,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1523,
         "textSha256": "297e47b9d8973897",
-        "bodyTextLength": 1240,
+        "bodyTextLength": 1165,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -1084,6 +1156,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -1097,7 +1171,7 @@
         "Card V",
         "spoken word"
       ],
-      "minTextLength": 1054,
+      "minTextLength": 990,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -1114,7 +1188,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1529,
         "textSha256": "ce2441f2b72168db",
-        "bodyTextLength": 1245,
+        "bodyTextLength": 1169,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -1122,6 +1196,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -1135,7 +1211,7 @@
         "Card IV",
         "spoken word"
       ],
-      "minTextLength": 1058,
+      "minTextLength": 993,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -1152,7 +1228,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1605,
         "textSha256": "9ee38b8571f570dc",
-        "bodyTextLength": 1320,
+        "bodyTextLength": 1243,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -1160,6 +1236,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -1173,7 +1251,7 @@
         "Card VII",
         "spoken word"
       ],
-      "minTextLength": 1122,
+      "minTextLength": 1056,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -1190,7 +1268,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1389,
         "textSha256": "62303a2a752ee244",
-        "bodyTextLength": 1104,
+        "bodyTextLength": 1027,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -1198,6 +1276,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -1211,7 +1291,7 @@
         "Card III",
         "spoken word"
       ],
-      "minTextLength": 938,
+      "minTextLength": 872,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -1228,7 +1308,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1504,
         "textSha256": "ffa2f7c2845035d7",
-        "bodyTextLength": 1221,
+        "bodyTextLength": 1146,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -1236,6 +1316,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -1249,7 +1331,7 @@
         "Card I",
         "spoken word"
       ],
-      "minTextLength": 1037,
+      "minTextLength": 974,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -1266,7 +1348,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1526,
         "textSha256": "f8013fbeb28abfa4",
-        "bodyTextLength": 1243,
+        "bodyTextLength": 1168,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -1274,6 +1356,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -1287,7 +1371,7 @@
         "Card X",
         "spoken word"
       ],
-      "minTextLength": 1056,
+      "minTextLength": 992,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -1304,7 +1388,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1497,
         "textSha256": "858a6b665c75e3c0",
-        "bodyTextLength": 1213,
+        "bodyTextLength": 1137,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -1312,6 +1396,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -1325,7 +1411,7 @@
         "Card IX",
         "spoken word"
       ],
-      "minTextLength": 1031,
+      "minTextLength": 966,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -1342,7 +1428,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1492,
         "textSha256": "64321d9f5a6fe818",
-        "bodyTextLength": 1206,
+        "bodyTextLength": 1128,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -1350,6 +1436,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -1363,7 +1451,7 @@
         "Card VIII",
         "spoken word"
       ],
-      "minTextLength": 1025,
+      "minTextLength": 958,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -1380,7 +1468,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1587,
         "textSha256": "5a043fb52ffba38c",
-        "bodyTextLength": 1303,
+        "bodyTextLength": 1227,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -1388,6 +1476,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -1401,7 +1491,7 @@
         "Card VI",
         "spoken word"
       ],
-      "minTextLength": 1107,
+      "minTextLength": 1042,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -1418,7 +1508,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1444,
         "textSha256": "6a30bc6d23e397aa",
-        "bodyTextLength": 1158,
+        "bodyTextLength": 1080,
         "headings": 5,
         "bodyHeadings": 4,
         "imageCount": 1,
@@ -1426,6 +1516,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "aside-toc",
         "disqus",
         "cookie-banner",
@@ -1439,7 +1531,7 @@
         "Card VIII",
         "spoken word"
       ],
-      "minTextLength": 984,
+      "minTextLength": 918,
       "images": 1,
       "embeds": 2,
       "links": [
@@ -1456,7 +1548,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1518,
         "textSha256": "e2e6dca1188025bd",
-        "bodyTextLength": 1120,
+        "bodyTextLength": 1095,
         "headings": 2,
         "bodyHeadings": 1,
         "imageCount": 1,
@@ -1464,6 +1556,8 @@
         "outboundLinks": 5
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -1477,7 +1571,7 @@
       "headings": [
         "About"
       ],
-      "minTextLength": 952,
+      "minTextLength": 930,
       "images": 1,
       "embeds": 0,
       "links": [
@@ -1493,7 +1587,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1492,
         "textSha256": "5c23bc75f1ae86d9",
-        "bodyTextLength": 1036,
+        "bodyTextLength": 1000,
         "headings": 4,
         "bodyHeadings": 3,
         "imageCount": 0,
@@ -1501,6 +1595,8 @@
         "outboundLinks": 3
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -1518,7 +1614,7 @@
         "Hybrid (Live + DJ) sets",
         "Contact"
       ],
-      "minTextLength": 880,
+      "minTextLength": 850,
       "images": 0,
       "embeds": 1,
       "links": []
@@ -1531,7 +1627,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 422,
         "textSha256": "4ca6588980b91b87",
-        "bodyTextLength": 21,
+        "bodyTextLength": 0,
         "headings": 1,
         "bodyHeadings": 0,
         "imageCount": 0,
@@ -1539,6 +1635,8 @@
         "outboundLinks": 3
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -1550,7 +1648,7 @@
       "excludedPerPage": [],
       "ownPropertyLinksNotAsserted": 0,
       "headings": [],
-      "minTextLength": 17,
+      "minTextLength": 0,
       "images": 0,
       "embeds": 1,
       "links": []
@@ -1564,7 +1662,7 @@
         "textLength": 1796,
         "textSha256": "a5067325f4ab6c51",
         "legacySiteTextLength": 1792,
-        "bodyTextLength": 1420,
+        "bodyTextLength": 1346,
         "headings": 9,
         "bodyHeadings": 9,
         "imageCount": 6,
@@ -1572,6 +1670,8 @@
         "outboundLinks": 5
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -1593,7 +1693,7 @@
         "V",
         "Contact us"
       ],
-      "minTextLength": 1207,
+      "minTextLength": 1144,
       "images": 6,
       "embeds": 1,
       "links": [
@@ -1608,7 +1708,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 453,
         "textSha256": "ce4e52d68d037e13",
-        "bodyTextLength": 32,
+        "bodyTextLength": 5,
         "headings": 2,
         "bodyHeadings": 1,
         "imageCount": 0,
@@ -1616,6 +1716,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -1631,7 +1733,7 @@
       "headings": [
         "About"
       ],
-      "minTextLength": 27,
+      "minTextLength": 4,
       "images": 0,
       "embeds": 0,
       "links": []
@@ -1644,7 +1746,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1486,
         "textSha256": "4d6618102628e9dc",
-        "bodyTextLength": 1118,
+        "bodyTextLength": 1091,
         "headings": 1,
         "bodyHeadings": 1,
         "imageCount": 34,
@@ -1652,6 +1754,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -1660,19 +1764,13 @@
         "search-modal",
         "hidden-elements x1"
       ],
-      "excludedPerPage": [
-        {
-          "kind": "images",
-          "count": 34,
-          "reason": "production renders 34 card thumbnails and every one is a www.dropbox.com URL. Restoring them takes the on-load third-party reference count verify:links reports from 75 to 109. Ledger MW-8 collect/cards-covers (BLOCKED): self-host the 34 thumbnails or accept the exception."
-        }
-      ],
+      "excludedPerPage": [],
       "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Cards"
       ],
-      "minTextLength": 950,
-      "images": 0,
+      "minTextLength": 927,
+      "images": 34,
       "embeds": 0,
       "links": []
     },
@@ -1684,1367 +1782,16 @@
         "baseline": "legacy-site-exact",
         "textLength": 1747,
         "textSha256": "4bf1c20c6abf9626",
-        "bodyTextLength": 1266,
+        "bodyTextLength": 1215,
         "headings": 4,
-        "bodyHeadings": 3,
+        "bodyHeadings": 2,
         "imageCount": 1,
         "iframeCount": 2,
         "outboundLinks": 5
       },
       "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.1",
-        "Card I",
-        "Snippet"
-      ],
-      "minTextLength": 1076,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/002_-maar-sky-sounds.1-card II",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/002_-maar-sky-sounds.1-card%20II",
-        "baseline": "legacy-site-exact",
-        "textLength": 1393,
-        "textSha256": "b407002b60885622",
-        "bodyTextLength": 871,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.1",
-        "Card II",
-        "Snippet"
-      ],
-      "minTextLength": 740,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/003_-maar-sky-sounds.1-card III",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/003_-maar-sky-sounds.1-card%20III",
-        "baseline": "legacy-site-exact",
-        "textLength": 1429,
-        "textSha256": "d7fa42988df9b74f",
-        "bodyTextLength": 906,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.1",
-        "Card III",
-        "Snippet"
-      ],
-      "minTextLength": 770,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/004_-maar-sky-sounds.1-card IV",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/004_-maar-sky-sounds.1-card%20IV",
-        "baseline": "legacy-site-exact",
-        "textLength": 1570,
-        "textSha256": "3b17d36c139af53b",
-        "bodyTextLength": 1048,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.1",
-        "Card IV",
-        "Snippet"
-      ],
-      "minTextLength": 890,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/005_-maar-sky-sounds.1-card V",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/005_-maar-sky-sounds.1-card%20V",
-        "baseline": "legacy-site-exact",
-        "textLength": 1558,
-        "textSha256": "67de938bbd3740d8",
-        "bodyTextLength": 1037,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.1",
-        "Card V",
-        "Snippet"
-      ],
-      "minTextLength": 881,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/006_-maar-sky-sounds.1-card VI",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/006_-maar-sky-sounds.1-card%20VI",
-        "baseline": "legacy-site-exact",
-        "textLength": 1521,
-        "textSha256": "66ae6c140d0a5348",
-        "bodyTextLength": 999,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.1",
-        "Card VI",
-        "Snippet"
-      ],
-      "minTextLength": 849,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/007_-maar-sky-sounds.1-card VII",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/007_-maar-sky-sounds.1-card%20VII",
-        "baseline": "legacy-site-exact",
-        "textLength": 1647,
-        "textSha256": "fbc48d79cf0648d6",
-        "bodyTextLength": 1122,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.1",
-        "Card VII",
-        "Snippet"
-      ],
-      "minTextLength": 953,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/008_-maar-sky-sounds.1-card VIII",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/008_-maar-sky-sounds.1-card%20VIII",
-        "baseline": "legacy-site-exact",
-        "textLength": 1528,
-        "textSha256": "ea7dd95952f11850",
-        "bodyTextLength": 1003,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.1",
-        "Card VIII",
-        "Snippet"
-      ],
-      "minTextLength": 852,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/009_-maar-sky-sounds.1-card IX",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/009_-maar-sky-sounds.1-card%20IX",
-        "baseline": "legacy-site-exact",
-        "textLength": 1771,
-        "textSha256": "aac046bea55ade4b",
-        "bodyTextLength": 1248,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.1",
-        "Card IX",
-        "Snippet"
-      ],
-      "minTextLength": 1060,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/010_-maar-sky-sounds.1-card X",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/010_-maar-sky-sounds.1-card%20X",
-        "baseline": "legacy-site-exact",
-        "textLength": 1686,
-        "textSha256": "cf768ee3e7179a38",
-        "bodyTextLength": 1165,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.1",
-        "Card X",
-        "Snippet"
-      ],
-      "minTextLength": 990,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/011_-maar-sky-sounds.1-card XI",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/011_-maar-sky-sounds.1-card%20XI",
-        "baseline": "legacy-site-exact",
-        "textLength": 1681,
-        "textSha256": "ba4088f515016890",
-        "bodyTextLength": 1161,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.1",
-        "Card XI",
-        "Snippet"
-      ],
-      "minTextLength": 986,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/012_-maar-sky-sounds.2-card I",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/012_-maar-sky-sounds.2-card%20I",
-        "baseline": "legacy-site-exact",
-        "textLength": 1535,
-        "textSha256": "32c2459b80568ebc",
-        "bodyTextLength": 1014,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.2",
-        "Card I",
-        "Snippet"
-      ],
-      "minTextLength": 861,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/013_-maar-sky-sounds.2-card II",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/013_-maar-sky-sounds.2-card%20II",
-        "baseline": "legacy-site-exact",
-        "textLength": 1809,
-        "textSha256": "1e36cc4ce57c7399",
-        "bodyTextLength": 1287,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.2",
-        "Card II",
-        "Snippet"
-      ],
-      "minTextLength": 1093,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/014_-maar-sky-sounds.2-card III",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/014_-maar-sky-sounds.2-card%20III",
-        "baseline": "legacy-site-exact",
-        "textLength": 1346,
-        "textSha256": "f8c948fa2f04632b",
-        "bodyTextLength": 823,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.2",
-        "Card III",
-        "Snippet"
-      ],
-      "minTextLength": 699,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/015_-maar-sky-sounds.2-card IV",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/015_-maar-sky-sounds.2-card%20IV",
-        "baseline": "legacy-site-exact",
-        "textLength": 1635,
-        "textSha256": "c2b1ee2a486ca839",
-        "bodyTextLength": 1113,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.2",
-        "Card IV",
-        "Snippet"
-      ],
-      "minTextLength": 946,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/016_-maar-sky-sounds.2-card V",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/016_-maar-sky-sounds.2-card%20V",
-        "baseline": "legacy-site-exact",
-        "textLength": 1566,
-        "textSha256": "fd29a34f86ddaacc",
-        "bodyTextLength": 1045,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.2",
-        "Card V",
-        "Snippet"
-      ],
-      "minTextLength": 888,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/017_-maar-sky-sounds.2-card VI",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/017_-maar-sky-sounds.2-card%20VI",
-        "baseline": "legacy-site-exact",
-        "textLength": 1628,
-        "textSha256": "415665acbb21066e",
-        "bodyTextLength": 1106,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.2",
-        "Card VI",
-        "Snippet"
-      ],
-      "minTextLength": 940,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/018_-maar-sky-sounds.2-card VII",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/018_-maar-sky-sounds.2-card%20VII",
-        "baseline": "legacy-site-exact",
-        "textLength": 1669,
-        "textSha256": "906ac09942bd1932",
-        "bodyTextLength": 1144,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.2",
-        "Card VII",
-        "Snippet"
-      ],
-      "minTextLength": 972,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/019_-maar-sky-sounds.2-card VIII",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/019_-maar-sky-sounds.2-card%20VIII",
-        "baseline": "legacy-site-exact",
-        "textLength": 1483,
-        "textSha256": "0a76e5bca1d4c37b",
-        "bodyTextLength": 958,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.2",
-        "Card VIII",
-        "Snippet"
-      ],
-      "minTextLength": 814,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/020_-maar-sky-sounds.2-card IX",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/020_-maar-sky-sounds.2-card%20IX",
-        "baseline": "legacy-site-exact",
-        "textLength": 1542,
-        "textSha256": "74e03dc64234a6be",
-        "bodyTextLength": 1019,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.2",
-        "Card IX",
-        "Snippet"
-      ],
-      "minTextLength": 866,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/021_-maar-sky-sounds.2-card X",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/021_-maar-sky-sounds.2-card%20X",
-        "baseline": "legacy-site-exact",
-        "textLength": 1568,
-        "textSha256": "bb7a310080b1db69",
-        "bodyTextLength": 1047,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.2",
-        "Card X",
-        "Snippet"
-      ],
-      "minTextLength": 889,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/022_-maar-sky-sounds.2-card XI",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/022_-maar-sky-sounds.2-card%20XI",
-        "baseline": "legacy-site-exact",
-        "textLength": 1509,
-        "textSha256": "154711222696d038",
-        "bodyTextLength": 989,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.2",
-        "Card XI",
-        "Snippet"
-      ],
-      "minTextLength": 840,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/023_-maar-sky-sounds.3-card I",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/023_-maar-sky-sounds.3-card%20I",
-        "baseline": "legacy-site-exact",
-        "textLength": 1546,
-        "textSha256": "947462199719b0c5",
-        "bodyTextLength": 1025,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.3",
-        "Card I",
-        "Snippet"
-      ],
-      "minTextLength": 871,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/024_-maar-sky-sounds.3-card II",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/024_-maar-sky-sounds.3-card%20II",
-        "baseline": "legacy-site-exact",
-        "textLength": 1719,
-        "textSha256": "aedbcfe5e77724be",
-        "bodyTextLength": 1197,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.3",
-        "Card II",
-        "Snippet"
-      ],
-      "minTextLength": 1017,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/025_-maar-sky-sounds.3-card III",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/025_-maar-sky-sounds.3-card%20III",
-        "baseline": "legacy-site-exact",
-        "textLength": 1326,
-        "textSha256": "212dbb176f32ea20",
-        "bodyTextLength": 803,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.3",
-        "Card III",
-        "Snippet"
-      ],
-      "minTextLength": 682,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/026_-maar-sky-sounds.3-card IV",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/026_-maar-sky-sounds.3-card%20IV",
-        "baseline": "legacy-site-exact",
-        "textLength": 1451,
-        "textSha256": "5d28501e86bedbae",
-        "bodyTextLength": 929,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.3",
-        "Card IV",
-        "Snippet"
-      ],
-      "minTextLength": 789,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/027_-maar-sky-sounds.3-card V",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/027_-maar-sky-sounds.3-card%20V",
-        "baseline": "legacy-site-exact",
-        "textLength": 1555,
-        "textSha256": "06c35ca4743796b4",
-        "bodyTextLength": 1034,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.3",
-        "Card V",
-        "Snippet"
-      ],
-      "minTextLength": 878,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/028_-maar-sky-sounds.3-card VI",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/028_-maar-sky-sounds.3-card%20VI",
-        "baseline": "legacy-site-exact",
-        "textLength": 1580,
-        "textSha256": "be28ea1d01a01fa5",
-        "bodyTextLength": 1058,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.3",
-        "Card VI",
-        "Snippet"
-      ],
-      "minTextLength": 899,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/029_-maar-sky-sounds.3-card VII",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/029_-maar-sky-sounds.3-card%20VII",
-        "baseline": "legacy-site-exact",
-        "textLength": 1431,
-        "textSha256": "4461361f1d3cbc04",
-        "bodyTextLength": 906,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.3",
-        "Card VII",
-        "Snippet"
-      ],
-      "minTextLength": 770,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/030_-maar-sky-sounds.3-card VIII",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/030_-maar-sky-sounds.3-card%20VIII",
-        "baseline": "legacy-site-exact",
-        "textLength": 1532,
-        "textSha256": "b113509dacd0a3de",
-        "bodyTextLength": 1007,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.3",
-        "Card VIII",
-        "Snippet"
-      ],
-      "minTextLength": 855,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/031_-maar-sky-sounds.3-card IX",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/031_-maar-sky-sounds.3-card%20IX",
-        "baseline": "legacy-site-exact",
-        "textLength": 1539,
-        "textSha256": "5d80ee42274866cd",
-        "bodyTextLength": 1016,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.3",
-        "Card IX",
-        "Snippet"
-      ],
-      "minTextLength": 863,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/032_-maar-sky-sounds.3-card X ",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/032_-maar-sky-sounds.3-card%20X%20",
-        "baseline": "legacy-site-exact",
-        "textLength": 1437,
-        "textSha256": "11120f614988f4b8",
-        "bodyTextLength": 916,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds.3",
-        "Card X",
-        "Snippet"
-      ],
-      "minTextLength": 778,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/033_-maar-sky-sounds.3-card XI",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/033_-maar-sky-sounds.3-card%20XI",
-        "baseline": "legacy-site-exact",
-        "textLength": 1623,
-        "textSha256": "9a09a3e9db38d965",
-        "bodyTextLength": 1102,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "prev-next",
-        "article-footer-div",
-        "article-footer-el",
-        "hidden-elements x2"
-      ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "SkySounds 3",
-        "Card XI",
-        "Snippet"
-      ],
-      "minTextLength": 936,
-      "images": 1,
-      "embeds": 1,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
-    },
-    {
-      "url": "/collect/cards/034_-maar-sky-sounds-wild-card",
-      "production": {
-        "origin": "collect.maar.world",
-        "url": "/cards/034_-maar-sky-sounds-wild-card",
-        "baseline": "legacy-site-exact",
-        "textLength": 1658,
-        "textSha256": "5de03a599bf47539",
-        "bodyTextLength": 1172,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 1,
-        "iframeCount": 2,
-        "outboundLinks": 5
-      },
-      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -3058,23 +1805,1883 @@
       ],
       "excludedPerPage": [
         {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.1",
+        "Card I"
+      ],
+      "minTextLength": 940,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/002_-maar-sky-sounds.1-card II",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/002_-maar-sky-sounds.1-card%20II",
+        "baseline": "legacy-site-exact",
+        "textLength": 1393,
+        "textSha256": "b407002b60885622",
+        "bodyTextLength": 819,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.1",
+        "Card II"
+      ],
+      "minTextLength": 604,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/003_-maar-sky-sounds.1-card III",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/003_-maar-sky-sounds.1-card%20III",
+        "baseline": "legacy-site-exact",
+        "textLength": 1429,
+        "textSha256": "d7fa42988df9b74f",
+        "bodyTextLength": 853,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.1",
+        "Card III"
+      ],
+      "minTextLength": 633,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/004_-maar-sky-sounds.1-card IV",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/004_-maar-sky-sounds.1-card%20IV",
+        "baseline": "legacy-site-exact",
+        "textLength": 1570,
+        "textSha256": "3b17d36c139af53b",
+        "bodyTextLength": 996,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.1",
+        "Card IV"
+      ],
+      "minTextLength": 754,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/005_-maar-sky-sounds.1-card V",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/005_-maar-sky-sounds.1-card%20V",
+        "baseline": "legacy-site-exact",
+        "textLength": 1558,
+        "textSha256": "67de938bbd3740d8",
+        "bodyTextLength": 986,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.1",
+        "Card V"
+      ],
+      "minTextLength": 746,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/006_-maar-sky-sounds.1-card VI",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/006_-maar-sky-sounds.1-card%20VI",
+        "baseline": "legacy-site-exact",
+        "textLength": 1521,
+        "textSha256": "66ae6c140d0a5348",
+        "bodyTextLength": 947,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.1",
+        "Card VI"
+      ],
+      "minTextLength": 713,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/007_-maar-sky-sounds.1-card VII",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/007_-maar-sky-sounds.1-card%20VII",
+        "baseline": "legacy-site-exact",
+        "textLength": 1647,
+        "textSha256": "fbc48d79cf0648d6",
+        "bodyTextLength": 1069,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.1",
+        "Card VII"
+      ],
+      "minTextLength": 816,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/008_-maar-sky-sounds.1-card VIII",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/008_-maar-sky-sounds.1-card%20VIII",
+        "baseline": "legacy-site-exact",
+        "textLength": 1528,
+        "textSha256": "ea7dd95952f11850",
+        "bodyTextLength": 949,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.1",
+        "Card VIII"
+      ],
+      "minTextLength": 714,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/009_-maar-sky-sounds.1-card IX",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/009_-maar-sky-sounds.1-card%20IX",
+        "baseline": "legacy-site-exact",
+        "textLength": 1771,
+        "textSha256": "aac046bea55ade4b",
+        "bodyTextLength": 1196,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.1",
+        "Card IX"
+      ],
+      "minTextLength": 924,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/010_-maar-sky-sounds.1-card X",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/010_-maar-sky-sounds.1-card%20X",
+        "baseline": "legacy-site-exact",
+        "textLength": 1686,
+        "textSha256": "cf768ee3e7179a38",
+        "bodyTextLength": 1114,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.1",
+        "Card X"
+      ],
+      "minTextLength": 855,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/011_-maar-sky-sounds.1-card XI",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/011_-maar-sky-sounds.1-card%20XI",
+        "baseline": "legacy-site-exact",
+        "textLength": 1681,
+        "textSha256": "ba4088f515016890",
+        "bodyTextLength": 1109,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.1",
+        "Card XI"
+      ],
+      "minTextLength": 850,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/012_-maar-sky-sounds.2-card I",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/012_-maar-sky-sounds.2-card%20I",
+        "baseline": "legacy-site-exact",
+        "textLength": 1535,
+        "textSha256": "32c2459b80568ebc",
+        "bodyTextLength": 963,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.2",
+        "Card I"
+      ],
+      "minTextLength": 726,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/013_-maar-sky-sounds.2-card II",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/013_-maar-sky-sounds.2-card%20II",
+        "baseline": "legacy-site-exact",
+        "textLength": 1809,
+        "textSha256": "1e36cc4ce57c7399",
+        "bodyTextLength": 1235,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.2",
+        "Card II"
+      ],
+      "minTextLength": 957,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/014_-maar-sky-sounds.2-card III",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/014_-maar-sky-sounds.2-card%20III",
+        "baseline": "legacy-site-exact",
+        "textLength": 1346,
+        "textSha256": "f8c948fa2f04632b",
+        "bodyTextLength": 770,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.2",
+        "Card III"
+      ],
+      "minTextLength": 562,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/015_-maar-sky-sounds.2-card IV",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/015_-maar-sky-sounds.2-card%20IV",
+        "baseline": "legacy-site-exact",
+        "textLength": 1635,
+        "textSha256": "c2b1ee2a486ca839",
+        "bodyTextLength": 1061,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.2",
+        "Card IV"
+      ],
+      "minTextLength": 810,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/016_-maar-sky-sounds.2-card V",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/016_-maar-sky-sounds.2-card%20V",
+        "baseline": "legacy-site-exact",
+        "textLength": 1566,
+        "textSha256": "fd29a34f86ddaacc",
+        "bodyTextLength": 994,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.2",
+        "Card V"
+      ],
+      "minTextLength": 753,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/017_-maar-sky-sounds.2-card VI",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/017_-maar-sky-sounds.2-card%20VI",
+        "baseline": "legacy-site-exact",
+        "textLength": 1628,
+        "textSha256": "415665acbb21066e",
+        "bodyTextLength": 1054,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.2",
+        "Card VI"
+      ],
+      "minTextLength": 804,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/018_-maar-sky-sounds.2-card VII",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/018_-maar-sky-sounds.2-card%20VII",
+        "baseline": "legacy-site-exact",
+        "textLength": 1669,
+        "textSha256": "906ac09942bd1932",
+        "bodyTextLength": 1091,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.2",
+        "Card VII"
+      ],
+      "minTextLength": 835,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/019_-maar-sky-sounds.2-card VIII",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/019_-maar-sky-sounds.2-card%20VIII",
+        "baseline": "legacy-site-exact",
+        "textLength": 1483,
+        "textSha256": "0a76e5bca1d4c37b",
+        "bodyTextLength": 904,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.2",
+        "Card VIII"
+      ],
+      "minTextLength": 676,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/020_-maar-sky-sounds.2-card IX",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/020_-maar-sky-sounds.2-card%20IX",
+        "baseline": "legacy-site-exact",
+        "textLength": 1542,
+        "textSha256": "74e03dc64234a6be",
+        "bodyTextLength": 967,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.2",
+        "Card IX"
+      ],
+      "minTextLength": 730,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/021_-maar-sky-sounds.2-card X",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/021_-maar-sky-sounds.2-card%20X",
+        "baseline": "legacy-site-exact",
+        "textLength": 1568,
+        "textSha256": "bb7a310080b1db69",
+        "bodyTextLength": 996,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.2",
+        "Card X"
+      ],
+      "minTextLength": 754,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/022_-maar-sky-sounds.2-card XI",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/022_-maar-sky-sounds.2-card%20XI",
+        "baseline": "legacy-site-exact",
+        "textLength": 1509,
+        "textSha256": "154711222696d038",
+        "bodyTextLength": 937,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.2",
+        "Card XI"
+      ],
+      "minTextLength": 704,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/023_-maar-sky-sounds.3-card I",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/023_-maar-sky-sounds.3-card%20I",
+        "baseline": "legacy-site-exact",
+        "textLength": 1546,
+        "textSha256": "947462199719b0c5",
+        "bodyTextLength": 974,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.3",
+        "Card I"
+      ],
+      "minTextLength": 736,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/024_-maar-sky-sounds.3-card II",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/024_-maar-sky-sounds.3-card%20II",
+        "baseline": "legacy-site-exact",
+        "textLength": 1719,
+        "textSha256": "aedbcfe5e77724be",
+        "bodyTextLength": 1145,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.3",
+        "Card II"
+      ],
+      "minTextLength": 881,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/025_-maar-sky-sounds.3-card III",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/025_-maar-sky-sounds.3-card%20III",
+        "baseline": "legacy-site-exact",
+        "textLength": 1326,
+        "textSha256": "212dbb176f32ea20",
+        "bodyTextLength": 750,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.3",
+        "Card III"
+      ],
+      "minTextLength": 545,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/026_-maar-sky-sounds.3-card IV",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/026_-maar-sky-sounds.3-card%20IV",
+        "baseline": "legacy-site-exact",
+        "textLength": 1451,
+        "textSha256": "5d28501e86bedbae",
+        "bodyTextLength": 877,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.3",
+        "Card IV"
+      ],
+      "minTextLength": 653,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/027_-maar-sky-sounds.3-card V",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/027_-maar-sky-sounds.3-card%20V",
+        "baseline": "legacy-site-exact",
+        "textLength": 1555,
+        "textSha256": "06c35ca4743796b4",
+        "bodyTextLength": 983,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.3",
+        "Card V"
+      ],
+      "minTextLength": 743,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/028_-maar-sky-sounds.3-card VI",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/028_-maar-sky-sounds.3-card%20VI",
+        "baseline": "legacy-site-exact",
+        "textLength": 1580,
+        "textSha256": "be28ea1d01a01fa5",
+        "bodyTextLength": 1006,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.3",
+        "Card VI"
+      ],
+      "minTextLength": 763,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/029_-maar-sky-sounds.3-card VII",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/029_-maar-sky-sounds.3-card%20VII",
+        "baseline": "legacy-site-exact",
+        "textLength": 1431,
+        "textSha256": "4461361f1d3cbc04",
+        "bodyTextLength": 853,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.3",
+        "Card VII"
+      ],
+      "minTextLength": 633,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/030_-maar-sky-sounds.3-card VIII",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/030_-maar-sky-sounds.3-card%20VIII",
+        "baseline": "legacy-site-exact",
+        "textLength": 1532,
+        "textSha256": "b113509dacd0a3de",
+        "bodyTextLength": 953,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.3",
+        "Card VIII"
+      ],
+      "minTextLength": 718,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/031_-maar-sky-sounds.3-card IX",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/031_-maar-sky-sounds.3-card%20IX",
+        "baseline": "legacy-site-exact",
+        "textLength": 1539,
+        "textSha256": "5d80ee42274866cd",
+        "bodyTextLength": 964,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.3",
+        "Card IX"
+      ],
+      "minTextLength": 727,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/032_-maar-sky-sounds.3-card X ",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/032_-maar-sky-sounds.3-card%20X%20",
+        "baseline": "legacy-site-exact",
+        "textLength": 1437,
+        "textSha256": "11120f614988f4b8",
+        "bodyTextLength": 865,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds.3",
+        "Card X"
+      ],
+      "minTextLength": 643,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/033_-maar-sky-sounds.3-card XI",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/033_-maar-sky-sounds.3-card%20XI",
+        "baseline": "legacy-site-exact",
+        "textLength": 1623,
+        "textSha256": "9a09a3e9db38d965",
+        "bodyTextLength": 1050,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [
+        "SkySounds 3",
+        "Card XI"
+      ],
+      "minTextLength": 800,
+      "images": 1,
+      "embeds": 1,
+      "links": []
+    },
+    {
+      "url": "/collect/cards/034_-maar-sky-sounds-wild-card",
+      "production": {
+        "origin": "collect.maar.world",
+        "url": "/cards/034_-maar-sky-sounds-wild-card",
+        "baseline": "legacy-site-exact",
+        "textLength": 1658,
+        "textSha256": "5de03a599bf47539",
+        "bodyTextLength": 1120,
+        "headings": 4,
+        "bodyHeadings": 2,
+        "imageCount": 1,
+        "iframeCount": 2,
+        "outboundLinks": 5
+      },
+      "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
+        "site-header",
+        "site-footer",
+        "aside-toc",
+        "disqus",
+        "cookie-banner",
+        "search-modal",
+        "prev-next",
+        "article-footer-div",
+        "article-footer-el",
+        "hidden-elements x2"
+      ],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Snippet",
+          "reason": "the \"Snippet\" heading named the play.maar.world excerpt player. 33 of these pages now embed the full Maar Orbiter, which is not a snippet, so the heading described nothing on the page. Removed by the owner 2026-07-31. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "link",
+          "value": "https://support.apple.com/en-gb/HT208353",
+          "reason": "the Apple \"unmute your iPhone\" help link, which only existed inside the removed player note. It is not lost content in its own right — it was the note's only link, and the note is gone. Ledger MW-9 content/snippet-note-retired."
+        },
+        {
+          "kind": "text",
+          "count": 108,
+          "reason": "the 108 characters of the removed block, measured with the same plainText() this file fingerprints production with: \"Snippet Please unmute your device and press PLAY ▶️ button. Player optimized for Chrome and Firefox browsers\". Ledger MW-9 content/snippet-note-retired."
+        },
+        {
           "kind": "embeds",
           "count": 1,
           "reason": "production's only iframe on the wild card is <iframe src=\"\"> — an empty player that loads nothing. There is no embed to preserve."
         }
       ],
-      "ownPropertyLinksNotAsserted": 0,
+      "ownPropertyLinksNotAsserted": 1,
       "headings": [
         "SkySounds",
-        "WildCard",
-        "Snippet"
+        "WildCard"
       ],
-      "minTextLength": 996,
+      "minTextLength": 860,
       "images": 1,
       "embeds": 0,
-      "links": [
-        "https://support.apple.com/en-gb/HT208353"
-      ]
+      "links": []
     },
     {
       "url": "/collect/decks",
@@ -3084,7 +3691,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 434,
         "textSha256": "e298c1b2ea928545",
-        "bodyTextLength": 66,
+        "bodyTextLength": 39,
         "headings": 1,
         "bodyHeadings": 1,
         "imageCount": 0,
@@ -3092,6 +3699,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -3105,7 +3714,7 @@
       "headings": [
         "Decks"
       ],
-      "minTextLength": 56,
+      "minTextLength": 33,
       "images": 0,
       "embeds": 0,
       "links": []
@@ -3119,7 +3728,7 @@
         "textLength": 1571,
         "textSha256": "cc637adc84913dcc",
         "legacySiteTextLength": 1571,
-        "bodyTextLength": 983,
+        "bodyTextLength": 952,
         "headings": 2,
         "bodyHeadings": 1,
         "imageCount": 3,
@@ -3127,6 +3736,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "sidebar-toc",
@@ -3146,7 +3757,7 @@
       "headings": [
         "ENT Cards"
       ],
-      "minTextLength": 835,
+      "minTextLength": 809,
       "images": 3,
       "embeds": 0,
       "links": []
@@ -3160,7 +3771,7 @@
         "textLength": 3225,
         "textSha256": "d3dd456190afabcf",
         "legacySiteTextLength": 3225,
-        "bodyTextLength": 2620,
+        "bodyTextLength": 2595,
         "headings": 2,
         "bodyHeadings": 2,
         "imageCount": 2,
@@ -3168,6 +3779,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "sidebar-toc",
@@ -3188,7 +3801,7 @@
         "NFC",
         "Each ENT Card includes an NFC Chip."
       ],
-      "minTextLength": 2227,
+      "minTextLength": 2205,
       "images": 2,
       "embeds": 0,
       "links": [
@@ -3205,7 +3818,7 @@
         "textLength": 2983,
         "textSha256": "b4ad845043a6164a",
         "legacySiteTextLength": 2983,
-        "bodyTextLength": 2394,
+        "bodyTextLength": 2358,
         "headings": 2,
         "bodyHeadings": 2,
         "imageCount": 1,
@@ -3213,6 +3826,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "sidebar-toc",
@@ -3233,7 +3848,7 @@
         "Sustainability",
         "Human-Centered Technology."
       ],
-      "minTextLength": 2034,
+      "minTextLength": 2004,
       "images": 1,
       "embeds": 0,
       "links": []
@@ -3247,7 +3862,7 @@
         "textLength": 3590,
         "textSha256": "26cadef015ccefcd",
         "legacySiteTextLength": 3590,
-        "bodyTextLength": 3002,
+        "bodyTextLength": 2969,
         "headings": 1,
         "bodyHeadings": 1,
         "imageCount": 1,
@@ -3255,6 +3870,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "sidebar-toc",
@@ -3274,7 +3891,7 @@
       "headings": [
         "Information"
       ],
-      "minTextLength": 2551,
+      "minTextLength": 2523,
       "images": 1,
       "embeds": 0,
       "links": []
@@ -3288,7 +3905,7 @@
         "textLength": 1654,
         "textSha256": "8e8f02dc33330a96",
         "legacySiteTextLength": 1654,
-        "bodyTextLength": 1073,
+        "bodyTextLength": 1031,
         "headings": 2,
         "bodyHeadings": 2,
         "imageCount": 0,
@@ -3296,6 +3913,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "sidebar-toc",
@@ -3316,7 +3935,7 @@
         "TERMS AND CONDITIONS",
         "Terms and Conditions"
       ],
-      "minTextLength": 912,
+      "minTextLength": 876,
       "images": 0,
       "embeds": 0,
       "links": []
@@ -3330,7 +3949,7 @@
         "textLength": 2187,
         "textSha256": "5087bd603999e33e",
         "legacySiteTextLength": 2187,
-        "bodyTextLength": 1578,
+        "bodyTextLength": 1545,
         "headings": 1,
         "bodyHeadings": 1,
         "imageCount": 2,
@@ -3338,6 +3957,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "sidebar-toc",
@@ -3357,7 +3978,7 @@
       "headings": [
         "Development"
       ],
-      "minTextLength": 1341,
+      "minTextLength": 1313,
       "images": 2,
       "embeds": 0,
       "links": [
@@ -3374,7 +3995,7 @@
         "textLength": 3504,
         "textSha256": "1421aa51b4fb2c05",
         "legacySiteTextLength": 3504,
-        "bodyTextLength": 2914,
+        "bodyTextLength": 2882,
         "headings": 2,
         "bodyHeadings": 2,
         "imageCount": 3,
@@ -3382,6 +4003,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "sidebar-toc",
@@ -3402,7 +4025,7 @@
         "How to use",
         "A Planet is a Vinyl + One dimension"
       ],
-      "minTextLength": 2476,
+      "minTextLength": 2449,
       "images": 3,
       "embeds": 0,
       "links": []
@@ -3416,7 +4039,7 @@
         "textLength": 1107,
         "textSha256": "e7937732d39ee253",
         "legacySiteTextLength": 1107,
-        "bodyTextLength": 527,
+        "bodyTextLength": 495,
         "headings": 2,
         "bodyHeadings": 2,
         "imageCount": 1,
@@ -3424,6 +4047,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "sidebar-toc",
@@ -3444,7 +4069,7 @@
         "Sky Sounds",
         "Formation"
       ],
-      "minTextLength": 447,
+      "minTextLength": 420,
       "images": 1,
       "embeds": 0,
       "links": [
@@ -3461,7 +4086,7 @@
         "textLength": 777,
         "textSha256": "968f61eec44a9a07",
         "legacySiteTextLength": 777,
-        "bodyTextLength": 189,
+        "bodyTextLength": 158,
         "headings": 1,
         "bodyHeadings": 1,
         "imageCount": 0,
@@ -3469,6 +4094,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "sidebar-toc",
@@ -3488,7 +4115,7 @@
       "headings": [
         "Tutorials"
       ],
-      "minTextLength": 160,
+      "minTextLength": 134,
       "images": 0,
       "embeds": 2,
       "links": []
@@ -3502,7 +4129,7 @@
         "textLength": 746,
         "textSha256": "25c025f1f441e597",
         "legacySiteTextLength": 746,
-        "bodyTextLength": 153,
+        "bodyTextLength": 127,
         "headings": 2,
         "bodyHeadings": 1,
         "imageCount": 10,
@@ -3510,6 +4137,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "sidebar-toc",
@@ -3529,7 +4158,7 @@
       "headings": [
         "Documentation"
       ],
-      "minTextLength": 130,
+      "minTextLength": 107,
       "images": 10,
       "embeds": 0,
       "links": []
@@ -3543,7 +4172,7 @@
         "textLength": 2681,
         "textSha256": "11230c3206483392",
         "legacySiteTextLength": 2681,
-        "bodyTextLength": 2093,
+        "bodyTextLength": 2064,
         "headings": 2,
         "bodyHeadings": 2,
         "imageCount": 0,
@@ -3551,6 +4180,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "sidebar-toc",
@@ -3571,7 +4202,7 @@
         "Privacy",
         "Privacy and Cookies Policy"
       ],
-      "minTextLength": 1779,
+      "minTextLength": 1754,
       "images": 0,
       "embeds": 0,
       "links": []
@@ -3584,7 +4215,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1056,
         "textSha256": "a53419774a7f9f3d",
-        "bodyTextLength": 481,
+        "bodyTextLength": 439,
         "headings": 2,
         "bodyHeadings": 2,
         "imageCount": 0,
@@ -3592,6 +4223,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "sidebar-toc",
@@ -3611,7 +4244,7 @@
         "Entangled World Docs",
         "Documentation"
       ],
-      "minTextLength": 408,
+      "minTextLength": 373,
       "images": 0,
       "embeds": 0,
       "links": []
@@ -3624,7 +4257,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 429,
         "textSha256": "254a57c5b57685ed",
-        "bodyTextLength": 61,
+        "bodyTextLength": 34,
         "headings": 1,
         "bodyHeadings": 1,
         "imageCount": 0,
@@ -3632,6 +4265,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -3645,7 +4280,7 @@
       "headings": [
         "Suits"
       ],
-      "minTextLength": 51,
+      "minTextLength": 28,
       "images": 0,
       "embeds": 0,
       "links": []
@@ -3658,7 +4293,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 457,
         "textSha256": "c43fbe337bfc1eb8",
-        "bodyTextLength": 37,
+        "bodyTextLength": 9,
         "headings": 1,
         "bodyHeadings": 0,
         "imageCount": 0,
@@ -3666,6 +4301,8 @@
         "outboundLinks": 3
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -3675,12 +4312,18 @@
         "article-meta",
         "hidden-elements x2"
       ],
-      "excludedPerPage": [],
+      "excludedPerPage": [
+        {
+          "kind": "embeds",
+          "count": 1,
+          "reason": "the Google Form iframe. The form asked out-of-date questions and the page is now a 200 + meta-refresh stub to /bookings, which is how production retires a URL on a static host. The form URL is recorded in routes/external-link-removals.json. Ledger MW-9 pages/feedback-retired."
+        }
+      ],
       "ownPropertyLinksNotAsserted": 0,
       "headings": [],
-      "minTextLength": 31,
+      "minTextLength": 7,
       "images": 0,
-      "embeds": 1,
+      "embeds": 0,
       "links": []
     },
     {
@@ -3691,7 +4334,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 457,
         "textSha256": "cf651ec1141c1e72",
-        "bodyTextLength": 37,
+        "bodyTextLength": 9,
         "headings": 1,
         "bodyHeadings": 0,
         "imageCount": 0,
@@ -3699,6 +4342,8 @@
         "outboundLinks": 3
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -3708,12 +4353,18 @@
         "article-meta",
         "hidden-elements x2"
       ],
-      "excludedPerPage": [],
+      "excludedPerPage": [
+        {
+          "kind": "embeds",
+          "count": 1,
+          "reason": "the Google Form iframe — the Spanish half of the same retirement. Ledger MW-9 pages/feedback-retired."
+        }
+      ],
       "ownPropertyLinksNotAsserted": 0,
       "headings": [],
-      "minTextLength": 31,
+      "minTextLength": 7,
       "images": 0,
-      "embeds": 1,
+      "embeds": 0,
       "links": []
     },
     {
@@ -3724,18 +4375,20 @@
         "baseline": "legacy-site-exact",
         "textLength": 13,
         "textSha256": "3cb87d45578951f9",
-        "bodyTextLength": 13,
+        "bodyTextLength": 0,
         "headings": 0,
         "bodyHeadings": 0,
         "imageCount": 0,
         "iframeCount": 0,
         "outboundLinks": 0
       },
-      "excludedRegions": [],
+      "excludedRegions": [
+        "document-head"
+      ],
       "excludedPerPage": [],
       "ownPropertyLinksNotAsserted": 0,
       "headings": [],
-      "minTextLength": 11,
+      "minTextLength": 0,
       "images": 0,
       "embeds": 0,
       "links": []
@@ -3756,10 +4409,16 @@
         "outboundLinks": 0
       },
       "excludedRegions": [],
-      "excludedPerPage": [],
+      "excludedPerPage": [
+        {
+          "kind": "text",
+          "count": 122,
+          "reason": "the escaped literal of a redirect document that Jekyll printed as visible text on production — \"&lt;!DOCTYPE html&gt;…&lt;/html&gt;\" — leaving only the 26 characters \"Redirecting to /orbiters …\" that a reader was meant to see. The migrated stub serves that line and redirects properly, so this is production's defect being fixed, not content lost. Ledger MW-7 sitemap/orbiters-once."
+        }
+      ],
       "ownPropertyLinksNotAsserted": 0,
       "headings": [],
-      "minTextLength": 125,
+      "minTextLength": 22,
       "images": 0,
       "embeds": 0,
       "links": []
@@ -3772,14 +4431,16 @@
         "baseline": "legacy-site-exact",
         "textLength": 6237,
         "textSha256": "8f79afce5abee974",
-        "bodyTextLength": 5809,
+        "bodyTextLength": 5784,
         "headings": 26,
-        "bodyHeadings": 25,
+        "bodyHeadings": 15,
         "imageCount": 0,
         "iframeCount": 1,
         "outboundLinks": 3
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -3790,36 +4451,37 @@
         "article-footer-el",
         "hidden-elements x2"
       ],
-      "excludedPerPage": [],
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Helix — Requisitos técnicos | Música, Abstracción y el Retorno al Juego | Música, Acceso y la Mente Humana | Órbitas y Cuerpos | Taller de creación orbital | Taller de creación orbital: Orbiters Orchestra (ES) | Dadada (ES) | Ancestros interplanetarios 3-3 (ES) | Ancestros interplanetarios 2-3 (ES) | Ancestros interplanetarios 1-3 (ES)",
+          "reason": "the ten Spanish Lab entries. Page family 02 lists an index in its own language, by the owner's instruction of 2026-07-31; all ten are served on /es/lab, the translation of this page that the header language chip links to. Content moved, not removed. Ledger MW-11 design/page-family-02-lab."
+        },
+        {
+          "kind": "text",
+          "count": 2766,
+          "reason": "the body text of those same ten Spanish entries — title, date, excerpt and tags each. Derived: production's /lab body is 5783 chars, ~250 of it the heading and statement, so the twenty entries are ~5533 and the Spanish half ~2766. Same decision as the heading exclusion above; the text is served on /es/lab."
+        }
+      ],
       "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Lab",
         "2026",
-        "Helix — Requisitos técnicos",
         "Helix — Technical Requirements",
-        "Música, Abstracción y el Retorno al Juego",
         "Music, Abstraction, and the Return to Playing",
-        "Música, Acceso y la Mente Humana",
         "Music, Access, and the Human Mind",
         "2025",
-        "Órbitas y Cuerpos",
         "Orbits and Bodies",
         "2024",
-        "Taller de creación orbital",
         "Orbital Creation Workshop",
-        "Taller de creación orbital: Orbiters Orchestra (ES)",
         "Orbital Creation Workshop: Orbiters Orchestra (EN)",
         "2023",
-        "Dadada (ES)",
         "Dadada (EN)",
-        "Ancestros interplanetarios 3-3 (ES)",
-        "Ancestros interplanetarios 2-3 (ES)",
-        "Ancestros interplanetarios 1-3 (ES)",
         "Interplanetary ancestors 3-3 (EN)",
         "Interplanetary ancestors 2-3 (EN)",
         "Interplanetary ancestors 1-3 (EN)"
       ],
-      "minTextLength": 4937,
+      "minTextLength": 2565,
       "images": 0,
       "embeds": 0,
       "links": []
@@ -3832,7 +4494,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1626,
         "textSha256": "677b16e7fe63af61",
-        "bodyTextLength": 1158,
+        "bodyTextLength": 1133,
         "headings": 3,
         "bodyHeadings": 3,
         "imageCount": 1,
@@ -3840,6 +4502,8 @@
         "outboundLinks": 7
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -3851,18 +4515,23 @@
         "article-footer-el",
         "hidden-elements x1"
       ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 1,
+      "excludedPerPage": [
+        {
+          "kind": "link",
+          "value": "https://disqus.com/?ref_noscript",
+          "reason": "the \"comments powered by Disqus\" <noscript> fallback link. These eight articles carry the Disqus embed inside the article body as well as in the theme's page__comments section, which is already excluded as chrome on every page, so the body copy of it outlived the region strip. Disqus is a third-party embed the on-load gate forbids and the comments were deliberately not ported. Ledger MW-7 lab/disqus-and-continue-reading."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 2,
       "headings": [
         "Dadada (EN)",
         "Is it possible to slow down time?",
         "4 the dadadaistS"
       ],
-      "minTextLength": 984,
+      "minTextLength": 963,
       "images": 1,
       "embeds": 2,
       "links": [
-        "https://disqus.com/?ref_noscript",
         "https://soundcloud.com/maarworld",
         "https://soundcloud.com/maarworld/episode-42-season-1-maar-live-set-dadada/s-LAlb1xhIGLz"
       ]
@@ -3875,7 +4544,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 4112,
         "textSha256": "0b3635bcd41847af",
-        "bodyTextLength": 3569,
+        "bodyTextLength": 3525,
         "headings": 13,
         "bodyHeadings": 13,
         "imageCount": 0,
@@ -3883,6 +4552,8 @@
         "outboundLinks": 3
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -3911,7 +4582,7 @@
         "Audio",
         "7. Notes and checklist"
       ],
-      "minTextLength": 3033,
+      "minTextLength": 2996,
       "images": 0,
       "embeds": 1,
       "links": []
@@ -3924,7 +4595,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 2776,
         "textSha256": "faf2acafe325be14",
-        "bodyTextLength": 2331,
+        "bodyTextLength": 2284,
         "headings": 1,
         "bodyHeadings": 1,
         "imageCount": 0,
@@ -3932,6 +4603,8 @@
         "outboundLinks": 9
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -3943,17 +4616,21 @@
         "article-footer-el",
         "hidden-elements x1"
       ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 5,
+      "excludedPerPage": [
+        {
+          "kind": "link",
+          "value": "https://disqus.com/?ref_noscript",
+          "reason": "the \"comments powered by Disqus\" <noscript> fallback link. These eight articles carry the Disqus embed inside the article body as well as in the theme's page__comments section, which is already excluded as chrome on every page, so the body copy of it outlived the region strip. Disqus is a third-party embed the on-load gate forbids and the comments were deliberately not ported. Ledger MW-7 lab/disqus-and-continue-reading."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 6,
       "headings": [
         "Interplanetary ancestors 1-3 (EN)"
       ],
-      "minTextLength": 1981,
+      "minTextLength": 1941,
       "images": 0,
       "embeds": 4,
-      "links": [
-        "https://disqus.com/?ref_noscript"
-      ]
+      "links": []
     },
     {
       "url": "/lab/en/ip-2",
@@ -3963,7 +4640,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 2196,
         "textSha256": "6a4969e3ca199d79",
-        "bodyTextLength": 1708,
+        "bodyTextLength": 1661,
         "headings": 1,
         "bodyHeadings": 1,
         "imageCount": 0,
@@ -3971,6 +4648,8 @@
         "outboundLinks": 12
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -3982,16 +4661,21 @@
         "article-footer-el",
         "hidden-elements x1"
       ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 6,
+      "excludedPerPage": [
+        {
+          "kind": "link",
+          "value": "https://disqus.com/?ref_noscript",
+          "reason": "the \"comments powered by Disqus\" <noscript> fallback link. These eight articles carry the Disqus embed inside the article body as well as in the theme's page__comments section, which is already excluded as chrome on every page, so the body copy of it outlived the region strip. Disqus is a third-party embed the on-load gate forbids and the comments were deliberately not ported. Ledger MW-7 lab/disqus-and-continue-reading."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 7,
       "headings": [
         "Interplanetary ancestors 2-3 (EN)"
       ],
-      "minTextLength": 1451,
+      "minTextLength": 1411,
       "images": 0,
       "embeds": 5,
       "links": [
-        "https://disqus.com/?ref_noscript",
         "https://melissahyattfoss.com",
         "https://shikashika.bandcamp.com/album/sample-pack-sonido-de-las-am-ricas"
       ]
@@ -4004,7 +4688,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1468,
         "textSha256": "37e04807a414cac4",
-        "bodyTextLength": 978,
+        "bodyTextLength": 931,
         "headings": 1,
         "bodyHeadings": 1,
         "imageCount": 0,
@@ -4012,6 +4696,8 @@
         "outboundLinks": 10
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4023,16 +4709,21 @@
         "article-footer-el",
         "hidden-elements x1"
       ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 4,
+      "excludedPerPage": [
+        {
+          "kind": "link",
+          "value": "https://disqus.com/?ref_noscript",
+          "reason": "the \"comments powered by Disqus\" <noscript> fallback link. These eight articles carry the Disqus embed inside the article body as well as in the theme's page__comments section, which is already excluded as chrome on every page, so the body copy of it outlived the region strip. Disqus is a third-party embed the on-load gate forbids and the comments were deliberately not ported. Ledger MW-7 lab/disqus-and-continue-reading."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 5,
       "headings": [
         "Interplanetary ancestors 3-3 (EN)"
       ],
-      "minTextLength": 831,
+      "minTextLength": 791,
       "images": 0,
       "embeds": 4,
       "links": [
-        "https://disqus.com/?ref_noscript",
         "https://github.com/maar34/interplanetary-players-rnbo",
         "https://github.com/maar34/interplanetary-players-web"
       ]
@@ -4045,7 +4736,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 5131,
         "textSha256": "f49a5b644f64cc2c",
-        "bodyTextLength": 4650,
+        "bodyTextLength": 4586,
         "headings": 14,
         "bodyHeadings": 14,
         "imageCount": 12,
@@ -4053,6 +4744,8 @@
         "outboundLinks": 5
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4067,8 +4760,8 @@
       "excludedPerPage": [
         {
           "kind": "images",
-          "count": 1,
-          "reason": "/img/about/Bruna.jpeg is referenced by production and exists in no read-only checkout — it is a broken image in production too. Ledger MW-7 pages/dead-legacy-img."
+          "count": 2,
+          "reason": "/img/about/Bruna.jpeg is referenced by production and exists in no read-only checkout — it is a broken image in production too (Ledger MW-7 pages/dead-legacy-img). The MMAT sponsor logo is the other: its Dropbox link answers \"File Deleted\", so it is broken in production as well and there is nothing to self-host. It is a text credit until the file is supplied. UArtes was the same case and is restored — the owner sent the file 2026-07-31. Ledger MW-6 lab/dead-sponsor-logos."
         }
       ],
       "ownPropertyLinksNotAsserted": 0,
@@ -4088,8 +4781,8 @@
         "Facilitator Profile",
         "Contact me"
       ],
-      "minTextLength": 3952,
-      "images": 11,
+      "minTextLength": 3898,
+      "images": 10,
       "embeds": 2,
       "links": [
         "https://www.uartes.edu.ec",
@@ -4104,7 +4797,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 3115,
         "textSha256": "d2f4e675e0416f2b",
-        "bodyTextLength": 2619,
+        "bodyTextLength": 2580,
         "headings": 9,
         "bodyHeadings": 9,
         "imageCount": 1,
@@ -4112,6 +4805,8 @@
         "outboundLinks": 3
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4136,7 +4831,7 @@
         "Explore Regenerative Modes",
         "Contact me"
       ],
-      "minTextLength": 2226,
+      "minTextLength": 2193,
       "images": 1,
       "embeds": 3,
       "links": []
@@ -4149,7 +4844,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 3554,
         "textSha256": "256b51d64734324e",
-        "bodyTextLength": 3010,
+        "bodyTextLength": 2951,
         "headings": 3,
         "bodyHeadings": 2,
         "imageCount": 1,
@@ -4157,6 +4852,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4174,7 +4871,7 @@
         "Music, Abstraction, and the Return to Playing",
         "References"
       ],
-      "minTextLength": 2558,
+      "minTextLength": 2508,
       "images": 1,
       "embeds": 0,
       "links": [
@@ -4191,7 +4888,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1275,
         "textSha256": "8e5abc58a66ab6da",
-        "bodyTextLength": 755,
+        "bodyTextLength": 724,
         "headings": 2,
         "bodyHeadings": 2,
         "imageCount": 0,
@@ -4199,6 +4896,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4216,7 +4915,7 @@
         "Orbits and Bodies",
         "Introduction"
       ],
-      "minTextLength": 641,
+      "minTextLength": 615,
       "images": 0,
       "embeds": 1,
       "links": [
@@ -4231,7 +4930,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 2769,
         "textSha256": "bff4c4bdb05e5876",
-        "bodyTextLength": 2272,
+        "bodyTextLength": 2225,
         "headings": 3,
         "bodyHeadings": 2,
         "imageCount": 1,
@@ -4239,6 +4938,8 @@
         "outboundLinks": 3
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4256,7 +4957,7 @@
         "Music, Access, and the Human Mind",
         "When Cultural Capital Is Shared"
       ],
-      "minTextLength": 1931,
+      "minTextLength": 1891,
       "images": 1,
       "embeds": 0,
       "links": []
@@ -4269,7 +4970,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 3075,
         "textSha256": "d1ec337eed9f27a9",
-        "bodyTextLength": 2539,
+        "bodyTextLength": 2493,
         "headings": 3,
         "bodyHeadings": 2,
         "imageCount": 1,
@@ -4277,6 +4978,8 @@
         "outboundLinks": 3
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4294,7 +4997,7 @@
         "Música, Acceso y la Mente Humana",
         "Cuando el Capital Cultural es Compartido"
       ],
-      "minTextLength": 2158,
+      "minTextLength": 2119,
       "images": 1,
       "embeds": 0,
       "links": []
@@ -4307,7 +5010,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1657,
         "textSha256": "0f6965c9e2ca371e",
-        "bodyTextLength": 1169,
+        "bodyTextLength": 1144,
         "headings": 3,
         "bodyHeadings": 3,
         "imageCount": 1,
@@ -4315,6 +5018,8 @@
         "outboundLinks": 7
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4326,18 +5031,23 @@
         "article-footer-el",
         "hidden-elements x1"
       ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 1,
+      "excludedPerPage": [
+        {
+          "kind": "link",
+          "value": "https://disqus.com/?ref_noscript",
+          "reason": "the \"comments powered by Disqus\" <noscript> fallback link. These eight articles carry the Disqus embed inside the article body as well as in the theme's page__comments section, which is already excluded as chrome on every page, so the body copy of it outlived the region strip. Disqus is a third-party embed the on-load gate forbids and the comments were deliberately not ported. Ledger MW-7 lab/disqus-and-continue-reading."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 2,
       "headings": [
         "Dadada (ES)",
         "Es posible desacelerar el tiempo?",
         "Para lxs Dadadaistas"
       ],
-      "minTextLength": 993,
+      "minTextLength": 972,
       "images": 1,
       "embeds": 2,
       "links": [
-        "https://disqus.com/?ref_noscript",
         "https://soundcloud.com/maarworld",
         "https://soundcloud.com/maarworld/episode-42-season-1-maar-live-set-dadada/s-LAlb1xhIGLz"
       ]
@@ -4350,7 +5060,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 4395,
         "textSha256": "f49436a63066d2ba",
-        "bodyTextLength": 3901,
+        "bodyTextLength": 3860,
         "headings": 13,
         "bodyHeadings": 13,
         "imageCount": 0,
@@ -4358,6 +5068,8 @@
         "outboundLinks": 3
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4386,7 +5098,7 @@
         "Audio",
         "7. Notas y lista de verificación"
       ],
-      "minTextLength": 3315,
+      "minTextLength": 3281,
       "images": 0,
       "embeds": 1,
       "links": []
@@ -4399,7 +5111,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 2864,
         "textSha256": "51205e0179986748",
-        "bodyTextLength": 2369,
+        "bodyTextLength": 2320,
         "headings": 1,
         "bodyHeadings": 1,
         "imageCount": 0,
@@ -4407,6 +5119,8 @@
         "outboundLinks": 9
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4418,17 +5132,21 @@
         "article-footer-el",
         "hidden-elements x1"
       ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 5,
+      "excludedPerPage": [
+        {
+          "kind": "link",
+          "value": "https://disqus.com/?ref_noscript",
+          "reason": "the \"comments powered by Disqus\" <noscript> fallback link. These eight articles carry the Disqus embed inside the article body as well as in the theme's page__comments section, which is already excluded as chrome on every page, so the body copy of it outlived the region strip. Disqus is a third-party embed the on-load gate forbids and the comments were deliberately not ported. Ledger MW-7 lab/disqus-and-continue-reading."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 6,
       "headings": [
         "Ancestros interplanetarios 1-3 (ES)"
       ],
-      "minTextLength": 2013,
+      "minTextLength": 1972,
       "images": 0,
       "embeds": 4,
-      "links": [
-        "https://disqus.com/?ref_noscript"
-      ]
+      "links": []
     },
     {
       "url": "/lab/es/ip-2",
@@ -4438,7 +5156,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 2203,
         "textSha256": "58c3ba7f3330d1a8",
-        "bodyTextLength": 1706,
+        "bodyTextLength": 1657,
         "headings": 1,
         "bodyHeadings": 1,
         "imageCount": 0,
@@ -4446,6 +5164,8 @@
         "outboundLinks": 12
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4457,16 +5177,21 @@
         "article-footer-el",
         "hidden-elements x1"
       ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 6,
+      "excludedPerPage": [
+        {
+          "kind": "link",
+          "value": "https://disqus.com/?ref_noscript",
+          "reason": "the \"comments powered by Disqus\" <noscript> fallback link. These eight articles carry the Disqus embed inside the article body as well as in the theme's page__comments section, which is already excluded as chrome on every page, so the body copy of it outlived the region strip. Disqus is a third-party embed the on-load gate forbids and the comments were deliberately not ported. Ledger MW-7 lab/disqus-and-continue-reading."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 7,
       "headings": [
         "Ancestros interplanetarios 2-3 (ES)"
       ],
-      "minTextLength": 1450,
+      "minTextLength": 1408,
       "images": 0,
       "embeds": 5,
       "links": [
-        "https://disqus.com/?ref_noscript",
         "https://melissahyattfoss.com",
         "https://shikashika.bandcamp.com/album/sample-pack-sonido-de-las-am-ricas"
       ]
@@ -4479,7 +5204,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1471,
         "textSha256": "e2d5db1202d32743",
-        "bodyTextLength": 998,
+        "bodyTextLength": 949,
         "headings": 1,
         "bodyHeadings": 1,
         "imageCount": 0,
@@ -4487,6 +5212,8 @@
         "outboundLinks": 10
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4498,16 +5225,21 @@
         "article-footer-el",
         "hidden-elements x1"
       ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 4,
+      "excludedPerPage": [
+        {
+          "kind": "link",
+          "value": "https://disqus.com/?ref_noscript",
+          "reason": "the \"comments powered by Disqus\" <noscript> fallback link. These eight articles carry the Disqus embed inside the article body as well as in the theme's page__comments section, which is already excluded as chrome on every page, so the body copy of it outlived the region strip. Disqus is a third-party embed the on-load gate forbids and the comments were deliberately not ported. Ledger MW-7 lab/disqus-and-continue-reading."
+        }
+      ],
+      "ownPropertyLinksNotAsserted": 5,
       "headings": [
         "Ancestros interplanetarios 3-3 (ES)"
       ],
-      "minTextLength": 848,
+      "minTextLength": 806,
       "images": 0,
       "embeds": 4,
       "links": [
-        "https://disqus.com/?ref_noscript",
         "https://github.com/maar34/interplanetary-players-rnbo",
         "https://github.com/maar34/interplanetary-players-web"
       ]
@@ -4520,7 +5252,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 5492,
         "textSha256": "9aeb8375985b4092",
-        "bodyTextLength": 4993,
+        "bodyTextLength": 4928,
         "headings": 14,
         "bodyHeadings": 14,
         "imageCount": 12,
@@ -4528,6 +5260,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4542,8 +5276,8 @@
       "excludedPerPage": [
         {
           "kind": "images",
-          "count": 1,
-          "reason": "/img/about/Bruna.jpeg is referenced by production and exists in no read-only checkout — it is a broken image in production too. Ledger MW-7 pages/dead-legacy-img."
+          "count": 2,
+          "reason": "/img/about/Bruna.jpeg is referenced by production and exists in no read-only checkout — it is a broken image in production too (Ledger MW-7 pages/dead-legacy-img). The MMAT sponsor logo is the other: its Dropbox link answers \"File Deleted\", so it is broken in production as well and there is nothing to self-host. It is a text credit until the file is supplied. UArtes was the same case and is restored — the owner sent the file 2026-07-31. Ledger MW-6 lab/dead-sponsor-logos."
         }
       ],
       "ownPropertyLinksNotAsserted": 0,
@@ -4563,8 +5297,8 @@
         "Perfil de la Facilitadora",
         "Contáctame"
       ],
-      "minTextLength": 4244,
-      "images": 11,
+      "minTextLength": 4188,
+      "images": 10,
       "embeds": 2,
       "links": [
         "https://www.uartes.edu.ec"
@@ -4578,7 +5312,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 3367,
         "textSha256": "d4ae9a8227afe22b",
-        "bodyTextLength": 2901,
+        "bodyTextLength": 2861,
         "headings": 9,
         "bodyHeadings": 9,
         "imageCount": 1,
@@ -4586,6 +5320,8 @@
         "outboundLinks": 3
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4610,7 +5346,7 @@
         "Explora Modos Regenerativos",
         "Contáctame"
       ],
-      "minTextLength": 2465,
+      "minTextLength": 2431,
       "images": 1,
       "embeds": 3,
       "links": []
@@ -4623,7 +5359,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 4045,
         "textSha256": "14f706edb84feafb",
-        "bodyTextLength": 3492,
+        "bodyTextLength": 3437,
         "headings": 3,
         "bodyHeadings": 2,
         "imageCount": 1,
@@ -4631,6 +5367,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4648,7 +5386,7 @@
         "Música, Abstracción y el Retorno al Juego",
         "Referencias"
       ],
-      "minTextLength": 2968,
+      "minTextLength": 2921,
       "images": 1,
       "embeds": 0,
       "links": [
@@ -4665,7 +5403,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1380,
         "textSha256": "7ed28d620e1f4288",
-        "bodyTextLength": 845,
+        "bodyTextLength": 814,
         "headings": 2,
         "bodyHeadings": 2,
         "imageCount": 0,
@@ -4673,6 +5411,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4690,7 +5430,7 @@
         "Órbitas y Cuerpos",
         "Introducción"
       ],
-      "minTextLength": 718,
+      "minTextLength": 691,
       "images": 0,
       "embeds": 1,
       "links": [
@@ -4705,7 +5445,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 5594,
         "textSha256": "1856913d3ca23117",
-        "bodyTextLength": 5169,
+        "bodyTextLength": 5132,
         "headings": 3,
         "bodyHeadings": 2,
         "imageCount": 1,
@@ -4713,6 +5453,8 @@
         "outboundLinks": 19
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4729,7 +5471,7 @@
         "Landings",
         "Sonic events on planet earth"
       ],
-      "minTextLength": 4393,
+      "minTextLength": 4362,
       "images": 1,
       "embeds": 4,
       "links": [
@@ -4759,7 +5501,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 605,
         "textSha256": "dbb386ca46873130",
-        "bodyTextLength": 175,
+        "bodyTextLength": 142,
         "headings": 2,
         "bodyHeadings": 1,
         "imageCount": 0,
@@ -4767,6 +5509,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4782,7 +5526,7 @@
       "headings": [
         "Music"
       ],
-      "minTextLength": 148,
+      "minTextLength": 120,
       "images": 0,
       "embeds": 1,
       "links": []
@@ -4795,7 +5539,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1760,
         "textSha256": "25559f84b4c7c7ae",
-        "bodyTextLength": 1368,
+        "bodyTextLength": 1346,
         "headings": 9,
         "bodyHeadings": 9,
         "imageCount": 6,
@@ -4803,6 +5547,8 @@
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4824,7 +5570,7 @@
         "Innovative Tradition",
         "An Extended Harmony of the Spheres"
       ],
-      "minTextLength": 1162,
+      "minTextLength": 1144,
       "images": 6,
       "embeds": 2,
       "links": []
@@ -4837,7 +5583,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 2477,
         "textSha256": "43ed11e385ac3861",
-        "bodyTextLength": 2077,
+        "bodyTextLength": 2056,
         "headings": 2,
         "bodyHeadings": 1,
         "imageCount": 0,
@@ -4845,6 +5591,8 @@
         "outboundLinks": 3
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "sidebar-toc",
@@ -4861,7 +5609,7 @@
       "headings": [
         "Privacy and Cookies Policy"
       ],
-      "minTextLength": 1765,
+      "minTextLength": 1747,
       "images": 0,
       "embeds": 0,
       "links": []
@@ -4874,7 +5622,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 1440,
         "textSha256": "9230bd9f6ad35428",
-        "bodyTextLength": 1042,
+        "bodyTextLength": 1017,
         "headings": 4,
         "bodyHeadings": 3,
         "imageCount": 4,
@@ -4882,6 +5630,8 @@
         "outboundLinks": 6
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4903,7 +5653,7 @@
         "Collect",
         "Join mail list"
       ],
-      "minTextLength": 885,
+      "minTextLength": 864,
       "images": 3,
       "embeds": 2,
       "links": [
@@ -4919,7 +5669,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 641,
         "textSha256": "6170608f191f368b",
-        "bodyTextLength": 181,
+        "bodyTextLength": 161,
         "headings": 1,
         "bodyHeadings": 0,
         "imageCount": 0,
@@ -4927,6 +5677,8 @@
         "outboundLinks": 3
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4938,7 +5690,7 @@
       "excludedPerPage": [],
       "ownPropertyLinksNotAsserted": 0,
       "headings": [],
-      "minTextLength": 153,
+      "minTextLength": 136,
       "images": 0,
       "embeds": 0,
       "links": []
@@ -4951,7 +5703,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 664,
         "textSha256": "bb45adf68287aac4",
-        "bodyTextLength": 252,
+        "bodyTextLength": 231,
         "headings": 3,
         "bodyHeadings": 2,
         "imageCount": 1,
@@ -4959,6 +5711,8 @@
         "outboundLinks": 5
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -4975,7 +5729,7 @@
         "Revolution X",
         "Download"
       ],
-      "minTextLength": 214,
+      "minTextLength": 196,
       "images": 1,
       "embeds": 0,
       "links": [
@@ -4991,7 +5745,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 689,
         "textSha256": "946bb6150c73721a",
-        "bodyTextLength": 262,
+        "bodyTextLength": 242,
         "headings": 3,
         "bodyHeadings": 2,
         "imageCount": 1,
@@ -4999,6 +5753,8 @@
         "outboundLinks": 5
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -5015,7 +5771,7 @@
         "Rainbow technologies to heal war.",
         "Download"
       ],
-      "minTextLength": 222,
+      "minTextLength": 205,
       "images": 1,
       "embeds": 0,
       "links": [
@@ -5031,7 +5787,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 740,
         "textSha256": "96e760939ae42ce2",
-        "bodyTextLength": 314,
+        "bodyTextLength": 295,
         "headings": 3,
         "bodyHeadings": 2,
         "imageCount": 1,
@@ -5039,6 +5795,8 @@
         "outboundLinks": 7
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -5055,7 +5813,7 @@
         "Skylight.1",
         "Download"
       ],
-      "minTextLength": 266,
+      "minTextLength": 250,
       "images": 1,
       "embeds": 0,
       "links": [
@@ -5073,7 +5831,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 750,
         "textSha256": "2f87587cc74af16e",
-        "bodyTextLength": 323,
+        "bodyTextLength": 303,
         "headings": 3,
         "bodyHeadings": 2,
         "imageCount": 1,
@@ -5081,6 +5839,8 @@
         "outboundLinks": 7
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -5097,7 +5857,7 @@
         "Skylight.2",
         "Download"
       ],
-      "minTextLength": 274,
+      "minTextLength": 257,
       "images": 1,
       "embeds": 0,
       "links": [
@@ -5115,7 +5875,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 725,
         "textSha256": "222107ca307f813b",
-        "bodyTextLength": 298,
+        "bodyTextLength": 277,
         "headings": 3,
         "bodyHeadings": 2,
         "imageCount": 1,
@@ -5123,6 +5883,8 @@
         "outboundLinks": 7
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -5139,7 +5901,7 @@
         "Skylight.3",
         "Download"
       ],
-      "minTextLength": 253,
+      "minTextLength": 235,
       "images": 1,
       "embeds": 0,
       "links": [
@@ -5157,7 +5919,7 @@
         "baseline": "legacy-site-exact",
         "textLength": 699,
         "textSha256": "e28912326637aa43",
-        "bodyTextLength": 284,
+        "bodyTextLength": 265,
         "headings": 3,
         "bodyHeadings": 2,
         "imageCount": 1,
@@ -5165,6 +5927,8 @@
         "outboundLinks": 5
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -5181,7 +5945,7 @@
         "Spherical Drops",
         "Download"
       ],
-      "minTextLength": 241,
+      "minTextLength": 225,
       "images": 1,
       "embeds": 0,
       "links": [
@@ -5197,14 +5961,16 @@
         "baseline": "legacy-site-exact",
         "textLength": 714,
         "textSha256": "e3916d14b4383258",
-        "bodyTextLength": 312,
+        "bodyTextLength": 289,
         "headings": 2,
-        "bodyHeadings": 1,
+        "bodyHeadings": 0,
         "imageCount": 1,
         "iframeCount": 1,
         "outboundLinks": 4
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -5215,21 +5981,32 @@
       ],
       "excludedPerPage": [
         {
+          "kind": "heading",
+          "value": "Join mail list",
+          "reason": "the Mailchimp signup form's own heading. The page is retired to a 200 + meta-refresh stub and there is no form under the heading to name. Ledger MW-11 a11y/emptied-anchors."
+        },
+        {
+          "kind": "link",
+          "value": "http://eepurl.com/if7emL",
+          "reason": "the Mailchimp attribution link. Its only child was the eep.io logo <img>, which cannot be served without a third-party request on page load, and an anchor with no content is a zero-size tab stop — so the anchor went with it rather than shipping empty. Recorded in routes/external-link-removals.json. Ledger MW-11 a11y/emptied-anchors."
+        },
+        {
+          "kind": "text",
+          "count": 274,
+          "reason": "the Mailchimp signup body, measured with the same plainText() this file fingerprints production with: the \"Thank you for subscribing…\" blurb, \"* indicates required\" and the \"Email *\" field label — 274 characters, the whole of the page apart from its heading. The page is retired; what remains is a stub saying so. Ledger MW-11 a11y/emptied-anchors."
+        },
+        {
           "kind": "images",
           "count": 1,
           "reason": "the Mailchimp eep.io logo. Serving it fires a third-party request on page load, which the no-analytics / no-cookie-banner invariant forbids."
         }
       ],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "Join mail list"
-      ],
-      "minTextLength": 265,
+      "ownPropertyLinksNotAsserted": 1,
+      "headings": [],
+      "minTextLength": 12,
       "images": 0,
       "embeds": 0,
-      "links": [
-        "http://eepurl.com/if7emL"
-      ]
+      "links": []
     },
     {
       "url": "/tree",
@@ -5240,7 +6017,7 @@
         "textLength": 354,
         "textSha256": "3654dc4b507e95ae",
         "legacySiteTextLength": 398,
-        "bodyTextLength": 178,
+        "bodyTextLength": 119,
         "headings": 0,
         "bodyHeadings": 0,
         "imageCount": 1,
@@ -5248,6 +6025,8 @@
         "outboundLinks": 7
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -5256,19 +6035,24 @@
       ],
       "excludedPerPage": [
         {
+          "kind": "text",
+          "count": 44,
+          "reason": "the ../tree.maar.world/_site checkout is STALE for this page — 398 characters against the frozen manifest's 354, the only page in the corpus where the two disagree on length. The 44 characters are the retired link-in-bio labels the checkout still carries and live production does not. The manifest records the four destinations the build serves. Ledger MW-7 content/residue-is-check-side."
+        },
+        {
           "kind": "images",
           "count": 1,
           "reason": "the Tree hub image is hotlinked from herbarium.plantasia.space — a third-party request on page load — and the asset is in no read-only checkout, so it cannot be self-hosted here. Ledger MW-8 tree/sunflower-image (BLOCKED): needs the file or an exception."
         }
       ],
-      "ownPropertyLinksNotAsserted": 3,
+      "ownPropertyLinksNotAsserted": 0,
+      "staleCheckoutLinksNotAsserted": 4,
       "headings": [],
-      "minTextLength": 151,
+      "minTextLength": 63,
       "images": 0,
       "embeds": 0,
       "links": [
-        "https://maar-world.bandcamp.com/merch",
-        "https://soundcloud.com/maarworld"
+        "https://maar-world.bandcamp.com/merch"
       ]
     },
     {
@@ -5280,7 +6064,7 @@
         "textLength": 622,
         "textSha256": "bbebcd146e4ab62f",
         "legacySiteTextLength": 622,
-        "bodyTextLength": 389,
+        "bodyTextLength": 301,
         "headings": 1,
         "bodyHeadings": 1,
         "imageCount": 1,
@@ -5288,6 +6072,8 @@
         "outboundLinks": 8
       },
       "excludedRegions": [
+        "document-head",
+        "icon-glyphs",
         "site-header",
         "site-footer",
         "aside-toc",
@@ -5300,7 +6086,7 @@
       "headings": [
         "MAX BERLIN NETWORK"
       ],
-      "minTextLength": 330,
+      "minTextLength": 255,
       "images": 1,
       "embeds": 0,
       "links": [

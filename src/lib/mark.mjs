@@ -231,6 +231,52 @@ export function stampText(cardTitle) {
   return last.toLowerCase();
 }
 
+/**
+ * How many angles a scattered deck draws from. `card.css` owns every value.
+ *
+ * SIX RATHER THAN THE MARK'S FOUR. A cut word is one object in a line and four
+ * angles are plenty; a card grid puts thirty-four objects on screen at once,
+ * and with four you see the repeat — three cards leaning identically in a row
+ * reads as a rendering fault rather than as a hand.
+ */
+const CARD_TILTS = 6;
+
+/**
+ * The angle a card holds. A class name, never an angle.
+ *
+ * ONE angle per card, used two ways: the default arrangement rests square and
+ * takes it on hover, the deck rests at it and squares up on hover. card.css
+ * owns which, and tokens.css owns both magnitudes.
+ *
+ * The salt stays `card-tilt` even though the class is now `card--lean-`: it is
+ * the input to the hash, so changing it would re-roll every card's angle across
+ * the whole site for no reason other than a rename.
+ *
+ * This lives here and not in the component for the reason stated at the top of
+ * this file: "mark logic lives in patterns/mark and nowhere else — no component
+ * reaches for a tilt directly". It is the same idea as the cut word, applied to
+ * the whole sheet instead of one clipping out of it — `mark.css` puts it best,
+ * "paper does not land square".
+ *
+ * FROZEN, NOT RANDOM, exactly like every other choice in this module. The seed
+ * is the card's own outputPath, so a given card leans the same way in every
+ * build and on every visit. `Math.random()` here would reshuffle the whole grid
+ * on a back-navigation, which is the one thing a deck laid on a table must not
+ * do.
+ *
+ * THE SHIFT IS MEASURED, NOT PICKED. `pick`'s own note says FNV-1a's low bits
+ * lean on the last bytes of the input, and these seeds are the worst case for
+ * that: thirty-four paths identical but for a two-digit number and a roman
+ * numeral near the end. Shift 23 put 12 of the 34 on one angle and leaned the
+ * whole deck left — visible immediately, because a scatter with a bias is not a
+ * scatter. Every shift 0–26 was counted over the real seeds; 10 is the flattest
+ * (6/4/6/4/6/8, chi-square 2.0 against 9.1 at 23) and it also splits 16 left to
+ * 18 right, which is the property that actually matters on screen.
+ */
+export function cardTiltClass(seed) {
+  return `card--lean-${pick(seed, 'card-tilt', CARD_TILTS, 10)}`;
+}
+
 /** The class list for a chosen mark. No values — `mark.css` owns those. */
 export function markClass(choice) {
   if (choice.kind === 'highlight') return 'mark mark--highlight';
