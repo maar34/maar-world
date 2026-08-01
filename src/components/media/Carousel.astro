@@ -45,6 +45,27 @@ interface Slide {
   caption?: string;
 }
 
+/**
+ * How the numeral beside a caption is drawn.
+ *
+ * TWO SHAPES EXIST IN THE CONTENT AND BOTH ARE KEPT, deliberately rather than
+ * normalised, because each is asserted somewhere:
+ *
+ *   'heading'  `<h2>I</h2>` above the words. What the Collect landing's five
+ *              steps were, and `verify:content` asserts "I" … "V" among
+ *              /collect's nine production headings — collapsing them to spans
+ *              would fail that check and would be a real loss of the outline
+ *              production served.
+ *   'inline'   `<span class="carousel__caption-step">I</span>` running into the
+ *              sentence. What the Lab articles use, and what
+ *              `styles/carousel.css` writes `.carousel__caption-step` for.
+ *
+ * Defaulting to 'heading' would put five new headings into every Lab article's
+ * outline, so the caller says which, and the two page kinds keep the shape they
+ * already had.
+ */
+type StepStyle = 'heading' | 'inline';
+
 interface Props {
   /**
    * The id every slide is anchored on, unique within the page.
@@ -59,17 +80,36 @@ interface Props {
   /** The group's accessible name, e.g. "5 photographs" / "5 fotografías". */
   label: string;
   slides: Slide[];
+  /** See StepStyle — 'heading' for the Collect steps, 'inline' for the Lab's. */
+  stepStyle?: StepStyle;
+  /**
+   * Whether each image sits in the theme's `.orb-media` box.
+   *
+   * `styles/carousel.css` writes `.carousel .carousel__frame > .orb-media` for
+   * it, so it is a live class and not one of the dead ones this component
+   * declines to emit. The Lab's instrument screenshots use it; the Collect
+   * landing's photographs do not.
+   */
+  orbMedia?: boolean;
 }
 
-const { id, label, slides } = Astro.props;
+const { id, label, slides, stepStyle = 'heading', orbMedia = false } = Astro.props;
 ---
 
 <section class="carousel" aria-roledescription="carousel" aria-label={label}>
   <ul class="carousel__track" role="list" tabindex="0">
     {
-      slides.map((slide, i) => (
+      slides.map((slide, i) => {
+        const captioned = Boolean(slide.step || slide.caption);
+        /* A slide with no words is NOT wrapped in a figure. A `<figure>` whose
+           only child is an image and which carries no `<figcaption>` adds a
+           landmark and announces nothing — and it is not what the photo-only
+           carousels in the Lab articles held, so this keeps their markup
+           exactly as it was. */
+        const Frame = captioned ? 'figure' : Fragment;
+        return (
         <li class="carousel__slide" id={`${id}-${i + 1}`}>
-          <figure class="carousel__figure">
+          <Frame {...(captioned ? { class: 'carousel__figure' } : {})}>
             <div class="carousel__frame">
               {/* NO `lightbox-ignore`. The migrated bodies carry it on every
                   slide image; it was the dead theme's opt-out from a lightbox
@@ -83,23 +123,32 @@ const { id, label, slides } = Astro.props;
                   not arrived has no width to measure — `CarouselScript` carries
                   a whole re-measure pass for exactly that race. Deferring the
                   loads would widen the window it exists to close. */}
-              <img src={slide.image} alt={slide.alt ?? ''} />
+              {orbMedia ? (
+                <div class="orb-media">
+                  <img src={slide.image} alt={slide.alt ?? ''} />
+                </div>
+              ) : (
+                <img src={slide.image} alt={slide.alt ?? ''} />
+              )}
             </div>
-            {(slide.step || slide.caption) && (
+            {captioned && (
               <figcaption class="carousel__caption">
-                {/* The numeral is a heading in the emitted markup because it is
-                    one in the legacy shape this replaces, and `verify:content`
-                    asserts "I" … "V" among /collect's nine production
-                    headings. It is the slide's label, not a section of the
-                    page — the outline cost is the migration's, kept rather
-                    than changed under a task that is only moving the markup. */}
-                {slide.step && <h2>{slide.step}</h2>}
-                {slide.caption && <p>{slide.caption}</p>}
+                {/* See StepStyle above for why both shapes exist and neither is
+                    normalised away: the heading form is asserted by
+                    verify:content on /collect, the inline form is what
+                    styles/carousel.css draws for the Lab. */}
+                {slide.step && stepStyle === 'heading' && <h2>{slide.step}</h2>}
+                {slide.step && stepStyle === 'inline' && (
+                  <span class="carousel__caption-step">{slide.step}</span>
+                )}
+                {slide.caption &&
+                  (stepStyle === 'heading' ? <p>{slide.caption}</p> : slide.caption)}
               </figcaption>
             )}
-          </figure>
+          </Frame>
         </li>
-      ))
+        );
+      })
     }
   </ul>
 </section>

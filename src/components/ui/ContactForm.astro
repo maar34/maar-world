@@ -1,0 +1,53 @@
+---
+/**
+ * ui/contact-form — the Formspree form, once.
+ *
+ * It existed three times before this: hardcoded in `families/Collect.astro`, and
+ * written out in both halves of the `ip-orchestra` article. Two different
+ * endpoints across those three, which is the point — they are not the same
+ * form, so the endpoint is a prop; but they are the same COMPONENT, so the
+ * markup is not copied a third time.
+ *
+ * `.prose .form-container` in `styles/button.css` owns every rule for the grid
+ * and the fields, so the wrapper stays exactly the shape that stylesheet writes
+ * for, and a caller outside a `.prose` scope has to supply one — see the note in
+ * `families/Collect.astro`, which does.
+ *
+ * THE LABELS ARE PROPS. A Spanish page asking for "Your name" under Spanish body
+ * copy is the half-translated chrome this whole issue is about, and it was real:
+ * `/es/collect` shipped exactly that until MW-19.
+ */
+interface Props {
+  /** Where the form posts. Formspree, per form — these are not all one inbox. */
+  action: string;
+  heading: string;
+  lede?: string;
+  /** Heading level. The Collect landing wants h2; an article section wants h3. */
+  level?: 2 | 3;
+  labels: { name: string; email: string; message: string; submit: string };
+}
+
+const { action, heading, lede, level = 2, labels } = Astro.props;
+const Heading = `h${level}` as 'h2' | 'h3';
+---
+
+<div class="form-container">
+  <Heading>{heading}</Heading>
+  {lede && <p>{lede}</p>}
+
+  <form action={action} method="POST" class="contact-form">
+    <label>
+      {labels.name}
+      <input type="text" name="name" required />
+    </label>
+    <label>
+      {labels.email}
+      <input type="email" name="email" required />
+    </label>
+    <label>
+      {labels.message}
+      <textarea name="message" required></textarea>
+    </label>
+    <button type="submit">{labels.submit}</button>
+  </form>
+</div>

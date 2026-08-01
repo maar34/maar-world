@@ -1,0 +1,46 @@
+---
+/**
+ * ui/logo-grid — the credit row at the foot of a workshop article.
+ *
+ * `.logo-grid` and `.logo-grid__credit` are the dead theme's names and
+ * `styles/legacy.css` still draws them, so the emitted markup is unchanged from
+ * what the two bodies held. When that stylesheet is finally deleted, this is the
+ * one file that has to change instead of every article that carries a logo row.
+ *
+ * A logo is a picture and a picture has no language, so the `logos` list is
+ * passed by the caller from one place per article rather than being written out
+ * in each language's body — the same rule as `COLLECT_JOURNEY_IMAGES`. Only
+ * `alt` is a word, and it travels with the logo it names.
+ */
+interface Logo {
+  src: string;
+  alt: string;
+  /** Where the logo links, if it links anywhere. */
+  href?: string;
+}
+
+interface Props {
+  /** The text credit that opens the row, e.g. "MMAT". */
+  credit?: string;
+  logos: Logo[];
+}
+
+const { credit, logos } = Astro.props;
+---
+
+<div class="logo-grid">
+  {credit && <span class="logo-grid__credit">{credit}</span>}
+  {
+    logos.map((logo) =>
+      logo.href ? (
+        /* External, so it opens away from the article and carries the
+           `noopener noreferrer` pair the rest of the site uses. */
+        <a href={logo.href} target="_blank" rel="noopener noreferrer">
+          <img src={logo.src} alt={logo.alt} />
+        </a>
+      ) : (
+        <img src={logo.src} alt={logo.alt} />
+      ),
+    )
+  }
+</div>

@@ -249,6 +249,37 @@
 }
 
 /**
+ * A form button that is deliberately inert — and the rule that used to be an
+ * inline style on it.
+ *
+ * `.btn:disabled` a hundred lines up already draws this for every action built
+ * from `ui/action`. A form's own submit button is not a `.btn`, so it had
+ * nothing: the three Subscribe stubs on `lab/en/ip-orchestra` carried
+ * `style="opacity:0.6; cursor:not-allowed"` on each of them, which is this rule
+ * written three times in the one place a stylesheet cannot reach. It moved here
+ * when the stubs became `ui/subscribe-stub` — MW-19.
+ *
+ * The hover and active rules above are cancelled with it: a control that cannot
+ * be pressed must not answer the pointer as though it can, and without this the
+ * disabled button still inverted on hover.
+ */
+.prose :is(button, input)[type='submit']:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.prose :is(button, input)[type='submit']:disabled:hover {
+  background: var(--c-maar);
+  color: var(--pigment-ink);
+}
+
+/* The RESTING tilt stays — it is the button's shape, not its press. Only the
+   nudge the active rule adds is cancelled. */
+.prose :is(button, input)[type='submit']:disabled:active {
+  transform: rotate(var(--btn-tilt));
+}
+
+/**
  * The fields those buttons submit.
  *
  * Not in the spec's button table — it specifies inputs separately — but a

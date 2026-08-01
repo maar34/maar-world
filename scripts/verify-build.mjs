@@ -142,6 +142,8 @@ export function checkBuildOutput(report) {
     );
   }
 
+  checkInteractiveMarkupIsDriven(report, pages);
+
   checkProseCoverage(report, pages);
   checkComponentClassCoverage(report, pages);
 }
@@ -251,6 +253,185 @@ export function proseTagsInBuild(pages, read) {
  * --s-12 is the right space under a title. What it guarantees is that the
  * decision was made at all, which is the failure mode that actually happened.
  */
+/**
+ * MARKUP THAT NEEDS A SCRIPT MUST SHIP THE SCRIPT — MW-19.
+ *
+ * ── The failure this exists to catch ─────────────────────────────────────────
+ *
+ * `[...page].astro` decides which pages load `ui/CarouselScript` and
+ * `ui/EmbedConsentScript`, and it decided by matching `class="carousel"` and
+ * `data-embed-provider` against the record's BODY. That was sound while every
+ * carousel and facade on the site was raw HTML inside a body. It stopped being
+ * sound the moment MW-19 started moving markup into components: a converted body
+ * says `<Carousel />`, which those patterns do not match, so the page emitted a
+ * carousel and no script to drive it.
+ *
+ * IT HAPPENED TWICE IN ONE ISSUE. First when `collect/index` moved into a page
+ * family, then again when `ip-orchestra` became `.mdx` — two dead carousels,
+ * both language halves, and the whole suite green both times. A track that does
+ * not move looks exactly like a track waiting to be swiped.
+ *
+ * ── Why the assertion is here and not a better regex ─────────────────────────
+ *
+ * The detector in the route was widened both times, and would need widening
+ * again for the next way of writing a carousel. That is a list of spellings, and
+ * a list of spellings is what has now failed twice. This asserts the PROPERTY
+ * instead — if the built HTML contains the markup, the built HTML must reference
+ * the script — so the next new spelling fails loudly on the page that used it,
+ * whatever it is called.
+ *
+ * ── How a script is looked for ───────────────────────────────────────────────
+ *
+ * NOT by filename, and the reason is worth stating because the first cut of this
+ * check got it wrong and reported sixteen false failures. Astro emits a script
+ * one of two ways depending on its size: `ui/CarouselScript` is big enough to
+ * become `/_assets/CarouselScript.<hash>.js`, so its module name survives in the
+ * `src`; `ui/EmbedConsentScript` is small enough that Astro INLINES it, and then
+ * no filename exists anywhere on the page.
+ *
+ * So each rule names a string that is in the script's own SOURCE and survives
+ * minification — a class name the script writes, or an attribute it reads — and
+ * the check looks for it inside `<script>` blocks and `src` attributes alike.
+ * That works whichever way Astro decides to emit it, and it keeps working when
+ * a bundle crosses the inlining threshold, which is not a decision this repo
+ * makes or can see.
+ */
+const DRIVEN_MARKUP = [
+  {
+    what: 'a carousel',
+    /* The root selector `ui/CarouselScript` queries. */
+    markup: /class="carousel"/,
+    /* Emitted as a separate bundle today; `carousel__viewport` is the element it
+       creates, and would still be found if it were ever inlined. */
+    script: /CarouselScript|carousel__viewport/,
+    /**
+     * A carousel of one is not driven, deliberately: the script skips a track
+     * with fewer than two slides, so a page holding one would fail an assertion
+     * that took no notice. There are none today; the rule is stated so that one
+     * does not read as a defect later.
+     */
+    skip: (html) => (html.match(/carousel__slide/g) || []).length < 2,
+  },
+  {
+    what: 'an embed facade the consent gate opens',
+    /**
+     * ONLY the facades the gate actually handles.
+     *
+     * Not every facade is gated, and that is deliberate: `ui/EmbedConsentScript`
+     * skips a provider it does not know — "forms, calendar and the radio stream
+     * stay click-out" — so `/radio`'s `provider="external"` facade is a plain
+     * link by design and correctly ships nothing. An assertion that ignored the
+     * provider reported both radio pages as broken.
+     *
+     * The provider list is READ OUT OF THE GATE'S OWN SOURCE rather than copied
+     * here, because a copied list is the defect this whole issue is about. See
+     * `gatedProviders()`.
+     */
+    markup: () => {
+      const providers = gatedProviders();
+      /* No gate in this tree — a fixture. Match nothing rather than everything. */
+      return providers ? new RegExp(`data-embed-provider="(?:${providers.join('|')})"`) : /(?!)/;
+    },
+    /* Inlined by Astro, so there is no filename. `embed-facade__poster` is the
+       class the gate puts on the button it builds — a string from the script's
+       own source, not from the page's markup. */
+    script: /EmbedConsentScript|embed-facade__poster/,
+  },
+];
+
+/**
+ * The providers `ui/EmbedConsentScript` knows how to open, read from that file.
+ *
+ * Derived, never copied: the route decides which pages load the gate using the
+ * same list, and a third handwritten copy here would be exactly the "one concept
+ * spelled in several places" that MW-19 exists to remove.
+ *
+ * It THROWS if it parses nothing. A check whose input can quietly become empty
+ * is a check that passes by asserting nothing — the failure verify:content
+ * documents at length — and an empty list here would make the facade rule match
+ * no page at all while still reporting a cheerful pass.
+ */
+let GATED_PROVIDERS = null;
+function gatedProviders() {
+  if (GATED_PROVIDERS) return GATED_PROVIDERS;
+  const gate = resolve(ROOT, 'src/components/ui/EmbedConsentScript.astro');
+  /**
+   * ABSENT is not the same as UNPARSEABLE, and the two need opposite answers.
+   *
+   * A selftest fixture is a dist/ and a handful of files in a temp directory; it
+   * has no `src/` at all, and the facade rule simply does not apply to it. A
+   * missing gate therefore means "not this build", and the rule stands down.
+   *
+   * A gate that EXISTS and yields no providers is a broken parse in the real
+   * repo, and that throws — see below. The distinction is the whole point: the
+   * quiet failure to avoid is the rule matching nothing while reporting a pass.
+   */
+  if (!existsSync(gate)) return null;
+  const src = readFileSync(gate, 'utf8');
+  const block = /const PROVIDERS[^=]*=\s*\{([\s\S]*?)\n  \};/.exec(src);
+  /* The quotes are optional and one key needs them: `'google-calendar'` is not a
+     bare identifier. A pattern that assumed bare keys found three of the four
+     and would have let a calendar page through ungated. */
+  const names = block
+    ? [...block[1].matchAll(/^ {4}'?([a-z][\w-]*)'?:\s*\{/gim)].map((m) => m[1])
+    : [];
+  if (!names.length) {
+    throw new Error(
+      'verify:build could not read the provider list out of ui/EmbedConsentScript.astro. ' +
+        'The facade assertion depends on it; fix the parse rather than letting the check pass empty.',
+    );
+  }
+  GATED_PROVIDERS = names;
+  return names;
+}
+
+/** Everything the page executes: inline script bodies plus every script `src`. */
+const scriptSurface = (html) =>
+  [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)]
+    .map((m) => m[1] + m[2])
+    .join('\n');
+
+function checkInteractiveMarkupIsDriven(report, pages) {
+  const undriven = [];
+  let checked = 0;
+
+  for (const page of pages) {
+    let html;
+    try {
+      html = readDistFile(page);
+    } catch {
+      continue;
+    }
+    const scripts = scriptSurface(html);
+    for (const rule of DRIVEN_MARKUP) {
+      /* A rule's markup test may be a function, for the facade rule that has to
+         read the gate's provider list rather than hardcode it. */
+      const markup = typeof rule.markup === 'function' ? rule.markup() : rule.markup;
+      if (!markup.test(html)) continue;
+      if (rule.skip?.(html)) continue;
+      checked += 1;
+      /* Matched against the SCRIPT SURFACE and not the whole document, so a
+         page cannot satisfy this with the marker appearing in its own markup. */
+      if (!rule.script.test(scripts)) {
+        undriven.push(`${page}: renders ${rule.what} and ships no script to drive it`);
+      }
+    }
+  }
+
+  if (undriven.length) {
+    report.fail(
+      'markup that needs a script ships the script',
+      `${undriven.length}: ${undriven.slice(0, 6).join('; ')} — ` +
+        'widen the test in src/pages/[...page].astro that decides which pages load it',
+    );
+  } else {
+    report.pass(
+      'markup that needs a script ships the script',
+      `${checked} carousel/facade page(s) carry their driver`,
+    );
+  }
+}
+
 function checkProseCoverage(report, pages) {
   const found = proseTagsInBuild(pages, readDistFile);
 

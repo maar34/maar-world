@@ -211,12 +211,26 @@ const orbiterUrl = cardTrackId ? `https://orbiter.plantasia.space/?trackId=${car
  */
 const isCollectFamily = d.family === 'collect';
 
-/* Asked of the DATA, not of the family: "does this record describe slides",
-   which is the same question the body regex asks of markup. A family that one
-   day stops drawing a carousel then stops loading the bundle by itself, rather
-   than by someone remembering to edit this line. */
+/**
+ * Three ways a page can hold a carousel, because there are now three ways to
+ * write one. The middle case cost two dead carousels before it was added.
+ *
+ *   raw markup   an unconverted `.md` body — `/orbiters`, `ip-orchestra-design`
+ *   a component  a converted `.mdx` body calls `<Carousel …/>` — MW-19
+ *   family data  the Collect landing describes slides in a field
+ *
+ * ASKED OF THE DATA WHERE THERE IS DATA, not of the family: a family that one
+ * day stops drawing a carousel then stops loading the bundle by itself, rather
+ * than by someone remembering to edit this line.
+ *
+ * AND NONE OF IT IS TRUSTED. `verify:build` asserts the real property — that a
+ * built page whose HTML contains a carousel also ships the script that drives
+ * it. This decides what to emit; that decides whether the decision was right.
+ */
 const hasCarousel =
-  /class="carousel"/.test(entry.body ?? '') || Boolean(d.collect?.journey?.slides?.length);
+  /class="carousel"/.test(entry.body ?? '') ||
+  /<Carousel[\s/>]/.test(entry.body ?? '') ||
+  Boolean(d.collect?.journey?.slides?.length);
 const hasPdfEmbed = /class="[^"]*pdf-embed/.test(entry.body ?? '');
 
 /**
@@ -229,9 +243,11 @@ const hasPdfEmbed = /class="[^"]*pdf-embed/.test(entry.body ?? '');
  */
 const hasMediaEmbed =
   /data-embed-provider="(?:youtube|vimeo|soundcloud|google-calendar)"/.test(entry.body ?? '') ||
+  /* A converted `.mdx` body calls the component instead of writing the markup. */
+  /<EmbedFacade[\s/>]/.test(entry.body ?? '') ||
   /* The Collect landing opens on a YouTube facade the family renders. See the
      note on `hasCarousel` above for why a body-only test is no longer the whole
-     question. */
+     question, and `verify:build` for the assertion that does not take its word. */
   isCollectFamily;
 /* Which sections carry a header, and which picture each one gets, both live in
    SECTION_COLLAGE. A section is given a header by being in that map — there is

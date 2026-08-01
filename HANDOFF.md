@@ -1,13 +1,13 @@
 # Handoff
 
-**State:** `npm run verify` = **89 passed, 0 failed, 1 skipped**. The one skip is
+**State:** `npm run verify` = **90 passed, 0 failed, 1 skipped**. The one skip is
 `verify:cards`' host-canary assertion, which needs MW-10 upstream.
 
 **Last shipped:** MW-13, MW-14 and MW-16, then MW-11's i18n structure work, then
-**MW-19 step 1** — the `arch/collect-structure-once` line at the end of the
-ledger.
+**MW-19 steps 1 and 3 plus the first of step 2** — the `arch/collect-structure-once`
+and `arch/ip-orchestra-structure-once` lines at the end of the ledger.
 
-## MW-19 IS ONE PAGE DONE OF SIXTEEN — READ THIS BEFORE PICKING IT UP
+## MW-19 IS TWO PAGES DONE OF SIXTEEN — READ THIS BEFORE PICKING IT UP
 
 **The issue:** a translated page was a COPY of the whole page, not a translation
 of its words. The migration fused structure into record bodies, and translating
@@ -16,11 +16,22 @@ it twice. It was not kept in step: `collect/index` drifted by two elements with
 nobody editing it to diverge, and the Spanish page visibly rendered differently —
 found by a person looking at two pages, because no check could see it.
 
-**Step 1 is done and is the worked example.** `collect/index` renders entirely
-from `src/components/families/Collect.astro`; both records carry copy only. Read
-that component, the `collect` field in `src/content/schemas.mjs`, and
-`COLLECT_LANDING` in `src/config/site.ts` before converting another page. The
-three places a string can live, and the line between them:
+**TWO WORKED EXAMPLES, CONVERTED DIFFERENTLY ON PURPOSE.** Which shape a page
+takes is the first decision, and it follows from what the page is:
+
+| | |
+|---|---|
+| **a landing** — `collect/index` | a page family. `families/Collect.astro` draws the whole page from record fields; the body is empty. |
+| **an article** — `lab/*/ip-orchestra` | `.mdx`. Prose stays markdown and a block calls a component where it goes. A family cannot express an article: its prose and blocks interleave, and fixed slots would move every carousel to the end of the piece. |
+
+`@astrojs/mdx` (v4 — v5 needs Astro 6) was added for the second, on the owner's
+approval of 2026-08-01. It ships no JavaScript; the components are `.astro`.
+`.md` is still the default — convert a body when you are lifting its structure
+out, not before.
+
+Read `families/Collect.astro`, `src/content/pages/en/lab/ip-orchestra.mdx`, and
+`src/config/articles.ts` before converting another page. The three places a
+string can live, and the line between them:
 
 | | |
 |---|---|
@@ -28,9 +39,9 @@ three places a string can live, and the line between them:
 | what the FAMILY says on any page | `site.ts`, keyed by language, both halves adjacent |
 | a URL or an image path | neither — no language, so named once in `site.ts` |
 
-**Step 2 is the remaining 15 pairs**, worst first: `ip-orchestra` (61 elements),
-`radio` (55), `orbiters` (49), `landings` (47). `STRUCTURED_ES` in
-`scripts/verify-translations.mjs` is the work list — **34 Spanish records**, and
+**Step 2 is the remaining 14 pairs**, worst first: `radio` (55 elements),
+`orbiters` (49), `landings` (47). `STRUCTURED_ES` in
+`scripts/verify-translations.mjs` is the work list — **33 Spanish records**, and
 it is **closed: it may shrink, never grow.** Converting a page deletes its line,
 and the check fails if a listed record no longer carries markup, so the deletion
 lands in the same diff.
@@ -42,15 +53,20 @@ instead of comparing two editable things. It cannot be absolute until step 2
 finishes; `STRUCTURED_ES` is what holds the line meanwhile. A new Spanish page is
 already bound by it fully.
 
-**Two traps found doing step 1, both silent, both worth knowing:**
+**Traps found so far, all silent, all worth knowing:**
 
 - `hasCarousel` / `hasMediaEmbed` in `[...page].astro` decide which pages ship
-  JavaScript, and they read the record BODY. Move markup into a family and a
-  body-only test says "no carousel" for a page that renders one — the page
-  builds, looks right, and simply does not work, on both halves at once, with
-  the suite green. Both now also ask the family's data.
+  JavaScript by reading the record BODY. Markup moved into a family or into a
+  component stops matching, so the page renders a carousel and ships nothing to
+  drive it — twice in this issue, both halves, suite green both times.
+  **`verify:build` now asserts the property instead**: a built page whose HTML
+  holds a carousel or a gated facade must reference the script. Widening the
+  route's regex is no longer the thing standing between you and a dead track.
 - A record declaring `family: "collect"` without the `collect` field renders an
   EMPTY page. The schema now refuses it.
+- `verify:a11y`'s inline-handler check named five events and `submit` was not
+  among them, so three `onsubmit` handlers shipped on `/lab/es/ip-orchestra`
+  pointing at a page that does not exist. It matches any `on*` attribute now.
 
 **Not yet fixed, and the same class of defect:** `ui/CarouselScript` announces
 "slide 1 of 5" and labels its arrows "previous slide" / "next slide" in English

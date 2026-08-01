@@ -488,6 +488,82 @@ check('markup inside a <script> is not counted as a page element', (root) => {
   return { ok, detail: ok ? 'script contents ignored' : `expected exit 0 ignoring it, got ${code}\n${out}` };
 });
 
+/**
+ * A carousel with no script fails verify:build — MW-19.
+ *
+ * The failure this proves detectable happened TWICE in one issue and was silent
+ * both times: `[...page].astro` decides which pages load `ui/CarouselScript` by
+ * matching the record's body, and markup moved into a component or a page family
+ * stops matching. The page then emits a carousel that never moves, on both
+ * language halves, with the whole suite green — a track that does not slide
+ * looks exactly like a track waiting to be swiped.
+ *
+ * The pass case beside it is not optional here: the rule must not fire on a page
+ * that legitimately carries no carousel at all, or every page in the build
+ * becomes a failure.
+ */
+const carouselPage = (withScript) =>
+  PROSE_PAGE.replace(
+    '</div></main>',
+    '</div><section class="carousel"><ul class="carousel__track">' +
+      '<li class="carousel__slide"></li><li class="carousel__slide"></li></ul></section>' +
+      (withScript ? '<script type="module" src="/_assets/CarouselScript.abc123.js"></script>' : '') +
+      '</main>',
+  );
+
+check('a carousel that ships no script fails verify:build', (root) => {
+  proseFixture(root, PROSE_CSS_FULL);
+  writeFileSync(join(root, 'dist/article.html'), carouselPage(false));
+  const { code, out } = run(root, 'verify-build.mjs');
+  const ok = code === 1 && /ships the script/.test(out) && /article\.html/.test(out);
+  return {
+    ok,
+    detail: ok
+      ? 'exit 1, the undriven page named'
+      : `expected exit 1 naming article.html, got ${code}\n${out}`,
+  };
+});
+
+/**
+ * The two cases below assert THIS ASSERTION's own line rather than the exit
+ * code, and that is deliberate. A fixture carrying carousel markup also trips
+ * verify:build's stylesheet-coverage rules — the temp root has no carousel.css —
+ * so exit 0 would be asserting that the fixture is complete rather than that
+ * this rule behaved. Matching the line keeps each case about one thing.
+ */
+const drivenLine = (out) => /PASS\s+markup that needs a script ships the script/.test(out);
+
+check('the same carousel passes once the script is there', (root) => {
+  proseFixture(root, PROSE_CSS_FULL);
+  writeFileSync(join(root, 'dist/article.html'), carouselPage(true));
+  const { out } = run(root, 'verify-build.mjs');
+  const ok = drivenLine(out);
+  return { ok, detail: ok ? 'the driven assertion passes' : `expected it to pass\n${out}` };
+});
+
+/**
+ * A carousel of ONE slide is not driven, and must not be reported.
+ *
+ * `ui/CarouselScript` skips a track with fewer than two slides — "a carousel of
+ * one is not a carousel" — so a page holding one correctly ships nothing. There
+ * are none in the content today; this pins the exemption so that if one ever
+ * appears it does not read as a defect.
+ */
+check('a single-slide carousel needs no script', (root) => {
+  proseFixture(root, PROSE_CSS_FULL);
+  writeFileSync(
+    join(root, 'dist/article.html'),
+    PROSE_PAGE.replace(
+      '</div></main>',
+      '</div><section class="carousel"><ul class="carousel__track">' +
+        '<li class="carousel__slide"></li></ul></section></main>',
+    ),
+  );
+  const { out } = run(root, 'verify-build.mjs');
+  const ok = drivenLine(out);
+  return { ok, detail: ok ? 'a track of one is not reported' : `expected it to pass\n${out}` };
+});
+
 // --- F10: a mark class with no rule fails verify:build -------------------
 //
 // mark.mjs builds class names by interpolation and mark.css defines them one by

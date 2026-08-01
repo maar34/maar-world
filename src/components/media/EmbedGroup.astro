@@ -1,0 +1,28 @@
+---
+/**
+ * media/embed-group — the bordered cell a run of instruments sits in.
+ *
+ * This is two elements: `.grid` and `.cell--bordered.cell--12`, the dead theme's
+ * names, which `styles/legacy.css` still draws for the migrated pages. They wrap
+ * the pair of play.maar.world embeds on the ip-orchestra articles and were
+ * written out in both language halves — two copies of a wrapper that carries no
+ * words at all, which is the purest form of the thing MW-19 removes.
+ *
+ * KEPT AS THE THEME'S NAMES rather than rewritten, unlike `families/Collect.astro`
+ * which computed the same rules out under honest names. The difference is where
+ * the markup sits: the Collect landing left `.prose` entirely, so those rules —
+ * all of them scoped `.prose .grid` — stopped applying and had to be replaced. An
+ * article body is still rendered inside `.prose`, so here they still apply and
+ * reproducing them would be a second spelling of a live rule rather than a
+ * replacement for a dead one.
+ *
+ * When `legacy.css` is finally deleted this file changes once, instead of every
+ * article that ever held a pair of instruments.
+ */
+---
+
+<section class="grid">
+  <article class="cell cell--bordered cell--12">
+    <slot />
+  </article>
+</section>

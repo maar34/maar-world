@@ -1,0 +1,44 @@
+---
+/**
+ * patterns/mark — one word, marked, with the mark named rather than chosen.
+ *
+ * `patterns/TypeMark` is the one to reach for when the mark is DERIVED: it picks
+ * both the word and the treatment from a seed, so a card or a heading gets a
+ * stable mark nobody had to decide. This is the other case — the migrated
+ * headings, where a specific word carries a specific mark because someone chose
+ * it, and `chooseMark` would pick a different word and a different tilt.
+ *
+ * It exists because those choices were written as raw `<span class="mark …">` in
+ * the record bodies, twice per page, once per language. `lab/*` ip-orchestra had
+ * the two halves disagreeing about it: English carried `mark--cut mark--tilt-2
+ * mark--tear-3`, Spanish carried `mark--highlight`, on the same word of the same
+ * heading. Nobody decided that; there were simply two copies. MW-19.
+ *
+ * `styles/mark.css` owns every one of these classes, and `verify:build` asserts
+ * that a mark class rendered anywhere has a rule — so a tilt beyond the four
+ * that exist fails the build rather than rendering flat.
+ */
+type Treatment = 'cut' | 'highlight' | 'overprint' | 'strike';
+
+interface Props {
+  /** Which treatment. `cut` is the torn-paper one the headings use. */
+  variant?: Treatment;
+  /** 1–4. Only meaningful for `cut`; mark.css defines exactly four. */
+  tilt?: 1 | 2 | 3 | 4;
+  /** 1–4, likewise. The tear edge. */
+  tear?: 1 | 2 | 3 | 4;
+}
+
+const { variant = 'cut', tilt, tear } = Astro.props;
+
+const classes = [
+  'mark',
+  `mark--${variant}`,
+  tilt ? `mark--tilt-${tilt}` : null,
+  tear ? `mark--tear-${tear}` : null,
+].filter(Boolean);
+---
+
+{/* The word comes through the slot so a heading reads as a heading in the
+    source: `# Orbiters <Mark tilt={2} tear={3}>Orchestra</Mark> (EN)`. */}
+<span class:list={classes}><slot /></span>

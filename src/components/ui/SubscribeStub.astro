@@ -1,0 +1,42 @@
+---
+/**
+ * ui/subscribe-stub — a Subscribe button that does nothing, on purpose.
+ *
+ * IT IS DISABLED AND IT IS MEANT TO BE. The owner's call, 2026-08-01: leave it
+ * inert for now rather than remove it or wire it up.
+ *
+ * WHAT IT REPLACES IS WORTH RECORDING, because one half of it was broken.
+ * `lab/en/ip-orchestra` carried three copies of a `disabled` button; the Spanish
+ * half carried three copies of an ENABLED one whose `onsubmit` ran
+ * `location.href='/lab/es/ip-orchestra-subscription'` — a page that does not
+ * exist. So a Spanish reader got three live buttons to a 404, and the site got a
+ * fourth piece of application JavaScript, past a `verify:a11y` assertion whose
+ * handler list did not include `submit`. English is the source of truth, English
+ * was inert, and this is English's shape.
+ *
+ * The inline `style="opacity:0.6; cursor:not-allowed"` the English copies
+ * carried is gone. `button.css` drew `:disabled` for `.btn` but not for a form's
+ * own submit button, so those three inline pairs were the rule written three
+ * times in the one place a stylesheet cannot reach. It is a real rule now —
+ * `.prose :is(button, input)[type='submit']:disabled` — which also cancels the
+ * hover inversion the inline version could not: the disabled button used to
+ * still light up under the pointer.
+ *
+ * ONE COMPONENT, SIX CALL SITES. When this is removed or wired up it happens
+ * once, in this file, for both languages at the same moment.
+ */
+interface Props {
+  /** The word on the button, in the page's own language. */
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+{/* `action="#"` and a submit button, so that the day it is wired up it is
+    already a form and not a link pretending to be one. */}
+<div class="contact-form">
+  <form action="#" method="post">
+    <button type="submit" disabled>{label}</button>
+  </form>
+</div>

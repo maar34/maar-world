@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
+import mdx from '@astrojs/mdx';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { execSync } from 'node:child_process';
@@ -226,6 +227,36 @@ export default defineConfig({
      * appears, that is a decision to take deliberately, not a side effect.
      */
     react(),
+    /**
+     * MDX exists so that a page's STRUCTURE can stop being written twice — MW-19.
+     *
+     * The owner approved the dependency on 2026-08-01, and the alternative it
+     * was chosen over is worth recording. A translated article was a copy of the
+     * whole article: prose and raw HTML fused in the body, then duplicated per
+     * language, so `lab/en/ip-orchestra` and `lab/es/ip-orchestra` each carried
+     * ~60 structural elements and had already drifted apart.
+     *
+     * Landing pages fixed that with a page family — `/collect` renders entirely
+     * from `families/Collect.astro`. An ARTICLE cannot: its prose and its blocks
+     * interleave, and a family with fixed slots would have to move every
+     * carousel and embed to the end of the piece. The other option on the table
+     * was exactly that, and it loses the article's own sequence.
+     *
+     * So an article body stays markdown and calls components where a block goes.
+     * Structure lives once, in `src/components/**`; the record carries words.
+     *
+     * IT SHIPS NO JAVASCRIPT. MDX compiles to the same static HTML `.md` does —
+     * the components below are `.astro`, rendered at build time — so the rule
+     * that application JavaScript is allowed on exactly three things is
+     * untouched. Adding a fourth is still a decision, not a side effect.
+     *
+     * `.md` REMAINS THE DEFAULT and `content.config.ts` still says so. MDX
+     * requires JSX-valid markup, which the migrated bodies are not; a body is
+     * converted to `.mdx` when its structure is being lifted out, not before.
+     * Pinned to the v4 line because v5 requires Astro 6 and this build is on
+     * Astro 5 — upgrading Astro is a much larger change than this one.
+     */
+    mdx(),
     sitemap({
       filter: (page) => {
         const path = new URL(page).pathname;

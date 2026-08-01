@@ -1,0 +1,57 @@
+---
+/**
+ * media/play-embed — a play.maar.world instrument, embedded in the page.
+ *
+ * NO CLICK-TO-LOAD FACADE, and that is a rule rather than an omission.
+ * `play.maar.world` is the same registrable domain as this site — it is in
+ * `FIRST_PARTY_HOSTS` — so it is same-site even inside an iframe and is never a
+ * third-party request. AGENTS.md says so in as many words: "`play.maar.world`
+ * embeds may be plain iframes". Everything that would reach a genuine third
+ * party on load gets `media/EmbedFacade` instead.
+ *
+ * THE `src` IS A QUERY STRING, NOT A URL. Every one of these points at the same
+ * origin and differs only in which instrument it opens, so the caller supplies
+ * `?g=335&s=1&c=2` and the host is written once, here. Two records each spelling
+ * `https://play.maar.world/...` is the shape MW-19 exists to remove, and the
+ * same reasoning as `COLLECT_STORE_URL`.
+ *
+ * The plate around it is the theme's `hero`, which `styles/legacy.css` still
+ * draws for ten migrated pages — kept deliberately so this renders identically
+ * to the markup it replaces. `hero--light` is NOT carried: it matches no rule in
+ * any stylesheet, and it came with `style="background-color: #white"`, which is
+ * not a colour.
+ */
+const PLAY_ORIGIN = 'https://play.maar.world';
+
+interface Props {
+  /** The instrument's query string, e.g. `?g=335&s=1&c=2`. */
+  src: string;
+  /** The heading above it, in the page's own language. */
+  title: string;
+  /** The iframe's accessible name. Defaults to the heading. */
+  frameTitle?: string;
+}
+
+const { src, title, frameTitle } = Astro.props;
+const url = `${PLAY_ORIGIN}/${src.replace(/^\/?/, '')}`;
+---
+
+<div class="hero hero--center">
+  <div class="hero__content">
+    <h3>{title}</h3>
+    <div class="container">
+      <iframe
+        src={url}
+        class="responsive-iframe"
+        title={frameTitle ?? title}
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+      ></iframe>
+    </div>
+    {/* The instructions under the instrument. A slot rather than a prop because
+        it is a paragraph of the article's prose, and prose belongs in the body
+        where it can be written as markdown and read as text. */}
+    <slot />
+  </div>
+</div>

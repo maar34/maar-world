@@ -142,11 +142,37 @@ string belongs:
 | what the FAMILY says on any page | `src/config/site.ts`, keyed by language, both halves adjacent (`COLLECT_LANDING`, `LAB_INTRO`) |
 | a URL or an image path | neither — those have no language, so they are named once in `site.ts` |
 
-**34 Spanish records still carry markup**, listed in `STRUCTURED_ES` in
+**33 Spanish records still carry markup**, listed in `STRUCTURED_ES` in
 `scripts/verify-translations.mjs`. That list is **closed: it may shrink, never
 grow.** Converting a page deletes its line — and the check fails if a listed
 record no longer carries markup, so the deletion happens in the same diff.
 Adding a line is the bypass the list exists to make visible.
+
+### Which shape a page takes
+
+Two converted examples, and they are converted differently on purpose:
+
+| | |
+|---|---|
+| **a landing** (`collect/index`) | a page family. `families/Collect.astro` draws the whole page from record fields. The body is empty. |
+| **an article** (`lab/*/ip-orchestra`) | `.mdx`. Prose stays markdown; a block calls a component where it goes. A family cannot express an article, because its prose and its blocks interleave and fixed slots would move every carousel to the end. |
+
+**`.md` is still the default.** Convert a body to `.mdx` when you are lifting its
+structure out, not before — MDX needs JSX-valid markup and the migrated bodies
+are not. `<br>` becomes `<br />`, and a bare `{` or `<` in prose is an expression.
+
+MDX ships no JavaScript: the components are `.astro` and render at build time.
+
+Components to reach for before writing markup: `media/Carousel`,
+`media/EmbedFacade`, `media/PlayEmbed`, `media/EmbedGroup`, `ui/ContactForm`,
+`ui/LogoGrid`, `ui/SubscribeStub`, `patterns/Mark` (an explicitly chosen mark;
+`patterns/TypeMark` is the seed-derived one). An article's images go in
+`src/config/articles.ts`, named once for both halves — a photograph is the same
+photograph in Spanish.
+
+**If a page renders a carousel or a gated facade, `verify:build` asserts it also
+ships the script that drives it.** That check exists because moving markup into a
+component twice produced dead carousels that no other check could see.
 
 ### The eleven frozen URLs
 

@@ -336,7 +336,6 @@ export const structuralCount = (body) =>
  * line when its pair's structure moves into a page family; never add one.
  */
 export const STRUCTURED_ES = new Set([
-  'lab/es/ip-orchestra',
   'es/radio',
   'es/orbiters',
   'es/landings',
@@ -373,7 +372,7 @@ export const STRUCTURED_ES = new Set([
 ]);
 
 /** The size `STRUCTURED_ES` may not exceed. It may only shrink. */
-export const STRUCTURED_ES_CLOSED_AT = 34;
+export const STRUCTURED_ES_CLOSED_AT = 33;
 
 /**
  * Which Spanish records carry structure they are not permitted to carry.

@@ -1,0 +1,126 @@
+---
+outputPath: "lab/en/ip-orchestra"
+title: "Orbital Creation Workshop: Orbiters Orchestra (EN) - MAAR WORLD"
+area: "maar"
+kind: "lab"
+tags: ["orbiter", "EN"]
+source: "maar.world/collections/_lab/en/2024-08-30-IP_Orchestra.md"
+lang: "en"
+origin: "migrated"
+translationKey: "2024-08-30-ip-orchestra"
+indexGroup: "lab"
+indexOrder: "en/2024-08-30-IP_Orchestra.md"
+indexLabel: "Orbital Creation Workshop: Orbiters Orchestra (EN)"
+description: "🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬 Invitation From the Universidad de las Artes in Guayaquil , we are excited to present the Orbiters…"
+date: "2024-08-30"
+---
+
+{/*
+  THIS FILE IS `.mdx` AND ITS SPANISH HALF IS TOO — MW-19.
+
+  It used to be `.md` holding ~60 elements of raw HTML, every one of them also
+  written out in `pages/es/lab/ip-orchestra`, because translating this article
+  meant copying it whole and translating the words inside. The two had drifted:
+  the Spanish half's subscribe buttons pointed at a page that does not exist.
+
+  Now the blocks are components and the prose is markdown. Change a carousel and
+  both languages change. A translation is words.
+
+  THE PICTURES ARE NOT HERE. They are `IP_ORCHESTRA` in src/config/articles.ts,
+  named once and imported by both halves, because a photograph is the same
+  photograph in Spanish. What IS here is every word — including each `alt`,
+  which is a sentence a reader hears and therefore copy.
+*/}
+
+import Carousel from '../../../../components/media/Carousel.astro';
+import EmbedGroup from '../../../../components/media/EmbedGroup.astro';
+import Mark from '../../../../components/patterns/Mark.astro';
+import PlayEmbed from '../../../../components/media/PlayEmbed.astro';
+import ContactForm from '../../../../components/ui/ContactForm.astro';
+import LogoGrid from '../../../../components/ui/LogoGrid.astro';
+import SubscribeStub from '../../../../components/ui/SubscribeStub.astro';
+import { IP_ORCHESTRA as M } from '../../../../config/articles';
+
+export const cards = [
+  { image: M.cards[0], alt: 'Card layering', step: 'I', caption: 'Explore music by layering sounds with controls that vary depending on the cards you play, creating rich and original sonic experiences.' },
+  { image: M.cards[1], alt: 'Transit mapping', step: 'II', caption: 'Recreate music intuitively, making sound creation accessible and fun for everyone, from professional musicians to those with no prior experience.' },
+  { image: M.cards[2], alt: 'Workshop patch', step: 'III', caption: 'We are at the beginning of this journey. Sign up for the workshop to help create the first Orbiters Orchestra.' },
+];
+
+export const sessions = [
+  { image: M.sessions[0], alt: 'Session 12' },
+  { image: M.sessions[1], alt: 'Session 10' },
+  { image: M.sessions[2], alt: 'Session 8' },
+  { image: M.sessions[3], alt: 'Session 11' },
+  { image: M.sessions[4], alt: 'Session 2' },
+];
+
+# Orbital Creation Workshop: Orbiters <Mark tilt={2} tear={3}>Orchestra</Mark> (EN)
+
+🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬 Invitation From the Universidad de las Artes in Guayaquil , we are excited to present the Orbiters…
+
+## 🐚 Perhaps the relationship between human beings is neither vertical nor horizontal, but orbital. 🧬
+
+## Invitation
+From the [Universidad de las Artes in Guayaquil](https://www.uartes.edu.ec/sitio/), we are excited to present the [Orbiters Orchestra](/lab/en/ip-orchestra-design), a workshop offering unique sensory experiences for musical co-creation. This event is designed to integrate disciplines such as sound arts, music, music production, theater, dance, cinema, literature, intercultural pedagogy, visual arts, and programming into a single vibrant, creative, and transdisciplinary space.
+We ask ourselves: What ideas can unite the people present in the concert hall, in the city, in the country, on the continent, and on Earth? Our workshop explores these connections through the use of meta-instruments that combine features of various traditional and contemporary instruments into a single and simple interface. This allows participants to play different types of sounds from multiple networked devices, integrating bodies with technologies and new means of interaction.
+
+## Workshop Description
+In our creation lab, we will implement a research process designed to form an ensemble where no prior musical experience is required to participate. We invite you to explore with us the infinite possibilities of music and sound in a collaborative and experimental environment.
+[Orbiters Orchestra](/lab/en/ip-orchestra-design) proposes the co-creation of an integral art experience, where we aim to generate a meaningful experience by integrating artists and the audience, along with artistic and scientific media. We transform computers and mobiles into meta-musical-instruments that combine multiple functionalities, synchronizing creations with both human movement and the movements of planets in the Kepler-47 star system, to co-create otherworldy soundscapes with a touch of stardust.
+
+<SubscribeStub label="Subscribe" />
+
+<Carousel
+  id="carousel-lab-en-ip-orchestra-1"
+  label="3 photographs"
+  slides={cards}
+  stepStyle="inline"
+  orbMedia
+/>
+
+## Schedule
+September 11, 2024: Workshop Day 1. 10:00am - 1:00pm <br />
+September 12, 2024: Workshop Day 2. 10:00am - 1:00pm <br />
+September 13, 2024: Workshop Day 3. 10:00am - 11:00am + Setup <br />
+## Concert September 13 7:00pm
+
+All events will be held at the Universidad de las Artes, Guayaquil.
+
+<SubscribeStub label="Subscribe" />
+
+### Special Invitation
+We would like to invite students and professionals from various disciplines to join us on this sensory and creative journey. Together, we can explore multiple perspectives on music and create something truly innovative and unifying. We look forward to seeing you in our workshops and sharing this interplanetary experience together!
+
+<Carousel id="carousel-lab-en-ip-orchestra-2" label="5 photographs" slides={sessions} />
+
+<EmbedGroup>
+<PlayEmbed src={M.instruments.controlTheSound} title="Control the Sound:" frameTitle="Interactive Control the Sound">
+  <p>Please unmute your device and press the ON 🔛 & PLAY ▶️ buttons. Adjust the sound by moving the XYZ KNOBS up or down until you like what you hear. If you want to return to the original sound, press the hexagonal buttons ⬢ to reset the KNOBS to their balance.</p>
+</PlayEmbed>
+<PlayEmbed src={M.instruments.regenerativeModes} title="Explore Regenerative Modes:" frameTitle="Interactive Explore Regenerative Modes">
+  <p>Experiment with 7 unique modes, creating with real data from exoplanets and their transits and orbits across different time scales. Hold down the button for clues about these parameters.</p>
+</PlayEmbed>
+</EmbedGroup>
+
+<SubscribeStub label="Subscribe" />
+
+### Facilitator Profile
+
+Bruna Maar Guarneri Colasso (She/They), a sound artist and engineer based in Berlin, has worked on transdisciplinary creations at the intersection of art, science, and technology. With studies in Sound Design and Engineering in Montevideo and Santiago de Chile, Bruna Maar has collaborated on sound design and interaction in numerous large-scale installations across America and Europe. Among her notable achievements are the Hackathon award at the S+T+ARTS SONAR 2021 Music and AI Festival, sound design and experience for the Uruguayan Pavilion at the Venice Architecture Biennale in 2021 and 2018, and the Uruguayan and Chilean pavilions at Expo Milan 2015. She has also been a developer in artistic collectives such as Head Brothers, Exoplanetas, and Aventures Sonores. For more than a decade, she has been compiling a unique archive of soundscapes, poetry, testimonies, South American native songs, radio signals, and an eclectic selection of music to create experiences that connect people and cultures through sound.
+
+<ContactForm
+  action={M.formAction}
+  heading="Contact me"
+  lede="Thank you for your interest in our workshops. If you need anything, feel free to reach out."
+  level={3}
+  labels={{ name: 'Your name:', email: 'Your email:', message: 'Your message:', submit: 'Send' }}
+/>
+
+<LogoGrid
+  credit="MMAT"
+  logos={[
+    { src: M.logos[0].src, href: M.logos[0].href, alt: 'Logo UArtes' },
+    { src: M.logos[1].src, alt: 'Logo Interplanetary Orchestra' },
+  ]}
+/>
