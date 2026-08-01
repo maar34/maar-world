@@ -177,3 +177,18 @@ export const CALENDAR = {
 export const MUSIC = {
   rabbitHole: '?g=401&s=0&c=0',
 } as const;
+
+/**
+ * Interplanetary ancestors — `lab/{en,es}/ip-1`, `ip-2`, `ip-3`.
+ *
+ * Query strings, not URLs: `media/PlayFrame` writes the host, so
+ * `play.maar.world` exists once on the site. Thirteen instruments across three
+ * articles, in the order each page plays them — named here rather than in the
+ * bodies because an address has no language and was otherwise spelled twice,
+ * once in each half.
+ */
+export const IP_ANCESTORS = {
+  ip1: ['?g=8&s=0&c=3', '?g=8&s=0&c=4', '?g=8&s=0&c=5', '?g=8&s=0&c=6'],
+  ip2: ['?g=8&s=0&c=7', '?g=8&s=0&c=8', '?g=8&s=0&c=9', '?g=8&s=0&c=10', '?g=8&s=0&c=11'],
+  ip3: ['?g=8&s=0&c=12', '?g=8&s=0&c=13', '?g=8&s=0&c=14', '?g=8&s=0&c=15'],
+} as const;

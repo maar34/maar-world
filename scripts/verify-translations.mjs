@@ -348,10 +348,7 @@ export const structuralCount = (body) =>
 export const STRUCTURED_ES = new Set([
   'es/radio',
   'lab/es/ip-orchestra-design',
-  'lab/es/ip-2',
-  'lab/es/ip-3',
   'lab/es/orbits-and-bodies',
-  'lab/es/ip-1',
   'lab/es/dadada',
   'es/collect/docs/tutorials',
   'es/collect/docs/ent-cards',
@@ -500,7 +497,7 @@ export const DIVERGENT_PAIRS = new Set([
 export const DIVERGENT_PAIRS_CLOSED_AT = 8;
 
 /** The size `STRUCTURED_ES` may not exceed. It may only shrink. */
-export const STRUCTURED_ES_CLOSED_AT = 16;
+export const STRUCTURED_ES_CLOSED_AT = 13;
 
 /**
  * Which Spanish records carry structure they are not permitted to carry.
