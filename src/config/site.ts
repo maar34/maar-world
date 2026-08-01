@@ -163,7 +163,7 @@ export const SECTIONS: Record<
   { href: string; label: string; labelEs?: string; icon?: NavigationIconName; iconOnly?: boolean }[]
 > = {
   maar: [
-    { href: '/orbiters', label: 'Orbiters', labelEs: 'Orbiters', icon: 'satellite_alt' },
+    { href: '/orbiters', label: 'Orbiters', labelEs: 'Orbitadores', icon: 'satellite_alt' },
     { href: '/lab', label: 'Lab', labelEs: 'Lab', icon: 'science' },
     { href: '/landings', label: 'Landings', labelEs: 'Aterrizajes', icon: 'travel_explore' },
     { href: '/bookings', label: 'Bookings', labelEs: 'Contrataciones', icon: 'speaker_group' },
@@ -901,7 +901,7 @@ export type TreeIconName = (typeof TREE_LINKS)[number]['icon'];
  *
  * It is `labelEs` because that pattern already existed in TREE_LINKS and one
  * spelling used everywhere beats a fifth good idea. A missing `labelEs` falls
- * back to `label`, so a proper noun — "Lab", "Orbiters" — simply carries the
+ * back to `label`, so a name that survives translation — "Lab" — simply carries the
  * same word in both, stated rather than defaulted.
  */
 export const labelFor = (

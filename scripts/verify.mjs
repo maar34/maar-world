@@ -11,7 +11,7 @@
  *
  * OPERATING-RULES designates this as the source of truth, so it has to be the
  * strongest command in the repository, not the weakest. It used to omit
- * `verify:selftest`, `verify:schemas` and `ledger:check` — all three of which CI
+ * `verify:selftest` and `verify:schemas` — both of which CI
  * ran — so an agent could satisfy the documented source of truth and still be
  * red on push. Those three are composed in below, and a selftest case asserts
  * that nothing CI runs is missing from this list.
@@ -83,7 +83,6 @@ export const CHECKS = [
      at the top of verify-actions.mjs. */
   ['verify:actions', checkActions],
   ['verify:translations', checkTranslations],
-  ['ledger:check', commandCheck('ledger format and append-only history', ['ledger.mjs', 'check'])],
 ];
 
 export const CHECK_NAMES = CHECKS.map(([name]) => name);

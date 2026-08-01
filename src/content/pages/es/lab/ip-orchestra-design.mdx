@@ -1,0 +1,79 @@
+---
+outputPath: "lab/es/ip-orchestra-design"
+title: "Taller de creación orbital - MAAR WORLD"
+area: "maar"
+kind: "lab"
+tags: ["orbiter", "ES"]
+source: "maar.world/collections/_lab/es/2024-09-01-Taller de creación orbital.md"
+lang: "es"
+origin: "migrated"
+translationKey: "ip-orchestra-design"
+indexGroup: "lab"
+indexOrder: "es/2024-09-01-Taller de creación orbital.md"
+indexLabel: "Taller de creación orbital"
+description: "🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬 ¿Qué? \"Orbiters Orchestra\" es un taller de co-creación musical, un espacio creativo y transdisciplinario. Dura…"
+date: "2024-09-01"
+---
+
+import EmbedFacade from '../../../../components/media/EmbedFacade.astro';
+import EmbedGroup from '../../../../components/media/EmbedGroup.astro';
+import Mark from '../../../../components/patterns/Mark.astro';
+import Picture from '../../../../components/media/Picture.astro';
+import PlayEmbed from '../../../../components/media/PlayEmbed.astro';
+import ContactForm from '../../../../components/ui/ContactForm.astro';
+import { IP_ORCHESTRA_DESIGN as M } from '../../../../config/articles';
+import { facadeStrings } from '../../../../config/embeds';
+
+export const facade = facadeStrings('youtube', 'es');
+
+{/*
+  La traducción de src/content/pages/en/lab/ip-orchestra-design.mdx.
+
+  El afiche es la única imagen del sitio que sí cambia con el idioma: es una
+  lámina diseñada con el texto adentro, y existe en las dos lenguas. Por eso
+  este par está en TRANSLATED_ARTWORK y por eso `poster` tiene dos campos.
+
+  Los dos instrumentos venían envueltos en una reja, una celda, dos bandas y
+  cuatro cajas más, con un espaciador vacío antes y después del formulario. Son
+  `media/EmbedGroup`, `media/PlayEmbed` y `ui/ContactForm`. MW-19.
+*/}
+
+# Taller de <Mark tilt={4} tear={3}>creación</Mark> orbital
+
+🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬 ¿Qué? "Orbiters Orchestra" es un taller de co-creación musical, un espacio creativo y transdisciplinario. Dura…
+
+## 🐚 Tal vez la relación entre seres humanos no sea vertical u horizontal, sea orbital. 🧬
+
+<Picture src={M.poster.es} alt="Afiche de la Orbiters Orchestra" />
+
+## ¿Qué?
+"Orbiters Orchestra" es un taller de co-creación musical, un espacio creativo y transdisciplinario. Durante el taller, los participantes trabajan juntos para co-crear una experiencia significativa utilizando meta-instrumentos musicales y el diseño de su imaginación. Una experiencia significativa es aquella que va más allá de lo inmediato o lo técnico; es una vivencia que deja una huella profunda, generando conexiones emocionales o intelectuales entre los participantes. Los orbitadores combinan características de instrumentos tradicionales y contemporáneos en una interfaz digital accesible desde múltiples dispositivos. La experiencia culmina con una exposición que mostrará el resultado de este proceso colaborativo.
+
+##  ¿Por qué?
+El taller surge de la necesidad de explorar distintas formas de interacción y co-creación. Al invitar a personas de diferentes ámbitos a participar, se busca crear un espacio donde las ideas y creaciones individuales se entrelazan para generar composición colectiva. La idea central es que la relación entre los seres humanos no es solo vertical u horizontal, sino orbital, y que este enfoque puede generar nuevas formas de expresión y comprensión colectiva a través de la música y el sonido.
+
+##  ¿Para qué?
+Fomentar la creación de un ensamble sonoro inclusivo y experimental, donde no se requiere experiencia musical previa, permitiendo a los participantes explorar las infinitas posibilidades de la música y el sonido en un ambiente colaborativo. Además, el taller busca integrar a artistas, estudiantes, y el público presente en una experiencia de arte integral, utilizando la tecnología para sincronizar la creación musical con el movimiento humano y los patrones cósmicos, como los de los planetas del sistema estelar Kepler-47.
+
+<EmbedFacade provider="youtube" href={M.summaryVideo} label={facade.label} note={facade.note} />
+Resumen de presentación del primer taller de creación orbital, Universidad de las Artes Guayaquil, septiembre 2024. 
+
+## ¿ Que son los interplanetary Players?
+### Imagina convertir tu navegador en un tocadiscos del espacio exterior.
+
+<EmbedGroup>
+<PlayEmbed src={M.instruments.controlTheSound} title="Controla el Sonido:" frameTitle="Interactivo Controla el Sonido">
+  <p>Por favor, desactiva el silencio de tu dispositivo y presiona el botón de ON 🔛 & PLAY ▶️. Ajusta el sonido moviendo los KNOBS XYZ hacia arriba o hacia abajo hasta que te guste lo que escuchas. Si deseas volver al sonido original, presiona los botones hexagonales ⬢ para restablecer los KNOBS en su equilibrio.</p>
+</PlayEmbed>
+<PlayEmbed src={M.instruments.regenerativeModes} title="Explora Modos Regenerativos:" frameTitle="Interactivo Explora Modos Regenerativos">
+  <p>Experimenta con 7 modos únicos, creando con datos reales de exoplanetas y sus tránsitos y órbitas a lo largo de diferentes escalas de tiempo. Mantén el botón presionado para obtener pistas sobre estos parámetros.</p>
+</PlayEmbed>
+</EmbedGroup>
+
+<ContactForm
+  action={M.formAction}
+  heading="Contáctame"
+  lede="Gracias por tu interés en nuestros talleres. Si necesitas información adicional, no dudes en ponerte en contacto."
+  level={2}
+  labels={{ name: 'Tu nombre:', email: 'Tu correo electrónico:', message: 'Tu mensaje:', submit: 'Enviar' }}
+/>

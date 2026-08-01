@@ -35,10 +35,7 @@ jobs:
       - name: content schemas
         run: npm run verify:schemas
 
-      # Builds, then checks the frozen contract, routes, cards, content, links
-      # and the ledger against it. Exit code is the source of truth.
+      # Builds, then checks the frozen contract, routes, cards, content and
+      # links against it. Exit code is the source of truth.
       - name: verify
         run: npm run verify
-
-      - name: ledger format and append-only history
-        run: npm run ledger:check

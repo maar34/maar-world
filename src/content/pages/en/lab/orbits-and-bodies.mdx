@@ -1,0 +1,52 @@
+---
+outputPath: "lab/en/orbits-and-bodies"
+title: "Orbits and Bodies - MAAR WORLD"
+area: "maar"
+kind: "lab"
+tags: ["EW", "orbiter", "EN", "performance", "audiovisual", "exoplanets"]
+source: "maar.world/collections/_lab/en/2025-08-24-01-Orbit-and-Bodies.md"
+lang: "en"
+origin: "migrated"
+translationKey: "2025-08-24-01-orbit-and-bodies"
+indexGroup: "lab"
+indexOrder: "en/2025-08-24-01-Orbit-and-Bodies.md"
+indexLabel: "Orbits and Bodies"
+description: "A performance connecting human gestures, orbital data, and real-time audiovisual systems. 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 – Maar World, Berlin Gabriel Vigliensoni – vigliensoni.com – Concordia Universi…"
+date: "2025-08-24"
+---
+
+import PdfEmbed from '../../../../components/media/PdfEmbed.astro';
+import EmbedFacade from '../../../../components/media/EmbedFacade.astro';
+import Mark from '../../../../components/patterns/Mark.astro';
+import { ORBITS_AND_BODIES as M } from '../../../../config/articles';
+import { facadeStrings } from '../../../../config/embeds';
+
+export const facade = facadeStrings('youtube', 'en');
+
+# <Mark tilt={3} tear={2}>Orbits</Mark> and Bodies
+
+A performance connecting human gestures, orbital data, and real-time audiovisual systems. 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 – Maar World, Berlin Gabriel Vigliensoni – vigliensoni.com – Concordia Universi…
+
+A performance connecting human gestures, orbital data, and real-time audiovisual systems.
+
+**𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾** – Maar World, Berlin  
+**Gabriel Vigliensoni** – [vigliensoni.com](https://vigliensoni.com/) – Concordia University, Montréal, QC
+
+## Introduction
+
+Orbits and Bodies explores the entanglement of embodied gesture, astronomical data, and networked computation. The performance uses real-time audiovisual systems to translate performers’ movements, audience interaction, and orbital parameters of exoplanets into control signals. Through this entangled system, human presence, planetary motion, and web-native technologies form a dynamic audiovisual space.
+
+---
+
+<PdfEmbed
+  href={M.paper}
+  label="Orbits and Bodies PDF"
+  height="1000px"
+  fallbackText="Your browser does not display embedded PDFs."
+  fallbackLink="Open / Download PDF"
+  openLabel="Open / Download PDF"
+/>
+
+<EmbedFacade provider="youtube" href={M.videos.performance} label={facade.label} note={facade.note} />
+
+<EmbedFacade provider="youtube" href={M.videos.talk} label={facade.label} note={facade.note} />

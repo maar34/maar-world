@@ -39,6 +39,15 @@
 ---
 
 <script>
+  import { gateStrings } from '../../config/embeds';
+
+  /**
+   * The gate's own words, in the page's language. The shell sets `<html lang>`
+   * per page; this reads it rather than being told, because the script is one
+   * inlined copy shared by every page that has an embed.
+   */
+  const T = gateStrings(document.documentElement.lang);
+
   /**
    * Where each provider's player lives, how to derive it from the click-out
    * address the migration already wrote, and where our own poster for it sits.
@@ -64,8 +73,12 @@
      * calendar promises a video that never arrives.
      */
     panel?: boolean;
-    /** What the button says. Defaults to "plays from <provider>". */
-    action?: string;
+    /**
+     * What the button says, when it is not "plays from <provider>". Per
+     * language, for the reason every string on a facade is: the calendar's line
+     * shipped in English on the Spanish booking page.
+     */
+    action?: Record<string, string>;
   };
 
   const YT_ID = (href: string) =>
@@ -129,7 +142,7 @@
       embed: (href) => (/calendar\.google\.com/.test(href) ? href : null),
       poster: () => null,
       panel: true,
-      action: 'open the booking calendar here',
+      action: { en: 'open the booking calendar here', es: 'abrir el calendario de reservas acá' },
     },
   };
 
@@ -192,7 +205,7 @@
     /* The visible line is deliberately three words. The full sentence — what
        loads, from where — is the button's accessible name instead, so a screen
        reader gets the whole offer and the page stays quiet. */
-    button.setAttribute('aria-label', `${label} — loads the player from ${provider.host}`);
+    button.setAttribute('aria-label', `${label} — ${T.loadsFrom(provider.host)}`);
 
     const posterSrc = provider.poster(href);
     if (posterSrc) {
@@ -212,7 +225,10 @@
 
     const hint = document.createElement('span');
     hint.className = 'embed-facade__hint';
-    hint.textContent = provider.action ?? `plays from ${provider.name}`;
+    hint.textContent =
+      provider.action?.[document.documentElement.lang] ??
+      provider.action?.en ??
+      T.playsFrom(provider.name);
 
     if (provider.panel) {
       button.append(hint);

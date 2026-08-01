@@ -8,10 +8,9 @@ window boundary, repository state does.
 
 1. `/AGENTS.md` — repo-wide invariants (read the invariants in full, not in part)
 2. This file — workflow and skill index
-3. `MIGRATION-LEDGER.md` — **query it, never read it front to back** (see below)
-4. `HANDOFF.md` — what was in flight when the last session stopped
-5. The active Linear issue, in full — descriptions carry the traps and the explicit "do not" lists
-6. The narrowest relevant skill from the index below
+3. `HANDOFF.md` — what was in flight when the last session stopped
+4. The active Linear issue, in full — descriptions carry the traps and the explicit "do not" lists
+5. The narrowest relevant skill from the index below
 
 For anything visual, re-read the design source before implementing. It is actively edited and
 **will** have changed; never trust values extracted in an earlier session, and never cache them
@@ -25,25 +24,22 @@ into this repo.
 3. Copy `templates/task.md` and fill it in.
 4. Do one unit of work.
 5. Run the **narrowest relevant check** — `npm run verify:cards`, not the whole suite.
-6. Append exactly one line to the ledger: `npm run ledger -- append <MW-n> <DONE|BLOCKED|NOTE> <unit> <detail>`.
-   **Capped at 500 characters, enforced.** Say what changed, the number that moved, and which
-   file to open. Reasoning goes in a comment beside the code, or a decision record if it is a decision.
-7. Commit with the issue key in the message.
-8. Update the affected skill or reference in the same commit if the change made it stale.
+6. Commit with the issue key in the message. Say what changed, the number that moved, and
+   which file to open. Reasoning goes in a comment beside the code, or a decision record if
+   it is a decision.
+7. Update the affected skill or reference in the same commit if the change made it stale.
 
-## The ledger
+## The ledger is retired
 
-`MIGRATION-LEDGER.md` is append-only, 268+ entries, and every session pays for its length
-forever. One session's entries averaged 3,222 characters and turned "read the recent ledger"
-into an 11,500-token instruction on its own. Hence the hard 500-character cap, and hence:
+`MIGRATION-LEDGER.md` and `scripts/ledger.mjs` are gone, and nothing replaces them. It was
+migration scaffolding: an append-only record for unattended runs during the rebuild. The
+rebuild shipped, and the file went on costing every session its length forever while
+enforcing two rules that cannot both hold once two branches merge — strictly ascending
+timestamps AND a prefix-append against every parent. Integrating one finished branch spent
+more time on that conflict than on the work.
 
-```sh
-npm run ledger -- find <term>     # query it
-npm run ledger:check              # format + append-only history, part of verify
-```
-
-Because it is append-only it still lists blockers that later work closed. `ledger status`
-overstates open work — reconcile against reality rather than copying it forward.
+Git history and the Linear issue are the record now. Both are already written and neither
+has to be maintained by hand. The file is parked at `../_retired/MIGRATION-LEDGER.md`.
 
 ## Skill index
 
@@ -62,7 +58,7 @@ Decision records: `decisions/`.
 ## Safe commands (no confirmation)
 
 Read or search any file · `npm run dev` · `npm run build` · `npm run verify` and any
-`verify:*` · `npm run ledger -- find` · `npm run ledger:check` · `npm run i18n:map` ·
+`verify:*` · `npm run i18n:map` ·
 `git status` / `diff` / `log`.
 
 ## Requires human confirmation
@@ -76,11 +72,11 @@ Read or search any file · `npm run dev` · `npm run build` · `npm run verify` 
 
 ## Ambiguity
 
-On ambiguity that changes what a visitor sees: append `BLOCKED` with the reason and move to
-the next independent unit. Do not guess. Do not stall. Where the design spec is marked in
+On ambiguity that changes what a visitor sees: say so in the Linear issue and move to the
+next independent unit. Do not guess. Do not stall. Where the design spec is marked in
 progress, implement only what is settled and log the rest — do not invent the missing half.
 
-On three consecutive failures of the same kind: stop, append `BLOCKED`, summarise.
+On three consecutive failures of the same kind: stop and summarise.
 
 ## Hard stop conditions
 
@@ -90,7 +86,7 @@ pass; when a change would touch DNS, the live sites or a legacy repository; or w
 context is low enough that stopping cleanly beats starting a new unit.
 
 **Stopping cleanly:** finish or explicitly abandon the current unit (never half-applied),
-append the ledger line, regenerate `HANDOFF.md`, commit. The test: the same starting prompt in
+regenerate `HANDOFF.md`, commit. The test: the same starting prompt in
 a fresh context, with nothing but this repo and the Linear issues, resumes without redoing
 finished work or silently skipping unfinished work.
 

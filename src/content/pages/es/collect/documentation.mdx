@@ -11,22 +11,21 @@ indexOf: "collect-docs"
 indexCovers: true
 ---
 
-<!--
-  La traducción de src/content/pages/en/collect/documentation.md.
+import Mark from '../../../../components/patterns/Mark.astro';
+
+{/*
+  La traducción de src/content/pages/en/collect/documentation.mdx.
 
   `indexOf: "collect-docs"` arma la grilla de documentos, y cada índice lista
   los de SU propio idioma: acá salen los documentos en español y en
   /collect/documentation los que están en inglés. La grilla crece sola a medida
   que se traduce cada documento — no hay ninguna lista que actualizar.
 
-  El id "page-layout" del h2 se conserva: es único dentro de la página, y en la
-  versión en inglés existe el mismo.
--->
+  El titular de segundo nivel es lo único que había dentro del envoltorio que
+  esta página traía de la migración: tres cajas anidadas alrededor de nada, con
+  la grilla dibujada por el layout, no por el cuerpo. MW-19.
+*/}
 
-# <span class="mark mark--cut mark--tilt-3 mark--tear-1">Docs</span>
+# <Mark tilt={3} tear={1}>Docs</Mark>
 
-<div class="layout--articles">
-<section class="my-5">
-<header><h2 id="page-layout">Documentación</h2></header>
-
-</section>
+## Documentación

@@ -14,8 +14,10 @@ indexScatter: true
 description: "Coleccioná tus cartas favoritas."
 ---
 
-<!--
-  La traducción de src/content/pages/en/collect/cards.md.
+import Mark from '../../../../components/patterns/Mark.astro';
+
+{/*
+  La traducción de src/content/pages/en/collect/cards.mdx.
 
   `indexOf: "collect-cards"` arma el mazo, y cada índice lista las cartas de SU
   propio idioma. La grilla acá va a ir creciendo a medida que se traduzca cada
@@ -24,15 +26,11 @@ description: "Coleccioná tus cartas favoritas."
 
   `indexScatter` se conserva — es el mazo desparramado, la excepción de diseño
   que sólo tiene esta grilla.
--->
 
-# <span class="mark mark--cut mark--tilt-2 mark--tear-3">Cartas</span>
+  El envoltorio que traía la migración se borró: tres cajas anidadas alrededor
+  de un titular vacío, con la grilla dibujada por el layout. MW-19.
+*/}
+
+# <Mark tilt={2} tear={3}>Cartas</Mark>
 
 Coleccioná tus cartas favoritas.
-
-<div class="layout--articles">
-<section class="my-5">
-<header><h2 id="page-layout"></h2></header>
-
-</section>
-</div>

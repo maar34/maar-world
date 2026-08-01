@@ -12,16 +12,21 @@ indexOrder: "07-mw.md"
 indexLabel: "Información"
 ---
 
-<!--
-  La traducción de src/content/pages/en/collect/docs/mw.md.
+import Mark from '../../../../../components/patterns/Mark.astro';
 
-  La tabla de parámetros del sistema solar no se traduce en sus valores — son
-  medidas astronómicas — pero sí en las etiquetas de las filas. Se conserva el
-  role="presentation" de la primera tabla, que no es una tabla de datos sino
-  una caja de texto, y el <thead> con <th> de la segunda, que sí lo es.
--->
+{/*
+  La traducción de src/content/pages/en/collect/docs/mw.mdx.
 
-# <span class="mark mark--cut mark--tilt-2 mark--tear-2">Información</span>
+  Los valores de la tabla de parámetros no se traducen — son medidas
+  astronómicas — pero sí las etiquetas de las filas.
+
+  Las dos tablas crudas que traía la migración son ahora tablas de markdown. La
+  primera no era una tabla: era una sola celda marcada como presentación, o sea
+  una caja de texto dibujada con una tabla. Ahora es un párrafo, que es lo que
+  siempre fue. MW-19.
+*/}
+
+# <Mark tilt={2} tear={2}>Información</Mark>
 
 Maar World es un exoplaneta en la constelación del Cisne. Tiene cuatro lunas y dos soles. Quienes lo habitan son sobre todo criaturas eternas, inocentes, felices, amables, generosas, amorosas, orgánicas. También son imperfectas, y les queda mucho trabajo por delante para mejorar.
 
@@ -47,12 +52,20 @@ Escucho que esta Tierra llama a nuestro amor; creemos juntas áreas protegidas p
 
 ## El telescopio Kepler descubre un planeta circumbinario de tipo P con características únicas
 
-<table role="presentation">
-<tbody><tr><td>Planeta circumbinario, tipo P, semieje mayor: 0,699±0,003 UA.</td></tr></tbody>
-</table>
+Planeta circumbinario, tipo P, semieje mayor: 0,699±0,003 UA.
 
-<table>
-<thead><tr><th>Parámetros del sistema solar</th><th></th></tr></thead>
-<tbody><tr><td>Ascensión recta</td><td>19 41 11</td></tr><tr><td>Declinación</td><td>+46 55 13</td></tr><tr><td>Distancia [parsecs]</td><td>1189</td></tr><tr><td>Distancia [años luz]</td><td>3878</td></tr><tr><td>Cantidad de estrellas del sistema</td><td>2</td></tr><tr><td>Cantidad de planetas del sistema</td><td>3</td></tr><tr><td>Cantidad de lunas del sistema</td><td>4</td></tr></tbody>
-<tbody><tr><td>Masa [Mjup]</td><td>0.06+0.08−0.04</td></tr><tr><td>Masa [Mearth]</td><td>19+24−12</td></tr><tr><td>Radio [Rjup]</td><td>0.63+0.06−0.04</td></tr><tr><td>Radio [Rearth]</td><td>7.0+0.7−0.5</td></tr><tr><td>Período orbital [días]</td><td>187.37+0.07−0.05</td></tr><tr><td>Semieje mayor [UA]</td><td>0.699±0.003</td></tr></tbody>
-</table>
+| Parámetros del sistema solar | |
+| --- | --- |
+| Ascensión recta | 19 41 11 |
+| Declinación | +46 55 13 |
+| Distancia [parsecs] | 1189 |
+| Distancia [años luz] | 3878 |
+| Cantidad de estrellas del sistema | 2 |
+| Cantidad de planetas del sistema | 3 |
+| Cantidad de lunas del sistema | 4 |
+| Masa [Mjup] | 0.06+0.08−0.04 |
+| Masa [Mearth] | 19+24−12 |
+| Radio [Rjup] | 0.63+0.06−0.04 |
+| Radio [Rearth] | 7.0+0.7−0.5 |
+| Período orbital [días] | 187.37+0.07−0.05 |
+| Semieje mayor [UA] | 0.699±0.003 |
