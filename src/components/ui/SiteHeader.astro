@@ -17,7 +17,7 @@
  * why the wide navigation is a separate element rather than the same <details>
  * forced open, and why the compact panel is taken out of flow.
  */
-import { AREAS, HEADER_AREAS, SECTIONS, type AreaName } from '../../config/site';
+import { AREAS, HEADER_AREAS, SECTIONS, labelFor, type AreaName } from '../../config/site';
 import BrandMark from './BrandMark.astro';
 import NavigationIcon from './NavigationIcon.astro';
 import { hash } from '../../lib/mark.mjs';
@@ -93,7 +93,7 @@ const otherLanguages = languageChoices.filter((choice) => !choice.current);
 const areaEntries = HEADER_AREAS.map((name) => ({
   href: areaHome(name),
   seed: AREAS[name].pathPrefix || '/',
-  label: AREAS[name].label,
+  label: labelFor(AREAS[name], chromeLang),
   icon: AREAS[name].icon,
   pigment: AREAS[name].pigment,
   current: areaCurrent(name),
@@ -102,7 +102,7 @@ const areaEntries = HEADER_AREAS.map((name) => ({
 const sectionEntries = sections.map((s) => ({
   href: localise(s.href),
   seed: s.href,
-  label: s.label,
+  label: labelFor(s, chromeLang),
   icon: s.icon,
   pigment: AREAS[area].pigment,
   current: here === localise(s.href) ? ('page' as const) : undefined,
@@ -116,8 +116,14 @@ const sectionEntries = sections.map((s) => ({
  * either wrong or a word like "Site" that tells a screen-reader user nothing.
  */
 const compactGroups = [
-  { label: 'Areas', entries: areaEntries },
-  { label: `${AREAS[area].label} pages`, entries: sectionEntries },
+  { label: chromeLang === 'es' ? 'Áreas' : 'Areas', entries: areaEntries },
+  {
+    label:
+      chromeLang === 'es'
+        ? `páginas de ${labelFor(AREAS[area], 'es')}`
+        : `${AREAS[area].label} pages`,
+    entries: sectionEntries,
+  },
 ].filter((group) => group.entries.length > 0);
 
 const hasLanguages = Boolean(currentLanguage && otherLanguages.length > 0);
@@ -162,7 +168,7 @@ const hasLanguages = Boolean(currentLanguage && otherLanguages.length > 0);
 
       {
         sectionEntries.length > 0 && (
-          <nav class="nav-sections" aria-label={`${AREAS[area].label} pages`}>
+          <nav class="nav-sections" aria-label={chromeLang === 'es' ? `páginas de ${labelFor(AREAS[area], 'es')}` : `${AREAS[area].label} pages`}>
             <ul role="list" class="nav-list">
               {sectionEntries.map((entry) => (
                 <li>
@@ -188,7 +194,7 @@ const hasLanguages = Boolean(currentLanguage && otherLanguages.length > 0);
             <details class="nav-languages__disclosure">
               <summary
                 class="nav-language-trigger"
-                aria-label={`Change language — ${currentLanguage!.label}`}
+                aria-label={chromeLang === 'es' ? `Cambiar de idioma — ${currentLanguage!.label}` : `Change language — ${currentLanguage!.label}`}
               >
                 <NavigationIcon name="language" />
                 <span lang={currentLanguage!.lang}>{currentLanguage!.lang}</span>

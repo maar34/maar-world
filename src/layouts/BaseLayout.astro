@@ -174,13 +174,25 @@ const canonicalUrl = canonical ?? (redirectTo
   : new URL(outputPath ? urlOf(outputPath) : Astro.url.pathname, SITE.origin).href);
 
 /**
- * The shell is written in English on every page, including the Spanish ones.
- * Declaring the document `es` and leaving the chrome undeclared would hand a
- * screen reader "Skip to content" and "Instagram" to pronounce as Spanish, which
- * is the same defect one level down. So the chrome states its own language
- * whenever it differs from the document's, and says nothing when it does not.
+ * THE SHELL SPEAKS THE PAGE'S LANGUAGE. It did not until 2026-08-01.
+ *
+ * The rule here used to be the opposite — "the shell is written in English on
+ * every page, including the Spanish ones" — and it declared `lang="en"` on the
+ * header and footer so that a screen reader would not pronounce English words
+ * as Spanish. That was an honest label on a real defect, and labelling it is
+ * not fixing it. The owner, 2026-08-01: *"all the shell is not translated, why
+ * didn't we use i18n for this?"*
+ *
+ * The navigation, the area row and the home page's two buttons now carry
+ * `labelEs` and are chosen by `labelFor`, so the chrome IS Spanish on a Spanish
+ * page and the honest declaration is the page's own language — which means no
+ * declaration at all, since it matches the document.
+ *
+ * It stays a variable rather than being deleted: a page whose chrome genuinely
+ * could not be translated would need it back, and the prop it feeds is the
+ * right place for that to be said out loud.
  */
-const chromeLang = lang === 'en' ? undefined : 'en';
+const chromeLang = lang;
 
 /**
  * ONE SCREEN SURFACE. Dark is not a theme, a default or a preference — it is

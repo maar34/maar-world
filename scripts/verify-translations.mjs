@@ -368,6 +368,40 @@ export const STRUCTURED_ES = new Set([
 ]);
 
 /**
+ * Chrome words that are the same in English and Spanish, deliberately.
+ *
+ * The header on a Spanish page must be Spanish. It was not: `/es` shipped a
+ * navigation reading "orbiters · lab · landings · bookings · about" and two
+ * buttons saying "collect cards" and "Enter the lab", under Spanish body copy.
+ * The owner asked why, 2026-08-01: *"all the shell is not translated, why
+ * didn't we use i18n for this?"* — and the answer was that this site had
+ * per-language strings in four different shapes already and the navigation had
+ * none of them. It has `labelEs` now, read through `labelFor`.
+ *
+ * These are the words that survive translation because they are NAMES rather
+ * than words: the brand, the two product areas, and the language chips a reader
+ * uses to switch. Translating "Orbiters" would rename the instrument.
+ *
+ * Anything not on this list appearing identically in both headers is a label
+ * somebody forgot to translate, which is what the assertion is for.
+ */
+export const SHARED_CHROME_WORDS = new Set([
+  /* The wordmark, as the brand link announces it. A brand is not translated. */
+  'Maar World',
+  'maar world',
+  /* The two product areas. Translating "Orbiters" would rename the instrument,
+     and "Collect" is the name of a section of this site, not the verb. */
+  'collect',
+  'Collect',
+  'Orbiters',
+  'Lab',
+  /* The language chips themselves — a reader looking for Spanish looks for
+     "es", in either language. */
+  'es',
+  'en',
+]);
+
+/**
  * The only pairs whose PICTURES may legitimately differ, by English outputPath.
  *
  * A photograph is the same photograph in Spanish, so two halves showing
@@ -1031,6 +1065,52 @@ export async function checkTranslations(report) {
       'a page and its translation show the same pictures',
       `${samePictures} of ${pairs.length} pairs identical; ${TRANSLATED_ARTWORK.size} pair(s) ` +
         'carry artwork with words on it and are listed',
+    );
+  }
+
+  // ── THE SHELL SPEAKS THE READER'S LANGUAGE ────────────────────────────────
+
+  const chromeLabelsOf = (outputPath) => {
+    const file = resolveRoute(urlOf(outputPath), set);
+    if (!file) return null;
+    const html = readDistFile(file);
+    const header = /<header[\s\S]*?<\/header>/.exec(html);
+    if (!header) return [];
+    /* The words on the navigation links, in order. Not the hrefs — those are
+       already asserted above, and a Spanish page can reach the right URL while
+       naming it in English, which is exactly what it did. */
+    return [...header[0].matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/g)]
+      .map((m) => m[1].replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim())
+      .filter(Boolean);
+  };
+
+  const englishChrome = [];
+  let localisedChrome = 0;
+  for (const { original, translation } of pairs) {
+    if (translation.lang !== 'es') continue;
+    const en = chromeLabelsOf(original.outputPath);
+    const es = chromeLabelsOf(translation.outputPath);
+    if (en === null || es === null || en.length === 0) continue;
+    const shared = en.filter((label, i) => es[i] === label && !SHARED_CHROME_WORDS.has(label));
+    if (shared.length) {
+      englishChrome.push(`${translation.outputPath}: ${[...new Set(shared)].slice(0, 4).join(', ')}`);
+    } else {
+      localisedChrome += 1;
+    }
+  }
+
+  if (englishChrome.length) {
+    report.fail(
+      'a Spanish page names its navigation in Spanish',
+      `${englishChrome.length} page(s) show English chrome: ${englishChrome.slice(0, 4).join('; ')} — ` +
+        'give the entry a `labelEs` in SECTIONS or HOME_ACTIONS and read it through `labelFor`. ' +
+        'If the word is genuinely the same in both languages, add it to SHARED_CHROME_WORDS and say why',
+    );
+  } else {
+    report.pass(
+      'a Spanish page names its navigation in Spanish',
+      `${localisedChrome} Spanish page(s) — every navigation label translated, ` +
+        `${SHARED_CHROME_WORDS.size} words shared by both languages on purpose`,
     );
   }
 

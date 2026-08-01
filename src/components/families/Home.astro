@@ -24,7 +24,7 @@ import Card from '../patterns/Card.astro';
 import CollageField from '../patterns/CollageField.astro';
 import PaperPhrase from '../patterns/PaperPhrase.astro';
 import Action from '../ui/Action.astro';
-import { articleCoverFor, collageFor, HOME_ACTIONS } from '../../config/site';
+import { articleCoverFor, collageFor, HOME_ACTIONS, labelFor } from '../../config/site';
 
 interface Feature {
   title: string;
@@ -54,9 +54,18 @@ interface Props {
   tongues?: string[];
   /** Seed for the feature title's type mark — the page's own outputPath. */
   seed: string;
+  /**
+   * The page's language, for the two action labels.
+   *
+   * The buttons are CHROME — the same pair on whichever home page draws them —
+   * so their words come from `HOME_ACTIONS` keyed by language rather than from
+   * the record. Before this they were English on `/es`: a Spanish home page
+   * whose only two buttons said "collect cards" and "Enter the lab".
+   */
+  lang?: string;
 }
 
-const { headingHtml, title, lede, feature, entries = [], tonguesLabel, tongues = [], seed } =
+const { headingHtml, title, lede, feature, entries = [], tonguesLabel, tongues = [], seed, lang } =
   Astro.props;
 
 const labelId = 'home-entries';
@@ -93,7 +102,7 @@ const labelId = 'home-entries';
         />
         <nav class="home__actions" aria-label="Featured collection actions">
           {HOME_ACTIONS.map((action) => (
-            <Action href={action.href} label={action.label} variant={action.variant} />
+            <Action href={action.href} label={labelFor(action, lang)} variant={action.variant} />
           ))}
         </nav>
       </section>

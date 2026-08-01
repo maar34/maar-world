@@ -130,13 +130,16 @@ export const HEADER_AREAS: readonly AreaName[] = ['collect'];
  * exactly the data below — so deriving it would spread one reviewable list
  * across 95 files and gain nothing. See .agents/decisions/0001-one-pages-collection.md.
  */
-export const SECTIONS: Record<AreaName, { href: string; label: string; icon?: NavigationIconName }[]> = {
+export const SECTIONS: Record<
+  AreaName,
+  { href: string; label: string; labelEs?: string; icon?: NavigationIconName }[]
+> = {
   maar: [
-    { href: '/orbiters', label: 'Orbiters', icon: 'satellite_alt' },
-    { href: '/lab', label: 'Lab', icon: 'science' },
-    { href: '/landings', label: 'Landings', icon: 'travel_explore' },
-    { href: '/bookings', label: 'Bookings', icon: 'speaker_group' },
-    { href: '/about', label: 'About', icon: 'info' },
+    { href: '/orbiters', label: 'Orbiters', labelEs: 'Orbiters', icon: 'satellite_alt' },
+    { href: '/lab', label: 'Lab', labelEs: 'Lab', icon: 'science' },
+    { href: '/landings', label: 'Landings', labelEs: 'Aterrizajes', icon: 'travel_explore' },
+    { href: '/bookings', label: 'Bookings', labelEs: 'Contrataciones', icon: 'speaker_group' },
+    { href: '/about', label: 'About', labelEs: 'Nosotrxs', icon: 'info' },
   ],
   /**
    * Cards is first because it is what Collect is for.
@@ -149,8 +152,8 @@ export const SECTIONS: Record<AreaName, { href: string; label: string; icon?: Na
    * cards it used to sell are now a header entry.
    */
   collect: [
-    { href: '/collect/cards', label: 'Cards', icon: 'hearing' },
-    { href: '/collect/documentation', label: 'Docs', icon: 'description' },
+    { href: '/collect/cards', label: 'Cards', labelEs: 'Cartas', icon: 'hearing' },
+    { href: '/collect/documentation', label: 'Docs', labelEs: 'Documentación', icon: 'description' },
   ],
   tree: [],
 };
@@ -161,8 +164,8 @@ export const SECTIONS: Record<AreaName, { href: string; label: string; icon?: Na
  * reconfigured without a page-family CSS exception.
  */
 export const HOME_ACTIONS = [
-  { href: '/collect/cards', label: 'collect cards', variant: 'primary' },
-  { href: '/lab', label: 'Enter the lab', variant: 'secondary' },
+  { href: '/collect/cards', label: 'collect cards', labelEs: 'coleccionar cartas', variant: 'primary' },
+  { href: '/lab', label: 'Enter the lab', labelEs: 'entrá al lab', variant: 'secondary' },
 ] as const;
 
 /**
@@ -768,6 +771,29 @@ export const TREE_HUB_STRINGS = {
 } as const;
 
 export type TreeIconName = (typeof TREE_LINKS)[number]['icon'];
+
+/**
+ * The label a reader sees, in their own language.
+ *
+ * ONE HELPER, BECAUSE THERE WERE FOUR PATTERNS AND THE HEADER HAD NONE. The
+ * owner, 2026-08-01: *"all the shell is not translated, why didn't we use i18n
+ * for this?"* — and they were right. This site had per-language strings in four
+ * different shapes already (COLLECT_LANDING keyed by language, TREE_HUB_STRINGS
+ * as an object of two, TREE_LINKS with an optional `labelEs` sibling,
+ * EMBED_FACADE keyed by provider and language) and the navigation, the area row
+ * and the home page's two buttons had none of them. So `/es` shipped a header
+ * reading "orbiters · lab · landings · bookings · about" and buttons reading
+ * "collect cards" and "enter the lab", under Spanish body copy.
+ *
+ * It is `labelEs` because that pattern already existed in TREE_LINKS and one
+ * spelling used everywhere beats a fifth good idea. A missing `labelEs` falls
+ * back to `label`, so a proper noun — "Lab", "Orbiters" — simply carries the
+ * same word in both, stated rather than defaulted.
+ */
+export const labelFor = (
+  item: { label: string; labelEs?: string },
+  lang: string | undefined,
+): string => (lang === 'es' && item.labelEs ? item.labelEs : item.label);
 
 /**
  * The picture for a section, or null where that section has no header.
