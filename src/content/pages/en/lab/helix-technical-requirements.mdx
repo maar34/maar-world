@@ -15,7 +15,11 @@ description: "HELIX Technical installation documentation Espacio de Arte Contemp
 date: "2026-03-24"
 ---
 
-# Helix — Technical <span class="mark mark--cut mark--tilt-2 mark--tear-2">Requirements</span>
+import DiagramFrame from '../../../../components/media/DiagramFrame.astro';
+import Mark from '../../../../components/patterns/Mark.astro';
+import { HELIX as M } from '../../../../config/articles';
+
+# Helix — Technical <Mark tilt={2} tear={2}>Requirements</Mark>
 
 HELIX Technical installation documentation Espacio de Arte Contemporáneo (EAC) Montevideo, Uruguay 2025 Helix is a real-time interactive artwork that requires an active internet connection throughout…
 
@@ -74,7 +78,7 @@ graph TD
 
 ## 4. Interactive diagram
 
-<iframe src="/helix-diagram.html" title="Helix interactive diagram" width="100%" height="980" frameborder="0" allowfullscreen></iframe>
+<DiagramFrame src={M.diagram} title="Helix interactive diagram" height="980" />
 
 ## 5. Physical layout
 

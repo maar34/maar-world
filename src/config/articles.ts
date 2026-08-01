@@ -173,6 +173,41 @@ export const CALENDAR = {
     'https://calendar.google.com/calendar/appointments/schedules/AcZssZ2E7HM16smJlViabRPO6puSuIFX9H8KtN2opGDoMW3P_dzN9WYnVEyfWp4O4mendFmkBYVsPzvY?gv=true',
 } as const;
 
+/**
+ * Orbits and Bodies — `lab/{en,es}/orbits-and-bodies`.
+ *
+ * A conference paper and the two videos of the performance it describes. All
+ * three are the same file in either language: the paper is one PDF, written in
+ * English and presented as it is, and a recording is not translated. The words
+ * that name them — the PDF's accessible label, the fallback sentence, the link
+ * inside it — stay in the two bodies, where they can be read as prose.
+ */
+export const ORBITS_AND_BODIES = {
+  paper: '/img/pdf/WAC25-Orbits-and-Bodies-Bruna-Gabriel.pdf',
+  videos: {
+    performance: 'https://youtu.be/Tp--LJcp_5o',
+    talk: 'https://youtu.be/jaPHJNyjZ1s',
+  },
+} as const;
+
+/**
+ * Helix technical requirements — `lab/en/helix-technical-requirements` and
+ * `lab/es/helix-eac-montevideo-2025`.
+ *
+ * One address, and it is FIRST-PARTY: the interactive diagram is a page of this
+ * site, so `media/DiagramFrame` frames it directly rather than behind a
+ * click-to-load facade. It is here rather than in either body for the reason
+ * every entry in this file is: a diagram is the same diagram in Spanish, and
+ * both halves were spelling the path.
+ *
+ * Note the two halves publish under DIFFERENT slugs — the English one is named
+ * for what it is, the Spanish one for the exhibition it was written for — which
+ * is exactly why the shared thing has to live somewhere neither of them owns.
+ */
+export const HELIX = {
+  diagram: '/helix-diagram.html',
+} as const;
+
 /** One track — `{music,es/music}`. A query string; PlayFrame writes the host. */
 export const MUSIC = {
   rabbitHole: '?g=401&s=0&c=0',

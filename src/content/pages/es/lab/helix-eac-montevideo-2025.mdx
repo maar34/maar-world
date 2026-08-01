@@ -15,7 +15,20 @@ description: "HELIX Documentación técnica de instalación Espacio de Arte Cont
 date: "2026-03-24"
 ---
 
-# Helix — <span class="mark mark--highlight">Requisitos</span> técnicos
+import DiagramFrame from '../../../../components/media/DiagramFrame.astro';
+import Mark from '../../../../components/patterns/Mark.astro';
+import { HELIX as M } from '../../../../config/articles';
+
+{/*
+  La traducción de src/content/pages/en/lab/helix-technical-requirements.mdx.
+
+  El único trozo de markup que traía era el marco del diagrama, y el diagrama es
+  una página de este mismo sitio: no hay tercero a quien pedirle permiso, así
+  que va en un marco directo y no en una fachada. La dirección vive en
+  config/articles.ts porque un diagrama no se traduce; el título sí. MW-19.
+*/}
+
+# Helix — <Mark variant="highlight">Requisitos</Mark> técnicos
 
 HELIX Documentación técnica de instalación Espacio de Arte Contemporáneo (EAC) Montevideo, Uruguay 2025 Helix es una obra de arte interactiva en tiempo real que requiere conexión a internet activa du…
 
@@ -74,7 +87,7 @@ graph TD
 
 ## 4. Diagrama interactivo
 
-<iframe src="/helix-diagram.html" title="Diagrama interactivo de Helix" width="100%" height="980" frameborder="0" allowfullscreen></iframe>
+<DiagramFrame src={M.diagram} title="Diagrama interactivo de Helix" height="980" />
 
 ## 5. Disposición física
 
