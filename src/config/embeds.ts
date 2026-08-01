@@ -71,6 +71,15 @@ export const EMBED_FACADE: Record<string, Record<Lang, FacadeStrings>> = {
     en: { name: 'vimeo', label: 'watch this video on vimeo' },
     es: { name: 'vimeo', label: 'ver este video en vimeo' },
   },
+  /**
+   * The booking calendar. NOTE THE KEY IS NOT THE NAME — `google-calendar`
+   * against "google calendar" — which is the distinction this table exists to
+   * keep, and the first entry where the two actually differ.
+   */
+  'google-calendar': {
+    en: { name: 'google calendar', label: 'open the booking calendar on google calendar' },
+    es: { name: 'google calendar', label: 'abrir el calendario de reservas en google calendar' },
+  },
 };
 
 /**

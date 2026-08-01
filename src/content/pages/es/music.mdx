@@ -1,0 +1,39 @@
+---
+outputPath: "es/music"
+title: "Música - MAAR WORLD"
+area: "maar"
+kind: "page"
+tags: []
+lang: "es"
+origin: "authored"
+translationOf: "music"
+---
+
+{/*
+  La traducción de src/content/pages/en/music.mdx — MW-19.
+
+  El marco y el enlace de pantalla completa los dibuja `media/PlayFrame`, una
+  sola vez para las dos lenguas. La dirección del instrumento está en
+  src/config/articles.ts. El title del marco queda acá porque nombra la pista.
+
+  ESTA PÁGINA YA DECÍA "Reproducir en pantalla completa" cuando las otras trece
+  mitades en español seguían diciendo "Play full screen". Era la única bien
+  traducida, así que su frase es la que quedó dentro del componente y ahora la
+  heredan todas.
+*/}
+
+import Mark from '../../../components/patterns/Mark.astro';
+import PlayFrame from '../../../components/media/PlayFrame.astro';
+import { MUSIC as M } from '../../../config/articles';
+
+# <Mark tilt={2} tear={1}>Música</Mark>
+
+𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - RMX Lana Wachowski - Neo's phone call to the machines - Rabbit Hole.
+
+<PlayFrame
+  src={M.rabbitHole}
+  title="𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - RMX Lana Wachowski - Neo's phone call to the machines - Rabbit Hole — reproductor"
+  lang="es"
+/>
+
+`#RegenerativeMusic`

@@ -1,0 +1,60 @@
+---
+/**
+ * media/play-frame — a play.maar.world instrument with no plate around it, and
+ * the full-screen link that always follows one.
+ *
+ * `media/PlayEmbed` is the other shape: a centred band with a heading and a
+ * paragraph of instructions, which is what `/orbiters` and the ip-orchestra
+ * articles use. This is the bare one — a frame, then a link — repeated four
+ * times on `ip-1`, five on `ip-2`, four on `ip-3` and once on `music`,
+ * and every one of those written out again in the other language. Twenty-eight
+ * copies of two elements and a link. MW-19.
+ *
+ * ── THE FULL-SCREEN LINK WAS ENGLISH ON EVERY SPANISH PAGE ───────────────────
+ *
+ * All thirteen Spanish frames said "Play full screen". That is the same
+ * half-translated chrome as the navigation, one level down, and it is fixed
+ * here rather than page by page because the words belong to this component: it
+ * is the same sentence wherever a frame appears, so it is keyed by language and
+ * not passed in by each caller.
+ *
+ * ── THE ADDRESS IS WRITTEN ONCE ──────────────────────────────────────────────
+ *
+ * `src` is a query string, not a URL — `?g=8&s=0&c=3` — and the host is written
+ * here, the same rule `media/PlayEmbed` states. The frame and the link are the
+ * same address by construction, so they cannot come to disagree; the migrated
+ * markup spelled it twice per instrument, once with a trailing space inside the
+ * quotes, which is how you can tell they were copied rather than derived.
+ */
+const PLAY_ORIGIN = 'https://play.maar.world';
+
+/**
+ * TAKEN FROM `/es/music`, WHICH ALREADY HAD IT RIGHT. Thirteen of the fourteen
+ * Spanish frames said "Play full screen"; `music` said "Reproducir en pantalla
+ * completa". One page had been translated properly and the others had not,
+ * which is what happens when a sentence lives in fourteen places. The good
+ * translation wins and the other thirteen inherit it.
+ */
+const FULL_SCREEN: Record<string, string> = {
+  en: 'Play full screen',
+  es: 'Reproducir en pantalla completa',
+};
+
+interface Props {
+  /** The instrument's query string, e.g. `?g=8&s=0&c=3`. */
+  src: string;
+  /** The frame's accessible name. The instrument's own name — not translated. */
+  title: string;
+  /** The page's language. Chooses the link's words; never guessed. */
+  lang: 'en' | 'es';
+}
+
+const { src, title, lang } = Astro.props;
+const url = `${PLAY_ORIGIN}/${src.replace(/^\/?/, '')}`;
+---
+
+<div class="container">
+  <iframe class="responsive-iframe" src={url} style="border: 0" title={title}></iframe>
+</div>
+
+<p><a href={url} rel="Maar World Player" target="_blank">{FULL_SCREEN[lang] ?? FULL_SCREEN.en}</a></p>

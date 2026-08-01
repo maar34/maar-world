@@ -355,9 +355,7 @@ export const STRUCTURED_ES = new Set([
   'lab/es/dadada',
   'es/collect/docs/tutorials',
   'es/collect/docs/ent-cards',
-  'es/calendar',
   'es/collect/docs/releases/skysounds',
-  'es/music',
   'es/collect/cards',
   'es/collect/docs/ent-cards/nfc',
   'es/collect/docs/mw',
@@ -495,15 +493,14 @@ export const DIVERGENT_PAIRS = new Set([
   'lab/en/ip-2',
   'lab/en/ip-orchestra-design',
   'lab/en/orbits-and-bodies',
-  'music',
   'radio',
 ]);
 
 /** The size `DIVERGENT_PAIRS` may not exceed. It may only shrink. */
-export const DIVERGENT_PAIRS_CLOSED_AT = 9;
+export const DIVERGENT_PAIRS_CLOSED_AT = 8;
 
 /** The size `STRUCTURED_ES` may not exceed. It may only shrink. */
-export const STRUCTURED_ES_CLOSED_AT = 18;
+export const STRUCTURED_ES_CLOSED_AT = 16;
 
 /**
  * Which Spanish records carry structure they are not permitted to carry.

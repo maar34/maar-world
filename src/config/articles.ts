@@ -160,3 +160,20 @@ export const LANDINGS = {
 export const ABOUT = {
   portrait: '/img/about/bruna-profile.webp',
 } as const;
+
+/**
+ * The booking calendar — `{calendar,es/calendar}`.
+ *
+ * One Google appointment schedule, both languages. It is never requested on
+ * load: `media/EmbedFacade` renders it click-to-load, which is the invariant in
+ * AGENTS.md and the reason this is an address rather than an iframe.
+ */
+export const CALENDAR = {
+  bookingUrl:
+    'https://calendar.google.com/calendar/appointments/schedules/AcZssZ2E7HM16smJlViabRPO6puSuIFX9H8KtN2opGDoMW3P_dzN9WYnVEyfWp4O4mendFmkBYVsPzvY?gv=true',
+} as const;
+
+/** One track — `{music,es/music}`. A query string; PlayFrame writes the host. */
+export const MUSIC = {
+  rabbitHole: '?g=401&s=0&c=0',
+} as const;

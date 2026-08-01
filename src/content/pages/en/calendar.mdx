@@ -1,0 +1,38 @@
+---
+outputPath: "calendar"
+title: "Calendar - MAAR WORLD"
+area: "maar"
+kind: "page"
+tags: []
+source: "maar.world/collections/_pages/calendar.md"
+lang: "en"
+origin: "migrated"
+---
+
+{/*
+  THIS FILE IS `.mdx` AND ITS SPANISH HALF IS TOO — MW-19.
+
+  The facade was written out in full in both halves — the paragraph, the
+  anchor, the three spans, the words. It is `media/EmbedFacade` now, and the
+  words come from `EMBED_FACADE` in src/config/embeds.ts keyed by provider and
+  language, so the sentence exists once for every facade on the site.
+
+  The schedule's address is `CALENDAR.bookingUrl` — one calendar, both
+  languages. Nothing is requested from Google until a reader chooses it.
+*/}
+
+import Mark from '../../../components/patterns/Mark.astro';
+import EmbedFacade from '../../../components/media/EmbedFacade.astro';
+import { CALENDAR as M } from '../../../config/articles';
+import { facadeStrings } from '../../../config/embeds';
+
+export const facade = facadeStrings('google-calendar', 'en');
+
+# <Mark tilt={2} tear={2}>Calendar</Mark>
+
+<EmbedFacade
+  provider="google-calendar"
+  href={M.bookingUrl}
+  label={facade.label}
+  note={facade.note}
+/>

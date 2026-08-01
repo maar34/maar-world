@@ -1,0 +1,37 @@
+---
+outputPath: "music"
+title: "Music - MAAR WORLD"
+area: "maar"
+kind: "page"
+tags: []
+source: "maar.world/collections/_pages/music.md"
+lang: "en"
+origin: "migrated"
+---
+
+{/*
+  THIS FILE IS `.mdx` AND ITS SPANISH HALF IS TOO — MW-19.
+
+  One track, one frame, one link — and it was four elements written out twice.
+  `media/PlayFrame` draws the frame and the full-screen link together now, from
+  a single query string, so the address cannot come to disagree with itself.
+
+  The instrument is `MUSIC.rabbitHole` in src/config/articles.ts. The frame's
+  title is here: it names the track, which is copy.
+*/}
+
+import Mark from '../../../components/patterns/Mark.astro';
+import PlayFrame from '../../../components/media/PlayFrame.astro';
+import { MUSIC as M } from '../../../config/articles';
+
+# <Mark tilt={2} tear={1}>Music</Mark>
+
+𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - RMX Lana Wachowski - Neo's phone call to the machines - Rabbit Hole.
+
+<PlayFrame
+  src={M.rabbitHole}
+  title="𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - RMX Lana Wachowski - Neo's phone call to the machines - Rabbit Hole — player"
+  lang="en"
+/>
+
+`#RegenerativeMusic`
