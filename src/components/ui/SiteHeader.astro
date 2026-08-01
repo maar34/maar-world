@@ -21,6 +21,7 @@ import { AREAS, HEADER_AREAS, SECTIONS, type AreaName } from '../../config/site'
 import BrandMark from './BrandMark.astro';
 import NavigationIcon from './NavigationIcon.astro';
 import { hash } from '../../lib/mark.mjs';
+import { urlOf } from '../../lib/translations.mjs';
 
 interface Props {
   area?: AreaName;
@@ -77,7 +78,7 @@ const brandCurrent = here === brandHome ? 'page' : undefined;
  * a consistent hit area and current-page state.
  */
 const navVoice = (seed: string) => `nav-link--voice-${((hash(seed) >>> 9) % 4) + 1}`;
-const hrefOf = (outputPath: string) => (outputPath === 'index' ? '/' : `/${outputPath}.html`);
+const hrefOf = (outputPath: string) => urlOf(outputPath);
 const currentLanguage = languageChoices.find((choice) => choice.current) ?? languageChoices[0];
 const otherLanguages = languageChoices.filter((choice) => !choice.current);
 

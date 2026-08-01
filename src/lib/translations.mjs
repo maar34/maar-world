@@ -138,8 +138,18 @@ export function globalLanguageChoices(page, pages) {
   });
 }
 
-/** dist-relative outputPath → the URL a browser asks for. */
-const urlOf = (outputPath) =>
+/**
+ * dist-relative outputPath → the canonical URL a browser asks for.
+ *
+ * THE ONE SPELLING. There were three: this one, an identical copy in
+ * [...page].astro, and a third in SiteHeader/BaseLayout that appended `.html`
+ * and special-cased only the site root — so `es/index` became `/es/index.html`,
+ * which the dev server 404s and which is not the canonical URL in production
+ * either. The switcher and the hreflang set both published it.
+ *
+ * `…/index` is stripped because a directory index is served at the directory.
+ */
+export const urlOf = (outputPath) =>
   encodeURI(`/${outputPath.replace(/(^|\/)index$/, '')}`.replace(/\/(?=$)/, '')) || '/';
 
 /**

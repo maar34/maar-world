@@ -65,6 +65,7 @@ import '../styles/prose.css';
 import '../styles/legacy.css';
 
 import { SITE, AREAS, type AreaName } from '../config/site';
+import { urlOf } from '../lib/translations.mjs';
 
 /**
  * The page's area pigment, bound once on the document element.
@@ -137,6 +138,8 @@ interface Props {
    * to English on their first click.
    */
   navPaths?: Record<string, string>;
+  /** The record's own outputPath — the canonical URL is derived from it. */
+  outputPath?: string;
 }
 
 const {
@@ -151,11 +154,24 @@ const {
   contentWidth = 'standard',
   languageChoices,
   navPaths = {},
+  outputPath,
 } = Astro.props;
 
+/**
+ * The canonical URL, from the RECORD and not from the build path.
+ *
+ * `Astro.url.pathname` is the path the builder emitted, so a directory index
+ * arrived here as `/es/index.html` and the page then declared THAT as its
+ * canonical URL and as its own hreflang entry. Same defect as the language
+ * switcher's: a `…/index.html` spelling nobody navigates to. `outputPath` is
+ * authoritative, so the canonical URL is derived from it.
+ *
+ * No route changes — dist still emits es/index.html, and the host still serves
+ * both spellings. Only what the page DECLARES about itself changes.
+ */
 const canonicalUrl = canonical ?? (redirectTo
   ? new URL(redirectTo, SITE.origin).href
-  : new URL(Astro.url.pathname, SITE.origin).href);
+  : new URL(outputPath ? urlOf(outputPath) : Astro.url.pathname, SITE.origin).href);
 
 /**
  * The shell is written in English on every page, including the Spanish ones.
@@ -233,7 +249,7 @@ const globalLanguageChoices = languageChoices ?? [
             <link
               rel="alternate"
               hreflang={a.lang}
-              href={new URL(`/${a.outputPath}.html`, SITE.origin).href}
+              href={new URL(urlOf(a.outputPath), SITE.origin).href}
             />
           ))}
         </>

@@ -561,6 +561,40 @@ export async function checkTranslations(report) {
     );
   }
 
+  /**
+   * ── A LINK NAMES THE CANONICAL SPELLING ────────────────────────────────────
+   *
+   * `…/index.html` is a path the build emits but nobody navigates to: the dev
+   * server 404s it, and in production it is a second spelling of a URL that
+   * already has a canonical one. It reached the site three ways — the language
+   * switcher, the hreflang set and the canonical link itself — because the URL
+   * was derived from the BUILD PATH instead of from `outputPath`.
+   *
+   * Reported by the owner, who found /es/index.html 404ing from the switcher.
+   * Card URLs are untouched: /CODE.html is a real contract spelling, and this
+   * only rejects a directory index written as a file.
+   */
+  const indexHtml = [];
+  for (const r of records) {
+    const file = resolveRoute(urlOf(r.outputPath), set);
+    if (!file) continue;
+    for (const [, href] of readDistFile(file).matchAll(/href="([^"]*\/index\.html)"/g)) {
+      indexHtml.push(`/${r.outputPath} links to ${href}`);
+    }
+  }
+
+  if (indexHtml.length) {
+    report.fail(
+      'a link names the canonical URL, not a directory index file',
+      `${indexHtml.length}: ${[...new Set(indexHtml)].slice(0, 5).join('; ')}`,
+    );
+  } else {
+    report.pass(
+      'a link names the canonical URL, not a directory index file',
+      `${records.length} pages carry no .../index.html link`,
+    );
+  }
+
   if (untranslated.length) {
     report.fail(
       'a translation is not its original',
