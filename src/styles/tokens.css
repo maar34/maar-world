@@ -28,6 +28,28 @@
   --c-tree: #bdbd8c;    /* tree — growth, time, lineage */
   --c-dark: #000000;
 
+  /**
+   * The fifth value, and the only one outside the approved four.
+   *
+   * "Buttons v3" opened it as a question — *"destructive #b5654e is the only
+   * value outside the four. if you'd rather not add it, the fallback is
+   * --c-maar as destructive"* — and "Buttons v4 · the break" answered it by
+   * drawing `remove` in it in the worked example, alongside the fallback it
+   * would have used instead. A later spec that spends the value has settled the
+   * question the earlier one asked, so it is here.
+   *
+   * It is a SEMANTIC pigment, not an area one. The three above are wayfinding —
+   * they say which part of the world you are in. This one says what a control
+   * will do to your data, and nothing in a rose–sage–olive family reads as stop.
+   * v3's own words: *"tuned to the same lightness and chroma as the others so it
+   * never shouts."*
+   *
+   * It is deliberately NOT in the area rotation, never a page's --area-pigment,
+   * and never a mark. A destructive control is the one kind of button that may
+   * not stamp and may not break — see the action block further down.
+   */
+  --c-destructive: #b5654e;
+
   /* ---- suit pigments --------------------------------------------------- */
   /**
    * The Sky Sounds suits, so a card index can be read by suit at a glance.
@@ -350,6 +372,29 @@
   --nav-voice-track-open: 0.16em;
   --nav-icon-size: 1.35em;
 
+  /**
+   * The brand mark, and why its size is here rather than on the component.
+   *
+   * `ui/site-header` used to call `<BrandMark size={22} />` — a raw pixel value
+   * at a call site, which this file's own rule forbids: *"nothing in the build
+   * carries a raw hex, a raw pixel size or a raw duration."* One caller made it
+   * easy to miss, and it meant resizing the logo was a code change in a
+   * component rather than a value change here.
+   *
+   * A FIXED px AND NOT AN em, unlike --nav-icon-size above. A nav icon belongs
+   * to the label beside it and should track its type; the logo is an object of
+   * its own that happens to sit next to a wordmark, and tying it to the h3 size
+   * would make the mark shrink at the breakpoint where the header is already
+   * tightest. It is bounded by --hit-min instead: at 34 it sits inside the 44px
+   * row with room, which is the real constraint on how large it can be.
+   *
+   * The component keeps `width`/`height` attributes at this number's old value
+   * so the SVG has intrinsic dimensions if a stylesheet never arrives; CSS
+   * overrides them. That is why the mark is sized in two places and only one of
+   * them is authoritative.
+   */
+  --brand-mark-size: 34px;
+
   /* Chrome stays above moving page content while retaining normal document
      flow. A named layer prevents future components guessing a z-index. */
   --layer-header: 10;
@@ -509,44 +554,197 @@
   --chip-rule: color-mix(in srgb, var(--ink) 20%, transparent);
 
   /**
-   * TILTED ACTIONS — mark 6 — and OPPOSED CHIPS — mark 5's other half.
+   * THE MOVEMENT BUDGET — "Buttons v4 · the break" — and OPPOSED CHIPS.
    *
-   * These were held for a session on a reading of the spec that turned out to
-   * be wrong, and the correction is the owner's: "I only asked to not tilt the
-   * highlighted text… with the tilt it looks bad, it looks like a star." The
-   * no-rotation rule was only ever about `mark.highlight`. The rules-of-use
-   * table's "body, ui, labels, captions — tilt: never" row is therefore not an
-   * intentional ban on tilting a control, and the spec's own tilt-set prose
-   * agrees: "tilt applies to a containing block only", and a button is a
-   * containing block. Recorded as `MW-11 NOTE design/tilt-rule-scope`.
+   * ── WHAT CHANGED, AND WHY THE RESTING TILT IS GONE ──────────────────────────
    *
-   * The highlight stays level and that is not a compromise — it is the point.
-   * `.mark--highlight` counter-rotates by whatever its block sets, so a run of
-   * highlights down a tilted heading steps rather than skewing. See mark.css.
+   * Every action used to hold a small permanent angle: −0.6deg on a primary,
+   * −0.8deg on collect, +0.5deg on a secondary, taken from 4a and recorded as
+   * mark 6. v4 retires that, and the reason is the whole thesis of the spec:
    *
-   * VALUES ARE 4a's, AND SO IS THE PATTERN. Filled actions lean negative
-   * (−0.6 "collect cards", −0.8 "buy on bandcamp", −0.7, −1), outlined ones
-   * lean positive (+0.5 "enter the lab", +0.6), and a pair sitting together
-   * leans APART, never the same way. That is what stops two stacked CTAs
-   * reading as one skewed block.
+   *   "the collage only reads as a collage because most of the page is straight
+   *    — the torn edge needs the ruled page behind it."
    *
-   * The chips are steeper than the buttons because 4a's are: its `en`/`es` pair
-   * is −1.5 against +1, where its CTAs stay under a degree. A chip is small
-   * enough that a degree barely reads.
+   * A tilt on every button is not a collage, it is a skew. When everything leans
+   * a little, nothing reads as placed by hand; the angle stops being a mark and
+   * becomes the baseline. So movement is now a BUDGET rather than a default:
    *
-   * A text button gets nothing. 4a never tilts an action with no box — a
-   * rotation reads as an object someone placed, and an underlined word is not
-   * an object. Its inactive filter chips are square for the same reason.
+   *   one stamp per view    the primary action, and the only thing that lifts
+   *   one break per view    one secondary element allowed to misbehave
+   *   quiet everywhere else pigment shifts, borders firm, rules draw. no motion
    *
-   * AN ACTION ANGLE STAYS UNDER 1deg, which is --tilt-b, which is what the
-   * responsive table caps tilt at below 600px. All three below are inside it,
-   * so no breakpoint rule is needed and none exists — the constraint lives here,
-   * where the next value gets chosen, rather than as a media query that never
-   * fires. The chips are outside it and do carry one.
+   * The budget is per VIEW, not per component. A page whose hero has spent its
+   * stamp draws the card grid below it flat, even though a card grid elsewhere
+   * could have carried one. `scripts/verify-actions.mjs` checks this against the
+   * built HTML, because a rule nothing measures is a paragraph.
+   *
+   * ── WHERE THE ANGLE WENT ────────────────────────────────────────────────────
+   *
+   * It did not disappear; it moved from rest to hover, and only on the stamp.
+   * v4's state table: rest is *"flat, square to the grid, no shadow"*, hover is
+   * *"tilt ∓1deg · lift 3px · hard shadow in --c-dark"*, and active is *"tilt
+   * relaxes, shadow to 2px — it lands"*.
+   *
+   * THE SIGN IS FIXED PER PIGMENT, NOT RANDOM AND NOT PER CALL SITE — *"maar
+   * tilts left, collect tilts right"*. That is what 4a's "a pair leans apart"
+   * rule becomes once only one of the pair is allowed to lean at all: the two
+   * filled pigments still disagree, so a maar stamp and a collect stamp are
+   * never parallel, but they now disagree only while being touched.
+   *
+   * ── THE ANGLE SET IS CLOSED ─────────────────────────────────────────────────
+   *
+   * v4: *"−24, −14, ∓1.2 deg. no other angles exist."* Three values, and every
+   * rotation in the action system is one of them:
+   *
+   *   −24deg   tape, the strip across a corner
+   *   −14deg   pivot, the glyph that turns
+   *   ∓1.2deg  the stamp, left for maar and right for collect
+   *
+   * The press does NOT introduce a fourth. v4 draws the pressed stamp at a
+   * relaxed angle rather than a straight one, so it is expressed as a fraction
+   * of the tilt the button is already holding — `--stamp-press-relax` — and no
+   * new raw degree enters the file. That is deliberate: the next person to want
+   * "just a slightly different angle" has to change the set, visibly, here.
+   *
+   * The stamp angle is above --tilt-b (1deg), which the responsive table caps
+   * tilt at below 600px, where the old resting angles were deliberately under
+   * it. That is not a violation — the cap is on angles a layout HOLDS, and the
+   * stamp holds none. It is square at every width until it is hovered, and a
+   * 360px phone has no hover. See the pointer query in button.css.
+   *
+   * ── THE CHIPS ARE UNAFFECTED ────────────────────────────────────────────────
+   *
+   * A chip is not an action: it is a state you are in, so its angle is what it
+   * looks like, not what it does when touched. 4a's `en`/`es` pair is −1.5
+   * against +1 and stays that way. Being steeper than any button is now the
+   * point rather than an inconsistency — the chips are the one control that
+   * still leans at rest, and they are small enough that a degree barely reads.
+   * They are outside --tilt-b and carry the media query that fact requires.
+   *
+   * `.mark--highlight` still counter-rotates whatever block it sits in, so a run
+   * of highlights down a tilted heading steps rather than skewing. See mark.css.
+   * The owner's rule that produced it is untouched by any of this: "I only asked
+   * to not tilt the highlighted text… it looks like a star."
    */
-  --action-tilt-primary: -0.6deg;
-  --action-tilt-collect: -0.8deg;
-  --action-tilt-secondary: 0.5deg;
+  --stamp-tilt-maar: -1.2deg;
+  --stamp-tilt-collect: 1.2deg;
+  /* The pressed stamp relaxes toward square without reaching it. A ratio, not a
+     fourth angle — see the closed-set note above. */
+  --stamp-press-relax: 0.25;
+  /* "lift 3px" at hover; the 1px --press-nudge already owns the way back down. */
+  --stamp-lift: 3px;
+  /* "hard shadow in --c-dark … never blurred." Offsets only, no blur radius, so
+     the third value stays 0 in every rule that spends these. */
+  --stamp-shadow-o: 6px;
+  --stamp-shadow-o-press: 2px;
+
+  /**
+   * THE BREAK GESTURES — the second half of the budget.
+   *
+   * Three of v4's five, and the three are the owner's own pick: *"my picks are
+   * pivot, tape and offset print."* `cut edge` and `slipped mark` are specified
+   * but not chosen, and AGENTS.md is explicit that where the design source is
+   * still in progress we implement what is settled and log the rest rather than
+   * inventing the missing half. They are logged, not built.
+   *
+   * A break MOVES A PART, NEVER THE BOX. Every value below animates a glyph, a
+   * shadow or a detached strip; none of them changes the button's footprint, so
+   * nothing around a breaking control reflows and no shadow gets clipped by a
+   * neighbour. That constraint is why these are separate tokens from the stamp's
+   * — the stamp is allowed to move the box, and it is the only thing that is.
+   *
+   * THE RULE IS ABOUT THE GESTURE, NOT ABOUT `:active`. A break's 1px press
+   * nudge is not an exception being smuggled past that sentence — v4 draws it
+   * itself, on the one break it shows a pressed state for: its offset-print
+   * example is `box-shadow: 1px 1px 0 …; transform: translateY(1px)`. The press
+   * is the site-wide confirmation that a control was pressed, it predates this
+   * system, and every other control in the build keeps it. "Moves a part, never
+   * the box" governs what the BREAK does on hover; it does not remove a break
+   * from being a button. A reviewer read these two as contradicting each other,
+   * which is why they are now reconciled here rather than left to be rederived.
+   */
+  --break-tape-tilt: -24deg;
+  --break-tape-w: 44px;
+  --break-tape-h: 14px;
+  /* The strip lands ACROSS the top-left corner, so it hangs outside the box on
+     both axes. Negative, and paired with the tape's own transform origin. */
+  --break-tape-top: -7px;
+  --break-tape-left: -12px;
+  --break-pivot-tilt: -14deg;
+  --break-pivot-travel: 2px;
+  --break-offset-o: 4px;
+  --break-offset-o-press: 1px;
+
+  /**
+   * QUIET — the three mechanics every other control uses, from "Buttons v3".
+   *
+   * These are the ruled page. There is no transform in any of them: *"the box
+   * never moves"*, and the only movement a quiet control makes is the 1px
+   * --press-nudge that every control has always had, which is a press and not a
+   * hover.
+   *
+   *   quiet a  filled buttons     pigment lightens 18% toward cream · 120ms
+   *   quiet b  outline, semantic  border firms, field tints to 14% · 140ms
+   *   quiet c  text buttons       a 2px pigment rule draws under the label · 180ms
+   *
+   * The percentages are v3's own and are stored as the KEPT fraction, which is
+   * how `color-mix` reads: 82% of the pigment plus 18% cream. Writing it as the
+   * spec's "lightens 18%" would invert on the way into the stylesheet, and this
+   * repo has paid once for a value that meant its own opposite.
+   */
+  --quiet-fill-keep: 82%;
+  --quiet-tint: 14%;
+  --quiet-rule-w: 2px;
+  --m-quiet-fill: 120ms;
+  --m-quiet-tint: 140ms;
+  --m-quiet-rule: 180ms;
+
+  /**
+   * CHROME — the header, and the one rule that governs all of it.
+   *
+   * "Buttons v3 · the header" treats header items as a different system from
+   * buttons, and says why: *"header items are not buttons and must not behave
+   * like them. they are permanent, they sit in a row, and one of them is always
+   * current."* v4 adds that chrome *"spends no budget — always quiet"*: no
+   * stamp, no break, ever.
+   *
+   * Underneath both: *"nothing in a persistent chrome ever changes size or
+   * position on hover. the header is the fixed edge of the page — if it
+   * flinches, the whole page feels loose."*
+   *
+   * The nav rule is quiet c at the header's own tempo — 160ms rather than the
+   * 180ms a text button draws at, because a nav entry is smaller and the rule
+   * has less distance to cover. It is the spec's number, not an interpolation.
+   *
+   * --nav-icon-fill is the treatment for a bare icon control: *"ink at 12% fills
+   * the 36px square — no pigment, no border."* 12% is not on the --ink-* ladder
+   * (which goes 13% hairline, 10% tint) and is deliberately spelled here rather
+   * than rounded to one of them: it is a fill behind a glyph, not a rule or a
+   * disabled wash, and the two neighbours are both doing another job.
+   */
+  --m-chrome-rule: 160ms;
+  --nav-icon-fill: color-mix(in srgb, var(--ink) 12%, transparent);
+
+  /**
+   * The surface a FLOATING panel sits on.
+   *
+   * --sf-raised is a translucent step — 7% ink over whatever is behind it — and
+   * that is correct for a plate sitting in the page, where the base surface
+   * shows through and the result reads as one measured lift. It is wrong for
+   * anything that hangs OVER the document: at 7% opacity the page keeps
+   * scrolling visibly through the panel, and the language menu was doing exactly
+   * that.
+   *
+   * So this is the same role resolved against the base instead of left open. It
+   * is the raised step and the opaque step at once, rather than a second value
+   * that could drift from --sf-raised — change that one and this follows.
+   *
+   * `.nav-menu__panel` had already met this and solved it locally with a flat
+   * --sf-base plus a comment; a floating panel wanting an opaque lift is a role,
+   * not a special case, so it is a token now.
+   */
+  --sf-overlay: color-mix(in srgb, var(--ink) 7%, var(--sf-base));
+
   --chip-tilt-selected: -1.5deg;
   --chip-tilt-rest: 1deg;
 

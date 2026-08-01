@@ -212,12 +212,27 @@
   border: var(--btn-border-w) solid currentColor;
   border-radius: var(--r-1);
   text-decoration-line: none;
-  transition: background var(--m-fast) var(--ease), color var(--m-fast) var(--ease);
+  transition: background var(--m-quiet-tint) linear, border-color var(--m-quiet-tint) linear;
 }
 
+/**
+ * Quiet b, the same mechanic `.btn--secondary` uses — *"border → full pigment,
+ * field → pigment at 14%"*.
+ *
+ * It used to invert to cream-on-dark. That went with the rest of the inverts
+ * when "Buttons v3" replaced them, and this is the mechanic v3 names for
+ * outlined controls specifically because it is *"the only mechanic that
+ * survives eight-in-a-row"* — which is the exact shape of the problem here.
+ * These are "read more" and "open the PDF" links inside body copy, and a
+ * migrated page can carry six of them in a column.
+ *
+ * A legacy body button is never a stamp and never breaks. It cannot be: the
+ * budget is spent by the page family that owns the view, and nothing in a
+ * migrated body knows what else is on the page with it.
+ */
 .prose a.button:hover {
-  background: var(--action-invert);
-  color: var(--sf-base);
+  border-color: var(--area-pigment, var(--c-maar));
+  background: color-mix(in srgb, var(--area-pigment, var(--c-maar)) var(--quiet-tint), transparent);
 }
 
 .prose a.button:active {

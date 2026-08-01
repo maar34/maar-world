@@ -147,7 +147,19 @@ const downloads = [d.download, d.download2]
               is a labelled landmark instead, so it is still announced. */}
           <p class="orbiter__head">{orbiterLabel} is now playing on Maar Orbiter</p>
           <p class="orbiter__lede">We are redirecting you to the updated listening experience.</p>
-          <a class="btn btn--primary orbiter__link" href={orbiterUrl} rel="noopener">
+          {/* The card page's one stamp. v3 lists "confirmation" among the four
+              places the lift is allowed, and this is one: the redirect is
+              already happening, and this is the control that confirms it by
+              hand when it does not. Nothing else on a card page is an action,
+              so the view's whole budget is this line.
+
+              Spelled as classes rather than as `ui/action` because this anchor
+              needs `rel`, which the component does not take. Adding a prop for
+              one call site would be the wrong trade — but it does mean the
+              build-time refusals in `ui/action` are not guarding it, which is
+              part of why the budget is checked against the built HTML instead
+              of against the components. See `scripts/verify-actions.mjs`. */}
+          <a class="btn btn--primary btn--stamp orbiter__link" href={orbiterUrl} rel="noopener">
             Open Maar Orbiter
           </a>
           <p class="orbiter__hint">

@@ -211,14 +211,27 @@
 }
 
 /**
- * The brand absorbed the "maar" nav entry, so it absorbed that entry's job of
- * saying you are on it. Quietly: an underline on the wordmark, which is the same
- * second signal every current nav entry carries, without a pigment field behind
- * a logo. `aria-current="page"` in the markup does the rest.
+ * The brand does NOT draw its current state, and that is a deliberate reversal.
+ *
+ * It used to: the brand absorbed the "maar" nav entry, so it absorbed that
+ * entry's job of saying you are on it, with a permanent underline on the
+ * wordmark. Two things retired that.
+ *
+ * The owner's call is the first — the wordmark reads as permanently underlined
+ * on the home page, which looks like a link stuck in a hover state rather than
+ * a location. The second is that it stopped working the moment the header
+ * gained v3's hover: the nav mechanic IS a 2px rule drawn under the label, so a
+ * permanently underlined brand had a line sitting a pixel from where its own
+ * hover puts one. The hover became unreadable — the one state the mechanic
+ * exists to express.
+ *
+ * `aria-current="page"` STAYS in the markup, so a screen reader is still told
+ * this link points at the page being read. What is gone is only the visual
+ * restatement, and a logo is the one control where that costs least: nobody
+ * navigates by checking whether the wordmark is underlined, and the current
+ * nav entry a few pixels away still carries the full field-plus-underline
+ * treatment for the area you are in.
  */
-.shell__brand[aria-current] span {
-  text-decoration-line: underline;
-}
 
 /**
  * The mark takes the page's area pigment — sky on Maar, pink on Collect, tree
@@ -231,6 +244,12 @@
  */
 .shell__brand .brand-mark {
   color: var(--area-pigment, var(--c-maar));
+  /* The size is a token, not the component's `size` prop — see --brand-mark-size
+     in tokens.css. `flex: 0 0 auto` because the brand is an inline-flex row and
+     the mark must not be squeezed by a long wordmark on a narrow phone. */
+  flex: 0 0 auto;
+  inline-size: var(--brand-mark-size);
+  block-size: var(--brand-mark-size);
 }
 
 /* ---- navigation --------------------------------------------------------- */
@@ -275,7 +294,14 @@
   color: var(--ink-muted);
   text-decoration-line: none;
   border-radius: var(--r-1);
-  transition: background var(--m-fast) var(--ease), color var(--m-fast) var(--ease);
+  /* The rule draws from zero width, so `background-size` is what animates —
+     `background` alone would step the image in at full width. The header's own
+     tempo, 160ms, rather than a button's. */
+  background-repeat: no-repeat;
+  background-position: var(--s-2) 100%;
+  background-size: 0% var(--quiet-rule-w);
+  transition: background-size var(--m-chrome-rule) var(--ease),
+    background-color var(--m-fast) var(--ease), color var(--m-fast) var(--ease);
 }
 
 .nav-icon {
@@ -320,18 +346,40 @@
 }
 
 /**
- * "on dark, hover inverts to cream; on paper it inverts to ink. never a hue
- * shift, never a lighten."
+ * THE NAV HOVER — a rule that draws, not a field that inverts.
  *
- * Cream on dark and ink on paper are the same token — --ink — so one rule serves
- * both surfaces, which is what --action-invert exists for. Nothing here changes
- * hue and nothing lightens.
+ * "Buttons v3 · the header" specifies it exactly: *"nav hover: 2px --c-maar rule
+ * draws under the label, inset to the padding · 160ms."*
+ *
+ * This used to invert the whole entry to cream-on-dark, which was the same
+ * mechanic every button used at the time. Both changed for the same reason and
+ * it is stated most plainly about the header: *"header items are not buttons and
+ * must not behave like them."* An inverted field is the loudest thing the
+ * language can do to a control, and a header offers six of them permanently, one
+ * of which is already wearing a pigment field to say you are on it. The rule is
+ * legible without competing with that.
+ *
+ * INSET TO THE PADDING is the spec's phrase and the reason for the `calc`. The
+ * rule sits under the WORD, not under the hit area — `.nav-link` carries --s-2
+ * of padding on each side purely to reach the 44px target, and a rule spanning
+ * that would read as an underline belonging to something wider than the label.
+ *
+ * It is a `background-image` for the same reason quiet c is: `text-decoration`
+ * cannot animate from zero width, and the rule has to draw rather than appear.
+ * The base `background` stays transparent, so nothing here changes size or
+ * position — *"the header is the fixed edge of the page."*
  */
 .nav-link:hover,
 .shell__brand:hover,
 .shell__social:hover {
-  background: var(--action-invert);
-  color: var(--sf-base);
+  background-image: linear-gradient(var(--c-maar), var(--c-maar));
+  background-repeat: no-repeat;
+  background-position: var(--s-2) 100%;
+  background-size: calc(100% - var(--s-2) * 2) var(--quiet-rule-w);
+  /* The rule is the gesture; the label going from --ink-muted to full ink is
+     the legibility half of it. Together they are the whole response — no field,
+     no movement. */
+  color: var(--ink);
 }
 
 /* "press is a 1px downward nudge, no scale." */
@@ -388,10 +436,24 @@
   text-decoration-color: var(--area-pigment, var(--ink-tint));
 }
 
-/* Hover still inverts on the current entry — the pigment is state, not a lock. */
+/**
+ * The current entry does not answer the pointer at all.
+ *
+ * v3's header table gives this its own row and its own sentence: *"current
+ * hover: nothing. you are already there."*
+ *
+ * This used to invert like every other entry, on the reasoning that the pigment
+ * is state rather than a lock. That reasoning was right about the pigment and
+ * wrong about the hover: a hover response is an offer, and there is nothing
+ * being offered by the link to the page you are reading. Drawing the maar rule
+ * under it would also put a second pigment against the area pigment already
+ * filling the entry, which the pigment rule forbids.
+ *
+ * Both `page` and `true` are covered — the destination and the area containing
+ * it. Neither is somewhere you can go from here.
+ */
 .nav-link[aria-current]:hover {
-  background: var(--action-invert);
-  color: var(--sf-base);
+  background-image: none;
 }
 
 /**
@@ -484,10 +546,23 @@
   display: none;
 }
 
+/**
+ * v3's icon treatment: *"ink at 12% fills the 36px square — no pigment, no
+ * border."*
+ *
+ * A bare glyph control gets a fill rather than a rule, because there is no
+ * label for a rule to draw under. It stays ink rather than pigment so the
+ * hamburger never competes with the entry that is actually current, and the
+ * open state reuses the hover fill — the panel below is the loud signal, and
+ * the trigger only has to look engaged.
+ *
+ * `color` goes to full ink from --ink-muted, which is the whole of the contrast
+ * change; the field does not invert and nothing moves.
+ */
 .nav-menu__trigger:hover,
 .nav-menu[open] > .nav-menu__trigger {
-  background: var(--action-invert);
-  color: var(--sf-base);
+  background: var(--nav-icon-fill);
+  color: var(--ink);
 }
 
 .nav-menu__trigger:active {
@@ -618,16 +693,35 @@
   position: relative;
 }
 
+/**
+ * The floating panel, and the two things that were wrong with it.
+ *
+ * OPAQUE. It carried --sf-raised, which is 7% ink over whatever is behind it —
+ * the correct step for a plate sitting IN the page, and the wrong one for a
+ * panel hanging OVER it. At 7% the page read straight through the language menu
+ * and the words underneath competed with the two it offers. `.nav-menu__panel`
+ * had already hit this and solved it locally; --sf-overlay is that solution as
+ * a role, so the lift survives and the transparency does not.
+ *
+ * BIG ENOUGH TO HIT. The rows were meta-sized type with --s-2 of inline padding
+ * and no height of their own, so the panel came out barely taller than the
+ * trigger that opened it. "Touch targets 44px minimum" is an accessibility
+ * invariant here, applied at every pointer type, and every other control in this
+ * header already honours it — these were the exception. --min-inline keeps the
+ * panel from collapsing to the width of `es`, which is what made it read as
+ * small even before the rows were measured.
+ */
 .nav-languages__list {
   position: absolute;
   inset-block-start: calc(100% + var(--s-1));
   inset-inline-end: 0;
   display: grid;
   gap: var(--s-1);
+  min-inline-size: 9rem;
   list-style: none;
   margin: 0;
   padding: var(--s-2);
-  background: var(--sf-raised);
+  background: var(--sf-overlay);
   border: 1px solid var(--chip-rule);
   z-index: var(--layer-header);
 }
@@ -654,10 +748,13 @@
   display: none;
 }
 
+/* The same icon fill as the menu trigger. This control is an icon, an ISO code
+   and a chevron — nearer a glyph than a label — and the two disclosures in one
+   bar behaving differently was the drift, not the fix. */
 .nav-language-trigger:hover,
 .nav-languages__disclosure[open] > .nav-language-trigger {
-  background: var(--action-invert);
-  color: var(--sf-base);
+  background: var(--nav-icon-fill);
+  color: var(--ink);
 }
 
 .nav-language-trigger .nav-icon {
@@ -669,7 +766,12 @@
 }
 
 .nav-language {
-  display: inline-block;
+  /* A full-width row at the token hit height, not a word. See the panel note
+     above: this is the same 44px minimum every other control in the header
+     already meets. */
+  display: flex;
+  align-items: center;
+  min-height: var(--hit-min);
   padding-inline: var(--s-2);
   border: 1px solid transparent;
   border-radius: var(--r-0);

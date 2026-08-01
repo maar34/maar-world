@@ -38,6 +38,29 @@ const permalink = z
   .regex(/^\/[^\s]*$/, 'permalink must start with / and contain no spaces');
 
 /**
+ * WHICH WORD IN A STATEMENT TAKES THE OVERPRINT — a word, not markup.
+ *
+ * The Collect page's two statements are drawn the way the Lab's own opening
+ * line is: the display face, in italic, with one word printed twice — the
+ * `mark--overprint` echo. Which word that is has to live on the record, because
+ * it differs per language: `exoplanets` and `exoplanetas` sit at different
+ * points in two sentences that are not translations of each other word for word,
+ * and "journey" is a noun in English where `viaje` is the object of a verb in
+ * Spanish. A component cannot guess it and a shared config cannot hold it.
+ *
+ * A PLAIN STRING AND NOT HTML, deliberately. `headingHtml` elsewhere in this
+ * schema does carry raw markup, and it is the counter-example rather than the
+ * pattern — it survives because it came out of a migration that already had
+ * markup in it. Anything authored from here on names the word and lets the page
+ * family do the wrapping, so a record can never introduce an element, a class,
+ * or an unbalanced tag into a heading.
+ *
+ * Optional, and a statement without one prints flat. That is what keeps this
+ * from becoming a field every future record has to answer.
+ */
+const markedWord = z.string().min(1).optional();
+
+/**
  * Commerce URLs are banned from content records.
  *
  * 183 commerce links died at once on the legacy sites because every card file
@@ -383,11 +406,13 @@ export const pageSchema = z
           title: z.string().min(1),
           body: z.string().min(1),
           cta: z.string().min(1),
+          mark: markedWord,
         }),
         /** The label on the link out to Orbiters. The route decides where it goes. */
         orbiters: z.object({ label: z.string().min(1) }),
         journey: z.object({
           title: z.string().min(1),
+          mark: markedWord,
           /**
            * The carousel group's accessible name, e.g. "5 photographs".
            *

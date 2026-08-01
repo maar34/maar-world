@@ -13,12 +13,14 @@ headingHtml: "<span class=\"mark mark--cut mark--tilt-4 mark--tear-2\">collect</
 collect:
   pitch:
     title: "Play music cards with exoplanets"
+    mark: "exoplanets"
     body: "Sky Sounds introduces the first-ever card collection that when scanned allows you to listen to their music and transform them based on the movement of the exoplanets they belong."
     cta: "Collect"
   orbiters:
     label: "What is an Orbiter?"
   journey:
     title: "Start your journey"
+    mark: "journey"
     carouselLabel: "5 photographs"
     slides:
       - step: "I"

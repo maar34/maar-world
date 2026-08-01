@@ -1,18 +1,49 @@
 /**
- * The four button variants, transcribed from the design spec's button table.
+ * The action system — "Buttons v3 · new palette" plus "Buttons v4 · the break".
  *
- * The spec gives this as a five-by-four grid — primary / secondary / collect /
- * text across rest / hover / active / focus / disabled — so every rule below is
- * a cell of that grid rather than a judgement call. Its own words for the
- * behaviour:
+ * ── THE HYBRID, IN ONE PARAGRAPH ────────────────────────────────────────────
  *
- *   "on dark, hover inverts to cream; on paper it inverts to ink. never a hue
- *    shift, never a lighten. press is a 1px downward nudge, no scale. minimum
- *    hit target 44px on touch. label is one or two words, verb first."
+ * A button's behaviour is chosen by what KIND of button it is, not by taste at
+ * the call site. There are three kinds and they do not overlap:
  *
- * Cream on dark and ink on paper are the same token — --action-invert — which
- * is why one hover rule serves both surfaces and no rule here branches on which
- * surface it is drawn on.
+ *   quiet    the default, and almost everything. Pigment shifts, borders firm,
+ *            rules draw. The box never moves. Three mechanics, a/b/c, picked by
+ *            whether the control is filled, outlined or bare.
+ *   stamp    the one primary action in a view. Square at rest; on hover it
+ *            tilts, lifts 3px and casts a hard shadow. One per view.
+ *   break    one secondary element per view allowed to misbehave — a glyph that
+ *            pivots, a strip of tape, a second pigment slipping out behind the
+ *            block. It moves a PART, never the box.
+ *
+ * v4's thesis, and the reason this file stopped tilting everything:
+ *
+ *   "the collage only reads as a collage because most of the page is straight —
+ *    the torn edge needs the ruled page behind it."
+ *
+ * So movement is a budget: ONE stamp and ONE break per view, and the rest of
+ * the page holds still. `scripts/verify-actions.mjs` counts them in the built
+ * HTML, because a budget nothing measures is a paragraph. The token block in
+ * tokens.css carries the values and the reasoning behind each number.
+ *
+ * ── WHAT THIS REPLACED ──────────────────────────────────────────────────────
+ *
+ * Two things that were right under the old spec and are wrong under this one:
+ *
+ *   the resting tilt   every variant used to hold a permanent −0.6/−0.8/+0.5deg
+ *                      angle. v4 spends the angle on the stamp's hover instead.
+ *                      See the long note in tokens.css: a tilt on everything is
+ *                      not a collage, it is a skew.
+ *   the hover invert   every variant used to flip to cream-on-dark via
+ *                      --action-invert. v3 replaced that wholesale — *"never a
+ *                      hue shift, never a lighten"* was written about the
+ *                      pigment, and inverting the entire field is neither quiet
+ *                      nor cheap on a dense screen. --action-invert survives for
+ *                      the chrome in shell.css, which is a different system.
+ *
+ * What did NOT change: the box metrics, the 44px hit target, the 1px press
+ * nudge, the focus ring, and the disabled treatment. A filled button is still
+ * 11/18 and an outlined one 10/17 with a 1px border, so a row of mixed buttons
+ * still keeps its baseline.
  *
  * Global rather than component-scoped, for the same reason styles/shell.css is:
  * the treatment has to reach the submit controls inside `.prose` bodies, which
@@ -22,31 +53,13 @@
  *
  * Marks are not permitted here. The rules-of-use table allows them at h1 and
  * card-cover level and forbids them at "body, ui, label and caption" — a button
- * is ui.
- *
- * TILT IS NOT A MARK, and that distinction cost a session. The same table row
- * says "tilt: never" for ui, and this file was written to obey it — but the
- * owner's rule was only ever about `mark.highlight`: "I only asked to not tilt
- * the highlighted text… with the tilt it looks bad, it looks like a star." So
- * an action carries the small rotation everything else in the language does.
- * The values and the pattern are 4a's — filled leans negative, outlined leans
- * positive, and a pair leans apart. See the token block in tokens.css.
+ * is ui. A break gesture is not a mark: a mark is a permanent property of the
+ * type it sits on, and a break exists only while the pointer is on the control.
  */
 
-.btn {
-  /**
-   * Mark 6. Per variant, so a primary and a secondary standing together lean
-   * apart without either of them knowing about the other — and so the whole
-   * set is four values in one file rather than an angle repeated at every call
-   * site. Square is the default: a variant that wants a tilt says so.
-   *
-   * It is a custom property and not a `transform` on each variant because
-   * `:active` also transforms, and a second `transform` declaration replaces
-   * the first rather than adding to it: the press would silently straighten
-   * the button. Every rule below composes the two.
-   */
-  --btn-tilt: 0deg;
+/* ---- the box, shared by every kind --------------------------------------- */
 
+.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -68,105 +81,418 @@
   border: 0;
   border-radius: var(--r-1);
   cursor: pointer;
-  transform: rotate(var(--btn-tilt));
-  transition: background var(--m-fast) var(--ease), color var(--m-fast) var(--ease);
+
+  /**
+   * SQUARE AT REST, AND THAT IS THE POINT. No rotation, no shadow, no lift.
+   * Whatever a button does, it does it from here — the stamp's tilt and the
+   * break's gestures are all departures from a control that was straight a
+   * moment ago, and they read as departures only because this is flat.
+   */
+  transition: background var(--m-quiet-fill) linear, color var(--m-quiet-fill) linear;
 }
 
-/* "press is a 1px downward nudge, no scale." One rule for every variant. The
-   rotation is carried through, so a tilted button does not straighten as it is
-   pressed — the nudge is a nudge, not a correction. */
+/* "press is a 1px downward nudge, no scale." One rule for every kind. The stamp
+   and the offset break override it, because they also have a shadow to land. */
 .btn:active {
-  transform: rotate(var(--btn-tilt)) translateY(var(--press-nudge));
+  transform: translateY(var(--press-nudge));
 }
 
 /* The focus ring is the global one from --focus-*; it is not restated per
    variant, and it is never removed. */
 
-/* ---- primary ------------------------------------------------------------ */
-/* A flat pastel field. "a pastel is always a background, never type", and
-   "type on any pastel is always dark, on both surfaces". */
+/* ---- quiet a · lift the pigment ------------------------------------------ */
+/**
+ * The default for filled buttons everywhere. v3: *"bg → own pigment 82% + cream
+ * 18% · 120ms linear · nothing else changes."*
+ *
+ * ── THE EXCLUSION LIST IS THE WHOLE POINT ──────────────────────────────────
+ *
+ * A stamp and an offset-print break are both filled buttons, and both already
+ * answer the hover their own way — the stamp lifts, the offset slips a second
+ * pigment out behind the block. If this rule reached them the field would also
+ * lighten, which is two answers to one question. Whichever gesture the button
+ * was given is the answer; the pigment stays flat underneath it.
+ *
+ * Pivot and tape are deliberately NOT excluded. They compose, and v4 draws them
+ * composing: its pivot and tape examples both firm their border on hover while
+ * the glyph turns or the strip lands. A break that moves a part does not
+ * conflict with a mechanic that changes a colour — only one that moves the box
+ * or the field does.
+ *
+ * ── MIXING WITH --ink, NOT WITH A LITERAL CREAM ─────────────────────────────
+ *
+ * v3 words this as *"own pigment 82% + cream 18%"*, and on the dark surface
+ * --ink IS that cream (#efe7da). On a paper route --ink is #100f14, so the same
+ * declaration mixes toward dark instead — which is correct, not a bug to fix
+ * later. It is the surface swap the whole system is built on: *"the paper
+ * variant is the same component with surface and ink swapped and pastels
+ * unchanged"*, and it is exactly how --action-invert served both surfaces from
+ * one rule before this. Hard-coding the cream would give a paper route a hover
+ * that vanishes into the page.
+ */
 .btn--primary {
   background: var(--c-maar);
   color: var(--pigment-ink);
-  /* 4a's "collect cards". */
-  --btn-tilt: var(--action-tilt-primary);
 }
 
-.btn--primary:hover {
-  background: var(--action-invert);
-  color: var(--sf-base);
+.btn--primary:not(.btn--stamp, .btn--break-offset):hover {
+  background: color-mix(in srgb, var(--c-maar) var(--quiet-fill-keep), var(--ink));
 }
 
-/* ---- secondary ---------------------------------------------------------- */
-/* No field at rest — an outline in the current ink. The reduced padding plus
-   the border comes to the same box as a filled button. */
+/* The collect pigment, and only for the collect action — "one pigment per
+   component instance", and collect's role is "saving, sets, favourites". */
+.btn--collect {
+  background: var(--c-collect);
+  color: var(--pigment-ink);
+}
+
+.btn--collect:not(.btn--stamp, .btn--break-offset):hover {
+  background: color-mix(in srgb, var(--c-collect) var(--quiet-fill-keep), var(--ink));
+}
+
+/* ---- quiet b · tint the field -------------------------------------------- */
+/**
+ * For outlined and semantic buttons. v3: *"border → full pigment, field →
+ * pigment at 14% · 140ms. the only mechanic that survives eight-in-a-row."*
+ *
+ * That last clause is the reason it exists. A settings panel with eight
+ * outlined controls cannot afford a mechanic that fills or moves anything, and
+ * this one reads at a glance while changing almost nothing.
+ *
+ * No field at rest — an outline in the current ink. The reduced padding plus
+ * the border comes to the same box as a filled button.
+ */
 .btn--secondary {
   background: transparent;
   color: currentColor;
   border: var(--btn-border-w) solid currentColor;
   padding-block: var(--btn-pad-block-outline);
   padding-inline: var(--btn-pad-inline-outline);
-  /* 4a's "enter the lab" — positive, so it leans away from the primary it is
-     stacked with rather than parallel to it. This is the whole mark. */
-  --btn-tilt: var(--action-tilt-secondary);
+  transition: background var(--m-quiet-tint) linear, border-color var(--m-quiet-tint) linear;
 }
 
 .btn--secondary:hover {
-  background: var(--action-invert);
-  color: var(--sf-base);
+  border-color: var(--area-pigment, var(--c-maar));
+  background: color-mix(in srgb, var(--area-pigment, var(--c-maar)) var(--quiet-tint), transparent);
 }
 
-/* The spec draws the pressed secondary at 80% rather than full ink, so the
-   nudge is felt as well as seen. */
-.btn--secondary:active {
-  background: color-mix(in srgb, var(--action-invert) 80%, transparent);
-  color: var(--sf-base);
-}
-
-/* ---- collect ------------------------------------------------------------ */
-/* The collect pigment, and only for the collect action — "one pigment per
-   component instance", and collect's role is "saving, sets, favourites". */
-.btn--collect {
-  background: var(--c-collect);
-  color: var(--pigment-ink);
-  /* 4a's "buy on bandcamp" — a different filled angle from the primary, so two
-     filled actions in one view are not parallel either. */
-  --btn-tilt: var(--action-tilt-collect);
-}
-
-.btn--collect:hover {
-  background: var(--action-invert);
-  color: var(--sf-base);
-}
-
-/* ---- text --------------------------------------------------------------- */
-/* No field and no border: an underline until it is hovered, when it takes the
-   tree pigment as a flat field and drops the line.
-   Square, and deliberately: a rotation reads as an object someone placed, and
-   a text button has no box to be one. 4a leaves its own box-less actions —
-   the inactive filter chips — upright for the same reason. */
-.btn--text {
+/* ---- destructive --------------------------------------------------------- */
+/**
+ * The one kind of button that GAINS weight as you approach it.
+ *
+ * v3: *"destructive rests as outline, fills on hover. it is the only button
+ * that gains weight when you approach it — a deliberate hesitation."* So it is
+ * quiet b taken to its end — the field does not stop at a 14% tint, it goes to
+ * the full pigment and the label flips to ink.
+ *
+ * IT MAY NOT STAMP AND IT MAY NOT BREAK, and neither rule is stylistic. v4:
+ * *"semantics never break. gravity stays flat"*, and the stamp is *"never on a
+ * semantic button"*. A control that destroys something must not be the most
+ * charming thing on the page, and a torn corner on a delete button is a joke
+ * told at the wrong moment. `ui/action` refuses the combination at build time.
+ *
+ * There is no call site for this yet — the site is static and destroys nothing.
+ * It is here because it is the kind of button whose whole definition is "the
+ * one that never plays", and that definition is worth nothing if it has to be
+ * reconstructed from the spec on the day someone finally needs a delete.
+ */
+.btn--destructive {
   background: transparent;
+  color: var(--c-destructive);
+  border: var(--btn-border-w) solid color-mix(in srgb, var(--c-destructive) 55%, transparent);
+  padding-block: var(--btn-pad-block-outline);
+  padding-inline: var(--btn-pad-inline-outline);
+  transition: background var(--m-quiet-tint) linear, border-color var(--m-quiet-tint) linear,
+    color var(--m-quiet-tint) linear;
+}
+
+.btn--destructive:hover {
+  border-color: var(--c-destructive);
+  background: var(--c-destructive);
+  color: var(--pigment-ink);
+}
+
+/* ---- quiet c · rule draw ------------------------------------------------- */
+/**
+ * Text buttons and inline links. v3: *"2px pigment rule draws under the label ·
+ * 180ms."*
+ *
+ * NO UNDERLINE AT REST, which is a change and is the spec's. The rule is the
+ * hover; drawing a static underline as well would mean the control already had
+ * the line it is supposed to acquire. What identifies it at rest is the face —
+ * Archivo 600 against Libre Franklin prose — and its place in an action row.
+ *
+ * It is a `background-image` rather than `text-decoration` because a decoration
+ * cannot be animated from zero width, and because the rule must draw from one
+ * end rather than fade in everywhere at once.
+ *
+ * Square, and deliberately: a rotation reads as an object someone placed, and a
+ * text button has no box to be one. This is also why a text button can never be
+ * the stamp — there is nothing to lift.
+ *
+ * v3 adds *"reverse the direction for undo actions"* — `background-position:
+ * 100% 100%` so the rule draws right-to-left. Not built: nothing in this site
+ * undoes anything, and a direction nobody can see is a direction nobody can
+ * check. Logged rather than guessed at.
+ */
+.btn--text {
+  background-color: transparent;
   color: currentColor;
   padding-inline: var(--btn-pad-inline-text);
-  text-decoration-line: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
+  background-image: linear-gradient(
+    var(--area-pigment, var(--c-maar)),
+    var(--area-pigment, var(--c-maar))
+  );
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% var(--quiet-rule-w);
+  transition: background-size var(--m-quiet-rule) var(--ease);
 }
 
 .btn--text:hover {
-  background: var(--c-tree);
-  color: var(--pigment-ink);
-  text-decoration-line: none;
+  background-size: 100% var(--quiet-rule-w);
 }
 
-/* ---- disabled ----------------------------------------------------------- */
+/* ---- the stamp ----------------------------------------------------------- */
+/**
+ * The signature, and the whole movement budget's headline half.
+ *
+ * v4's state table, which every rule below is a row of:
+ *
+ *   rest    flat, square to the grid, no shadow
+ *   hover   tilt ∓1deg · lift 3px · hard shadow in --c-dark
+ *   active  tilt relaxes, shadow to 2px — it lands
+ *
+ * ALLOWED on a hero, an empty state, a campaign or a confirmation, and
+ * FORBIDDEN in toolbars, forms, list rows, headers, modals and cards in a grid.
+ * v3 is blunt about the reason: *"twelve of them in a settings screen is a
+ * nervous interface."* One per view, and `ui/action` plus verify-actions.mjs
+ * are what make that a fact rather than an intention.
+ *
+ * THE SHADOW IS ALWAYS --c-dark AND NEVER BLURRED. It is a printed offset, not
+ * a light source, so the blur radius is 0 in every rule here. A blurred shadow
+ * would be the one thing in the whole language that implies a z-axis.
+ *
+ * The resting `box-shadow` is declared at zero rather than omitted so that the
+ * hover has something to transition FROM — `none` does not interpolate.
+ */
+.btn--stamp {
+  box-shadow: 0 0 0 var(--c-dark);
+  transition: transform var(--m-quiet-rule) var(--ease), box-shadow var(--m-quiet-rule) var(--ease);
+}
+
+/* "maar tilts left, collect tilts right — fixed per pigment, not random." The
+   sign belongs to the pigment, so two stamps in a build are never parallel and
+   no call site gets to choose an angle. */
+.btn--primary.btn--stamp {
+  --stamp-tilt: var(--stamp-tilt-maar);
+}
+
+.btn--collect.btn--stamp {
+  --stamp-tilt: var(--stamp-tilt-collect);
+}
+
+/**
+ * Hover is behind `(hover: hover)` and focus is not.
+ *
+ * A touch device has no hover to leave: the tilt would latch after a tap and
+ * sit there, lifted, until something else was touched — the one state v4 never
+ * draws. Splitting them also settles the responsive question the token block
+ * raises, since a phone simply never reaches the ∓1.2deg the tilt cap would
+ * otherwise have to argue about.
+ *
+ * The keyboard path gets the identical treatment, unconditionally, because a
+ * focused stamp is being addressed just as deliberately as a hovered one.
+ */
+@media (hover: hover) {
+  .btn--stamp:hover {
+    transform: rotate(var(--stamp-tilt)) translateY(calc(-1 * var(--stamp-lift)));
+    box-shadow: var(--stamp-shadow-o) var(--stamp-shadow-o) 0 var(--c-dark);
+  }
+}
+
+.btn--stamp:focus-visible {
+  transform: rotate(var(--stamp-tilt)) translateY(calc(-1 * var(--stamp-lift)));
+  box-shadow: var(--stamp-shadow-o) var(--stamp-shadow-o) 0 var(--c-dark);
+}
+
+/* "tilt relaxes, shadow to 2px — it lands." The angle is a fraction of the one
+   the button is already holding, so the press introduces no fourth value into
+   the closed angle set. The 1px nudge is the site-wide press, composed with it. */
+.btn--stamp:active {
+  transform: rotate(calc(var(--stamp-tilt) * var(--stamp-press-relax)))
+    translateY(var(--press-nudge));
+  box-shadow: var(--stamp-shadow-o-press) var(--stamp-shadow-o-press) 0 var(--c-dark);
+}
+
+/* ---- break gestures ------------------------------------------------------ */
+/**
+ * Three of v4's five, and the three are the owner's pick: *"my picks are pivot,
+ * tape and offset print."* `cut edge` and `slipped mark` are specified but not
+ * chosen; they are logged, not built.
+ *
+ * The shared law, and the one that makes a break safe to spend anywhere:
+ *
+ *   "each one moves a part, not the whole — the button's footprint stays fixed
+ *    so nothing around it reflows."
+ *
+ * So nothing below touches width, height, padding or the button's own
+ * `transform`. A break animates a child glyph, a detached strip or a shadow.
+ * That is also what lets a break sit inside a tight row where a stamp could
+ * not: the neighbours never learn it happened.
+ */
+
+/* a · pivot — "only the glyph turns … label and box are frozen." */
+.btn__pivot {
+  display: inline-block;
+  /* The glyph is a monospace mark, not a word: it belongs to the meta face the
+     rest of the language draws its small signs in. */
+  font-family: var(--t-meta-face);
+  margin-inline-start: var(--s-2);
+  transition: transform var(--m-quiet-rule) var(--ease);
+}
+
+@media (hover: hover) {
+  .btn--break-pivot:hover .btn__pivot {
+    transform: rotate(var(--break-pivot-tilt)) translateX(var(--break-pivot-travel));
+  }
+}
+
+.btn--break-pivot:focus-visible .btn__pivot {
+  transform: rotate(var(--break-pivot-tilt)) translateX(var(--break-pivot-travel));
+}
+
+/* b · offset print — "the stamp's shadow without the stamp's lift." */
+/**
+ * A SECOND pigment slips out behind the block. It is the one place two pigments
+ * are allowed near each other, and the "never two pastels touching" rule is not
+ * broken because they never touch: one is the field and the other is behind it,
+ * separated by the edge of the block.
+ *
+ * The second pigment is fixed per variant rather than chosen at the call site,
+ * for the same reason the stamp's tilt sign is: left to a prop it would sooner
+ * or later be set to the button's own pigment, and a shadow the colour of the
+ * thing casting it is invisible.
+ */
+.btn--break-offset {
+  box-shadow: 0 0 0 var(--btn-offset-pigment);
+  transition: box-shadow var(--m-quiet-tint) var(--ease);
+}
+
+.btn--primary.btn--break-offset {
+  --btn-offset-pigment: var(--c-collect);
+}
+
+.btn--collect.btn--break-offset {
+  --btn-offset-pigment: var(--c-tree);
+}
+
+@media (hover: hover) {
+  .btn--break-offset:hover {
+    box-shadow: var(--break-offset-o) var(--break-offset-o) 0 var(--btn-offset-pigment);
+  }
+}
+
+.btn--break-offset:focus-visible {
+  box-shadow: var(--break-offset-o) var(--break-offset-o) 0 var(--btn-offset-pigment);
+}
+
+.btn--break-offset:active {
+  box-shadow: var(--break-offset-o-press) var(--break-offset-o-press) 0 var(--btn-offset-pigment);
+  transform: translateY(var(--press-nudge));
+}
+
+/* c · tape — "a 44×14 pigment strip lands across the top-left corner at −24deg." */
+/**
+ * Pure collage, and the most expensive gesture in the set: it is the only one
+ * that puts pigment somewhere there was none.
+ *
+ * It hangs OUTSIDE the box on both axes, which is why it is a `::before` on a
+ * positioned button rather than anything in flow — the footprint has to stay
+ * exactly what it was, and a strip that reserved space for itself would push
+ * its row apart. `pointer-events: none` keeps it from stealing the hover that
+ * is drawing it.
+ *
+ * ONLY ON UNFILLED BUTTONS. A strip of pigment laid across a filled button is
+ * two pastels touching, which the pigment rule forbids outright; across an
+ * outline it is the only pigment present. `ui/action` refuses the other case.
+ * Never on a destructive action — v4 says so directly, and the reasoning is the
+ * same one that keeps a stamp off it.
+ */
+.btn--break-tape {
+  position: relative;
+}
+
+.btn--break-tape::before {
+  content: '';
+  position: absolute;
+  inset-block-start: var(--break-tape-top);
+  inset-inline-start: var(--break-tape-left);
+  inline-size: var(--break-tape-w);
+  block-size: var(--break-tape-h);
+  background: var(--area-pigment, var(--c-tree));
+  /* The radius scale gives buttons 2px; the tape is a torn strip, not a
+     control, so it takes the marks-and-media 0. */
+  border-radius: 0;
+  pointer-events: none;
+  opacity: 0;
+  transform-origin: center;
+  /* It arrives from down-and-right, as though dropped onto the corner. The
+     angle is held in both states so only the travel and the opacity animate. */
+  transform: rotate(var(--break-tape-tilt)) translate(6px, 6px);
+  transition: transform var(--m-quiet-rule) var(--ease), opacity var(--m-quiet-tint) linear;
+}
+
+@media (hover: hover) {
+  .btn--break-tape:hover::before {
+    opacity: 1;
+    transform: rotate(var(--break-tape-tilt)) translate(0, 0);
+  }
+}
+
+.btn--break-tape:focus-visible::before {
+  opacity: 1;
+  transform: rotate(var(--break-tape-tilt)) translate(0, 0);
+}
+
+/* ---- reduced motion ------------------------------------------------------ */
+/**
+ * v4: *"breaks resolve to their end state instantly; the tilt survives, the
+ * travel doesn't."*
+ *
+ * The first clause is already true everywhere — reset.css collapses every
+ * transition-duration to nothing under this query, so each gesture arrives at
+ * its end state with no tween. This block only has to handle the second clause,
+ * and only the stamp has travel to suppress: its 3px lift.
+ *
+ * THE ROTATION AND THE SHADOW STAY. A rotation is a static end state rather
+ * than motion — the same judgement card.css already records for the card lean,
+ * and the same one the cut word's angle rests on. Removing them would leave a
+ * reduced-motion visitor with no hover response on the one control the page is
+ * built around, which is a worse outcome than the one the setting asks for.
+ *
+ * The 1px press nudge is deliberately NOT suppressed here. It is not decoration
+ * — it is the confirmation that a press registered — it predates this system,
+ * and every other control in the build keeps it under this query.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .btn--stamp:hover,
+  .btn--stamp:focus-visible {
+    transform: rotate(var(--stamp-tilt));
+  }
+}
+
+/* ---- disabled ------------------------------------------------------------ */
 /**
  * One rule for every variant, because the spec draws all four the same way when
  * disabled: the field collapses to a 10% ink tint and the label to 60% ink.
  * `pointer-events: none` is deliberately NOT used — it would also suppress the
  * cursor feedback that tells someone the control is unavailable, and a disabled
  * <button> is already unclickable and unfocusable to the browser.
+ *
+ * The break and stamp gestures are cancelled with it. A disabled control that
+ * still tilted, taped or cast a shadow would be advertising an action it is
+ * refusing to perform.
  */
 .btn:disabled,
 .btn[aria-disabled='true'] {
@@ -175,19 +501,28 @@
   border-color: color-mix(in srgb, var(--ink) 20%, transparent);
   cursor: not-allowed;
   text-decoration-line: none;
+  background-image: none;
+  box-shadow: none;
 }
 
 .btn:disabled:hover,
 .btn[aria-disabled='true']:hover {
   background: var(--disabled-bg);
   color: var(--ink-meta);
+  background-image: none;
+  box-shadow: none;
 }
 
-/* The nudge is suppressed and the tilt is not: a disabled control is still the
-   same object sitting at the same angle, it just does not respond. */
-.btn:disabled:active,
-.btn[aria-disabled='true']:active {
-  transform: rotate(var(--btn-tilt));
+.btn:is(:disabled, [aria-disabled='true']):is(:hover, :focus-visible, :active) {
+  transform: none;
+}
+
+.btn:is(:disabled, [aria-disabled='true']):is(:hover, :focus-visible)::before {
+  opacity: 0;
+}
+
+.btn:is(:disabled, [aria-disabled='true']):is(:hover, :focus-visible) .btn__pivot {
+  transform: none;
 }
 
 /* ---- form controls inside a rendered body -------------------------------- */
@@ -209,12 +544,14 @@
  * which cannot contain anything, so it is styled as a block rather than a flex
  * box (`display: inline-flex` on an input is meaningless — it has no children
  * to align).
+ *
+ * DRAWN AS A QUIET PRIMARY, AND IT MAY NOT BE A STAMP. A submit button is a
+ * form control, and v3 lists forms among the places the stamp is forbidden. It
+ * used to carry the primary's resting tilt; under the movement budget it is
+ * square like everything else that is not the one action a view is built on.
  */
 .prose button[type='submit'],
 .prose input[type='submit'] {
-  /* Drawn as a primary, so it leans as one. */
-  --btn-tilt: var(--action-tilt-primary);
-  transform: rotate(var(--btn-tilt));
   min-height: var(--hit-min);
   padding-block: var(--btn-pad-block);
   padding-inline: var(--btn-pad-inline);
@@ -228,7 +565,7 @@
   border: 0;
   border-radius: var(--r-1);
   cursor: pointer;
-  transition: background var(--m-fast) var(--ease), color var(--m-fast) var(--ease);
+  transition: background var(--m-quiet-fill) linear, color var(--m-quiet-fill) linear;
 }
 
 .prose button[type='submit'] {
@@ -237,15 +574,15 @@
   justify-content: center;
 }
 
+/* Quiet a, the same mechanic every other filled button in the build uses. */
 .prose button[type='submit']:hover,
 .prose input[type='submit']:hover {
-  background: var(--action-invert);
-  color: var(--sf-base);
+  background: color-mix(in srgb, var(--c-maar) var(--quiet-fill-keep), var(--ink));
 }
 
 .prose button[type='submit']:active,
 .prose input[type='submit']:active {
-  transform: rotate(var(--btn-tilt)) translateY(var(--press-nudge));
+  transform: translateY(var(--press-nudge));
 }
 
 /**
@@ -261,7 +598,7 @@
  *
  * The hover and active rules above are cancelled with it: a control that cannot
  * be pressed must not answer the pointer as though it can, and without this the
- * disabled button still inverted on hover.
+ * disabled button still lightened on hover.
  */
 .prose :is(button, input)[type='submit']:disabled {
   opacity: 0.6;
@@ -273,10 +610,8 @@
   color: var(--pigment-ink);
 }
 
-/* The RESTING tilt stays — it is the button's shape, not its press. Only the
-   nudge the active rule adds is cancelled. */
 .prose :is(button, input)[type='submit']:disabled:active {
-  transform: rotate(var(--btn-tilt));
+  transform: none;
 }
 
 /**
@@ -382,14 +717,18 @@
 
 /* ---- below 600px --------------------------------------------------------- */
 /**
- * "< 600 … tilt max --tilt-b" — and there is deliberately no media query here.
+ * "< 600 … tilt max --tilt-b" — and there is still deliberately no media query
+ * here, for a stronger reason than before.
  *
- * --tilt-b is 1deg, and every action angle is inside it by construction: -0.6,
- * -0.8, +0.5. A rule capping them would be a rule that never fires, and this
- * repo has already paid once for a declaration that looked done and did
- * nothing. The constraint belongs where a new value is chosen, so it is stated
- * in the token block in tokens.css instead: an action angle stays under 1deg.
+ * The old action angles were resting angles under 1deg, so the cap could never
+ * fire. Under the movement budget there are no resting angles at all: every
+ * button in the build is square at every width. The only rotation left is the
+ * stamp's ∓1.2deg, which is above --tilt-b and is reached only on hover — and
+ * the hover rules are already behind `(hover: hover)`, which a 360px phone does
+ * not match.
  *
- * The chips are the case that genuinely exceeds it, at -1.5deg, and they carry
- * a real media query of their own — see .lang-switch in pages/[...page].astro.
+ * So the cap is satisfied structurally rather than by a rule, and the place a
+ * new angle gets chosen is the closed set in tokens.css. The chips are the one
+ * control that still leans at rest, they are outside --tilt-b, and they carry a
+ * real media query of their own — see `.lang-switch` in `pages/[...page].astro`.
  */

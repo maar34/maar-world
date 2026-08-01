@@ -2,9 +2,38 @@
 /**
  * ui/action — the one semantic entry point for Maar World actions.
  *
- * `button.css` already owns the visual variants and their opposed tilts. This
- * wrapper prevents every page family from spelling those classes independently
- * while keeping an action a real link whenever it navigates.
+ * `button.css` already owns the visual kinds and their mechanics. This wrapper
+ * prevents every page family from spelling those classes independently while
+ * keeping an action a real link whenever it navigates.
+ *
+ * ── THE HYBRID, AND WHY IT IS TWO PROPS RATHER THAN MORE VARIANTS ────────────
+ *
+ * "Buttons v4 · the break" splits an action's appearance into two independent
+ * questions, and the props follow that split exactly:
+ *
+ *   variant   WHAT KIND of button this is — which pigment, which shape, which
+ *             quiet mechanic. Every button has one.
+ *   emphasis  whether this is the view's ONE stamp. Default `quiet`.
+ *   gesture   whether this is the view's ONE break, and which one.
+ *
+ * Folding these into a single `variant` list was the obvious alternative and it
+ * is wrong: it would multiply into `primary-stamp`, `primary-tape`,
+ * `collect-stamp` and so on, and — worse — it would hide the fact that stamp
+ * and break are BUDGETED. A view may hold many variants and exactly one stamp
+ * and one break. A prop you are allowed to use once reads differently from a
+ * name in a list, and it is the thing `scripts/verify-actions.mjs` counts.
+ *
+ * ── THE REFUSALS ARE BUILD ERRORS, NOT COMMENTS ─────────────────────────────
+ *
+ * Everything `validate()` below throws on is a rule the design source states in
+ * as many words. They throw rather than warn because this is a static build:
+ * an exception here fails `npm run build`, which means a forbidden combination
+ * cannot reach a page at all. A console warning during a 300-route build is a
+ * line nobody reads.
+ *
+ * What it cannot check is the budget itself — one stamp and one break PER VIEW
+ * — because a component knows nothing about its siblings or its page. That is
+ * checked against the built HTML instead, where the view actually exists.
  *
  * ── THE ICON, AND WHY IT IS HERE RATHER THAN AT THE CALL SITES ───────────────
  *
@@ -25,24 +54,119 @@
  *
  * The mark is `ui/navigation-icon` rather than a second icon component because
  * that one already compiles the official Material Symbol source in as raw SVG,
- * inheriting `currentColor`. A button inverts its colour on hover; an icon that
- * did not follow it would be the reason to have written a second one, and it
- * does follow it. `.nav-icon` carries its own trailing margin, so no gap rule
- * is needed on `.btn` — see `styles/shell.css`.
+ * inheriting `currentColor`. `.nav-icon` carries its own trailing margin, so no
+ * gap rule is needed on `.btn` — see `styles/shell.css`.
+ *
+ * The pivot glyph is NOT one of those icons and is deliberately a bare
+ * character. It is punctuation rather than iconography — it says "onward",
+ * carries no destination, and would be meaningless in the `NAVIGATION_ICONS`
+ * set, which names places. It is `aria-hidden` because the label already says
+ * where the control goes; a screen reader announcing "next place right arrow"
+ * is reading the decoration out loud.
  */
 import NavigationIcon from './NavigationIcon.astro';
 import type { NavigationIconName } from '../../config/site';
 
-type Variant = 'primary' | 'secondary' | 'collect' | 'text';
+type Variant = 'primary' | 'secondary' | 'collect' | 'text' | 'destructive';
+type Emphasis = 'quiet' | 'stamp';
+type Gesture = 'pivot' | 'tape' | 'offset';
 
 interface Props {
   href: string;
   label: string;
   variant?: Variant;
+  /** `stamp` spends the view's one lift. Forbidden on unfilled and semantic kinds. */
+  emphasis?: Emphasis;
+  /** The view's one break. Mutually exclusive with `emphasis="stamp"`. */
+  gesture?: Gesture;
   icon?: NavigationIconName;
 }
 
-const { href, label, variant = 'primary', icon } = Astro.props;
+const { href, label, variant = 'primary', emphasis = 'quiet', gesture, icon } = Astro.props;
+
+/**
+ * A filled kind has a pigment field; an unfilled one is an outline or bare
+ * type. Almost every rule below turns on this distinction rather than on the
+ * variant name, because the reasons are about the field: you cannot lift what
+ * has no box, and you cannot lay a pigment strip across a pigment field without
+ * putting two pastels in contact.
+ */
+const FILLED: readonly Variant[] = ['primary', 'collect'];
+const isFilled = FILLED.includes(variant);
+
+function validate(): void {
+  const at = `<Action label="${label}">`;
+
+  // "the primary action … if you want a second one, you have two primaries and
+  // a structure problem." A stamp is the view's answer; a break is its aside.
+  // One element cannot be both.
+  if (emphasis === 'stamp' && gesture) {
+    throw new Error(
+      `${at} is both a stamp and a "${gesture}" break. v4 budgets these separately — ` +
+        `one stamp and one break per view, never stacked on one control. ` +
+        `Drop the gesture, or drop emphasis="stamp".`,
+    );
+  }
+
+  // The stamp "lifts, tilts, casts a hard shadow" — all three need a box with a
+  // field. A text button has no box, and an outline's shadow would read as a
+  // second border rather than a printed offset.
+  if (emphasis === 'stamp' && !isFilled) {
+    throw new Error(
+      `${at} asks for a stamp on variant="${variant}". The stamp is a filled gesture: ` +
+        `it lifts and casts a hard shadow, and only "primary" or "collect" have the ` +
+        `field to do that with.`,
+    );
+  }
+
+  // "semantics never break. gravity stays flat." A destructive control is the
+  // one kind whose definition is that it never plays.
+  if (variant === 'destructive' && (emphasis === 'stamp' || gesture)) {
+    throw new Error(
+      `${at} is destructive and also ${emphasis === 'stamp' ? 'a stamp' : `a "${gesture}" break`}. ` +
+        `v4: "semantics never break. gravity stays flat" — and the stamp is "never on a ` +
+        `semantic button". A control that destroys something is not the charming one.`,
+    );
+  }
+
+  // "a 44×14 pigment strip lands across the top-left corner." On a filled
+  // button that strip touches the field: two pastels in contact, which the
+  // pigment rule forbids outright.
+  if (gesture === 'tape' && isFilled) {
+    throw new Error(
+      `${at} tapes a filled variant="${variant}". The tape is a pigment strip, and laying ` +
+        `it on a pigment field puts two pastels in contact. Tape "secondary" or "text", ` +
+        `or use gesture="offset" for a filled button.`,
+    );
+  }
+
+  // "a second pigment slips out behind the block" — there has to be a block for
+  // it to slip out from. Behind an outline it is just a floating rectangle.
+  if (gesture === 'offset' && !isFilled) {
+    throw new Error(
+      `${at} asks for an offset print on variant="${variant}". The offset is a second ` +
+        `pigment behind a filled block; an outline has no block to sit in front of it. ` +
+        `Use gesture="tape" for an unfilled button.`,
+    );
+  }
+}
+
+validate();
+
+const classes = [
+  'btn',
+  `btn--${variant}`,
+  emphasis === 'stamp' && 'btn--stamp',
+  gesture && `btn--break-${gesture}`,
+];
 ---
 
-<a class:list={['btn', `btn--${variant}`]} href={href}>{icon && <NavigationIcon name={icon} />}{label}</a>
+<a class:list={classes} href={href}
+  >{icon && <NavigationIcon name={icon} />}{label}{
+    gesture === 'pivot' && (
+      <span class="btn__pivot" aria-hidden="true">
+        →
+      </span>
+    )
+  }</a
+>

@@ -103,6 +103,7 @@
 import Card from '../patterns/Card.astro';
 import CollageField from '../patterns/CollageField.astro';
 import Action from '../ui/Action.astro';
+import Statement from '../patterns/Statement.astro';
 import Carousel from '../media/Carousel.astro';
 import EmbedFacade from '../media/EmbedFacade.astro';
 import {
@@ -280,14 +281,28 @@ const slides = COLLECT_JOURNEY_IMAGES.map((image, i) => ({
       note={video.note}
     />
 
-    <h2 class="collect__heading">{copy.pitch.title}</h2>
+    {/* The page's opening statement, in the Lab h1's voice. See
+        `patterns/statement` for why an h2 is allowed a mark here and what that
+        exception does not extend to. */}
+    <Statement text={copy.pitch.title} mark={copy.pitch.mark} />
     <p class="collect__lede">{copy.pitch.body}</p>
     {/* `category` is collect's own symbol in `AREAS` — the same one the header
         wears on this area and the home page wears on "collect cards". The icon
         is named here rather than in the record because it belongs to the
         destination, not to the sentence: `en` says "Collect" and `es` says
         "Coleccionar", and both are the same action. */}
-    <Action href={COLLECT_STORE_URL} label={copy.pitch.cta} variant="collect" icon="category" />
+    {/* Collect's one stamp. The store is what this page is for, and v4 allows
+        the lift on exactly the primary action of a view. The tilt sign comes
+        from the pigment rather than from here — "maar tilts left, collect tilts
+        right" — so this leans the opposite way to the home page's stamp without
+        either call site choosing an angle. */}
+    <Action
+      href={COLLECT_STORE_URL}
+      label={copy.pitch.cta}
+      variant="collect"
+      emphasis="stamp"
+      icon="category"
+    />
   </section>
 
   {/* A picture and nothing else. In the migrated body this was a background
@@ -299,13 +314,25 @@ const slides = COLLECT_JOURNEY_IMAGES.map((image, i) => ({
   <section class="prose collect__band collect__band--center" aria-label={copy.orbiters.label}>
     {/* The link asks what an Orbiter is, so it wears what an Orbiter is: the
         `satellite_alt` the header already gives `/orbiters` in `SECTIONS`. */}
-    <Action href={orbitersHref} label={copy.orbiters.label} variant="secondary" icon="satellite_alt" />
+    {/* Collect's one break, and the page's whole movement budget is now spent.
+        Tape rather than pivot: this link asks what an Orbiter is, which is a
+        question rather than a direction, and v4 reserves the pivot for "anything
+        with a direction". A strip of tape across the corner is the aside it
+        actually is. It is legal here because the button is unfilled — tape on a
+        pigment field would be two pastels touching, which `ui/action` refuses. */}
+    <Action
+      href={orbitersHref}
+      label={copy.orbiters.label}
+      variant="secondary"
+      gesture="tape"
+      icon="satellite_alt"
+    />
   </section>
 
   <section class="prose collect__band" aria-labelledby="collect-journey">
-    <h2 class="collect__heading collect__heading--center" id="collect-journey">
-      {copy.journey.title}
-    </h2>
+    {/* Keeps its id: the section is labelled by this heading, so the element
+        the `aria-labelledby` points at must stay put. */}
+    <Statement text={copy.journey.title} mark={copy.journey.mark} id="collect-journey" />
     <Carousel id={carouselId} label={copy.journey.carouselLabel} slides={slides} />
   </section>
 

@@ -381,3 +381,31 @@
 :where(h2, h3, h4, h5, h6, p, li, dd, dt, figcaption, label, th, td) .mark__echo {
   display: none;
 }
+
+/**
+ * THE ONE OPENING IN THE CONTAINMENT, and it is named so it can be counted.
+ *
+ * `patterns/statement` draws a section heading in the Lab h1's voice — display
+ * face, italic, one word overprinted — because the owner asked for the Collect
+ * page's two statements to read that way. A statement is an `h2`, so the rule
+ * directly above would strip the echo off it, which is the whole of what makes
+ * it a statement rather than a large heading.
+ *
+ * This is therefore a deliberate exception to the rules-of-use row *"h2 —
+ * marks: none"*, and it is written here, against the rule it excepts, rather
+ * than hidden in the component: anyone reading the containment sees its single
+ * opening in the same glance.
+ *
+ * WHAT IS NOT WAIVED. Only the echo comes back. `.statement` claims no tilt, no
+ * second face beyond the display italic, and exactly one marked word per line —
+ * the other limits that row sets are kept, and the component enforces the last
+ * of them by taking a single `mark` string. A statement borrows the Lab h1's
+ * voice; it does not become an h1, and its heading level is unchanged.
+ *
+ * It is `.statement .mark__echo` (0,2,0) rather than a `:where()` form, so it
+ * beats the (0,1,0) containment on specificity and does not depend on staying
+ * below it in source order.
+ */
+.statement .mark__echo {
+  display: revert;
+}
