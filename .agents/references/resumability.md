@@ -67,10 +67,15 @@ One commit per issue, each carrying its issue key.
 
 ## Why this resumes without duplicating or skipping
 
-- **No duplication.** Every finished unit has a ledger line and a commit. Re-running any
-  migration script is idempotent — `migrate-cards.mjs` overwrites by card code, and
-  `freeze-routes.mjs` regenerates a byte-identical route set (verified when the baseline was
-  extended during MW-6: 306 routes before and after, identical).
+- **No duplication.** Every finished unit has a ledger line and a commit.
+
+  > **Correction (2026-08-01).** This section used to say re-running any migration script is
+  > idempotent, citing `migrate-cards.mjs`. That is no longer true and was the belief that made
+  > `migrate-pages.mjs` dangerous: once its output is hand-edited, a "regeneration" is a
+  > revert. Both scripts are now retired to `../_retired/` and must not be run. What still
+  > holds is `freeze-routes.mjs`, which regenerates a byte-identical route set (verified when
+  > the baseline was extended during MW-6: 306 routes before and after) — though regenerating
+  > it is still a contract change, which is what `verify:contract` exists to catch.
 - **No skipping.** `verify:routes` compares the build against all 264 preserved paths, so
   anything not yet migrated is named, not merely absent. A page cannot be quietly missed —
   it stays in the missing list until it exists.
