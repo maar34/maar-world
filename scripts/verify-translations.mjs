@@ -368,6 +368,28 @@ export const STRUCTURED_ES = new Set([
 ]);
 
 /**
+ * The only pairs whose PICTURES may legitimately differ, by English outputPath.
+ *
+ * A photograph is the same photograph in Spanish, so two halves showing
+ * different files is a defect by default — it is how `/es/landings`,
+ * `/es/bookings`, `/es/orbiters`, `/es/about` and `/es/calendar` came to render
+ * no header at all, and how the Spanish home page came to draw one of its three
+ * cards with no picture. Both were lookups keyed by an English-only path,
+ * returning nothing on a miss, invisible to every check in the suite.
+ *
+ * The exception is artwork with WORDS PRINTED ON IT. The Orbiters Orchestra
+ * poster exists as `Interplanetary-Orchestra.ENG.png` and
+ * `Interplanetary-Orchestra.ESP.png` because it is a designed sheet with type,
+ * and showing a reader the English sheet on a Spanish page would be the same
+ * half-translated chrome this issue removes. That is a picture that is genuinely
+ * per-language, and it is the only kind that is.
+ *
+ * `lab` is here because the Lab index draws that poster as one of its eleven
+ * card covers, not for a reason of its own.
+ */
+export const TRANSLATED_ARTWORK = new Set(['lab/en/ip-orchestra-design', 'lab']);
+
+/**
  * A page's shape, with every word removed: tag names and first classes, in order.
  *
  * Pure, and exported, for the reason `spanishFiling` and `spanishStructure` are:
@@ -959,6 +981,56 @@ export async function checkTranslations(report) {
     report.pass(
       'the divergent-pair list is closed',
       `${DIVERGENT_PAIRS.size} of a permitted ${DIVERGENT_PAIRS_CLOSED_AT} — it may shrink, never grow`,
+    );
+  }
+
+  // ── A PICTURE HAS NO LANGUAGE ─────────────────────────────────────────────
+
+  const picturesOf = (outputPath) => {
+    const file = resolveRoute(urlOf(outputPath), set);
+    if (!file) return null;
+    /* THE WHOLE DOCUMENT, not the body — deliberately wider than the structural
+       assertion above. Both defects this catches were in the CHROME: the section
+       header's collage, and a card cover drawn by a page family. Measuring only
+       the body is what let them stand. */
+    return (readDistFile(file).match(/<img[^>]*\ssrc="([^"]+)"/g) ?? [])
+      .map((t) => /src="([^"]+)"/.exec(t)[1])
+      .join(' ');
+  };
+
+  const wrongPictures = [];
+  let samePictures = 0;
+  for (const { original, translation } of pairs) {
+    const a = picturesOf(original.outputPath);
+    const b = picturesOf(translation.outputPath);
+    if (a === null || b === null) continue;
+    if (a === b) {
+      samePictures += 1;
+      continue;
+    }
+    if (TRANSLATED_ARTWORK.has(original.outputPath)) continue;
+    const A = a ? a.split(' ') : [];
+    const B = b ? b.split(' ') : [];
+    wrongPictures.push(
+      `${original.outputPath} shows ${A.length} picture(s), ${translation.outputPath} shows ${B.length}` +
+        (A.length === B.length ? ' — same count, different files' : ''),
+    );
+  }
+
+  if (wrongPictures.length) {
+    report.fail(
+      'a page and its translation show the same pictures',
+      `${wrongPictures.length}: ${wrongPictures.slice(0, 5).join('; ')} — a photograph is the ` +
+        'same photograph in Spanish. A lookup keyed by an English-only path (SECTION_COLLAGE, ' +
+        'ARTICLE_COVER_FALLBACKS) returns nothing for the Spanish half and the page silently ' +
+        'renders without it. If the artwork genuinely carries words, list the pair in ' +
+        'TRANSLATED_ARTWORK and say so',
+    );
+  } else {
+    report.pass(
+      'a page and its translation show the same pictures',
+      `${samePictures} of ${pairs.length} pairs identical; ${TRANSLATED_ARTWORK.size} pair(s) ` +
+        'carry artwork with words on it and are listed',
     );
   }
 

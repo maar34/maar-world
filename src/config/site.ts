@@ -538,7 +538,47 @@ const ARTICLE_COVER_FALLBACKS: Record<string, ArticleCover> = {
   '/lab/es/cultura-compartida': '/img/lab/orbital-workshop-1.jpg',
 };
 
-const coverEntry = (href: string): ArticleCover | undefined => ARTICLE_COVER_FALLBACKS[href];
+/**
+ * A PICTURE HAS NO LANGUAGE, so a Spanish href finds the English half's cover.
+ *
+ * THE SECOND HALF OF THE BUG THE OWNER SAW. The map is keyed by href, and the
+ * home page's middle card links to `/lab/en/orbits-and-bodies.html` in English
+ * and `/lab/es/orbits-and-bodies.html` in Spanish. Only the English key was
+ * ever added, a miss returns undefined, and `patterns/Card` degrades to a hatch
+ * plate rather than failing — so the Spanish home page rendered THREE cards
+ * where one had no picture, beside an English home page where all three did.
+ * Their words: *"in the main page there is still an image that is not loading
+ * in Spanish"*. It was not failing to load; it was never asked for.
+ *
+ * `collageFor` had the identical defect for section headers and takes the
+ * identical rule. Two lookups keyed on an English-only path, both silently
+ * returning nothing, both invisible to every check — one concept spelled twice,
+ * which is the shape MW-19 is about.
+ *
+ * Matched on the language-stripped form of BOTH sides, not just the query: the
+ * keys carry `/lab/en/` too, so `/lab/es/orbits-and-bodies.html` and
+ * `/lab/en/orbits-and-bodies.html` meet at `/lab/orbits-and-bodies.html`.
+ *
+ * EXPLICIT PAIRS ARE STILL NEEDED WHERE THE SLUG ITSELF IS TRANSLATED —
+ * `/lab/es/musica-retorno-al-juego` does not strip to
+ * `/lab/music-return-to-playing`, and no rule can know that it should. Those
+ * lines stay. This removes the ones that were only ever spelling out "the same
+ * article in the other language".
+ */
+const stripLanguageSegment = (path: string): string =>
+  path.startsWith('http')
+    ? path
+    : path
+        .split('/')
+        .filter((segment) => segment !== 'en' && segment !== 'es')
+        .join('/');
+
+const COVERS_BY_LANGUAGE_FREE_PATH: Record<string, ArticleCover> = Object.fromEntries(
+  Object.entries(ARTICLE_COVER_FALLBACKS).map(([href, cover]) => [stripLanguageSegment(href), cover]),
+);
+
+const coverEntry = (href: string): ArticleCover | undefined =>
+  ARTICLE_COVER_FALLBACKS[href] ?? COVERS_BY_LANGUAGE_FREE_PATH[stripLanguageSegment(href)];
 
 export const articleCoverFor = (href: string) => {
   const e = coverEntry(href);
@@ -588,32 +628,11 @@ export const SECTION_COLLAGE: Record<string, string> = {
   '': '/img/collages/03-ritual-interface.webp',
   orbiters: '/img/collages/25-botanical-turntable.webp',
   lab: '/img/collages/27-earth-receiver.webp',
-  /* The Spanish Lab is the same section, so it is the same picture: a reader
-     switching language should land somewhere they recognise. */
-  'es/lab': '/img/collages/27-earth-receiver.webp',
   landings: '/img/collages/06-sun-machine.webp',
   bookings: '/img/collages/10-orbital-rehearsal.webp',
   about: '/img/collages/05-spectral-cosmogram.webp',
   calendar: '/img/collages/07-river-parliament.webp',
   'collect/index': '/img/collages/24-archive-explosion.webp',
-  /**
-   * Same section, same picture — the `es/lab` line above, applied to Collect.
-   *
-   * FOUND BY MW-19, and it is the same defect the issue is about wearing a
-   * different coat. `/es/collect` rendered NO visual header at all: the map is
-   * keyed by `outputPath`, the Spanish half's is `es/collect/index`, and a miss
-   * returns null silently. So the two halves did not "render identically" even
-   * after their structure was made one component — one of them opened on a
-   * photograph and the other opened on a hidden `<h1>`.
-   *
-   * A rule that strips the language segment would fix this and the five other
-   * Spanish pages in the same position without a list. It is deliberately NOT
-   * done here: `/es/about`, `/es/orbiters`, `/es/landings`, `/es/bookings` and
-   * `/es/calendar` would all gain a header they do not have today, which is a
-   * visible change to five pages that this issue is not touching. It belongs
-   * with them — MW-19 step 2 reaches four of the five.
-   */
-  'es/collect/index': '/img/collages/24-archive-explosion.webp',
 };
 
 /**
@@ -750,9 +769,48 @@ export const TREE_HUB_STRINGS = {
 
 export type TreeIconName = (typeof TREE_LINKS)[number]['icon'];
 
-/** The picture for a section, or null where that section has no header. */
+/**
+ * The picture for a section, or null where that section has no header.
+ *
+ * ── A SECTION IS A SECTION IN BOTH LANGUAGES ─────────────────────────────────
+ *
+ * The lookup falls back to the path with its language segment removed, so
+ * `es/landings` finds `landings` and a reader switching language lands on the
+ * page they were just looking at rather than on a different-looking one.
+ *
+ * THIS IS THE BUG THE OWNER SAW, and it is worth stating plainly because it
+ * survived a green suite for days. `SECTION_COLLAGE` is keyed by `outputPath`,
+ * a miss returned null silently, and FIVE Spanish pages — `/es/landings`,
+ * `/es/bookings`, `/es/orbiters`, `/es/about`, `/es/calendar` — therefore
+ * rendered NO visual header at all while every English half opened on a
+ * photograph. Their owner's words, 2026-08-01: *"all the headers, they are
+ * different… it is one website in two languages, how is it possible that they
+ * look so different"*. They were right, and no check could see it: the header
+ * is chrome, drawn outside the page body, so the structural-parity assertion
+ * skipped it as per-language by design. A picture is not per-language.
+ *
+ * It was known and deferred. The note beside `es/collect/index` in the map said
+ * a language-stripping rule "would fix this and the five other Spanish pages
+ * without a list", and left it because those five would gain a header they did
+ * not have. Four of the five have now been converted by MW-19 step 2, which is
+ * the condition that note set. Deferring it was the wrong call regardless: the
+ * five pages were not "unchanged", they were broken, and leaving them broken is
+ * not the conservative option.
+ *
+ * ONE RULE RATHER THAN TWO MORE LINES. The map used to carry explicit
+ * `es/lab` and `es/collect/index` entries, each with a comment saying the
+ * Spanish half is the same section and deserves the same picture. That is this
+ * rule, stated twice by hand for the two pages someone noticed — which is the
+ * shape MW-19 exists to remove. Both lines are gone.
+ */
+const withoutLanguage = (outputPath: string): string =>
+  outputPath
+    .split('/')
+    .filter((segment) => segment !== 'en' && segment !== 'es')
+    .join('/');
+
 export const collageFor = (outputPath: string): string | null =>
-  SECTION_COLLAGE[outputPath] ?? null;
+  SECTION_COLLAGE[outputPath] ?? SECTION_COLLAGE[withoutLanguage(outputPath)] ?? null;
 
 /**
  * Same-registrable-domain hosts. These are same-site even inside an iframe and
