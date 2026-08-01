@@ -100,35 +100,44 @@ caller was `/radio`, which was deleted rather than converted, so an entry would
 replace no markup — adding one would be exactly the speculative
 pre-population that file forbids. The comment there says so now.
 
-### "ORBITERS" IS A NAME. "UN ORBITADOR" IS A THING.
+### THE PRODUCT IS "ORBITADORES" IN SPANISH AND "ORBITERS" IN ENGLISH
 
-The owner's call, 2026-08-01, and the split is grammatical rather than
-editorial:
+Two names for one product, one per language, and it has been that way for a
+year. Not a name-versus-common-noun distinction — that was tried in this
+session and it was wrong: it left the **navigation reading "orbiters" on all 71
+Spanish pages**, which is the one place a reader sees on every one of them.
 
-| | stays | becomes |
-|---|---|---|
-| the product, the section, the workshop | `Orbiters`, `Orbiters Orchestra`, `Maar Orbiter` | — |
-| the header link, the URLs, the domain | `labelEs: 'Orbiters'`, `/orbiters`, `orbiter.plantasia.space` | — |
-| the word used as a common noun | — | `un orbitador`, `los orbitadores` |
+A Spanish page says **Orbitadores** everywhere it names the product: the header,
+the page title, the `h1`, the running text, the card copy.
 
-39 Spanish files changed: the two Orbiters docs, `ent-cards`, `tutorials`, the
-Collect landing's button, and all 34 card records ("el acceso al orbitador").
+Only three things keep the English spelling:
 
-**A check enforces it** — *a Spanish page says orbitador, not Orbiter*. It
-matches an ARTICLE immediately before the word, which is exactly what separates
-a name from a noun: a name takes no article, so `Maar Orbiter` cannot fire.
-There is no permitted-list to add a path to, deliberately.
+| keeps English | why |
+|---|---|
+| `Orbiters Orchestra` | the proper name of a workshop, not the product |
+| `orbiter.plantasia.space` | a real address |
+| `/orbiters`, `/es/orbiters` | frozen in the route manifest — a URL is not copy |
 
-Two things that check taught us on its first run, both now written into it:
+**A check enforces it** — *a Spanish page says Orbitadores, not Orbiters*. It
+reads each Spanish record's **body and title**, and the **header off the built
+page**, because the header comes from `SECTIONS` and not from any record —
+which is exactly how the first attempt passed while the nav stayed English.
+There is no permitted-list to add a path to.
 
-- **`Orbiters Orchestra` is the one name that DOES take an article** — "el
-  afiche de la Orbiters Orchestra" — because the article belongs to *orquesta*.
-  It is excluded by a lookahead.
-- **It must cut comments first**, exactly as `structuralCount` does. Without
-  that, a translator's note explaining the rule fails the check that enforces
-  it. Thirty-nine notes fired before this was added.
+`'Orbiters'` was removed from `SHARED_CHROME_WORDS` in the same commit. It was
+there on the reasoning that translating it would rename the instrument, and
+that reasoning was simply wrong about this product. Leaving the entry would
+have let the English label come back silently.
 
-### /radio IS GONE
+Two things the check caught on its own runs, both now written into it:
+
+- **`Orbiters Orchestra` is split by a component** in the Lab article's title —
+  `Orbiters <Mark …>Orchestra</Mark>` — so the lookahead has to skip markup.
+- **"Los Orbiters combinan…"** on `ip-orchestra-design`, missed by a
+  case-sensitive first pass. Sentence-initial capitals are why the rule is a
+  check and not a search-and-replace.
+
+### /radio IS GONE### /radio IS GONE
 
 Deleted, `policy: drop` on both URLs, the three external links recorded as
 reviewed removals, contract relocked (policy sha `5ad5bb98`, preserve 355→353).
