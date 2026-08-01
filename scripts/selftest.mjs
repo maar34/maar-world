@@ -1852,6 +1852,25 @@ a11yCase('an inline click handler fails verify:a11y', {
   expect: /inline event handler/,
 });
 
+/**
+ * The handler check used to name five events — click, mousedown, mouseup,
+ * mouseover, keypress — and `onsubmit` was not among them. `/lab/es/ip-orchestra`
+ * shipped three of them, navigating to a page that does not exist, and this
+ * assertion passed on all 195 pages while claiming no control was built from an
+ * inline handler. A named subset standing in for a category is exactly the
+ * defect verify:content guards against for headings.
+ *
+ * The case is `onsubmit` specifically, because that is the one that was really
+ * on the site and the one a regression would bring back with it.
+ */
+a11yCase('an inline submit handler fails verify:a11y', {
+  page: A11Y_PAGE.replace(
+    '<p><a href="/elsewhere">',
+    '<p><form action="#" onsubmit="location.href=\'/x\'; return false;"><button type="submit">go</button></form><a href="/elsewhere">',
+  ),
+  expect: /inline event handler/,
+});
+
 a11yCase('a table with no header cells fails verify:a11y', {
   page: A11Y_PAGE.replace('<th>Column</th>', '<td>Column</td>'),
   expect: /header cells/,

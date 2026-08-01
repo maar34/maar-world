@@ -327,11 +327,31 @@ export function auditPage(url, html) {
   // ---- keyboard operability ----------------------------------------------
   /**
    * A control built from a click handler on a non-interactive element cannot be
-   * reached by keyboard at all. Nothing on this site should have one — MW-9
-   * allows application JavaScript on exactly one page — so this is both an
+   * reached by keyboard at all. Nothing on this site should have one — AGENTS.md
+   * allows application JavaScript on exactly three things — so this is both an
    * accessibility assertion and a second lock on that rule.
+   *
+   * ── IT USED TO NAME FIVE HANDLERS AND MISS THE ONE THE SITE ACTUALLY HAD ────
+   *
+   * The list was `click|mousedown|mouseup|mouseover|keypress`. `/lab/es/ip-orchestra`
+   * shipped THREE `onsubmit` handlers — `location.href='/lab/es/ip-orchestra-subscription'`,
+   * a page that does not exist — and this check passed on all 195 pages while
+   * saying "no control is built from an inline event handler". A named subset
+   * standing in for the category is the same defect as a heading list that is a
+   * subset of the headings, which verify:content already guards against.
+   *
+   * So it matches ANY `on*` attribute. That is the category the assertion names,
+   * and it is what a fourth piece of application JavaScript would arrive as.
+   * Found while converting that page for MW-19; at the time of the change those
+   * three were the only inline handlers in the entire build, so widening the
+   * rule cost nothing to fix and would have cost a page to miss.
+   *
+   * `\son` with a word boundary at the end, so a legitimate attribute merely
+   * starting with "on" cannot be caught: HTML has no non-handler `on*` attribute,
+   * but `once`-style authored attributes exist and are not handlers. The
+   * requirement of `=` after it keeps it to attributes.
    */
-  for (const m of html.matchAll(/\son(click|mousedown|mouseup|mouseover|keypress)\s*=/gi)) {
+  for (const m of html.matchAll(/\son([a-z]+)\s*=\s*["']/gi)) {
     bad('inline-handler', `inline on${m[1]} handler — not reachable by keyboard`);
     break;
   }
