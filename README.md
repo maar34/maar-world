@@ -5,7 +5,7 @@ into a single build on one canonical domain.
 
 ```
 maar.world
-  /                 maar — 35 NFC card codes at root, untouched
+  /                 maar
   /collect/*        merged from collect.maar.world
   /tree             merged from tree.maar.world
 
@@ -18,16 +18,17 @@ island — and there is currently one island, the Helix diagram.
 
 ## The constraint that outranks everything
 
-35 NFC card codes are printed on physical cards already in people's hands: 34 from
-`_skysounds` plus `/STW3344` from `_stoney_way`. Each must resolve as **both** `/EBT5599`
-and `/EBT5599.html` — **70 URLs** — never redirected, byte-for-byte stable in spelling and
-casing.
+A set of short codes at the root resolve to their own pages. They are **preserved URLs**:
+each must keep resolving in both its extensionless and `.html` form, never redirected,
+byte-for-byte stable in spelling and casing.
 
-`build.format: 'file'` emits only `CODE.html`. The extensionless form is served by the
-host's `.html` fallback, which is a host behaviour rather than a build artifact, so it has
-to be re-proved on any new host before cutover.
+They cannot be renamed, re-cased, redirected or retired. If a change can only pass by
+altering one of them, the answer is no.
 
-If something can only pass by changing one of these URLs, the answer is no.
+The frozen list lives in `routes/manifest.production.json` and is asserted on every build.
+`build.format: 'file'` emits only the `.html` form; the extensionless form comes from the
+host's `.html` fallback, which is host behaviour rather than a build artifact, so it must be
+re-proved on any new host before cutover.
 
 ## Commands
 
@@ -35,7 +36,7 @@ If something can only pass by changing one of these URLs, the answer is no.
 |---|---|
 | `npm run verify` | everything below; **its exit code is the source of truth** |
 | `npm run verify:routes` | every route in the frozen manifest resolves in the build |
-| `npm run verify:cards` | all 70 NFC URL forms, correct content, `noindex` intact, casing stable |
+| `npm run verify:cards` | both URL forms resolve, correct content, `noindex` intact, casing stable |
 | `npm run verify:content` | per-page content-presence assertions |
 | `npm run verify:links` | internal links resolve; no third-party request on page load |
 | `npm run verify:build` | clean production build, warnings below threshold |
@@ -45,6 +46,11 @@ If something can only pass by changing one of these URLs, the answer is no.
 
 A check reporting `SKIP` has **not** passed — its input does not exist yet. `npm run verify`
 lists skips separately so a green run is never mistaken for a complete one.
+
+## Content
+
+`src/content/migrated/**` and `src/content/authored/**` are both hand-maintained. Nothing
+regenerates them — see `.agents/skills/maar-content-authoring/SKILL.md` before editing either.
 
 ## Working on this repo
 
