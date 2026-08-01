@@ -238,6 +238,28 @@ export function pageIcon(outputPath: string | undefined): NavigationIconName | u
  * `SECTIONS`. Changing one of those entries and not the other is the drift this
  * is written to make visible — a home action and its nav entry pointing at one
  * place should never wear two different symbols.
+ *
+ * ── THE HOME PAGE'S MOVEMENT BUDGET IS SPENT HERE ───────────────────────────
+ *
+ * "Buttons v4 · the break" allows a view ONE stamp and ONE break, and this pair
+ * is where the home page spends both. That is not a coincidence of there being
+ * two buttons — it is why the budget is declared as data rather than decided in
+ * the template. A page family that read `emphasis` from a prop could be handed
+ * two stamps by two different call sites and nobody would notice until the page
+ * was looked at; here the whole budget is four lines you can read at once.
+ *
+ * `collect cards` takes the stamp because it is the answer to what the home
+ * page is for. v4's test for the break is *"the element you'd point at if you
+ * were describing the screen out loud"* — after the primary, that is the lab,
+ * so the lab link takes the pivot. It also passes the gesture's own test:
+ * pivot is *"best on anything with a direction"*, and "enter" is a direction.
+ *
+ * BOTH KEYS ARE PRESENT ON BOTH ENTRIES, one of them holding `undefined`. With
+ * `as const` this array is a union of two object types, and a key that exists
+ * on only one member cannot be read off the union in `families/Home.astro`
+ * without narrowing at the call site. Spelling the absent case out is also the
+ * honest form: `gesture: undefined` says this action was considered for the
+ * break and did not get it, where an omitted key says nothing at all.
  */
 export const HOME_ACTIONS = [
   {
@@ -246,8 +268,18 @@ export const HOME_ACTIONS = [
     labelEs: 'coleccionar cartas',
     variant: 'primary',
     icon: 'category',
+    emphasis: 'stamp',
+    gesture: undefined,
   },
-  { href: '/lab', label: 'Enter the lab', labelEs: 'entrá al lab', variant: 'secondary', icon: 'science' },
+  {
+    href: '/lab',
+    label: 'Enter the lab',
+    labelEs: 'entrá al lab',
+    variant: 'secondary',
+    icon: 'science',
+    emphasis: 'quiet',
+    gesture: 'pivot',
+  },
 ] as const;
 
 /**

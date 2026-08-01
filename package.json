@@ -18,6 +18,7 @@
     "verify:content": "node scripts/verify-content.mjs",
     "verify:links": "node scripts/verify-links.mjs",
     "verify:a11y": "node scripts/verify-a11y.mjs",
+    "verify:actions": "node scripts/verify-actions.mjs",
     "verify:translations": "node scripts/verify-translations.mjs",
     "i18n:map": "node scripts/i18n-map.mjs",
     "verify:build": "node scripts/verify-build.mjs",

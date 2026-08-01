@@ -32,6 +32,7 @@ import { checkCards } from './verify-cards.mjs';
 import { checkContent } from './verify-content.mjs';
 import { checkLinks } from './verify-links.mjs';
 import { checkA11y } from './verify-a11y.mjs';
+import { checkActions } from './verify-actions.mjs';
 import { checkTranslations } from './verify-translations.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -77,6 +78,10 @@ export const CHECKS = [
   ['verify:content', checkContent],
   ['verify:links', checkLinks],
   ['verify:a11y', checkA11y],
+  /* Reads dist/, so it sits with the other checks that inspect the build. The
+     movement budget only exists at the level of a rendered view — see the note
+     at the top of verify-actions.mjs. */
+  ['verify:actions', checkActions],
   ['verify:translations', checkTranslations],
   ['ledger:check', commandCheck('ledger format and append-only history', ['ledger.mjs', 'check'])],
 ];

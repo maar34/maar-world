@@ -151,7 +151,72 @@ a {
   text-underline-offset: 3px;
 }
 
-a:hover {
+/**
+ * The blanket link hover — and why `.btn` is carved out of it.
+ *
+ * This is the treatment for a link in running text: the pigment comes up as a
+ * flat field behind the words and the type goes dark on it. It is right for
+ * prose and wrong for a control, and until the action system was rebuilt around
+ * "Buttons v3/v4" nobody could tell, because every button variant used to
+ * restate exactly this pair on its own `:hover` — the same field, the same dark
+ * type. Two rules agreeing is not the same as one rule being scoped, and the
+ * agreement was hiding a real ordering problem.
+ *
+ * `a:hover` is (0,1,1). A variant's hover, `.btn--secondary:hover`, is (0,2,0)
+ * and wins — but only for the properties it actually declares. The quiet
+ * mechanics deliberately declare fewer: quiet b firms the border and tints the
+ * field and says nothing about `color`, because v3 does not change the label.
+ * So `color: var(--pigment-ink)` from here went on applying, and an outlined
+ * button on the dark surface drew black type on a near-black field.
+ *
+ * It reached further than the label. `background` here is a SHORTHAND, so on a
+ * text button it also reset the `background-image` that quiet c draws its rule
+ * with, and on the collect stamp — whose own field sits at (0,1,0) — it repainted
+ * a sage button maar-pink for as long as the pointer was on it.
+ *
+ * Excluding `.btn` rather than raising specificity on eight variant rules is
+ * the fix that scales: it says once, in the place the assumption lives, that a
+ * control is not a link in a sentence.
+ *
+ * ── WHY `:where()` AND NOT A BARE `:not(.btn)` ──────────────────────────────
+ *
+ * `:not()` takes the specificity of its argument, so `a:not(.btn):hover` is
+ * (0,2,1) — one HIGHER than the (0,1,1) this rule used to carry. Written that
+ * way the carve-out silently outranked `.nav-link:hover` (0,2,0) and repainted
+ * the entire header: every nav entry went back to a pigment field with dark
+ * type, and because `background` is a shorthand it also erased the rule the
+ * header now draws under its labels. Fixing one component by outranking another
+ * is not a fix.
+ *
+ * `:where()` always contributes zero, so the selector below is exactly the
+ * (0,1,1) it has always been — same reach, a listed set of exclusions, no new
+ * authority.
+ *
+ * ── WHY THE LIST IS LONGER THAN `.btn` ──────────────────────────────────────
+ *
+ * Winning on specificity is not the same as being unaffected, and that is the
+ * trap this rule sets. `background` here is a SHORTHAND: a component that
+ * declares `background-image` on its own hover — which every "rule draws"
+ * mechanic in this build does — overrides the image and inherits the pigment
+ * FIELD from this rule anyway, because it never said anything about
+ * `background-color`. The header showed it plainly: the nav entries drew their
+ * new 2px rule correctly and sat on a maar field with black type underneath it.
+ *
+ * So the exclusion names every anchor that is a CONTROL rather than a link in a
+ * sentence. Each of them owns its own hover completely, and none of them wants
+ * a pigment field with dark type:
+ *
+ *   .btn            the action system — quiet a/b/c, the stamp, the breaks
+ *   .nav-link       header navigation — a rule draws, nothing fills
+ *   .shell__brand   the wordmark, same treatment as an entry
+ *   .shell__social  the footer's one icon link
+ *
+ * `.card` is deliberately NOT in the list. Its own `.card:hover` declares both
+ * `background` and `color` — the comment there records the same leak being
+ * defended against — so it already wins on both properties, and adding it would
+ * change nothing except the size of this list.
+ */
+a:not(:where(.btn, .nav-link, .shell__brand, .shell__social)):hover {
   color: var(--pigment-ink);
   background: var(--c-maar);
 }
