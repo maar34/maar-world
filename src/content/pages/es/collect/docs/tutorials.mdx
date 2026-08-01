@@ -1,0 +1,45 @@
+---
+outputPath: "es/collect/docs/tutorials"
+title: "Tutoriales - COLLECT.MAAR.WORLD"
+area: "collect"
+kind: "doc"
+tags: []
+lang: "es"
+origin: "authored"
+translationOf: "collect/docs/tutorials"
+indexGroup: "collect-docs"
+indexOrder: "02-tutorials.md"
+indexLabel: "Tutoriales"
+---
+
+import Mark from '../../../../../components/patterns/Mark.astro';
+import EmbedFacade from '../../../../../components/media/EmbedFacade.astro';
+import { facadeStrings } from '../../../../../config/embeds';
+
+export const facade = facadeStrings('youtube', 'es');
+
+{/*
+  La traducción de src/content/pages/en/collect/docs/tutorials.md.
+
+  Los dos videos son los mismos y siguen detrás de la fachada de consentimiento:
+  no se le pide nada a YouTube hasta que la persona lo elige. Los videos están
+  hablados en inglés; si alguna vez hay versiones en español, se cambian las dos
+  URLs acá.
+*/}
+
+# <Mark tilt={4} tear={1}>Tutoriales</Mark>
+
+<hr />
+
+<h2> Cómo usar las cartas Sky Sounds | Guía paso a paso </h2> 
+
+<EmbedFacade provider="youtube" href="https://youtu.be/kdTQN2zn7Mo" label={facade.label} note={facade.note} />
+
+`#Tutorial` `#Cartas` `#ENT` 
+
+<hr />
+
+<h2> Tutorial de Orbiters: música interactiva con el modo Jam </h2> 
+
+<EmbedFacade provider="youtube" href="https://youtu.be/M5QpFRtg05Y" label={facade.label} note={facade.note} />
+`#Tutorial` `#Cartas` `#Orbiters`
