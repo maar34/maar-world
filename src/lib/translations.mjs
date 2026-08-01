@@ -137,3 +137,53 @@ export function globalLanguageChoices(page, pages) {
     };
   });
 }
+
+/** dist-relative outputPath → the URL a browser asks for. */
+const urlOf = (outputPath) =>
+  encodeURI(`/${outputPath.replace(/(^|\/)index$/, '')}`.replace(/\/(?=$)/, '')) || '/';
+
+/**
+ * English navigation URL → the same destination in `lang`.
+ *
+ * ── The defect this closes ────────────────────────────────────────────────────
+ *
+ * The header's destinations live in `SECTIONS` in src/config/site.ts as
+ * absolute English paths — `/collect`, `/lab`, `/about` — and every page
+ * rendered that same list, Spanish pages included. So the switcher worked
+ * exactly once: a visitor on `/es/about` who clicked anything in the navigation
+ * was returned to English, and had to switch again on every page. Worse, since
+ * nothing anywhere linked to `/es/collect`, the Spanish Collect page was
+ * unreachable by navigation despite being built and published — a page that
+ * exists and cannot be arrived at is indistinguishable from one that is missing,
+ * and that is exactly how it was reported.
+ *
+ * ── Why it resolves the relation instead of adding a prefix ───────────────────
+ *
+ * `/es/` + the English path would be right for 61 of the 72 Spanish pages and
+ * silently wrong for the rest: ten Lab articles publish `/lab/es/<slug>`, three
+ * of them under a slug that is a TRANSLATION rather than a copy
+ * (`shared-culture` ↔ `cultura-compartida`). A prefix rule sends those to a URL
+ * that does not exist. This walks the same stored relation the switcher and the
+ * hreflang set already walk, so a destination is either the genuine other half
+ * or it is left alone.
+ *
+ * UNTRANSLATED DESTINATIONS KEEP THEIR ENGLISH URL, deliberately. A nav entry
+ * pointing at a page that does not exist would be the inert control this
+ * codebase already removed once — the `?tag=EN` buttons at /lab. An English
+ * page reached from a Spanish one is a gap in translation coverage; a 404 is a
+ * broken site.
+ *
+ * Returns a plain object so it crosses the component boundary as data.
+ */
+export function navPathsFor(lang, pages) {
+  const out = {};
+  if (!lang || lang === 'en') return out;
+
+  for (const p of pages) {
+    if (p.data.lang !== lang) continue;
+    const english = alternatesFor(p, pages).find((a) => a.data.lang === 'en');
+    if (!english) continue;
+    out[urlOf(english.data.outputPath)] = urlOf(p.data.outputPath);
+  }
+  return out;
+}

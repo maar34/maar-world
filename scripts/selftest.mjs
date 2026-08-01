@@ -1064,6 +1064,52 @@ check('validateTranslations passes a sound relation', () => {
 });
 
 /**
+ * ── The header follows the reader's language ─────────────────────────────────
+ *
+ * SECTIONS holds English paths and every page rendered that same list, so a
+ * visitor who switched to Spanish was returned to English by their first nav
+ * click, and /es/collect was reachable from no link on the site — a page that
+ * is published and cannot be arrived at, which is how it was reported.
+ *
+ * Reported by the owner, not by any check, which is why these exist: nothing in
+ * the suite could see it, because every URL involved builds and every link
+ * resolves. It is only wrong if you know where you meant to end up.
+ */
+check("navPathsFor sends the header to the same page in the reader's language", () => {
+  const pages = [rec('index', 'en'), recOf('es/index', 'es', 'index'), rec('collect/index', 'en'), recOf('es/collect/index', 'es', 'collect/index')];
+  const m = T.navPathsFor('es', pages);
+  const ok = m['/'] === '/es' && m['/collect'] === '/es/collect';
+  return { ok, detail: ok ? '/ and /collect resolve to their Spanish halves' : `got ${JSON.stringify(m)}` };
+});
+
+/**
+ * The case a `/es/` + path rule gets WRONG, and the reason this walks the
+ * stored relation instead. Three Lab pairs have slugs that are translations
+ * rather than copies, and all ten publish the language in the middle.
+ */
+check('navPathsFor follows a translated slug rather than assuming a prefix', () => {
+  const pages = [rec('lab/en/shared-culture', 'en', 'k'), rec('lab/es/cultura-compartida', 'es', 'k')];
+  const m = T.navPathsFor('es', pages);
+  const ok = m['/lab/en/shared-culture'] === '/lab/es/cultura-compartida';
+  return { ok, detail: ok ? 'a prefix rule would have pointed at /es/lab/en/shared-culture, which does not exist' : `got ${JSON.stringify(m)}` };
+});
+
+check('navPathsFor leaves an untranslated destination alone', () => {
+  const pages = [rec('landings', 'en'), rec('about', 'en'), recOf('es/about', 'es', 'about')];
+  const m = T.navPathsFor('es', pages);
+  // Absent from the map means the header keeps the English href — a real page
+  // rather than a dead link into a translation nobody has written yet.
+  const ok = m['/landings'] === undefined && m['/about'] === '/es/about';
+  return { ok, detail: ok ? 'no entry, so the nav falls back to the English page that exists' : `got ${JSON.stringify(m)}` };
+});
+
+check('navPathsFor changes nothing on an English page', () => {
+  const m = T.navPathsFor('en', [rec('about', 'en'), recOf('es/about', 'es', 'about')]);
+  const ok = Object.keys(m).length === 0;
+  return { ok, detail: ok ? 'English navigation is untouched' : `got ${JSON.stringify(m)}` };
+});
+
+/**
  * verify:translations resolves both forms into one list of pairs, so the
  * assertions downstream of it do not care which form a pair used. If this ever
  * returned only one form, half the site's pairs would stop being checked and

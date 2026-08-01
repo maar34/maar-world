@@ -27,12 +27,27 @@ interface Props {
   /** 'en' on the chrome when the page itself is not English. */
   chromeLang?: string;
   languageChoices?: { lang: string; label: string; outputPath?: string; current: boolean; unavailable: boolean }[];
+  /**
+   * English navigation URL → the same destination in this page's language,
+   * from `navPathsFor` in src/lib/translations.mjs. Empty on English pages.
+   */
+  navPaths?: Record<string, string>;
 }
 
-const { area = 'maar', chromeLang, languageChoices = [] } = Astro.props;
+const { area = 'maar', chromeLang, languageChoices = [], navPaths = {} } = Astro.props;
+
+/**
+ * Every navigation destination, in the language of the page you are on.
+ *
+ * SECTIONS holds English paths, and without this the header sent a Spanish
+ * reader back to English on their first click — the switcher worked once per
+ * page and never twice. A destination with no translation keeps its English
+ * URL rather than becoming a dead link; see navPathsFor for why.
+ */
+const localise = (href: string) => navPaths[href] ?? href;
 
 /** An area's own root. Derived from AREAS.pathPrefix — never spelled twice. */
-const areaHome = (name: AreaName) => AREAS[name].pathPrefix || '/';
+const areaHome = (name: AreaName) => localise(AREAS[name].pathPrefix || '/');
 
 const sections = SECTIONS[area];
 
@@ -52,7 +67,8 @@ const areaCurrent = (name: AreaName) =>
  * The brand is now the only route to Maar's home, so it carries that entry's
  * state as well as its own: on `/` it is the current page and says so.
  */
-const brandCurrent = here === '/' ? 'page' : undefined;
+const brandHome = localise('/');
+const brandCurrent = here === brandHome ? 'page' : undefined;
 
 /**
  * Navigation variation is structural but never random: the same destination
@@ -65,9 +81,17 @@ const hrefOf = (outputPath: string) => (outputPath === 'index' ? '/' : `/${outpu
 const currentLanguage = languageChoices.find((choice) => choice.current) ?? languageChoices[0];
 const otherLanguages = languageChoices.filter((choice) => !choice.current);
 
-/** Both widths list the same destinations; only the arrangement differs. */
+/**
+ * Both widths list the same destinations; only the arrangement differs.
+ *
+ * `seed` is the ENGLISH path and is what the typographic voice is drawn from,
+ * so a nav entry keeps the same treatment in both languages. Seeding from the
+ * localised href would give "Lab" and "Lab" different voices on `/lab` and
+ * `/es/lab`, which reads as two different things rather than one thing twice.
+ */
 const areaEntries = HEADER_AREAS.map((name) => ({
   href: areaHome(name),
+  seed: AREAS[name].pathPrefix || '/',
   label: AREAS[name].label,
   icon: AREAS[name].icon,
   pigment: AREAS[name].pigment,
@@ -75,11 +99,12 @@ const areaEntries = HEADER_AREAS.map((name) => ({
 }));
 
 const sectionEntries = sections.map((s) => ({
-  href: s.href,
+  href: localise(s.href),
+  seed: s.href,
   label: s.label,
   icon: s.icon,
   pigment: AREAS[area].pigment,
-  current: here === s.href ? ('page' as const) : undefined,
+  current: here === localise(s.href) ? ('page' as const) : undefined,
 }));
 
 /**
@@ -104,7 +129,7 @@ const hasLanguages = Boolean(currentLanguage && otherLanguages.length > 0);
         the same destination. The mark is aria-hidden; the link's name is the
         text. It takes the current area's pigment, so the header states which
         area you are in twice over: the mark and the current nav field. */}
-    <a class="shell__brand" href="/" aria-current={brandCurrent}>
+    <a class="shell__brand" href={brandHome} aria-current={brandCurrent}>
       <BrandMark size={22} />
       <span>Maar World</span>
     </a>
@@ -119,7 +144,7 @@ const hasLanguages = Boolean(currentLanguage && otherLanguages.length > 0);
               {areaEntries.map((entry) => (
                 <li>
                   <a
-                    class:list={['nav-link', navVoice(entry.href)]}
+                    class:list={['nav-link', navVoice(entry.seed)]}
                     href={entry.href}
                     style={`--area-pigment: ${entry.pigment}`}
                     aria-current={entry.current}
@@ -141,7 +166,7 @@ const hasLanguages = Boolean(currentLanguage && otherLanguages.length > 0);
               {sectionEntries.map((entry) => (
                 <li>
                   <a
-                    class:list={['nav-link', navVoice(entry.href)]}
+                    class:list={['nav-link', navVoice(entry.seed)]}
                     href={entry.href}
                     style={`--area-pigment: ${entry.pigment}`}
                     aria-current={entry.current}
@@ -217,7 +242,7 @@ const hasLanguages = Boolean(currentLanguage && otherLanguages.length > 0);
                   {group.entries.map((entry) => (
                     <li>
                       <a
-                        class:list={['nav-link', navVoice(entry.href)]}
+                        class:list={['nav-link', navVoice(entry.seed)]}
                         href={entry.href}
                         style={`--area-pigment: ${entry.pigment}`}
                         aria-current={entry.current}

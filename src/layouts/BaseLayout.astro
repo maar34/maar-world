@@ -131,6 +131,12 @@ interface Props {
     current: boolean;
     unavailable: boolean;
   }[];
+  /**
+   * English navigation URL → the same destination in this page's language.
+   * Built by `navPathsFor`; without it the header sends a Spanish reader back
+   * to English on their first click.
+   */
+  navPaths?: Record<string, string>;
 }
 
 const {
@@ -144,6 +150,7 @@ const {
   redirectTo,
   contentWidth = 'standard',
   languageChoices,
+  navPaths = {},
 } = Astro.props;
 
 const canonicalUrl = canonical ?? (redirectTo
@@ -239,6 +246,7 @@ const globalLanguageChoices = languageChoices ?? [
       chromeLang={chromeLang}
       contentWidth={contentWidth}
       languageChoices={globalLanguageChoices}
+      navPaths={navPaths}
     >
       <slot />
     </Shell>

@@ -21,14 +21,16 @@ interface Props {
   chromeLang?: string;
   contentWidth?: 'standard' | 'reading';
   languageChoices?: { lang: string; label: string; outputPath?: string; current: boolean; unavailable: boolean }[];
+  /** English nav URL → same destination in this page's language. */
+  navPaths?: Record<string, string>;
 }
 
-const { area, chromeLang, contentWidth = 'standard', languageChoices = [] } = Astro.props;
+const { area, chromeLang, contentWidth = 'standard', languageChoices = [], navPaths = {} } = Astro.props;
 ---
 
 <div class="shell" data-shell="dark">
   <SkipLink />
-  <SiteHeader area={area} chromeLang={chromeLang} languageChoices={languageChoices} />
+  <SiteHeader area={area} chromeLang={chromeLang} languageChoices={languageChoices} navPaths={navPaths} />
   <main id="content" class="shell__main">
     <div class="shell__content" data-content-width={contentWidth}>
       <slot />

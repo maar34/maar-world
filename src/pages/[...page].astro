@@ -45,7 +45,7 @@ import PdfViewerScript from '../components/ui/PdfViewerScript.astro';
 import EmbedConsentScript from '../components/ui/EmbedConsentScript.astro';
 import HelixIsland from '../components/react/HelixIsland.astro';
 import DocGlyph from '../components/ui/DocGlyph.astro';
-import { globalLanguageChoices, alternatesFor, validateTranslations, LANGS } from '../lib/translations.mjs';
+import { globalLanguageChoices, alternatesFor, validateTranslations, navPathsFor, LANGS } from '../lib/translations.mjs';
 import { stampText } from '../lib/mark.mjs';
 import { docExcerpt } from '../lib/doc-excerpt.mjs';
 import { collageFor, articleCoverFor, articleCoverFitFor, docGlyphFor, docReadMoreFor, LAB_INTRO, LAB_PINNED } from '../config/site';
@@ -222,6 +222,15 @@ const langChoices = globalLanguageChoices(entry, all);
 const alternates = alternatesFor(entry, all);
 
 /**
+ * The header's destinations, in this page's language.
+ *
+ * SECTIONS is English-only, so without this every nav click on a Spanish page
+ * returned the reader to English and /es/collect was reachable by no link on
+ * the site. See navPathsFor.
+ */
+const navPaths = navPathsFor(d.lang, all);
+
+/**
  * The Lab reads as a dated bibliography, not a list of links, so it groups by
  * year with a rule per group — the spec's page family 02, and what production
  * served. Every other index is a flat list of titles.
@@ -346,6 +355,7 @@ const labEntries = isYearIndex
   redirectTo={d.redirectTo}
   contentWidth={d.contentWidth}
   languageChoices={langChoices}
+  navPaths={navPaths}
 >
   {
     /**

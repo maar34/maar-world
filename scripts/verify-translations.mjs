@@ -499,6 +499,68 @@ export async function checkTranslations(report) {
     }
   }
 
+  /**
+   * ── A SPANISH PAGE'S NAVIGATION STAYS IN SPANISH ───────────────────────────
+   *
+   * The header's destinations live in SECTIONS as absolute English paths, and
+   * for a long time every page rendered that same list. So the language
+   * switcher worked exactly once: a reader on /es/about who clicked anything in
+   * the navigation was returned to English, and /es/collect was reachable from
+   * no link anywhere on the site — published, built, and unreachable.
+   *
+   * NOTHING IN THIS SUITE COULD SEE IT. Every URL involved builds, every link
+   * resolves, verify:links was green throughout. It is only wrong if you know
+   * which page you meant to arrive at, so it took the owner reporting it. This
+   * is that report turned into an assertion.
+   *
+   * The switcher itself is excluded, and precisely: its links are the ones
+   * carrying `hreflang`, which is exactly what marks a link as deliberately
+   * crossing languages. Any other header link pointing at an English page that
+   * HAS a Spanish half is the defect.
+   */
+  const enToEs = new Map();
+  for (const { original, translation } of pairs) {
+    if (original.lang === 'en' && translation.lang === 'es') {
+      enToEs.set(urlOf(original.outputPath), urlOf(translation.outputPath));
+    }
+  }
+
+  const normalise = (href) =>
+    decodeURI(href).replace(/\.html$/, '').replace(/\/index$/, '') || '/';
+
+  const leaks = [];
+  for (const r of es) {
+    const file = resolveRoute(urlOf(r.outputPath), set);
+    if (!file) continue;
+    const html = readDistFile(file);
+    const header = /<header[\s\S]*?<\/header>/.exec(html);
+    if (!header) continue;
+    // The WHOLE opening tag, because `hreflang` is written after `href` in the
+    // markup and a pattern that stops at `href` would read every switcher link
+    // as a defect — which is what the first cut of this check did.
+    for (const [, tag] of header[0].matchAll(/<a\b([^>]*)>/g)) {
+      if (/\bhreflang=/.test(tag)) continue; // the switcher, deliberately crossing
+      const href = (/\bhref="([^"]+)"/.exec(tag) || [])[1];
+      if (!href || /^(https?:)?\/\//.test(href) || href.startsWith('#')) continue;
+      const to = normalise(href);
+      if (enToEs.has(to)) {
+        leaks.push(`/${r.outputPath} links to ${to} — ${enToEs.get(to)} is its Spanish half`);
+      }
+    }
+  }
+
+  if (leaks.length) {
+    report.fail(
+      "a Spanish page's navigation stays in Spanish",
+      `${leaks.length}: ${[...new Set(leaks)].slice(0, 5).join('; ')}`,
+    );
+  } else {
+    report.pass(
+      "a Spanish page's navigation stays in Spanish",
+      `${es.length} Spanish pages — no header link drops the reader back to English`,
+    );
+  }
+
   if (untranslated.length) {
     report.fail(
       'a translation is not its original',
