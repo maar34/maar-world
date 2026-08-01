@@ -114,6 +114,42 @@ export const noteFor = (name: string, lang: Lang): string =>
     : `opens in a new tab. nothing is requested from ${name} until you choose it.`;
 
 /**
+ * What the GATE says once JavaScript has replaced the facade — MW-19.
+ *
+ * `ui/EmbedConsentScript` builds its poster button in the browser, and it built
+ * it in English on every page: the visible line read "plays from youtube" and
+ * the button's accessible name ended "— loads the player from
+ * youtube-nocookie.com", under Spanish copy, on every Spanish page with a video.
+ * The booking calendar's line said "open the booking calendar here". None of it
+ * was visible to any check, and all of it was visible to a reader.
+ *
+ * It is the same defect as the navigation, as the full-screen link under a
+ * player, and as `lab/es/dadada` saying "listen on soundcloud" — a sentence
+ * that lives in one place and was written in one language. So it lives here,
+ * beside the facade's own words, keyed the same way.
+ *
+ * THE SCRIPT READS `document.documentElement.lang`, which the shell already
+ * sets per page. It does not guess and it does not default to English: an
+ * unknown value falls back to `en` explicitly below, and that fallback is the
+ * only English a Spanish page can reach.
+ */
+export const GATE = {
+  en: {
+    /** The three visible words on the poster: "plays from youtube". */
+    playsFrom: (name: string) => `plays from ${name}`,
+    /** The rest of the offer, for a screen reader only. */
+    loadsFrom: (host: string) => `loads the player from ${host}`,
+  },
+  es: {
+    playsFrom: (name: string) => `se reproduce desde ${name}`,
+    loadsFrom: (host: string) => `carga el reproductor desde ${host}`,
+  },
+} as const;
+
+/** The gate's words for a page, from whatever `<html lang>` says. */
+export const gateStrings = (lang: string) => (lang === 'es' ? GATE.es : GATE.en);
+
+/**
  * Everything a facade needs to render, for one provider in one language.
  *
  * Throws rather than falling back to English. A missing entry is a page that
