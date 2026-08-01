@@ -4,6 +4,20 @@ Binding for any agent working the MW-1 programme. These rules exist because the 
 planned as long unattended runs against a finite context budget: conversation memory does
 not survive a window boundary, repository state does.
 
+## Where you work
+
+Before anything else: **claim a worktree slot and work only there.** The primary checkout
+stays parked on `main`, and direct commits on `main` are blocked by a pre-commit hook.
+
+```sh
+~/Documents/Github/maar-world/.ps-preview/mw wt-claim maar-world     # prints the slot path
+```
+
+`main` is the trunk — cut from it, merge back to it, never branch off another slot. Dev runs
+on https://local.maar.world:4321, served from whichever slot is booted. Full setup, the
+daily loop and the failure modes: **`docs/LOCAL-DEVELOPMENT.md`**. Read it once, then the
+three commands there are all you need.
+
 ## Session start
 
 1. Read `MIGRATION-LEDGER.md`. This is the first action of every session, without exception.

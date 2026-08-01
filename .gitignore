@@ -1,4 +1,10 @@
-node_modules/
+# No trailing slashes on the entries a worktree slot symlinks from the primary
+# checkout (node_modules, .certs). A trailing slash matches a DIRECTORY only, and
+# in a slot these are symlinks — so `node_modules/` left `node_modules` showing as
+# untracked in every worktree, one `git add .` away from committing a symlink
+# pointing outside the repo. Without the slash both forms match.
+node_modules
+.certs
 dist/
 .astro/
 .public/

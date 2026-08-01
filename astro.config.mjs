@@ -2,8 +2,58 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
-import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { execSync } from 'node:child_process';
+
+/**
+ * LOCAL DEV RUNS ON https://local.maar.world:4321 — see docs/agent/OPERATING-RULES.md.
+ *
+ * Development happens in worktree slots (`maar-world.worktrees/wt-N`), not in
+ * the primary checkout. Two consequences are handled here:
+ *
+ *   1. `.certs/` is gitignored, so it does not exist in a fresh worktree — the
+ *      slot creator symlinks it from the primary. Resolving it via
+ *      `git rev-parse --git-common-dir` finds the primary checkout from any
+ *      slot, so the certs are found even if that symlink is ever absent.
+ *
+ *   2. `node_modules` is likewise symlinked to the primary, so imports resolve
+ *      to real paths OUTSIDE this worktree. Vite's filesystem guard denies
+ *      those by default, so the shared parent of both checkouts is allowed
+ *      below. Without it, dev in a slot fails on the first dependency asset.
+ *
+ * Certs are the switch: with them, dev serves HTTPS on the real hostname (which
+ * needs `127.0.0.1 local.maar.world` in /etc/hosts). Without them — a fresh
+ * clone, someone who has not run the setup — dev still boots on plain-HTTP
+ * localhost so the site is explorable out of the box.
+ */
+function mainWorktreeDir() {
+  try {
+    const raw = execSync('git rev-parse --git-common-dir', {
+      cwd: dirname(new URL(import.meta.url).pathname),
+      encoding: 'utf8',
+    }).trim();
+    const abs = raw.startsWith('/') ? raw : resolve(dirname(new URL(import.meta.url).pathname), raw);
+    return dirname(abs);
+  } catch {
+    return dirname(new URL(import.meta.url).pathname);
+  }
+}
+
+const SELF_DIR = dirname(new URL(import.meta.url).pathname);
+const CERTS_DIR = join(mainWorktreeDir(), '.certs');
+const CERT_KEY = join(CERTS_DIR, 'local.maar.world-key.pem');
+const CERT_PEM = join(CERTS_DIR, 'local.maar.world.pem');
+const HAS_CERTS = existsSync(CERT_KEY) && existsSync(CERT_PEM);
+const DEV_HOST = 'local.maar.world';
+const DEV_PORT = 4321;
+
+if (!HAS_CERTS) {
+  console.warn(
+    `[maar-world] no local TLS certs in .certs/ — serving plain HTTP on localhost:${DEV_PORT}.\n` +
+    '[maar-world] For the https://local.maar.world dev origin, see README "Local development".'
+  );
+}
 
 /**
  * Pages carrying noindex must never appear in the sitemap.
@@ -118,8 +168,47 @@ export default defineConfig({
     assets: '_assets',
   },
   trailingSlash: 'never',
+  /**
+   * THE HOST MUST BE SET HERE, NOT ONLY UNDER `vite.server`.
+   *
+   * Astro derives the dev server's host and port from its OWN top-level
+   * `server` config and hands them to Vite, overriding `vite.server.host`.
+   * Setting the host only under `vite` therefore looks correct and does
+   * nothing: Vite's own defaults win and the server binds plain localhost,
+   * which on this machine is IPv6 `[::1]`. The failure is quiet in the worst
+   * way — the port is right and TLS is right, so `https://localhost:4321`
+   * answers 200 while `https://local.maar.world:4321` cannot connect at all.
+   *
+   * Settings Astro does not model — `https`, `strictPort`, `allowedHosts`,
+   * `fs.allow`, `hmr` — stay under `vite.server` below, where they are read.
+   */
+  server: HAS_CERTS ? { host: DEV_HOST, port: DEV_PORT } : { port: DEV_PORT },
   // Dev-only. `apply: 'serve'` means it never participates in a build.
-  vite: { plugins: [devHostSemantics()] },
+  vite: {
+    plugins: [devHostSemantics()],
+    server: {
+      // Slots symlink node_modules to the primary checkout, so dependency
+      // assets resolve outside this root. Allow the parent holding both.
+      fs: { allow: [SELF_DIR, resolve(SELF_DIR, '../..'), mainWorktreeDir()] },
+      // Vite silently falls forward to the next free port when 4321 is taken.
+      // The monitor advertises ONE fixed URL, so a silent drift to :4322 shows
+      // as "the site is down" while a perfectly healthy server logs success on
+      // a port nobody is looking at. Fail loudly instead.
+      strictPort: true,
+      ...(HAS_CERTS
+        ? {
+            host: DEV_HOST,
+            port: DEV_PORT,
+            https: {
+              key: readFileSync(CERT_KEY),
+              cert: readFileSync(CERT_PEM),
+            },
+            hmr: { host: DEV_HOST },
+            allowedHosts: [DEV_HOST],
+          }
+        : { port: DEV_PORT }),
+    },
+  },
   // No analytics, no third-party anything. Prefetch is same-origin only.
   prefetch: false,
   devToolbar: { enabled: false },
