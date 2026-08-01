@@ -30,15 +30,24 @@ interface Props {
   title: string;
   /** The iframe's accessible name. Defaults to the heading. */
   frameTitle?: string;
+  /**
+   * The heading's level. `ui/ContactForm` carries this prop for the same reason
+   * and it is the same distinction: on `/orbiters` an instrument is a top-level
+   * section of the page and production served an `<h2>`; inside the
+   * `ip-orchestra` articles it sits under one, and served an `<h3>`. Defaulting
+   * either way would silently re-cut a document's outline, so the caller says.
+   */
+  level?: 2 | 3;
 }
 
-const { src, title, frameTitle } = Astro.props;
+const { src, title, frameTitle, level = 3 } = Astro.props;
 const url = `${PLAY_ORIGIN}/${src.replace(/^\/?/, '')}`;
+const Heading = `h${level}` as 'h2' | 'h3';
 ---
 
 <div class="hero hero--center">
   <div class="hero__content">
-    <h3>{title}</h3>
+    <Heading>{title}</Heading>
     <div class="container">
       <iframe
         src={url}

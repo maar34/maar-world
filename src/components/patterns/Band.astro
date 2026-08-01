@@ -1,0 +1,43 @@
+---
+/**
+ * patterns/band — the theme's centred band, with whatever the page puts in it.
+ *
+ * `/orbiters` holds four of these and its Spanish half holds the same four:
+ * eight copies of two nested elements that carry no words of their own. What
+ * goes inside differs every time — a line of prose, a heading, a heading with a
+ * picture and a sentence — so the content is a slot and the component is only
+ * the band. MW-19.
+ *
+ * ── THE CLASS NAMES ARE THE THEME'S, AND THAT IS DELIBERATE ──────────────────
+ *
+ * `hero hero--center` and `hero__content` belong to the dead Jekyll theme, and
+ * `legacy.css` still draws them — scoped `.prose`, where article bodies render.
+ * Rewriting them under honest names would be a second spelling of a live rule,
+ * which is the reasoning `media/EmbedGroup` and `media/EmbedPlate` both record.
+ * When `legacy.css` goes, this file changes once instead of eight bodies.
+ *
+ * ── `hero--dark` IS NOT CARRIED, AND NOTHING IS LOST ─────────────────────────
+ *
+ * Two of the four bands had it. On this site it draws nothing: `.prose .hero`
+ * already sets `padding-block: var(--s-8)`, and `.prose .hero--dark` sets the
+ * same padding, `background: none` and `border-radius: var(--r-0)` — every one
+ * of which is what the element does without it. It was a modifier for a LIGHT
+ * page, and MW-16 removed the light surface. Two of the four bands having it is
+ * a difference nobody chose and nobody can see.
+ *
+ * ── AND NEITHER IS `style="background-color: #000000"` ───────────────────────
+ *
+ * All four carried it, in three spellings (`#000000` twice, `#000` twice).
+ * `--sf-base` IS `#000000`, so on screen it painted black onto black. It was not
+ * harmless, though: `tokens.css` swaps `--sf-base` to the cream `--sf-paper`
+ * under `@media print`, and an inline background ignores that — so printing
+ * `/orbiters` laid four black bands across a cream page. Dropping it fixes the
+ * printed page and changes nothing on screen.
+ */
+---
+
+<div class="hero hero--center">
+  <div class="hero__content">
+    <slot />
+  </div>
+</div>

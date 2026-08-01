@@ -1,0 +1,57 @@
+---
+/**
+ * media/picture — one picture, whose file is named in config and whose words
+ * are not.
+ *
+ * NAMED `Picture` AND NOT `Figure`, WHICH IS NOT A STYLE CHOICE. The rule in
+ * `verify-translations.mjs` counts structural markup with a CASE-INSENSITIVE
+ * regex over `div|section|figure|ul|ol|table|article|span|img|iframe|a`, so a
+ * component called `<Figure>` reads to it as a `<figure>` tag and a converted
+ * Spanish body fails with three elements it does not actually contain. The same
+ * trap is waiting for `Section`, `Article`, `Table` and `Span`. Check a new
+ * component's name against that list before using it.
+ *
+ * A thin component on purpose, and the reason is the rule it makes possible.
+ * An image is two things that belong in two different places:
+ *
+ *   the path  has no language. `/img/…/maar-world-banner-ovni.jpg` is the same
+ *             string on the English page and the Spanish one, so it is named
+ *             once in `src/config/articles.ts` — the rule HANDOFF.md states for
+ *             every URL and every image path.
+ *   the `alt` IS language. It is a sentence a reader hears, so it travels with
+ *             the words and is written in each half.
+ *
+ * Markdown's own `![alt](path)` cannot express that split: its target is
+ * literal, so hoisting the path into config is impossible and both halves must
+ * spell it. Writing `<img src={…}>` in the body instead puts raw structural
+ * markup back into a Spanish record, which `verify:translations` refuses — and
+ * rightly, since that is exactly the shape that let the two halves of this page
+ * drift in the first place.
+ *
+ * So the element lives here, one level of indirection, and both halves get to
+ * share a path while keeping their own alt.
+ *
+ * NO INLINE STYLES. The migrated bodies carried
+ * `style="max-width:100%; height:auto; margin-top:20px"` on every one of these.
+ * `prose.css` already sets the first two for every image on the site, and the
+ * third is spacing that the band around it owns — `.prose .hero__content` is a
+ * flex column with a `gap`, so a top margin was adding to a gap that had
+ * already been decided.
+ */
+
+interface Props {
+  /** Root-relative, first-party. From config — not written into a body. */
+  src: string;
+  /**
+   * What a reader hears. Empty for a picture that repeats the words beside it,
+   * which is a decision the caller makes and this component will not make for
+   * them: an omitted `alt` and an empty one mean different things, so the prop
+   * is required.
+   */
+  alt: string;
+}
+
+const { src, alt } = Astro.props;
+---
+
+<img src={src} alt={alt} />

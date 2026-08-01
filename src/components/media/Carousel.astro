@@ -91,12 +91,33 @@ interface Props {
    * landing's photographs do not.
    */
   orbMedia?: boolean;
+  /**
+   * Milliseconds between automatic advances, or omitted for a track that only
+   * moves when a reader moves it.
+   *
+   * REAL BEHAVIOUR, NOT DECORATION: `ui/CarouselScript` reads
+   * `root.dataset.autoplay` and sets an interval from it. `/orbiters` is the
+   * only carousel on the site that carries one — `data-autoplay="6500"`,
+   * written by the migration — so a component that could not express it would
+   * have quietly stopped that track the moment the page was converted. That is
+   * the same class of loss as the two dead carousels, and invisible in the same
+   * way: an autoplaying carousel and a still one look identical in a
+   * screenshot.
+   *
+   * The script already declines to run it under `prefers-reduced-motion` or on
+   * a hidden tab, so nothing about honouring motion preferences is decided here.
+   */
+  autoplayMs?: number;
 }
 
-const { id, label, slides, stepStyle = 'heading', orbMedia = false } = Astro.props;
+const { id, label, slides, stepStyle = 'heading', orbMedia = false, autoplayMs } = Astro.props;
 ---
 
-<section class="carousel" aria-roledescription="carousel" aria-label={label}>
+<section
+  class="carousel"
+  aria-roledescription="carousel"
+  aria-label={label}
+  data-autoplay={autoplayMs ? String(autoplayMs) : undefined}>
   <ul class="carousel__track" role="list" tabindex="0">
     {
       slides.map((slide, i) => {

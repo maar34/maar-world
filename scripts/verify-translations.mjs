@@ -314,6 +314,16 @@ export function spanishFiling(records, legacy = LEGACY_ES, closedAt = LEGACY_ES_
  * the list would rot into a record of pages that USED to be a problem, and
  * every stale line silently widens the hole.
  */
+/**
+ * CASE-INSENSITIVE, WHICH ALSO CATCHES COMPONENT NAMES. `<Figure …/>` in an
+ * `.mdx` body is a component call, not a `<figure>` element, but this pattern
+ * cannot tell them apart and counts it — three of them failed a correctly
+ * converted `/orbiters` before the component was renamed to `Picture`. The
+ * insensitivity is deliberate (`<DIV>` is valid HTML and must not slip past),
+ * so the rule is on the naming side: a component rendered from a body must not
+ * be named for one of these tags. `Section`, `Article`, `Table` and `Span` are
+ * the remaining traps.
+ */
 export const STRUCTURAL_TAGS = /<(?:div|section|figure|ul|ol|table|article|span|img|iframe|a)\b/gi;
 
 /**
@@ -337,7 +347,6 @@ export const structuralCount = (body) =>
  */
 export const STRUCTURED_ES = new Set([
   'es/radio',
-  'es/orbiters',
   'lab/es/ip-orchestra-design',
   'lab/es/ip-2',
   'lab/es/ip-3',
@@ -370,7 +379,7 @@ export const STRUCTURED_ES = new Set([
 ]);
 
 /** The size `STRUCTURED_ES` may not exceed. It may only shrink. */
-export const STRUCTURED_ES_CLOSED_AT = 31;
+export const STRUCTURED_ES_CLOSED_AT = 30;
 
 /**
  * Which Spanish records carry structure they are not permitted to carry.

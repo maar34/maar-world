@@ -1,0 +1,94 @@
+---
+outputPath: "es/orbiters"
+title: "Orbiters - MAAR WORLD"
+area: "maar"
+kind: "page"
+tags: []
+lang: "es"
+origin: "authored"
+translationOf: "orbiters"
+description: "Imaginá convertir tu navegador en una bandeja giradiscos del espacio exterior."
+---
+
+{/*
+  La traducción de src/content/pages/en/orbiters.mdx — MW-19.
+
+  ESTE ARCHIVO YA NO TIENE ESTRUCTURA. Eran 49 elementos, escritos enteros acá
+  y otra vez en el archivo en inglés: el carrusel completo, los dos
+  reproductores, las cuatro bandas, y además espaciadores vacíos, envoltorios
+  de grilla con un solo hijo y la cáscara del swiper con sus dos flechas —
+  nada de eso llevaba una sola palabra, y varias de esas clases no las dibuja
+  ninguna hoja de estilos.
+
+  Ahora lo dibujan `media/Carousel`, `media/PlayEmbed` y `patterns/Band`, una
+  sola vez cada uno, y las dos lenguas cambian juntas.
+
+  "Orbiters" no se traduce: es el nombre del producto, y la propia página
+  aclara que antes se llamaban Interplanetary Players.
+
+  Los id del carrusel siguen llevando prefijo "es-" para que sean distintos de
+  los de la versión en inglés; son ancla de enlaces internos y deben ser únicos
+  en la página. El id se le pasa al componente, así que la regla sigue siendo
+  visible acá en vez de estar escondida adentro del marcado.
+
+  Los dos reproductores apuntan a los mismos instrumentos de play.maar.world:
+  es el mismo instrumento, no hay una versión en español. Las direcciones están
+  una sola vez, en ORBITERS de src/config/articles.ts. Lo que sí se traduce es
+  el encabezado, el texto de instrucciones y el title del marco, que es lo que
+  anuncia un lector de pantalla.
+*/}
+
+import Band from '../../../components/patterns/Band.astro';
+import Carousel from '../../../components/media/Carousel.astro';
+import Picture from '../../../components/media/Picture.astro';
+import Mark from '../../../components/patterns/Mark.astro';
+import PlayEmbed from '../../../components/media/PlayEmbed.astro';
+import { ORBITERS as M } from '../../../config/articles';
+
+export const cards = [
+  { image: M.cards[0], alt: 'Cartas en capas', step: 'I', caption: 'Explorá la música como nunca: superponé sonidos con controles que cambian según las cartas que tocás, y armá experiencias sonoras ricas y originales.' },
+  { image: M.cards[1], alt: 'Mapeo de tránsitos', step: 'II', caption: 'Remezclá música de forma intuitiva: crear sonido se vuelve un juego accesible para cualquiera, con experiencia previa o sin ella.' },
+  { image: M.cards[2], alt: 'Patch del taller', step: 'III', caption: 'Estamos al principio de este viaje, y Orbiters Orchestra sigue creciendo.' },
+];
+
+# <Mark tilt={2} tear={4}>Orbiters</Mark>
+
+Imaginá convertir tu navegador en una bandeja giradiscos del espacio exterior.
+
+<Band>
+  <p>Orbiters — antes llamados Interplanetary Players</p>
+</Band>
+
+<Band>
+  <h2>Empezá tu viaje</h2>
+</Band>
+
+<Carousel
+  id="carousel-es-orbiters-1"
+  label="3 fotografías"
+  slides={cards}
+  stepStyle="inline"
+  orbMedia
+  autoplayMs={M.carouselAutoplayMs}
+/>
+
+<PlayEmbed src={M.instruments.controlTheSound} title="Controlá el sonido:" frameTitle="Interactivo: controlá el sonido" level={2}>
+  <p>Sacale el silencio al dispositivo y apretá el botón PLAY ▶️. Ajustá el sonido moviendo las PERILLAS XYZ para arriba o para abajo hasta que te guste lo que escuchás. Si querés volver al sonido original, apretá los botones hexagonales ⬢ para devolver las perillas a su equilibrio.</p>
+</PlayEmbed>
+
+<PlayEmbed src={M.instruments.regenerativeModes} title="Explorá los modos regenerativos:" frameTitle="Interactivo: explorá los modos regenerativos" level={2}>
+  <p>Experimentá con 7 modos distintos, creando con datos reales de exoplanetas y de sus tránsitos y órbitas en distintas escalas de tiempo. Dejá el botón apretado para ver pistas sobre estos parámetros.</p>
+</PlayEmbed>
+
+<Band>
+  <h2>Tradición innovadora</h2>
+  <Picture src={M.banners.innovativeTradition} alt="Tradición innovadora" />
+  <p>Descubrí los efectos de cada carta como si estuvieras ajustando la experiencia de una nave.</p>
+</Band>
+
+<Band>
+  <h2>Una armonía de las esferas, extendida</h2>
+  <Picture src={M.banners.harmonyOfTheSpheres} alt="Armonía de las esferas" />
+  <p>Sincronizá tu remezcla con el movimiento del sistema estelar Kepler-47. Es como mezclar paisajes sonoros con un poco de polvo de estrellas, y abre un espectro nuevo de posibilidades para tocar con el cosmos.</p>
+  <Picture src={M.banners.keplerTelescope} alt="Telescopio Kepler" />
+</Band>

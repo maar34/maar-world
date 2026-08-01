@@ -83,6 +83,42 @@ export const IP_ORCHESTRA = {
  * A link inside a sentence is part of the sentence. A plate is structure.
  */
 /**
+ * The Orbiters instrument — `{orbiters,es/orbiters}`.
+ *
+ * `cards` names the same three files as `IP_ORCHESTRA.cards`, and they are
+ * deliberately NOT one shared list. MW-19 is about a page spelled twice because
+ * it has two languages; this is two DIFFERENT pages that happen to show the same
+ * three pictures today. Sharing the array would assert that they must always
+ * agree, and nothing says the product page and the workshop article can never
+ * choose different screenshots. The duplication this file removes is the one
+ * between `orbiters` and `es/orbiters`, and that one is gone.
+ *
+ * `instruments` are query strings, not URLs — `media/PlayEmbed` writes the host,
+ * so `play.maar.world` exists once on the site. Note `controlTheSound` opens
+ * `c=0` here and `c=2` on the ip-orchestra articles: a real difference between
+ * two pages, and the reason these are not shared either.
+ */
+export const ORBITERS = {
+  cards: [
+    '/img/interplanetary-players/07_ip-card.jpg',
+    '/img/interplanetary-players/10_ip-transit.png',
+    '/img/interplanetary-players/08_ip-max-24.jpg',
+  ],
+  instruments: {
+    controlTheSound: '?g=335&s=1&c=0',
+    regenerativeModes: '?g=8&s=0&c=21',
+  },
+  banners: {
+    innovativeTradition: '/img/interplanetary-players/maar-world-banner-ovni.jpg',
+    harmonyOfTheSpheres:
+      '/img/interplanetary-players/Planetary_Musical_Scales_from_Harmony_of_the_Worlds.jpg',
+    keplerTelescope: '/img/interplanetary-players/Kepler_Space_Telescope.png',
+  },
+  /** 6.5s between advances. Real behaviour — see Carousel's `autoplayMs`. */
+  carouselAutoplayMs: 6500,
+} as const;
+
+/**
  * Booking enquiries — `{bookings,es/bookings}`.
  *
  * ONE EPK, AND IT IS THE ENGLISH ONE. There is no Spanish cut of the press kit,

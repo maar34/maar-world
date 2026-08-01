@@ -1,0 +1,94 @@
+---
+outputPath: "orbiters"
+title: "Orbiters - MAAR WORLD"
+area: "maar"
+kind: "page"
+tags: []
+source: "maar.world/collections/_pages/orbiters.md"
+lang: "en"
+origin: "migrated"
+description: "Imagine turning your browser into a turntable from outer space."
+---
+
+{/*
+  THIS FILE IS `.mdx` AND ITS SPANISH HALF IS TOO — MW-19.
+
+  49 structural elements, and every one of them written out again in Spanish.
+  Most were not content at all: three empty spacers, three grid wrappers each
+  holding a single cell, a swiper shell around the carousel and two swiper
+  arrow elements. None of those carried a word, and half of them are drawn by
+  no rule in any stylesheet.
+
+    the carousel     -> `media/Carousel`, which gained `autoplayMs` for it
+    the two players  -> `media/PlayEmbed`, which gained a heading `level`
+    the four bands   -> `patterns/Band`
+    spacers, grids,
+    cells, swiper    -> deleted. `.p-4`, `.p-5`, `.cell--12`, `.my-3` and the
+                        swiper classes match no rule in any stylesheet; the
+                        `.grid` wrappers each held ONE child, so the flex gap
+                        that is the whole of `.prose .grid` never applied.
+
+  THE PICTURES AND THE QUERY STRINGS ARE NOT HERE. They are `ORBITERS` in
+  src/config/articles.ts. What IS here is every word — the captions, the
+  headings, the instructions under each instrument, and every `alt`.
+
+  THE CAROUSEL AUTOPLAYS AND THAT HAD TO BE CARRIED. `ui/CarouselScript` reads
+  `data-autoplay`, and this is the only carousel on the site that sets it. A
+  component that could not express it would have stopped the track silently —
+  an autoplaying carousel and a still one look identical in a screenshot.
+*/}
+
+import Band from '../../../components/patterns/Band.astro';
+import Carousel from '../../../components/media/Carousel.astro';
+import Picture from '../../../components/media/Picture.astro';
+import Mark from '../../../components/patterns/Mark.astro';
+import PlayEmbed from '../../../components/media/PlayEmbed.astro';
+import { ORBITERS as M } from '../../../config/articles';
+
+export const cards = [
+  { image: M.cards[0], alt: 'Layering cards', step: 'I', caption: 'Explore music like never before: layer sounds with controls that change based on the cards you play, creating rich and original sound experiences.' },
+  { image: M.cards[1], alt: 'Transit mapping', step: 'II', caption: 'Intuitively remix music—sound creation becomes playful and accessible for everyone, with or without prior experience.' },
+  { image: M.cards[2], alt: 'Workshop patch', step: 'III', caption: 'We are at the beginning of this journey, and Orbiters Orchestra keeps evolving.' },
+];
+
+# <Mark tilt={2} tear={4}>Orbiters</Mark>
+
+Imagine turning your browser into a turntable from outer space.
+
+<Band>
+  <p>Orbiters — previously called Interplanetary Players</p>
+</Band>
+
+<Band>
+  <h2>Start your journey</h2>
+</Band>
+
+<Carousel
+  id="carousel-orbiters-1"
+  label="3 photographs"
+  slides={cards}
+  stepStyle="inline"
+  orbMedia
+  autoplayMs={M.carouselAutoplayMs}
+/>
+
+<PlayEmbed src={M.instruments.controlTheSound} title="Control the Sound:" frameTitle="Control the Sound Interactive" level={2}>
+  <p>Please unmute your device and press the PLAY ▶️ button. Adjust the sound by moving the XYZ KNOBS up or down until you like what you hear. If you want to go back to the original sound, press the hexagonal ⬢ buttons to reset the knobs to their equilibrium.</p>
+</PlayEmbed>
+
+<PlayEmbed src={M.instruments.regenerativeModes} title="Explore Regenerative Modes:" frameTitle="Explore Regenerative Modes Interactive" level={2}>
+  <p>Experiment with 7 unique modes, creating with real data from exoplanets and their transits and orbits across different time scales. Leave the button pressed to get hints about these parameters.</p>
+</PlayEmbed>
+
+<Band>
+  <h2>Innovative Tradition</h2>
+  <Picture src={M.banners.innovativeTradition} alt="Innovative Tradition" />
+  <p>Discover the different cards effects as if you're adjusting a spaceship's experience.</p>
+</Band>
+
+<Band>
+  <h2>An Extended Harmony of the Spheres</h2>
+  <Picture src={M.banners.harmonyOfTheSpheres} alt="Harmony of the Spheres" />
+  <p>Sync your remix with the movement of the Kepler-47 star system. It's like mixing soundscapes with a touch of stardust, opening a new spectrum of possibilities for jamming with the cosmos.</p>
+  <Picture src={M.banners.keplerTelescope} alt="Kepler telescope" />
+</Band>
