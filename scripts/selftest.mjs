@@ -21,6 +21,7 @@ import { CHECK_NAMES } from './verify.mjs';
 import { sha, plainText, bodyText, readableText, mainOf } from './lib/html-text.mjs';
 import { renderFeed, xmlEscape, rfc822 } from '../src/lib/feed.mjs';
 import { routeToFiles } from './lib/routes.mjs';
+import { docExcerpt } from '../src/lib/doc-excerpt.mjs';
 
 const SCRIPTS = resolve(dirname(fileURLToPath(import.meta.url)));
 
@@ -1191,6 +1192,30 @@ check('navPathsFor changes nothing on an English page', () => {
  * returned only one form, half the site's pairs would stop being checked and
  * the suite would still be green.
  */
+/**
+ * ── A docs card's excerpt comes from the article, not from its scaffolding ───
+ *
+ * `docExcerpt` reads the first prose line of a body. When every body was `.md`
+ * that could only be content. MW-19 made bodies `.mdx`, which open with import
+ * statements — and `/collect/documentation` shipped cards reading "import Mark
+ * from '../../../../../../components/patterns/Mark.astro';" in both languages.
+ * Long enough, has letters, passed every test. Driven here in both directions.
+ */
+check('an mdx import is not a docs excerpt', () => {
+  const body = "\nimport Mark from '../../../../../../components/patterns/Mark.astro';\nimport Picture from '../../components/media/Picture.astro';\n\nexport const cards = [{ image: 'a.jpg' }];\n\n# <Mark>Cartas</Mark>\n\nLas cartas Sky Sounds son una coleccion que suena cuando la escaneas.\n";
+  const got = docExcerpt(body);
+  const ok = got === 'Las cartas Sky Sounds son una coleccion que suena cuando la escaneas.';
+  return { ok, detail: ok ? 'imports and exports are skipped; the first real sentence wins' : `got ${JSON.stringify(got)}` };
+});
+
+check('a JSX translator note is not a docs excerpt', () => {
+  // The `.mdx` spelling of the HTML comment every authored Spanish file carries.
+  const body = '\n{/*\n  La traduccion de en/collect/documentation.mdx. Esta nota es larga y tiene\n  letras de sobra para pasar el minimo de caracteres.\n*/}\n\nLas cartas Sky Sounds son una coleccion que suena cuando la escaneas.\n';
+  const got = docExcerpt(body);
+  const ok = got === 'Las cartas Sky Sounds son una coleccion que suena cuando la escaneas.';
+  return { ok, detail: ok ? 'a note addressed to an editor never reaches a reader' : `got ${JSON.stringify(got)}` };
+});
+
 const VT = await import('./verify-translations.mjs');
 
 check('pairsOf resolves both forms of the relation', () => {

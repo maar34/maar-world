@@ -37,6 +37,20 @@
  */
 const STRUCTURAL = [
   /^\s*#{1,6}\s/,                     // markdown heading
+  /**
+   * AN `.mdx` BODY OPENS WITH ITS IMPORTS, AND THEY ARE NOT PROSE.
+   *
+   * This shipped: `/collect/documentation` and `/es/collect/documentation`
+   * rendered cards reading "import Mark from
+   * '../../../../../../components/patterns/Mark.astro';". The line is long
+   * enough to clear MIN_EXCERPT_CHARS and contains letters, so every test below
+   * passed it — the filter was written when every body was `.md` and the first
+   * line of a body could only ever be content.
+   *
+   * `export const` too: converted articles declare their slide arrays and
+   * facade strings that way.
+   */
+  /^\s*(?:import|export)\s/,
   /^\s*<\/?(?:h[1-6]|hr|div|figure|img|ul|ol|li|table|thead|tbody|tr|td|th|iframe|blockquote|section|header|nav|aside|form|br)\b/i,
   /^\s*<p[^>]*class="[^"]*embed-facade/i,
   /^\s*!\[/,                          // markdown image
@@ -89,7 +103,14 @@ export function docExcerpt(body) {
   /* Translator notes live in HTML comments at the top of every authored ES
      file. They are addressed to whoever edits the file, never to a reader, so
      they are removed before anything else looks at the text. */
-  const withoutComments = body.replace(/<!--[\s\S]*?-->/g, '');
+  const withoutComments = body
+    .replace(/<!--[\s\S]*?-->/g, '')
+    /* The same notes, in the spelling `.mdx` requires. A converted record
+       carries its explanation as a JSX comment rather than an HTML one, and it
+       is addressed to the same reader: whoever edits the file, never a
+       visitor. Stripped before anything else looks at the text, for the same
+       reason and in the same breath as the HTML form above. */
+    .replace(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g, '');
 
   for (const rawLine of withoutComments.split(/\r?\n/)) {
     const line = rawLine.trim();
