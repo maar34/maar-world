@@ -47,6 +47,43 @@ re-proved on any new host before cutover.
 A check reporting `SKIP` has **not** passed — its input does not exist yet. `npm run verify`
 lists skips separately so a green run is never mistaken for a complete one.
 
+## Deployment
+
+GitHub Pages, built by GitHub Actions — `.github/workflows/deploy.yml`. It does not run on a
+push. It runs when `verify` has concluded **successfully** on `main`, and rebuilds that exact
+commit, so the contract decides what ships. `workflow_dispatch` is there for the first deploy
+and for re-publishing after a Pages settings change.
+
+Two settings live outside this repo and are set once, in **Settings → Pages**:
+
+| Setting | Value | Why |
+|---|---|---|
+| Source | GitHub Actions | The default, *Deploy from a branch*, runs Jekyll over the repository root — it does not build Astro, and it strips `_assets` |
+| Custom domain | the host the site answers on | With Actions as the source the domain is stored here, not in a `CNAME` file; a `CNAME` in the artifact would override it on every deploy |
+
+**The site must be served from the root of a domain.** `site` is `https://maar.world` with no
+`base`, and every internal link and asset path is root-absolute — which is what keeps the card
+URLs byte-stable. On the default `maar34.github.io/maar-world/` path those paths all resolve
+one level too high, so a custom domain is not cosmetic here, it is what makes the deploy work.
+
+`maar.world` itself is still served by the legacy `maar.world-site` repository, and GitHub
+allows one repository per domain. Moving it is the cutover — **MW-10/MW-12**, owner-only,
+DNS-touching. Before it, this deploys to a staging subdomain; after it, the domain simply
+moves to this repository's Pages settings and nothing in the build changes.
+
+First deploy on any new host, prove the `.html` fallback the card URLs depend on. It is host
+behaviour, so no build can assert it — which is why `verify:cards` reports one SKIP until a
+canary exists:
+
+```sh
+curl -sSI https://<host>/EBT5599 | head -1      # 200, not 301, not 404
+curl -sSI https://<host>/EBT5599.html | head -1 # 200
+```
+
+Both 200 and neither redirected, then record it in `verify/host-canary.json` —
+`{ "extensionlessFallback": true, "host": "<host>", "verifiedAt": "<date>" }` — and that skip
+turns into a pass. A `false` there fails the build, which is the point: 35 physical cards.
+
 ## Content
 
 `src/content/pages/en/**` and `src/content/pages/es/**` hold every page, filed by language:

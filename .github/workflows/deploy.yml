@@ -1,0 +1,84 @@
+name: deploy
+
+# WHAT SHIPS IS WHAT PASSED.
+#
+# The route manifest is a contract and `verify` is the only thing that can
+# prove a build still satisfies it. So this never triggers on a push: it
+# triggers on `verify` having *concluded successfully* on `main`, and then
+# rebuilds the exact commit that was verified. A red `verify` cannot reach the
+# host, and no second, weaker definition of "good" exists in this file.
+on:
+  workflow_run:
+    workflows: [verify]
+    types: [completed]
+    branches: [main]
+  # For the first deploy, and for re-publishing an unchanged commit (a Pages
+  # settings change — a custom domain — needs a deployment to take effect).
+  workflow_dispatch:
+
+# All three are required. `pages: write` and `id-token: write` are what
+# actions/deploy-pages exchanges for its short-lived deployment token; without
+# them the deploy fails with a permissions error that names none of this.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time, and never cancel one in flight — a half-applied deploy
+# is a half-live site. Runs that queue up behind it collapse to the newest.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # `workflow_run` fires on failure too. Without this the site would publish
+    # from a build whose contract check just went red.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # A `workflow_run` job checks out the default branch by default, not
+          # the commit that triggered it. Pin to the verified SHA, or a deploy
+          # can quietly ship a newer, unverified `main`.
+          ref: ${{ github.event.workflow_run.head_sha || github.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # `npm run build` composes media/shared + media/<area> into .public first
+      # (scripts/assemble-public.mjs), then builds. `dist/` is the entire site:
+      # 195 pages, `build.format: 'file'`, assets under `_assets`.
+      - run: npm run build
+
+      # Pages served from an Actions artifact does not run Jekyll, so this is
+      # belt and braces — but the belt matters. Astro's assets live in
+      # `_assets`, and Jekyll drops every path beginning with an underscore. If
+      # the Pages source is ever switched back to a branch deploy, this file is
+      # the difference between the site and a bare HTML skeleton.
+      - run: touch dist/.nojekyll
+
+      # No CNAME file is written here on purpose. With GitHub Actions as the
+      # Pages source the custom domain lives in the repository's Pages settings,
+      # not in the artifact, and a CNAME file that disagrees with that setting
+      # overrides it on every deploy. Domain changes are a deliberate cutover
+      # (MW-10/MW-12) — see "Deployment" in README.md.
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
