@@ -1,10 +1,20 @@
 # Handoff
 
-**State:** `npm run verify` = **80 passed, 0 failed, 1 skipped**. The one skip is
+**State:** `npm run verify` = **84 passed, 0 failed, 1 skipped**. The one skip is
 `verify:cards`' host-canary assertion, which needs MW-10 upstream.
 
-**Last shipped:** MW-13, MW-14 and MW-16 — see the `MW-13`/`MW-14`/`MW-16` lines
-at the end of the ledger.
+**Last shipped:** MW-13, MW-14 and MW-16, then MW-11's Spanish filing rules — see
+the `MW-13`/`MW-14`/`MW-16` and `i18n/spanish-filing-closed` lines at the end of
+the ledger.
+
+**ALL 72 SPANISH RECORDS ARE NOW ASSERTED.** 61 sit at the mirror
+(`authored/es/<path>`); the other 11 are named individually in `LEGACY_ES` in
+`scripts/verify-translations.mjs` — the 10 Lab pages filed `<area>/es/<slug>`,
+plus `/esp-feedback`, which has no other-language half and must not be given one.
+**That list is closed: it may shrink, never grow.** A new Spanish page goes at
+`/es/<path>`; adding a line to `LEGACY_ES` to turn a check green is the bypass
+the list exists to make visible. Rule for authors:
+`.agents/skills/maar-content-authoring/SKILL.md`.
 
 **THERE IS ONE SURFACE NOW.** `layouts/shell-paper`, the `[data-surface='paper']`
 token block, the `surface` frontmatter field and the `paper` entry in

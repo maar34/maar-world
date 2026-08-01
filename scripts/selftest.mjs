@@ -1061,6 +1061,67 @@ check('pairsOf resolves both forms of the relation', () => {
   return { ok, detail: ok ? 'one pair from each form, and the untranslated page is not one' : `got ${JSON.stringify(pairs.map((p) => [p.via, p.translation.outputPath]))}` };
 });
 
+/**
+ * ── Where a Spanish page is filed ────────────────────────────────────────────
+ *
+ * `spanishFiling` closes the set of Spanish records: each one is at the mirror
+ * or named in LEGACY_ES. Both of its lists are green on the real content today,
+ * which is exactly the state an assertion can be in while asserting nothing —
+ * the eleven records this was written for sat outside the old mirror rule for
+ * months under a green suite. So each arm is driven to FAIL here on a fixture,
+ * and the no-false-positive case is asserted beside it.
+ *
+ * The fixtures pass their own `legacy` map rather than the real one, so these
+ * stay true when a legacy page is eventually deleted.
+ */
+const mirrored = { file: 'src/content/authored/es/about.md', outputPath: 'es/about', lang: 'es', translationOf: 'about' };
+const legacyEs = { file: 'src/content/migrated/lab/es/dadada.md', outputPath: 'lab/es/dadada', lang: 'es', translationKey: '2023-12-09-dadada' };
+const stub = { file: 'src/content/migrated/esp-feedback.md', outputPath: 'esp-feedback', lang: 'es' };
+const LIST = new Map([[legacyEs.file, 'infix'], [stub.file, 'unpaired']]);
+
+check('spanishFiling accepts a mirrored translation and a listed exception', () => {
+  const f = VT.spanishFiling([{ outputPath: 'about', lang: 'en', file: 'src/content/migrated/about.md' }, mirrored, legacyEs, stub], LIST, 2);
+  const ok = f.unaccounted.length === 0 && f.staleExceptions.length === 0 && f.offPrefix.length === 0 && f.overgrown === 0;
+  return { ok, detail: ok ? 'no false positive on the shape the repo is actually in' : `got ${JSON.stringify(f.unaccounted.concat(f.staleExceptions, f.offPrefix))}` };
+});
+
+check('spanishFiling catches a Spanish record that is neither mirrored nor listed', () => {
+  const loose = { file: 'src/content/authored/nuevo/suelto.md', outputPath: 'nuevo/suelto', lang: 'es' };
+  const f = VT.spanishFiling([mirrored, loose], new Map(), 0);
+  const ok = f.unaccounted.length === 1 && f.unaccounted[0].includes('suelto');
+  return { ok, detail: ok ? 'an unfiled Spanish page is reported, not skipped' : `got ${JSON.stringify(f.unaccounted)}` };
+});
+
+check('spanishFiling catches a named exception that no longer describes its record', () => {
+  const deleted = VT.spanishFiling([mirrored], LIST, 2).staleExceptions;
+  const paired = VT.spanishFiling([legacyEs, { ...stub, translationKey: 'k' }], LIST, 2).staleExceptions;
+  const unkeyed = VT.spanishFiling([{ ...legacyEs, translationKey: undefined }, stub], LIST, 2).staleExceptions;
+  const ok = deleted.length === 2 && paired.length === 1 && paired[0].includes('now names one') && unkeyed.length === 1 && unkeyed[0].includes('no translationKey');
+  return { ok, detail: ok ? 'a deleted page, a stub that acquired a pair, and a pair that lost its key' : `got ${JSON.stringify({ deleted, paired, unkeyed })}` };
+});
+
+check('spanishFiling catches the exception list growing', () => {
+  const f = VT.spanishFiling([legacyEs, stub], LIST, 1);
+  const closed = VT.spanishFiling([legacyEs, stub], LIST, 2);
+  const ok = f.overgrown === 2 && closed.overgrown === 0;
+  return { ok, detail: ok ? 'grandfathering a new page by listing it does not go unremarked' : `got ${f.overgrown} / ${closed.overgrown}` };
+});
+
+check('the prefix rule binds a new page and not a frozen one', () => {
+  // At the mirror on disk yet published off-prefix: the two rules are separate,
+  // and a record can satisfy one while breaking the other.
+  const offPrefix = { file: 'src/content/authored/es/lab/nuevo.md', outputPath: 'lab/es/nuevo', lang: 'es', translationOf: 'lab/nuevo' };
+  const f = VT.spanishFiling([legacyEs, stub, offPrefix], LIST, 2);
+  const ok = f.offPrefix.length === 1 && f.offPrefix[0].includes('lab/es/nuevo') && f.unaccounted.length === 0;
+  return { ok, detail: ok ? 'a new /lab/es/ page is refused; the frozen one beside it is not' : `got ${JSON.stringify(f.offPrefix)}` };
+});
+
+check('the real legacy list is the eleven records that predate the prefix rule', () => {
+  const infix = [...VT.LEGACY_ES.values()].filter((s) => s === 'infix').length;
+  const ok = VT.LEGACY_ES.size === 11 && infix === 10 && VT.LEGACY_ES.get('src/content/migrated/esp-feedback.md') === 'unpaired' && VT.LEGACY_ES_CLOSED_AT === 11;
+  return { ok, detail: ok ? '10 infix + 1 unpaired, closed at 11' : `got ${VT.LEGACY_ES.size} entries, ${infix} infix, closed at ${VT.LEGACY_ES_CLOSED_AT}` };
+});
+
 // --- patterns/mark: the stamp only stamps an edition number --------------
 // The stamp reads its text out of `card_title` rather than out of a new field,
 // so the only thing that can go wrong is it reading a numeral where there is

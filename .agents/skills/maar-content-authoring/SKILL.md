@@ -1,6 +1,6 @@
 ---
 last-verified: 2026-08-01
-verified-against: moved from docs/AUTHORING.md (MW-15 follow-up)
+verified-against: scripts/verify-translations.mjs (LEGACY_ES, the /es/ prefix rule)
 status: active
 ---
 
@@ -63,6 +63,42 @@ date object, and the schema wants a string — the build fails with
 That is the whole procedure. `verify:routes` reads `outputPath` straight out of
 this directory, so **a page is authorised by existing** — there is no second list
 to update, and deleting the file de-authorises it again.
+
+## Writing a Spanish page
+
+A Spanish page is published at **`/es/<path>`** and filed at
+**`src/content/authored/es/<path>`**, where `<path>` is the `outputPath` of the
+English page it translates. The URL and the path on disk agree, so either one
+tells you where the other half is without opening anything.
+
+```markdown
+---
+outputPath: "es/lab/my-new-post"     # "es/" + the English page's outputPath
+title: "Mi nueva entrada"
+area: "maar"
+kind: "lab"
+lang: "es"
+translationOf: "lab/en/my-new-post"  # the English page's outputPath
+---
+```
+
+`translationOf` goes on the Spanish side only and must name a page that exists —
+a value naming nothing fails the build. `verify:translations` asserts both halves
+of the rule: *every Spanish record is at the mirror or a named exception*, and
+*a new Spanish page is published under /es/*.
+
+### The eleven pages that do not follow it
+
+Ten Lab pages are filed `migrated/lab/es/<slug>` and publish `/lab/es/<slug>`;
+`/esp-feedback` carries no language marker at all and is a retired redirect stub
+with no Spanish/English pair. **Leave all eleven where they are.** Their URLs are
+in the frozen route manifest, so moving one is a contract change and not a
+tidy-up — `/lab/es/dadada` cannot become `/es/lab/dadada`.
+
+They are named individually in `LEGACY_ES` in `scripts/verify-translations.mjs`,
+and that list is **closed: it may shrink, never grow.** If the check fails because
+a new page is off-prefix, move the page. Adding a line to the list is the bypass
+the list exists to make visible.
 
 ## What you do NOT have to do
 
