@@ -138,7 +138,11 @@ const hasLanguages = Boolean(currentLanguage && otherLanguages.length > 0);
         text. It takes the current area's pigment, so the header states which
         area you are in twice over: the mark and the current nav field. */}
     <a class="shell__brand" href={brandHome} aria-current={brandCurrent}>
-      <BrandMark size={22} />
+      {/* No `size` here on purpose: the rendered size is --brand-mark-size in
+          tokens.css, applied by `.shell__brand .brand-mark`. The prop's default
+          stays as the SVG's intrinsic width/height, which is what a visitor
+          gets if the stylesheet never loads. */}
+      <BrandMark />
       <span>Maar World</span>
     </a>
 

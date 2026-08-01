@@ -372,6 +372,29 @@
   --nav-voice-track-open: 0.16em;
   --nav-icon-size: 1.35em;
 
+  /**
+   * The brand mark, and why its size is here rather than on the component.
+   *
+   * `ui/site-header` used to call `<BrandMark size={22} />` — a raw pixel value
+   * at a call site, which this file's own rule forbids: *"nothing in the build
+   * carries a raw hex, a raw pixel size or a raw duration."* One caller made it
+   * easy to miss, and it meant resizing the logo was a code change in a
+   * component rather than a value change here.
+   *
+   * A FIXED px AND NOT AN em, unlike --nav-icon-size above. A nav icon belongs
+   * to the label beside it and should track its type; the logo is an object of
+   * its own that happens to sit next to a wordmark, and tying it to the h3 size
+   * would make the mark shrink at the breakpoint where the header is already
+   * tightest. It is bounded by --hit-min instead: at 34 it sits inside the 44px
+   * row with room, which is the real constraint on how large it can be.
+   *
+   * The component keeps `width`/`height` attributes at this number's old value
+   * so the SVG has intrinsic dimensions if a stylesheet never arrives; CSS
+   * overrides them. That is why the mark is sized in two places and only one of
+   * them is authoritative.
+   */
+  --brand-mark-size: 34px;
+
   /* Chrome stays above moving page content while retaining normal document
      flow. A named layer prevents future components guessing a z-index. */
   --layer-header: 10;

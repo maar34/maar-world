@@ -211,14 +211,27 @@
 }
 
 /**
- * The brand absorbed the "maar" nav entry, so it absorbed that entry's job of
- * saying you are on it. Quietly: an underline on the wordmark, which is the same
- * second signal every current nav entry carries, without a pigment field behind
- * a logo. `aria-current="page"` in the markup does the rest.
+ * The brand does NOT draw its current state, and that is a deliberate reversal.
+ *
+ * It used to: the brand absorbed the "maar" nav entry, so it absorbed that
+ * entry's job of saying you are on it, with a permanent underline on the
+ * wordmark. Two things retired that.
+ *
+ * The owner's call is the first — the wordmark reads as permanently underlined
+ * on the home page, which looks like a link stuck in a hover state rather than
+ * a location. The second is that it stopped working the moment the header
+ * gained v3's hover: the nav mechanic IS a 2px rule drawn under the label, so a
+ * permanently underlined brand had a line sitting a pixel from where its own
+ * hover puts one. The hover became unreadable — the one state the mechanic
+ * exists to express.
+ *
+ * `aria-current="page"` STAYS in the markup, so a screen reader is still told
+ * this link points at the page being read. What is gone is only the visual
+ * restatement, and a logo is the one control where that costs least: nobody
+ * navigates by checking whether the wordmark is underlined, and the current
+ * nav entry a few pixels away still carries the full field-plus-underline
+ * treatment for the area you are in.
  */
-.shell__brand[aria-current] span {
-  text-decoration-line: underline;
-}
 
 /**
  * The mark takes the page's area pigment — sky on Maar, pink on Collect, tree
@@ -231,6 +244,12 @@
  */
 .shell__brand .brand-mark {
   color: var(--area-pigment, var(--c-maar));
+  /* The size is a token, not the component's `size` prop — see --brand-mark-size
+     in tokens.css. `flex: 0 0 auto` because the brand is an inline-flex row and
+     the mark must not be squeezed by a long wordmark on a narrow phone. */
+  flex: 0 0 auto;
+  inline-size: var(--brand-mark-size);
+  block-size: var(--brand-mark-size);
 }
 
 /* ---- navigation --------------------------------------------------------- */
