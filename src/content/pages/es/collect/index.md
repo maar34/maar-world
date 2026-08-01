@@ -13,12 +13,14 @@ headingHtml: "<span class=\"mark mark--cut mark--tilt-4 mark--tear-2\">collect</
 collect:
   pitch:
     title: "Tocá cartas de música con exoplanetas"
+    mark: "exoplanetas"
     body: "Sky Sounds es la primera colección de cartas que, al escanearlas, te deja escuchar su música y transformarla según el movimiento de los exoplanetas a los que pertenece."
     cta: "Coleccionar"
   orbiters:
     label: "¿Qué es un Orbiter?"
   journey:
     title: "Empezá tu viaje"
+    mark: "viaje"
     carouselLabel: "5 fotografías"
     slides:
       - step: "I"

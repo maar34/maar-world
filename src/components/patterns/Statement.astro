@@ -1,0 +1,133 @@
+---
+/**
+ * patterns/statement — a heading that is a STATEMENT rather than a section label.
+ *
+ * The Lab's opening line is the reference: *"A **seed**, then a tree"* — the
+ * display face in italic, with one word printed twice in the area pigment. That
+ * second impression is `mark--overprint` and its `mark__echo`, and it is the
+ * mark the design calls an echo: the same word, offset a couple of pixels, so
+ * the line reads once and is printed twice.
+ *
+ * ── WHY THIS IS A COMPONENT AND NOT TWO COPIES OF SOME MARKUP ───────────────
+ *
+ * The echo has to be the word rendered a second time inside the mark, and a
+ * heading that hand-assembles `before + <span><span></span></span> + after` at
+ * every call site is markup nobody can read and a hidden `aria-hidden` that
+ * somebody eventually forgets. It is assembled once here, from a plain string
+ * plus the word to mark, so a content record never carries markup — see
+ * `markedWord` in `content/schemas.mjs` for why that matters.
+ *
+ * ── THE RULES-OF-USE EXCEPTION, STATED OUT LOUD ─────────────────────────────
+ *
+ * The spec's rules-of-use table permits marks at `h1` and card-cover level and
+ * forbids them at `h2` and below, and `styles/mark.css` enforces that with
+ * three containment rules. A statement is an `h2`. So this component is a
+ * deliberate, named exception to that row, made on the owner's instruction, and
+ * `.statement` is the only opener — the containment still holds for every other
+ * `h2` in the build. The opt-in lives beside the containment rules in mark.css
+ * rather than here, so the exception is visible from the rule it excepts.
+ *
+ * The table's other h2 limits are kept rather than waived: one mark, one extra
+ * face, and no tilt. A statement borrows the Lab h1's voice; it does not become
+ * an h1.
+ *
+ * ── THE HEADING LEVEL DOES NOT CHANGE ───────────────────────────────────────
+ *
+ * This is presentation. `Collect`'s two statements are the headings of their
+ * sections and one of them is the target of an `aria-labelledby`, so they stay
+ * `h2` and the document outline is untouched. Making them look like the Lab's
+ * `h1` must not make them one — a page with two `h1`s reads to a screen reader
+ * as two documents.
+ */
+interface Props {
+  /** The whole line, as plain text. */
+  text: string;
+  /**
+   * The one word inside `text` that takes the overprint echo.
+   *
+   * Matched case-sensitively and as a whole word, and if it is not found the
+   * line simply prints flat. A missing word is a content edit that moved on
+   * without updating the record; a statement that quietly loses its mark is a
+   * much better failure than a build that dies, or than an echo landing on the
+   * `journey` inside `journeyman`.
+   */
+  mark?: string;
+  id?: string;
+}
+
+const { text, mark, id } = Astro.props;
+
+/**
+ * Split the line into what comes before the marked word, the word, and what
+ * follows. `parts` is null when there is nothing to mark.
+ *
+ * The word boundaries are asserted with a lookaround rather than `\b` because
+ * `\b` is defined on ASCII word characters, and both of the Spanish statements
+ * this was written for end in ones it gets wrong — `Empezá tu viaje` is fine,
+ * but `\bviaje\b` against a word like `exoplanetas` next to an accented
+ * neighbour is exactly where that assumption breaks. Unicode-aware lookarounds
+ * treat `á` as part of the word, which is what a reader means by one.
+ */
+function split(line: string, word: string | undefined) {
+  if (!word) return null;
+  const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const at = new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, 'u').exec(line);
+  if (!at) return null;
+  return { before: line.slice(0, at.index), word: at[0], after: line.slice(at.index + at[0].length) };
+}
+
+const parts = split(text, mark);
+---
+
+{/**
+ * WRITTEN TIGHT ON PURPOSE — do not let a formatter break these lines.
+ *
+ * Astro collapses the newline-plus-indentation around an expression into a real
+ * space, so the readable indented form of this template renders
+ * `with <span> exoplanets </span>`: a leading space inside the mark on top of
+ * the one already ending `parts.before`, and the same space inside the echo.
+ * The echo is positioned to sit exactly on top of the word it repeats, so a
+ * stray space does not just double a gap — it slides the second impression off
+ * the first, which is the whole effect.
+ *
+ * The `aria-hidden` on the echo is what keeps the line from being announced
+ * with one of its words said twice.
+ */}
+<h2 class="statement" id={id}>{
+  parts ? (
+    <Fragment>{parts.before}<span class="mark mark--overprint">{parts.word}<span class="mark__echo" aria-hidden="true">{parts.word}</span></span>{parts.after}</Fragment>
+  ) : text
+}</h2>
+
+<style>
+  /**
+   * The Lab h1's voice at a statement's size.
+   *
+   * Same face, same italic, same tracking — that is what makes the two pages
+   * feel like one hand. The size is the difference and it is deliberate: the
+   * Lab's own line is clamp(48px, 6vw, 72px) because it is that page's h1, and
+   * a statement sitting inside a section has to stay under the page title it
+   * lives beneath. The floor is a step above --t-h2-size (34px) so it still
+   * reads as a statement rather than as a slightly odd heading.
+   */
+  .statement {
+    margin: 0;
+    font-family: var(--t-display-face);
+    font-weight: var(--t-display-weight);
+    font-style: italic;
+    font-size: clamp(36px, 3.6vw, 48px);
+    line-height: 1.06;
+    letter-spacing: var(--t-display-track);
+    /* A statement is a line to be read, not a column of type. Without this the
+       Collect band is the full 1180px and a two-word statement sits alone on a
+       very long line. */
+    max-inline-size: 22ch;
+    text-wrap: balance;
+  }
+
+  /* Centred statements centre their own measure too, or the line balances
+     inside a box that is still hard against the left edge. */
+  :global(.collect__band--center) .statement {
+    max-inline-size: none;
+  }
+</style>

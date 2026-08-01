@@ -103,6 +103,7 @@
 import Card from '../patterns/Card.astro';
 import CollageField from '../patterns/CollageField.astro';
 import Action from '../ui/Action.astro';
+import Statement from '../patterns/Statement.astro';
 import Carousel from '../media/Carousel.astro';
 import EmbedFacade from '../media/EmbedFacade.astro';
 import {
@@ -280,7 +281,10 @@ const slides = COLLECT_JOURNEY_IMAGES.map((image, i) => ({
       note={video.note}
     />
 
-    <h2 class="collect__heading">{copy.pitch.title}</h2>
+    {/* The page's opening statement, in the Lab h1's voice. See
+        `patterns/statement` for why an h2 is allowed a mark here and what that
+        exception does not extend to. */}
+    <Statement text={copy.pitch.title} mark={copy.pitch.mark} />
     <p class="collect__lede">{copy.pitch.body}</p>
     {/* `category` is collect's own symbol in `AREAS` — the same one the header
         wears on this area and the home page wears on "collect cards". The icon
@@ -326,9 +330,9 @@ const slides = COLLECT_JOURNEY_IMAGES.map((image, i) => ({
   </section>
 
   <section class="prose collect__band" aria-labelledby="collect-journey">
-    <h2 class="collect__heading collect__heading--center" id="collect-journey">
-      {copy.journey.title}
-    </h2>
+    {/* Keeps its id: the section is labelled by this heading, so the element
+        the `aria-labelledby` points at must stay put. */}
+    <Statement text={copy.journey.title} mark={copy.journey.mark} id="collect-journey" />
     <Carousel id={carouselId} label={copy.journey.carouselLabel} slides={slides} />
   </section>
 
