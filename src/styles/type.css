@@ -207,16 +207,25 @@ a {
  * a pigment field with dark type:
  *
  *   .btn            the action system — quiet a/b/c, the stamp, the breaks
+ *   .button         the legacy `.prose a.button` controls in migrated bodies
  *   .nav-link       header navigation — a rule draws, nothing fills
  *   .shell__brand   the wordmark, same treatment as an entry
  *   .shell__social  the footer's one icon link
+ *
+ * `.button` is the one that proves the point rather than merely fitting it. It
+ * was missed on the first pass because `.prose a.button:hover` is (0,3,1) and
+ * beats this rule outright — so it looked safe. It is not: it declares a border
+ * and a field and says nothing about `color`, so the black type came through
+ * exactly as it did on `.btn--secondary`, this time over a 14% tint on a black
+ * surface. Winning on the properties you name says nothing about the ones you
+ * don't, which is the whole hazard a shorthand-carrying blanket rule creates.
  *
  * `.card` is deliberately NOT in the list. Its own `.card:hover` declares both
  * `background` and `color` — the comment there records the same leak being
  * defended against — so it already wins on both properties, and adding it would
  * change nothing except the size of this list.
  */
-a:not(:where(.btn, .nav-link, .shell__brand, .shell__social)):hover {
+a:not(:where(.btn, .button, .nav-link, .shell__brand, .shell__social)):hover {
   color: var(--pigment-ink);
   background: var(--c-maar);
 }

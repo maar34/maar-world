@@ -44,7 +44,19 @@ import { ARTIFACTS, indexDist, readDistFile } from './lib/artifacts.mjs';
  */
 const BREAKS = ['pivot', 'tape', 'offset'];
 
-/** Filled kinds have a pigment field; the rest are outline or bare type. */
+/**
+ * Every variant a control may carry, and which of them have a pigment field.
+ *
+ * BOTH LISTS EXIST BECAUSE ONE IS NOT ENOUGH. An earlier version asked only
+ * "does this class list contain a filled variant", which answers yes for
+ * `btn btn--primary btn--secondary btn--stamp` — a control with two variants,
+ * where the later `.btn--secondary` rules strip the field the stamp needs and
+ * the stamp is therefore forbidden. It passed. A check that reports on
+ * hand-spelled markup has to notice markup that is malformed as well as markup
+ * that is merely illegal, so the variant count is asserted first and every
+ * other rule is derived from the single variant that survives it.
+ */
+const VARIANTS = ['primary', 'collect', 'secondary', 'text', 'destructive'];
 const FILLED = ['primary', 'collect'];
 
 /**
@@ -104,12 +116,30 @@ export async function checkActions(report) {
     for (const list of lists) {
       const isStamp = list.includes('btn--stamp');
       const gestures = BREAKS.filter((g) => list.includes(`btn--break-${g}`));
-      const variant = FILLED.find((v) => list.includes(`btn--${v}`));
-      const filled = Boolean(variant);
-      const destructive = list.includes('btn--destructive');
+      const variants = VARIANTS.filter((v) => list.includes(`btn--${v}`));
 
+      /* Counted before anything can bail out below. A malformed control still
+         spends the view's budget — it is a stamp on the page whatever else is
+         wrong with it — and a budget line that quietly under-counted would be
+         the same class of lie this whole check exists to prevent. */
       if (isStamp) stamps += 1;
       breaks += gestures.length;
+
+      /* A control with no variant or with two is malformed, and every pairing
+         rule below reads a variant, so there is nothing meaningful to say about
+         it until that is fixed. Reported and skipped rather than guessed at. */
+      if (variants.length !== 1) {
+        illegal.push(
+          `${page}: a control carries ${variants.length} variants${
+            variants.length ? ` (${variants.join(', ')})` : ''
+          } — exactly one is required before any pairing can be judged`,
+        );
+        continue;
+      }
+
+      const [variant] = variants;
+      const filled = FILLED.includes(variant);
+      const destructive = variant === 'destructive';
 
       /* Everything below is a rule `ui/action` already refuses at build time.
          It is asserted again here because the built HTML is the only place a

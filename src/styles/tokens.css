@@ -652,6 +652,16 @@
    * nothing around a breaking control reflows and no shadow gets clipped by a
    * neighbour. That constraint is why these are separate tokens from the stamp's
    * — the stamp is allowed to move the box, and it is the only thing that is.
+   *
+   * THE RULE IS ABOUT THE GESTURE, NOT ABOUT `:active`. A break's 1px press
+   * nudge is not an exception being smuggled past that sentence — v4 draws it
+   * itself, on the one break it shows a pressed state for: its offset-print
+   * example is `box-shadow: 1px 1px 0 …; transform: translateY(1px)`. The press
+   * is the site-wide confirmation that a control was pressed, it predates this
+   * system, and every other control in the build keeps it. "Moves a part, never
+   * the box" governs what the BREAK does on hover; it does not remove a break
+   * from being a button. A reviewer read these two as contradicting each other,
+   * which is why they are now reconciled here rather than left to be rederived.
    */
   --break-tape-tilt: -24deg;
   --break-tape-w: 44px;
