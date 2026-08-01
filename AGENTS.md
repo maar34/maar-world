@@ -27,7 +27,7 @@ report instead.
   npm run contract:relock -- --accept-removals   # required when routes leave the contract
   ```
 
-  If a re-lock is what makes a check pass, that is not a fix — append `BLOCKED` and report.
+  If a re-lock is what makes a check pass, that is not a fix — stop and report.
 - **Preserve URLs exactly.** No `.html` stripping, no slug normalising, no tidying, even where
   a URL is ugly or inconsistent. That is deliberate.
 - **Content is `.md` by default.** `.mdx` only where a component is genuinely needed.

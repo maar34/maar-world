@@ -22,8 +22,6 @@
     "i18n:map": "node scripts/i18n-map.mjs",
     "verify:build": "node scripts/verify-build.mjs",
     "verify:selftest": "node scripts/selftest.mjs",
-    "ledger": "node scripts/ledger.mjs",
-    "ledger:check": "node scripts/ledger.mjs check",
     "verify:schemas": "node scripts/check-schemas.mjs",
     "freeze:routes": "node scripts/collect-seeds.mjs && node scripts/freeze-routes.mjs && node scripts/author-policy.mjs",
     "contract:relock": "node scripts/contract-lock.mjs relock",
