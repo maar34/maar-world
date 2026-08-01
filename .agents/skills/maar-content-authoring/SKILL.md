@@ -1,6 +1,6 @@
 ---
 last-verified: 2026-08-01
-verified-against: src/content.config.ts, scripts/verify-translations.mjs, verify-routes.mjs
+verified-against: src/content.config.ts, src/content/schemas.mjs, scripts/verify-translations.mjs, verify-routes.mjs
 status: active
 ---
 
@@ -111,6 +111,42 @@ Two separate rules, both asserted, and it is worth knowing they are separate:
 |---|---|
 | **on disk** | `pages/es/<path>` — same as every record, no exceptions |
 | **as a URL** | `outputPath` starts `es/` — **new pages only** |
+
+### A translation is words, never markup
+
+**Do not copy the English page's HTML into the Spanish record.** Structure lives
+once, in the page family that renders it; the record carries the words.
+
+`verify:translations` asserts it: **a Spanish record must not carry structural
+markup in its body** — `div|section|figure|ul|ol|table|article|span|img|iframe|a`.
+English is the source of truth for structure (owner, 2026-08-01), so the rule
+names one side as correct rather than comparing two editable things. It does not
+make Spanish second-class output: both halves render through the same component,
+so they render identically. It decides where structure is *authored*.
+
+Why the rule exists: translating a page used to mean copying the whole page and
+translating the text inside it, so every component existed twice and had to be
+kept in step by hand. It was not kept in step. `collect/index` drifted by two
+elements with nobody editing it to diverge, and the Spanish page visibly rendered
+differently — found by a person looking at two pages, because no check could see
+it. MW-19.
+
+`collect/index` is the converted example — read
+`src/components/families/Collect.astro` and the `collect` field in
+`src/content/schemas.mjs` before converting another page. Where each kind of
+string belongs:
+
+| | |
+|---|---|
+| the page's own copy | a field on the record — its pitch, its captions, its headings |
+| what the FAMILY says on any page | `src/config/site.ts`, keyed by language, both halves adjacent (`COLLECT_LANDING`, `LAB_INTRO`) |
+| a URL or an image path | neither — those have no language, so they are named once in `site.ts` |
+
+**34 Spanish records still carry markup**, listed in `STRUCTURED_ES` in
+`scripts/verify-translations.mjs`. That list is **closed: it may shrink, never
+grow.** Converting a page deletes its line — and the check fails if a listed
+record no longer carries markup, so the deletion happens in the same diff.
+Adding a line is the bypass the list exists to make visible.
 
 ### The eleven frozen URLs
 

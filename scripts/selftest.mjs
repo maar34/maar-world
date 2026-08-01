@@ -1208,6 +1208,69 @@ check('the real frozen list is the eleven URLs that predate the prefix rule', ()
   return { ok, detail: ok ? '10 infix + 1 unpaired, closed at 11' : `got ${VT.LEGACY_ES.size} entries, ${infix} infix, closed at ${VT.LEGACY_ES_CLOSED_AT}` };
 });
 
+/**
+ * ── Structure is authored in English — MW-19 ─────────────────────────────────
+ *
+ * `spanishStructure` is the assertion that stops a translated page from
+ * becoming a second copy of a page's markup again. It is a closed ratchet over
+ * 34 records that still carry structure, so it has three arms and every one of
+ * them is capable of passing while asserting nothing: the offending list is
+ * empty on real content by construction, the stale list is empty until a page
+ * is converted, and the closed count only speaks when someone grows the list.
+ *
+ * Each is therefore driven to FAIL on a fixture here, with the no-false-positive
+ * case beside it. The fixtures pass their own permitted set rather than the real
+ * one, so these stay true as step 2 empties it.
+ */
+const esPlain = { file: 'src/content/pages/es/collect/index.md', outputPath: 'es/collect/index', lang: 'es', body: '\nSolo palabras.\n' };
+const esMarkup = { file: 'src/content/pages/es/radio.md', outputPath: 'es/radio', lang: 'es', body: '<div class="grid"><a href="/x">ir</a></div>' };
+const PERMITTED = new Set(['es/radio']);
+
+check('a Spanish record with only words passes the structure rule', () => {
+  const en = { file: 'src/content/pages/en/collect/index.md', outputPath: 'collect/index', lang: 'en', body: '<div class="grid">structure is allowed in English</div>' };
+  const s = VT.spanishStructure([en, esPlain, esMarkup], PERMITTED, 1);
+  const ok = s.offending.length === 0 && s.stale.length === 0 && s.overgrown === 0;
+  return { ok, detail: ok ? 'the converted page passes, the listed one is permitted, and English is not policed' : `got ${JSON.stringify(s.offending.concat(s.stale))}` };
+});
+
+check('a Spanish record that gains structural markup fails', () => {
+  const regressed = { ...esPlain, body: '<div class="hero"><span>una copia</span></div>' };
+  const s = VT.spanishStructure([regressed, esMarkup], PERMITTED, 1);
+  // Two, not four: the regex counts OPENING tags, so `</div>` and `</span>` are
+  // the same two elements and not two more.
+  const ok = s.offending.length === 1 && s.offending[0].includes('es/collect/index.md') && s.offending[0].includes('2 structural');
+  return { ok, detail: ok ? 'a converted page cannot quietly become two copies again' : `got ${JSON.stringify(s.offending)}` };
+});
+
+check('an HTML comment is not counted as structure', () => {
+  // Both halves of collect/index carry a note explaining what used to be in the
+  // body. A rule that counted the words in that note would fail the very page
+  // it was written for.
+  const commented = { ...esPlain, body: '<!--\n  Antes tenía <div class="grid"> y <a href="/x">.\n-->\nSolo palabras.\n' };
+  const s = VT.spanishStructure([commented], PERMITTED, 1);
+  return { ok: s.offending.length === 0, detail: s.offending.length === 0 ? 'a note about markup is not markup' : `got ${JSON.stringify(s.offending)}` };
+});
+
+check('a listed page that has been converted must lose its line', () => {
+  const converted = { ...esMarkup, body: '\nsolo palabras ahora\n' };
+  const s = VT.spanishStructure([esPlain, converted], PERMITTED, 1);
+  const ok = s.stale.length === 1 && s.stale[0].includes('es/radio') && s.offending.length === 0;
+  return { ok, detail: ok ? 'the list cannot rot into pages that used to be a problem' : `got ${JSON.stringify(s.stale)}` };
+});
+
+check('growing the structural-markup list does not go unremarked', () => {
+  const grown = VT.spanishStructure([esMarkup], new Set(['es/radio', 'es/nuevo']), 1);
+  const closed = VT.spanishStructure([esMarkup], PERMITTED, 1);
+  const ok = grown.overgrown === 2 && closed.overgrown === 0;
+  return { ok, detail: ok ? 'grandfathering a page by listing it raises a number in the same diff' : `got ${grown.overgrown} / ${closed.overgrown}` };
+});
+
+check('the real structural-markup list is closed at what MW-19 measured', () => {
+  const converted = VT.STRUCTURED_ES.has('es/collect/index');
+  const ok = VT.STRUCTURED_ES.size === VT.STRUCTURED_ES_CLOSED_AT && !converted;
+  return { ok, detail: ok ? `${VT.STRUCTURED_ES.size} listed, closed at ${VT.STRUCTURED_ES_CLOSED_AT}, and the converted page is not among them` : `got ${VT.STRUCTURED_ES.size} of ${VT.STRUCTURED_ES_CLOSED_AT}, collect listed: ${converted}` };
+});
+
 // --- patterns/mark: the stamp only stamps an edition number --------------
 // The stamp reads its text out of `card_title` rather than out of a new field,
 // so the only thing that can go wrong is it reading a numeral where there is

@@ -1,0 +1,105 @@
+---
+/**
+ * media/carousel — the spec §06 carousel, as markup.
+ *
+ * `ui/CarouselScript` says of itself "IT RENDERS NO MARKUP … the carousels are
+ * written into page bodies by scripts/migrate-pages.mjs — see lib/carousel.mjs
+ * — so this component exists only to carry the script". That sentence has been
+ * true and wrong since 2026-07-31: `migrate-pages.mjs` was DELETED, so nothing
+ * writes these any more. What was left is six page bodies holding a shape with
+ * no author, which is exactly how `collect/index`'s two halves came to disagree.
+ *
+ * So the markup gets a component and `scripts/lib/carousel.mjs` keeps its job of
+ * reading the dead theme's swiper — one is for pages being authored now, the
+ * other for a legacy shape nobody emits any more. The DOM below is transcribed
+ * from what that module produces, element for element and class for class,
+ * because `ui/CarouselScript` queries it by name and the stylesheet writes for
+ * exactly these:
+ *
+ *   .carousel                  the script's root selector
+ *   .carousel__track           the element Embla wraps in a viewport it creates
+ *   .carousel__slide           counted, and skipped entirely if fewer than two
+ *   .carousel__frame           fixes the height; the image's width follows
+ *   .carousel__figure/caption  media first, words after — a caption is content
+ *
+ * NO CONTROLS AND NO ON-PAGE COUNTER ARE EMITTED. `CarouselScript` builds both
+ * at runtime, and the reason it does is recorded there: a version that drew
+ * eleven numbered boxes under every gallery was rejected outright. The dead
+ * theme's own `.swiper__button` divs — two per carousel, styled by a Font
+ * Awesome that is gone and clicked by a script that is gone — are simply not
+ * reproduced. They render as nothing today.
+ *
+ * THE COUNT IS IN THE ACCESSIBLE NAME. "5 photographs" is how a screen reader
+ * learns how long the track is, since the counter is announced but never
+ * painted, so `label` is a phrase in the page's language and not a bare noun.
+ */
+
+interface Slide {
+  /** Root-relative, first-party. A page renders these on load. */
+  image: string;
+  /** Decorative by default: the caption beneath already carries the meaning. */
+  alt?: string;
+  /** The Roman numeral this step is known by, or any short label. Optional. */
+  step?: string;
+  /** The words. This is the part that differs between two languages. */
+  caption?: string;
+}
+
+interface Props {
+  /**
+   * The id every slide is anchored on, unique within the page.
+   *
+   * Derived by the caller from the record's own `outputPath` — `collect/index`
+   * gives `carousel-collect-index-1`, `es/collect/index` gives
+   * `carousel-es-collect-index-1`. That is the same string the migration built,
+   * so the ids do not move, and two halves of a pair cannot collide because
+   * their outputPaths cannot.
+   */
+  id: string;
+  /** The group's accessible name, e.g. "5 photographs" / "5 fotografías". */
+  label: string;
+  slides: Slide[];
+}
+
+const { id, label, slides } = Astro.props;
+---
+
+<section class="carousel" aria-roledescription="carousel" aria-label={label}>
+  <ul class="carousel__track" role="list" tabindex="0">
+    {
+      slides.map((slide, i) => (
+        <li class="carousel__slide" id={`${id}-${i + 1}`}>
+          <figure class="carousel__figure">
+            <div class="carousel__frame">
+              {/* NO `lightbox-ignore`. The migrated bodies carry it on every
+                  slide image; it was the dead theme's opt-out from a lightbox
+                  that this build does not have and no stylesheet, script or
+                  check in the repo reads it. Carrying it into a component
+                  written today would be inventing a new emitter for a class
+                  whose only remaining job is to look load-bearing. */}
+              {/* NO `loading="lazy"` either, and that is a decision rather than
+                  an omission. Embla measures slide widths at init and these
+                  slides are sized BY their image, so a slide whose picture has
+                  not arrived has no width to measure — `CarouselScript` carries
+                  a whole re-measure pass for exactly that race. Deferring the
+                  loads would widen the window it exists to close. */}
+              <img src={slide.image} alt={slide.alt ?? ''} />
+            </div>
+            {(slide.step || slide.caption) && (
+              <figcaption class="carousel__caption">
+                {/* The numeral is a heading in the emitted markup because it is
+                    one in the legacy shape this replaces, and `verify:content`
+                    asserts "I" … "V" among /collect's nine production
+                    headings. It is the slide's label, not a section of the
+                    page — the outline cost is the migration's, kept rather
+                    than changed under a task that is only moving the markup. */}
+                {slide.step && <h2>{slide.step}</h2>}
+                {slide.caption && <p>{slide.caption}</p>}
+              </figcaption>
+            )}
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+</section>

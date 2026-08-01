@@ -1,72 +1,217 @@
 ---
 /**
- * The Collect landing.
+ * The Collect landing — the WHOLE of it, once, for both languages.
  *
- * THE SECTION COLLAGE IS THIS FAMILY'S JOB NOW, and forgetting that is what
- * removed it. `/collect` is one of the six surfaces with a picture chosen for it
- * in SECTION_COLLAGE — `24-archive-explosion` — and that hero was rendered by the
- * route's default branch. Declaring `family: "collect"` took the page out of that
- * branch, so the header silently went with it. A family that renders a page
- * header has to render the whole page header.
+ * ── WHAT CHANGED, AND WHY IT IS THE POINT ─────────────────────────────────────
  *
- * The page's opening — the video, the exoplanet card pitch, the Orbiter link,
- * the five-step carousel — is still the migrated body and renders through the
- * slot. What this family owns is the closing section, which was three
- * `.hero--dark` plates and a `div.card` the theme drew as nothing:
+ * This family used to own only the closing section. The page's opening — the
+ * video, the exoplanet pitch, the Orbiter link, the five-step carousel — was
+ * raw HTML inside the two records' bodies, which means it was written TWICE:
+ * once in `pages/en/collect/index.md` and once in `pages/es/collect/index.md`.
+ * ~45 structural elements each, and by the time MW-19 measured it the two had
+ * already drifted apart by two elements. Nobody edited them to diverge. They
+ * simply did, because there were two copies and no check could see the
+ * difference — the largest drift on the site, and the one the owner spotted
+ * unaided by noticing that the Spanish page rendered differently.
  *
- *   "This method is designed to be…" + Watch Tutorials   → card.entry
- *   "25 physical cards available. Purchase in our…"      → deleted, see site.ts
- *   "Get 11 cards envelope 33€"                          → card.entry
+ * So the structure is here and the words are on the records. A design change is
+ * one edit in this file. A translation is words. That is the whole of MW-19.
  *
- * ONE ROW, ONE COMPONENT, TWICE. These first shipped as a full-width `article`
- * card above a single `entry` card, and the two read as unrelated things that
- * happened to be adjacent — one banner, one object. They are a pair: learn how,
- * then get the deck. So they are the same variant at the same size, side by side,
- * which is the home page's own grid and the answer to "they complement each
- * other".
+ * ── THE THREE PLACES A STRING CAN LIVE, AND WHICH IS WHICH ────────────────────
  *
- * NO SEPARATE ACTION BUTTONS. Each card is one link target, so the words that
- * used to sit on a button beneath it — "watch tutorials", "collect" — are the
- * card's meta line instead. That is exactly what the home page's entry cards do
- * with "visit" and "read", and it is why this section now has no loose buttons
- * to be inconsistent with each other.
+ *   record `collect`     the page's OWN copy — pitch, captions, its headings.
+ *                        See the field in src/content/schemas.mjs.
+ *   COLLECT_LANDING      what this FAMILY says whatever page it draws — the
+ *                        contact form, the closing pair, the facade's wording.
+ *                        Keyed by language, both halves adjacent, exactly like
+ *                        LAB_INTRO and for the reason stated there.
+ *   nowhere              a URL or an image path. Those have no language: they
+ *                        are COLLECT_STORE_URL, COLLECT_VIDEO_URL,
+ *                        COLLECT_JOURNEY_IMAGES, COLLECT_BAND_IMAGE.
  *
- * The plates were `--sf-sunken`, a 4% ink wash that reads as a grey band laid
- * over the page rather than part of it. A card is the component this site
- * already has for "a picture, a line of text, and somewhere to go".
+ * ── THE SECTION COLLAGE IS THIS FAMILY'S JOB, and forgetting that removed it ──
+ *
+ * `/collect` is one of the six surfaces with a picture chosen for it in
+ * SECTION_COLLAGE — `24-archive-explosion` — and that hero was rendered by the
+ * route's default branch. Declaring `family: "collect"` took the page out of
+ * that branch, so the header silently went with it. A family that renders a
+ * page header has to render the whole page header.
+ *
+ * ── ONE ROW, ONE COMPONENT, TWICE ─────────────────────────────────────────────
+ *
+ * The closing pair first shipped as a full-width `article` card above a single
+ * `entry` card, and the two read as unrelated things that happened to be
+ * adjacent — one banner, one object. They are a pair: learn how, then get the
+ * deck. So they are the same variant at the same size, side by side, which is
+ * the home page's own grid and the answer to "they complement each other".
+ *
+ * NO SEPARATE ACTION BUTTONS on those two. Each card is one link target, so the
+ * words that used to sit on a button beneath it — "watch tutorials", "collect"
+ * — are the card's meta line instead. That is exactly what the home page's
+ * entry cards do with "visit" and "read".
+ *
+ * ── WHY THE DEAD THEME'S CLASS NAMES ARE NOT EMITTED HERE ─────────────────────
+ *
+ * The body markup this replaces was built from `.grid`, `.cell--bordered`,
+ * `.hero--dark`, `.hero-example--linear-gradient` and `.p-4`. Those are the
+ * dead theme's names, and `styles/legacy.css` says of itself that it "holds only
+ * rules keyed to the dead theme's class names and is deleted whole when the
+ * migration stops emitting them". A component written today that emitted them
+ * would make that sentence permanently false.
+ *
+ * Nothing is lost by dropping them, and this was checked rather than assumed —
+ * read the rules in legacy.css. `.grid` is a flex column with a gap, `.cell` is
+ * `width: 100%`, `.hero--dark` explicitly draws `background: none`, and
+ * `.hero-example--linear-gradient`, `.p-4` and `.padding: ($spacer * 6);` (a
+ * class name that is a CSS declaration, from a Jekyll template that leaked)
+ * match no rule in any stylesheet at all. The layout below is those computed
+ * results under honest names. It also HAD to be rewritten regardless: every one
+ * of those rules is scoped under `.prose`, and this markup no longer sits in
+ * the prose slot.
+ *
+ * The two `.swiper__button` divs per carousel are gone for the same reason —
+ * they are Font Awesome chevrons for a script that no longer exists, and
+ * `ui/CarouselScript` builds its own arrows at runtime.
+ *
+ * ── AND WHERE THE TWO HALVES DISAGREED, ENGLISH WON ───────────────────────────
+ *
+ * The owner's decision of 2026-08-01, and it had to be applied twice here:
+ *
+ *   the two buttons   English drew them as `button--primary button--rounded
+ *                     button--xl` with a bare word inside; Spanish drew them as
+ *                     `button--buy` / `button` with an inline SVG icon. There is
+ *                     no single legacy spelling to preserve when the two halves
+ *                     disagree, so they are `ui/Action` — the site's own
+ *                     component, whose whole purpose is that a page family does
+ *                     not spell button classes for itself. THE SPANISH ICONS
+ *                     COME OFF. If they should come back they now come back
+ *                     once, for both languages, which is the point.
+ *   the opening line  the Spanish body repeated the record's own `description`
+ *                     as a paragraph under the H1. Both records pass that
+ *                     sentence to the collage as `statement`, so `/es/collect`
+ *                     was printing its opening sentence twice. The English half
+ *                     does not, so it does not.
  */
 import Card from '../patterns/Card.astro';
 import CollageField from '../patterns/CollageField.astro';
-import { COLLECT_LANDING, collageFor } from '../../config/site';
+import Action from '../ui/Action.astro';
+import Carousel from '../media/Carousel.astro';
+import EmbedFacade from '../media/EmbedFacade.astro';
+import {
+  COLLECT_BAND_IMAGE,
+  COLLECT_COVERS,
+  COLLECT_JOURNEY_IMAGES,
+  COLLECT_LANDING,
+  COLLECT_STORE_URL,
+  COLLECT_VIDEO_URL,
+  collageFor,
+} from '../../config/site';
+
+interface Slide {
+  step: string;
+  caption: string;
+}
 
 interface Props {
   /** Seed for the cards' type marks — the page's own outputPath. */
   seed: string;
   /** The page's own label, for the visual header's accessible name. */
   label: string;
+  /** The page's language. Decides every word on the page that is not a prop. */
+  lang: string;
+  /** The `<h1>`'s inner HTML. It already carries its type mark. */
+  headingHtml?: string;
+  /** Fallback when a record carries no marked heading — the plain page title. */
+  title: string;
   /**
    * The page's opening sentence, which rides the collage as a moving field of
    * cut words rather than sitting under it as a paragraph.
    *
    * Same component and same movement as the home page — `patterns/PaperPhrase`
-   * through `CollageField`'s `statement` slot. The sentence is NOT duplicated:
-   * migrate-pages.mjs lifts it out of the body, exactly as lib/home-family.mjs
-   * does for family 01, so it renders once and is read once.
+   * through `CollageField`'s `statement` slot. It is read from the record's
+   * `description` and is NOT also in the body: see the note above about the
+   * Spanish half, which used to print it a second time.
    */
   statement?: string;
+  /** The page's own copy. The record's `collect` field, verbatim. */
+  copy: {
+    pitch: { title: string; body: string; cta: string };
+    orbiters: { label: string };
+    journey: { title: string; carouselLabel: string; slides: Slide[] };
+  };
+  /**
+   * Where the Orbiters link goes, in this page's language.
+   *
+   * Resolved by the route from the records themselves rather than written here,
+   * because that is the one rule `verify:translations` already asserts for the
+   * header — "a Spanish page's navigation stays in Spanish". A page that sent a
+   * Spanish reader to `/orbiters` would lose them the language in one click.
+   */
+  orbitersHref: string;
+  /**
+   * The id every carousel slide is anchored on. The route derives it from the
+   * record's own outputPath, so the two halves of a pair cannot collide.
+   */
+  carouselId: string;
+  /** Whether the record's body holds anything a reader would see. */
+  hasBody?: boolean;
 }
 
-const { seed, label, statement } = Astro.props;
-const { method, offer } = COLLECT_LANDING;
+const {
+  seed,
+  label,
+  lang,
+  headingHtml,
+  title,
+  statement,
+  copy,
+  orbitersHref,
+  carouselId,
+  hasBody = false,
+} = Astro.props;
+
+const strings = COLLECT_LANDING[lang] ?? COLLECT_LANDING.en;
+const { method, offer, form, video, pairLabel } = strings;
 const collage = collageFor(seed);
+
+/**
+ * The photographs and their captions, zipped — and a BUILD FAILURE if the two
+ * lists are not the same length.
+ *
+ * The pictures have no language and live in config; the captions do and live on
+ * the record. That split is right and it has exactly one failure mode: the two
+ * lists coming to disagree about how many slides there are. Left unchecked that
+ * publishes a slide with no words under it, or drops a photograph, silently and
+ * on one language only — which is the precise shape of failure this whole issue
+ * exists to stop, reintroduced one level down.
+ *
+ * So it throws, with both counts and the file to open. A record without a
+ * required field already fails the build (see `lang` in schemas.mjs); this is
+ * the same standard applied to a relation a schema cannot see, because the
+ * schema cannot count something that lives in a TypeScript module.
+ */
+if (copy.journey.slides.length !== COLLECT_JOURNEY_IMAGES.length) {
+  throw new Error(
+    `[collect] ${seed}: ${copy.journey.slides.length} journey captions for ` +
+      `${COLLECT_JOURNEY_IMAGES.length} photographs. They are zipped by position — ` +
+      'add or remove a caption in the record\'s `collect.journey.slides`, or a path in ' +
+      'COLLECT_JOURNEY_IMAGES in src/config/site.ts, so the two agree.',
+  );
+}
+
+const slides = COLLECT_JOURNEY_IMAGES.map((image, i) => ({
+  image,
+  step: copy.journey.slides[i].step,
+  caption: copy.journey.slides[i].caption,
+}));
 ---
 
 <div class="collect">
   {
     /* The same compact visual introduction the other five section pages use.
-       It now carries the page's opening sentence as a moving field of cut
-       words, so it is the page's whole header: the H1 below is kept for
-       document structure and taken out of sight. */
+       It carries the page's opening sentence as a moving field of cut words, so
+       it is the page's whole header: the H1 below is kept for document
+       structure and taken out of sight. */
     collage && (
       <CollageField
         src={collage}
@@ -78,56 +223,126 @@ const collage = collageFor(seed);
     )
   }
 
-  <div class="prose collect__body">
-    <slot />
-  </div>
+  {/* Hidden, never removed — see the note on `.collect__title` in the style
+      block below. It was the body's first line until MW-19; it is a field now,
+      the same way family 01's is, because a heading carrying a type mark is
+      markup and markup is what this page stopped keeping two copies of. */}
+  <h1 class="collect__title">
+    {headingHtml ? <Fragment set:html={headingHtml} /> : title}
+  </h1>
+
+  {/**
+   * EVERY BAND CARRIES `.prose`, AND THAT IS LOAD-BEARING RATHER THAN TIDY.
+   *
+   * The facade's ENTIRE stylesheet is written as `.prose .embed-facade…` — 20
+   * rules in styles/legacy.css — because until now a facade only ever existed
+   * inside a record body, and a record body is rendered inside `.prose`. Markup
+   * moved out of the slot leaves that scope, so a facade outside it renders as
+   * an unstyled paragraph with a link in it. The same is true of the carousel's
+   * interaction with `prose.css`'s image containment, and of the type rhythm on
+   * these headings and paragraphs.
+   *
+   * So the scope comes along. It is exactly what the contact form below already
+   * does, and for the same stated reason: the markup moved position, not shape.
+   */}
+  {/* The video, click-to-load. Nothing is requested from YouTube until the
+      reader chooses it — the invariant in AGENTS.md, and the reason this is a
+      facade rather than an iframe. */}
+  <section class="prose collect__band collect__band--center" aria-label={copy.pitch.title}>
+    <EmbedFacade
+      provider="youtube"
+      href={COLLECT_VIDEO_URL}
+      label={video.label}
+      note={video.note}
+    />
+
+    <h2 class="collect__heading">{copy.pitch.title}</h2>
+    <p class="collect__lede">{copy.pitch.body}</p>
+    <Action href={COLLECT_STORE_URL} label={copy.pitch.cta} variant="collect" />
+  </section>
+
+  {/* A picture and nothing else. In the migrated body this was a background
+      image on a hero whose only content was an `<h2>` holding four `<br>`s —
+      a spacer wearing a heading's clothes, and an empty heading in the page
+      outline. It is an image with an empty alt because it is decoration. */}
+  <img class="collect__banner" src={COLLECT_BAND_IMAGE} alt="" />
+
+  <section class="prose collect__band collect__band--center" aria-label={copy.orbiters.label}>
+    <Action href={orbitersHref} label={copy.orbiters.label} variant="secondary" />
+  </section>
+
+  <section class="prose collect__band" aria-labelledby="collect-journey">
+    <h2 class="collect__heading collect__heading--center" id="collect-journey">
+      {copy.journey.title}
+    </h2>
+    <Carousel id={carouselId} label={copy.journey.carouselLabel} slides={slides} />
+  </section>
 
   {/* Learn how, then get the deck. One grid, one variant, two cards. */}
-  <section class="collect__pair" aria-label="Start collecting">
+  <section class="collect__pair" aria-label={pairLabel}>
     <Card
       variant="entry"
       href={method.href}
       title={method.title}
       level={2}
-      cover={method.cover}
+      cover={COLLECT_COVERS.method}
       excerpt={method.excerpt}
       meta={method.meta}
       seed={`${seed}:method`}
     />
     <Card
       variant="entry"
-      href={offer.href}
+      href={COLLECT_STORE_URL}
       title={offer.title}
       level={2}
-      cover={offer.cover}
+      cover={COLLECT_COVERS.offer}
       excerpt={offer.excerpt}
       meta={offer.meta}
       seed={`${seed}:offer`}
     />
   </section>
 
-  {/* Unchanged markup from the body, in a `.prose` wrapper so every rule
-      styles/button.css already writes for `.prose .form-container`, its grid and
-      its fields applies exactly as before. It moved position, not shape. */}
+  {
+    /* Whatever prose the record still holds. Both halves hold none today — the
+       page is entirely structure and fields — but the slot stays: a landing
+       that can never carry a paragraph is a landing nobody can add one to.
+
+       Rendered only when there IS something, because both bodies now carry a
+       note explaining where their markup went, and markdown passes an HTML
+       comment through to the page. See `bodyHasContent` in [...page].astro. */
+    hasBody && (
+      <div class="prose collect__body">
+        <slot />
+      </div>
+    )
+  }
+
+  {/* The contact form, in a `.prose` wrapper so every rule styles/button.css
+      already writes for `.prose .form-container`, its grid and its fields
+      applies exactly as before. It moved position, not shape.
+
+      THE ENDPOINT IS WRITTEN ONCE. It used to be inside this component already;
+      what is new is that its LABELS come from COLLECT_LANDING, so the Spanish
+      page stops asking for "Your name" under Spanish body copy. */}
   <div class="prose">
     <div class="form-container">
-      <h2>Contact us</h2>
-      <p>Curious about something? Let us know by filling out the form.</p>
+      <h2>{form.heading}</h2>
+      <p>{form.lede}</p>
 
       <form action="https://formspree.io/f/xjvneyen" method="POST" class="contact-form">
         <label>
-          Your name:
+          {form.name}
           <input type="text" name="name" required />
         </label>
         <label>
-          Your email:
+          {form.email}
           <input type="email" name="email" required />
         </label>
         <label>
-          Your message:
+          {form.message}
           <textarea name="message" required></textarea>
         </label>
-        <button type="submit">Send</button>
+        <button type="submit">{form.submit}</button>
       </form>
     </div>
   </div>
@@ -149,8 +364,13 @@ const collage = collageFor(seed);
    *
    * `clip` rather than `display: none` for exactly that reason: the heading
    * stays in the accessibility tree and in the text `verify:content` measures.
+   *
+   * It used to be written as `.collect__body > h1:first-child`, because the
+   * heading arrived through the slot as the body's first line. The heading is a
+   * field now, so the rule names the element itself — and stops depending on a
+   * record happening to open with one.
    */
-  .collect__body > :global(h1:first-child) {
+  .collect__title {
     position: absolute;
     inline-size: 1px;
     block-size: 1px;
@@ -172,6 +392,64 @@ const collage = collageFor(seed);
   }
 
   /**
+   * A band of the page.
+   *
+   * This is `.prose .grid` + `.cell` + `.hero` from styles/legacy.css, computed
+   * out: a flex column with the theme's own gap, full width, and the block
+   * padding that gave each band its rhythm. `.hero--dark` contributed
+   * `background: none` on this surface, so it contributes nothing here either.
+   */
+  .collect__band {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    padding-block: var(--s-8);
+    inline-size: 100%;
+  }
+
+  /* `.hero--center` — the theme centred both the text and the items in it. */
+  .collect__band--center {
+    text-align: center;
+    align-items: center;
+  }
+
+  /**
+   * PROSE OWNS THE TYPE RHYTHM IN A BAND, AND IS LEFT TO.
+   *
+   * Every band carries `.prose`, so `prose.css` sets the heading and paragraph
+   * margins — which is exactly what these elements had inside the migrated
+   * body, alongside the theme's flex gap. Reproducing the gap and then zeroing
+   * the margins would be a change of spacing dressed as a refactor, so it is
+   * not done. Note also that a rule here could not win it anyway: Astro scopes
+   * these selectors with `:where()`, which adds no specificity, so
+   * `.collect__heading` (0,1,0) loses to `.prose h2` (0,1,1).
+   */
+  .collect__heading--center {
+    text-align: center;
+  }
+
+  /* The measure still applies to a paragraph — a centred line 1180px wide is
+     not readable, and the band is the full column. */
+  .collect__lede {
+    max-inline-size: var(--measure);
+  }
+
+  /**
+   * The decorative band.
+   *
+   * The theme drew this as a background image on an empty hero, which meant its
+   * height came from four `<br>` tags and its aspect ratio came from nothing.
+   * As an `<img>` it keeps its own shape, scales with the column, and is one
+   * element rather than a heading with no text in it.
+   */
+  .collect__banner {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    border-radius: var(--r-0);
+  }
+
+  /**
    * Two cards, side by side from 900px.
    *
    * The pair is deliberately NOT the home grid's three-at-1280 step: there are
@@ -190,4 +468,5 @@ const collage = collageFor(seed);
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
+
 </style>

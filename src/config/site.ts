@@ -188,24 +188,181 @@ export const HOME_ACTIONS = [
  * one link target, so the action belongs on the card's meta line rather than on
  * a second control beside it — the same thing the home page's entries do with
  * "visit" and "read".
+ *
+ * ── IT USED TO BE ONE OBJECT WITH ENGLISH IN IT ──
+ *
+ * `/es/collect` rendered two English cards and an English contact form under
+ * Spanish body copy — published, built, and green, because no check reads chrome
+ * for language. That is the same class of fault as the navigation leak
+ * `verify:translations` now asserts against, and it survived for the same
+ * reason: it is only wrong if you know which language you meant to be reading.
+ *
+ * So this is keyed by `lang`, exactly like `LAB_INTRO` below, and for the reason
+ * stated there in full: everything the family prints in words sits in one place
+ * with both languages adjacent, where a difference between them is visible.
+ *
+ * ── THE PICTURES ARE OUTSIDE THE PER-LANGUAGE OBJECT ──
+ *
+ * A photograph is the same photograph in Spanish. Only words are keyed by
+ * language; every image on this page is named once and read by both halves.
  */
-export const COLLECT_LANDING = {
-  method: {
-    title: 'Start where you are',
-    excerpt:
-      'This method is designed to be accessible and fun for everyone, from experienced musicians to complete beginners.',
-    href: '/collect/docs/tutorials.html',
-    meta: 'watch tutorials',
-    cover: '/img/collages/13-signal-aviary.webp',
-  },
-  offer: {
-    title: 'Get 11 cards envelope 33\u20ac',
-    excerpt: 'Eleven Sky Sounds cards, posted to you.',
-    href: 'https://maar-world.bandcamp.com/merch',
-    meta: 'collect',
-    cover: '/img/landing/2024_ss-7.jpeg',
-  },
+export const COLLECT_COVERS = {
+  method: '/img/collages/13-signal-aviary.webp',
+  offer: '/img/landing/2024_ss-7.jpeg',
 } as const;
+
+/**
+ * The five photographs of the journey carousel, in order.
+ *
+ * Here rather than on the two records for the whole of MW-19's reason, applied
+ * one level down: five paths spelled twice is the same defect as a page spelled
+ * twice, and it drifts the same way. The CAPTIONS are words and live on the
+ * records — see the `collect` field in src/content/schemas.mjs.
+ *
+ * `families/Collect.astro` zips the two and FAILS THE BUILD if the counts
+ * disagree, so a sixth photograph added without a sixth caption stops the build
+ * naming the file, rather than publishing a slide with no words under it.
+ */
+export const COLLECT_JOURNEY_IMAGES = [
+  '/img/landing/2024_ss-12.jpeg',
+  '/img/landing/2024_ss-10.jpeg',
+  '/img/landing/2024_ss-8.jpeg',
+  '/img/landing/2024_ss-11.jpeg',
+  '/img/landing/2024_ss-2.jpeg',
+] as const;
+
+/**
+ * The decorative band between the pitch and the journey.
+ *
+ * It carries no words in either language. In the migrated body it was a
+ * background image on a `.hero--dark` whose only content was an `<h2>` holding
+ * four `<br>` tags — a spacer wearing a heading's clothes, and a heading with no
+ * text in the page outline. The heading is gone and the height is CSS in
+ * `families/Collect.astro`; the picture survives, because it is the only part of
+ * that block that was ever content.
+ */
+export const COLLECT_BAND_IMAGE = '/img/pages/433-suits.gif';
+
+/**
+ * The one spelling of the Sky Sounds storefront on this site.
+ *
+ * NOT a new hardcoded commerce URL and NOT a reversal of `COMMERCE` above. This
+ * exact address is already required to be on `/collect`: it is asserted in
+ * `verify/content-expectations.json` as a link production served, so removing it
+ * fails `verify:content`. What changes is that it is now spelled ONCE instead of
+ * three times — the offer card carried one copy and each of the two page bodies
+ * carried another, which is precisely the shape `COMMERCE`'s comment describes
+ * ("183 commerce links died at once … every card record hardcoded its own").
+ *
+ * `COMMERCE.destinationUrl` stays null and stays the rule for CARD pages: they
+ * render no destination until the Artizen URL exists. This is the landing's
+ * existing, asserted link, held in one place until that decision reaches it.
+ */
+export const COLLECT_STORE_URL = 'https://maar-world.bandcamp.com/merch';
+
+/**
+ * The video the landing opens with.
+ *
+ * One address, because it is one video: the Spanish page does not have its own
+ * cut. It never reaches YouTube on load — `media/EmbedFacade` renders it as a
+ * click-to-load facade and this is the href a reader travels to only after
+ * choosing, which is the invariant in AGENTS.md ("no third-party request fires
+ * on load") and the reason the facade exists at all.
+ */
+export const COLLECT_VIDEO_URL = 'https://youtu.be/AhYAywwaVHM';
+
+export const COLLECT_LANDING: Record<
+  string,
+  {
+    /** The closing pair's accessible name. */
+    pairLabel: string;
+    method: { title: string; excerpt: string; href: string; meta: string };
+    /** The offer's destination is COLLECT_STORE_URL — one address, not a field. */
+    offer: { title: string; excerpt: string; meta: string };
+    /**
+     * What the video facade SAYS — not what it points at.
+     *
+     * `href` is absent for the same reason `offer.href` is: one video, both
+     * languages, so it is `COLLECT_VIDEO_URL` above and not a field that could
+     * come to differ. These two strings are chrome rather than page copy — the
+     * identical pair appears on eight pages — which is why they sit here and not
+     * on the record. When the remaining fifteen pairs are converted they will
+     * want one shared table keyed by provider and language; this is that table's
+     * first entry, not a per-page value.
+     */
+    video: { label: string; note: string };
+    /**
+     * The contact form. `action` is deliberately absent: the Formspree endpoint
+     * is one address in `families/Collect.astro`, not a per-language field.
+     */
+    form: {
+      heading: string;
+      lede: string;
+      name: string;
+      email: string;
+      message: string;
+      submit: string;
+    };
+  }
+> = {
+  en: {
+    pairLabel: 'Start collecting',
+    method: {
+      title: 'Start where you are',
+      excerpt:
+        'This method is designed to be accessible and fun for everyone, from experienced musicians to complete beginners.',
+      href: '/collect/docs/tutorials.html',
+      meta: 'watch tutorials',
+    },
+    offer: {
+      title: 'Get 11 cards envelope 33€',
+      excerpt: 'Eleven Sky Sounds cards, posted to you.',
+      meta: 'collect',
+    },
+    video: {
+      label: 'watch this video on youtube',
+      note: 'opens in a new tab. nothing is requested from youtube until you choose it.',
+    },
+    form: {
+      heading: 'Contact us',
+      lede: 'Curious about something? Let us know by filling out the form.',
+      name: 'Your name:',
+      email: 'Your email:',
+      message: 'Your message:',
+      submit: 'Send',
+    },
+  },
+  es: {
+    pairLabel: 'Empezá a coleccionar',
+    method: {
+      title: 'Empezá desde donde estés',
+      excerpt:
+        'El método está pensado para que sea accesible y divertido para cualquiera, desde músicas y músicos con experiencia hasta quienes arrancan de cero.',
+      /* The Spanish half of the tutorials page. A card that leads out of the
+         page body obeys the rule verify:translations asserts for the header
+         navigation: a Spanish page does not drop the reader back into English. */
+      href: '/es/collect/docs/tutorials',
+      meta: 'ver tutoriales',
+    },
+    offer: {
+      title: 'Sobre de 11 cartas 33€',
+      excerpt: 'Once cartas Sky Sounds, enviadas a tu casa.',
+      meta: 'coleccionar',
+    },
+    video: {
+      label: 'ver este video en youtube',
+      note: 'se abre en una pestaña nueva. no se le pide nada a youtube hasta que lo elijas.',
+    },
+    form: {
+      heading: 'Escribinos',
+      lede: '¿Tenés alguna duda? Contanos completando el formulario.',
+      name: 'Tu nombre:',
+      email: 'Tu email:',
+      message: 'Tu mensaje:',
+      submit: 'Enviar',
+    },
+  },
+};
 
 /**
  * THE LAB'S OPENING, AND THE ENTRY IT LEADS WITH.
@@ -445,6 +602,24 @@ export const SECTION_COLLAGE: Record<string, string> = {
   about: '/img/collages/05-spectral-cosmogram.webp',
   calendar: '/img/collages/07-river-parliament.webp',
   'collect/index': '/img/collages/24-archive-explosion.webp',
+  /**
+   * Same section, same picture — the `es/lab` line above, applied to Collect.
+   *
+   * FOUND BY MW-19, and it is the same defect the issue is about wearing a
+   * different coat. `/es/collect` rendered NO visual header at all: the map is
+   * keyed by `outputPath`, the Spanish half's is `es/collect/index`, and a miss
+   * returns null silently. So the two halves did not "render identically" even
+   * after their structure was made one component — one of them opened on a
+   * photograph and the other opened on a hidden `<h1>`.
+   *
+   * A rule that strips the language segment would fix this and the five other
+   * Spanish pages in the same position without a list. It is deliberately NOT
+   * done here: `/es/about`, `/es/orbiters`, `/es/landings`, `/es/bookings` and
+   * `/es/calendar` would all gain a header they do not have today, which is a
+   * visible change to five pages that this issue is not touching. It belongs
+   * with them — MW-19 step 2 reaches four of the five.
+   */
+  'es/collect/index': '/img/collages/24-archive-explosion.webp',
 };
 
 /**

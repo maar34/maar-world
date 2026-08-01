@@ -9,76 +9,64 @@ lang: "en"
 origin: "migrated"
 family: "collect"
 description: "Explore a new musical dimension with Sky Sounds, a collection of cards that open the doors to a sonic journey through the cosmos."
+headingHtml: "<span class=\"mark mark--cut mark--tilt-4 mark--tear-2\">collect</span>"
+collect:
+  pitch:
+    title: "Play music cards with exoplanets"
+    body: "Sky Sounds introduces the first-ever card collection that when scanned allows you to listen to their music and transform them based on the movement of the exoplanets they belong."
+    cta: "Collect"
+  orbiters:
+    label: "What is an Orbiter?"
+  journey:
+    title: "Start your journey"
+    carouselLabel: "5 photographs"
+    slides:
+      - step: "I"
+        caption: "Choose a Sky Sound card that resonates with you and tempts you to explore its soundscapes."
+      - step: "II"
+        caption: "For physical editions, scan the card with your smartphone or NFC reader on your PC to access its contents. Discover hidden parameters in for digital cards."
+      - step: "III"
+        caption: "Play the music associated with the card to immerse yourself in its sound universe."
+      - step: "IV"
+        caption: "Add more cards to your composition. You can include as many cards as your device can handle, further enriching and personalizing your musical experience."
+      - step: "V"
+        caption: "Transform the music using the effects and loops provided by the card, creating your own version or musical piece."
 ---
 
-# <span class="mark mark--cut mark--tilt-4 mark--tear-2">collect</span>
+<!--
+  THIS BODY IS EMPTY, AND THAT IS THE FIX — MW-19.
 
+  It used to hold ~45 elements of raw HTML: a twelve-column grid, five hero
+  plates, a YouTube facade, two buttons and a five-slide carousel. Every one of
+  them was ALSO written out in src/content/pages/es/collect/index.md, because
+  translating this page meant copying the whole page and translating the words
+  inside it. Two copies of one structure, kept in step by hand, and by the time
+  anyone measured they were two elements out of step — the largest drift on the
+  site, and visible: the Spanish page rendered differently from this one.
 
-<div class="grid">
-<div class="cell cell--bordered cell--12">
+  The structure now lives once, in src/components/families/Collect.astro. What
+  is left here is this page's words, in the `collect` field above, and the
+  Spanish record holds the same fields with Spanish in them. A design change is
+  one edit in the component. A translation is words.
 
-<div class="hero hero--center hero--dark">
+  WHERE THE REST OF THE PAGE'S TEXT LIVES, so nothing is hunted for:
 
-<p class="embed-facade" data-embed-facade data-embed-provider="youtube"><a class="embed-facade__action" href="https://youtu.be/AhYAywwaVHM" target="_blank" rel="noopener noreferrer"><span class="embed-facade__provider" aria-hidden="true">youtube</span><span class="embed-facade__label">watch this video on youtube</span></a><span class="embed-facade__note">opens in a new tab. nothing is requested from youtube until you choose it.</span></p>
-</div>
+    the h1                 `headingHtml` above — it carries a type mark, so it
+                           is HTML, exactly like family 01's
+    the opening sentence   `description` above. It is not repeated here: the
+                           family passes it to the collage, which renders it as
+                           a moving field of cut words
+    the closing two cards  COLLECT_LANDING in src/config/site.ts, keyed by
+                           language — they are what the FAMILY says, not what
+                           this page says
+    the contact form       the same place, same reason
+    every image            COLLECT_JOURNEY_IMAGES / COLLECT_BAND_IMAGE, once,
+                           because a photograph is the same photograph in
+                           Spanish
+    the two URLs           COLLECT_STORE_URL and COLLECT_VIDEO_URL. A `cta` in
+                           the field above is a LABEL; no content record on this
+                           site carries a storefront address
 
-
-<div class="hero hero--center hero--dark hero-example--linear-gradient">
-<div class="hero__content">
-<h2>Play music cards with exoplanets</h2>
-<p>Sky Sounds introduces the first-ever card collection that when scanned allows you to listen to their music and transform them based on the movement of the exoplanets they belong. <br> <br> <a class="button button--primary button--rounded button--xl" href="https://maar-world.bandcamp.com/merch">Collect</a></p>
-</div>
-</div>
-
-</div>
-
-</div>
-<div class="p-4"></div>
-<div class="padding: ($spacer * 6);"></div>
-<div class="grid">
-<div class="cell cell--bordered cell--12">
-
-<div class="hero hero--center hero--dark" style= 'background-image: url("/img/pages/433-suits.gif");'>
-<div class="hero__content">
-<h2>
-
-<br>
-<br>
-<br>
-<br>
-
-</h2>
-</div>
-</div>
-
-<div class="hero hero--center hero--dark hero-example--linear-gradient">
-<div class="hero__content">
-<a class="button button--primary button--rounded button--xl" href="/orbiters">What is an Orbiter?</a></p>
-</div>
-</div>
-
-</div>
-</div></div>
-
-<div class="p-4"></div>
-
-<div class="grid">
-<div class="cell cell--bordered cell--12">
-
-<div class="hero hero--center" style="background-color: #000000;">
-<div class="hero__content">
-<h2>Start your journey</h2>
-</div>
-</div>
-
-<div class="swiper my-3 swiper-demo swiper-demo--image swiper-demo--3">
-<section class="carousel" aria-roledescription="carousel" aria-label="5 photographs"><ul class="carousel__track" role="list" tabindex="0"><li class="carousel__slide" id="carousel-collect-index-1-1"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/landing/2024_ss-12.jpeg" alt=""/></div><figcaption class="carousel__caption"><h2>I</h2>
-<p>Choose a Sky Sound card that resonates with you and tempts you to explore its soundscapes.</p></figcaption></figure></li><li class="carousel__slide" id="carousel-collect-index-1-2"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/landing/2024_ss-10.jpeg" alt=""/></div><figcaption class="carousel__caption"><h2>II</h2>
-<p>For physical editions, scan the card with your smartphone or NFC reader on your PC to access its contents. Discover hidden parameters in for digital cards.</p></figcaption></figure></li><li class="carousel__slide" id="carousel-collect-index-1-3"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/landing/2024_ss-8.jpeg" alt=""/></div><figcaption class="carousel__caption"><h2>III</h2>
-<p>Play the music associated with the card to immerse yourself in its sound universe.</p></figcaption></figure></li><li class="carousel__slide" id="carousel-collect-index-1-4"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/landing/2024_ss-11.jpeg" alt=""/></div><figcaption class="carousel__caption"><h2>IV</h2>
-<p>Add more cards to your composition. You can include as many cards as your device can handle, further enriching and personalizing your musical experience.</p></figcaption></figure></li><li class="carousel__slide" id="carousel-collect-index-1-5"><figure class="carousel__figure"><div class="carousel__frame"><img class="lightbox-ignore" src="/img/landing/2024_ss-2.jpeg" alt=""/></div><figcaption class="carousel__caption"><h2>V</h2>
-<p>Transform the music using the effects and loops provided by the card, creating your own version or musical piece.</p></figcaption></figure></li></ul></section>
-<div class="swiper__button swiper__button--prev fas fa-chevron-left"></div>
-<div class="swiper__button swiper__button--next fas fa-chevron-right"></div>
-</div>
-</div></div>
+  The slot is still rendered, so a paragraph added below this comment appears
+  under the carousel and above the closing pair.
+-->

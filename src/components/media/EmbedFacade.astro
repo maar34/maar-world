@@ -1,0 +1,53 @@
+---
+/**
+ * media/embed-facade — the click-to-load stand-in for a third-party player.
+ *
+ * The markup existed already, sixteen times, written into sixteen page bodies
+ * by the migration: eight pages, each spelled twice because each has a Spanish
+ * half. This is that markup, once. Nothing about the shape is new — it is
+ * transcribed from `src/content/pages/en/collect/index.md` so the gate, the
+ * stylesheet and the two checks that count it all see exactly what they saw
+ * before.
+ *
+ * WHY THIS IS A COMPONENT AND NOT A STRING IN A BODY. A facade is the site's
+ * answer to an invariant — "no analytics, no cookie banner … their absence is
+ * the design, and it depends on no third-party request firing on load". An
+ * invariant enforced by sixteen copies of a paragraph is an invariant that
+ * holds until someone edits fifteen of them, and `collect/index` was already
+ * two elements out of step between its two halves before anyone noticed.
+ *
+ * WHAT THE GATE READS, and therefore what must not be renamed here:
+ *
+ *   [data-embed-provider]      how ui/EmbedConsentScript finds a facade at all
+ *   .embed-facade__action      the anchor it takes the real URL off
+ *   .embed-facade__label       the words it reuses on the poster button
+ *   .embed-facade__note        removed once the gate takes over
+ *
+ * `data-embed-facade` is the marker `verify:content` counts as an embed and
+ * `[...page].astro` used to detect by regex over the record body. It carries no
+ * behaviour — the gate deliberately selects on `data-embed-provider` instead,
+ * so that its own source file never contains the string it is counted by.
+ *
+ * THE WORDS ARE PROPS, because they are the page's language and not the
+ * component's. A Spanish page whose facade says "watch this video on youtube"
+ * is the half-translated chrome LAB_INTRO's `strings` exists to prevent.
+ */
+
+interface Props {
+  /** The provider name the gate keys on: youtube | vimeo | soundcloud | … */
+  provider: string;
+  /** Where the anchor goes when there is no JavaScript — the real, public URL. */
+  href: string;
+  /** "watch this video on youtube", in the page's own language. */
+  label: string;
+  /** The reassurance under it, in the page's own language. */
+  note: string;
+}
+
+const { provider, href, label, note } = Astro.props;
+---
+
+{/* One line, no stray whitespace between the spans: the provider name and the
+    label are adjacent inline elements, and a newline between them would put a
+    space into the accessible name and into the text `verify:content` measures. */}
+<p class="embed-facade" data-embed-facade data-embed-provider={provider}><a class="embed-facade__action" href={href} target="_blank" rel="noopener noreferrer"><span class="embed-facade__provider" aria-hidden="true">{provider}</span><span class="embed-facade__label">{label}</span></a><span class="embed-facade__note">{note}</span></p>

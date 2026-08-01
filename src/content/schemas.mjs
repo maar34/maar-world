@@ -340,6 +340,81 @@ export const pageSchema = z
       .optional(),
 
     /**
+     * ── family "collect" only ───────────────────────────────────────────────
+     *
+     * THE COLLECT LANDING'S OWN WORDS, AND NOTHING ELSE.
+     *
+     * This field is MW-19 made concrete for one page. Before it, `collect/index`
+     * and `es/collect/index` each carried ~45 structural elements in their
+     * bodies — the same grid, the same hero plates, the same carousel, spelled
+     * twice — and the two had already drifted apart by two elements without
+     * anyone editing them to. `families/Collect.astro` now owns every one of
+     * those elements once, and what is left on the record is the part that
+     * genuinely differs between two languages: the words.
+     *
+     * WHY ON THE RECORD AND NOT IN config/site.ts. Both homes exist and the line
+     * between them is not arbitrary:
+     *
+     *   here          the page's OWN copy — its pitch, its captions, its
+     *                 headings. A content record that does not contain its
+     *                 page's content makes the content tree a lie.
+     *   site.ts       what the FAMILY prints regardless of which page it is
+     *                 drawing — the contact form's labels, the closing pair of
+     *                 cards, the facade's "watch this video on youtube". Same
+     *                 rule and same reasoning as LAB_INTRO.strings.
+     *
+     * NO URLs LIVE HERE. The storefront is COLLECT_STORE_URL, the video is
+     * COLLECT_VIDEO_URL, the Orbiters destination is resolved per language by
+     * the route from the records themselves. A `cta` is a LABEL. That is the
+     * `noCommerceFields` rule above holding on a page record rather than a card
+     * one: 183 commerce links died at once because every record carried its own
+     * copy of a URL, and a landing page is not exempt from the lesson.
+     *
+     * NO IMAGES LIVE HERE EITHER, for MW-19's own reason: a photograph is the
+     * same photograph in Spanish, so naming it twice is the defect this field
+     * exists to remove, one level down. They are COLLECT_JOURNEY_IMAGES, and
+     * `families/Collect.astro` fails the build if their count and the caption
+     * count disagree.
+     */
+    collect: z
+      .object({
+        /** The h2 the page opens on, the paragraph under it, and its button's word. */
+        pitch: z.object({
+          title: z.string().min(1),
+          body: z.string().min(1),
+          cta: z.string().min(1),
+        }),
+        /** The label on the link out to Orbiters. The route decides where it goes. */
+        orbiters: z.object({ label: z.string().min(1) }),
+        journey: z.object({
+          title: z.string().min(1),
+          /**
+           * The carousel group's accessible name, e.g. "5 photographs".
+           *
+           * A phrase and not a bare noun because the count is how a screen
+           * reader learns the track's length — `ui/CarouselScript` announces
+           * position in a live region but never paints it, so this is the only
+           * place the total is said.
+           */
+          carouselLabel: z.string().min(1),
+          /**
+           * One entry per photograph, in the order the photographs are listed
+           * in COLLECT_JOURNEY_IMAGES. `step` is the Roman numeral the slide is
+           * known by; `caption` is the sentence under it.
+           */
+          slides: z
+            .array(
+              z.object({
+                step: z.string().min(1),
+                caption: z.string().min(1),
+              }),
+            )
+            .min(1),
+        }),
+      })
+      .optional(),
+
+    /**
      * `/interplanetary-players` is a deprecated address that production serves
      * as a meta-refresh stub, not an HTTP redirect. Preserved exactly, because
      * the route policy says preserve and a 200 is what is live.
@@ -366,7 +441,33 @@ export const pageSchema = z
     snip_player: url.optional(),
   })
   .passthrough()
-  .superRefine(noCommerceFields);
+  .superRefine(noCommerceFields)
+  /**
+   * A page family that reads a field must have it. Missing, it renders NOTHING.
+   *
+   * `family: "collect"` takes a record out of the route's default branch, and
+   * `families/Collect.astro` draws the page from `collect`. A record declaring
+   * the family without the field therefore produces a blank page — built,
+   * published, 200, and with no error anywhere. That is the same silent shape as
+   * the missing `lang` this schema already refuses to make optional, and it gets
+   * the same treatment: the build stops and names the file.
+   *
+   * It is a refinement rather than a required field because it is CONDITIONAL —
+   * the other 156 records neither declare the family nor carry the copy, and
+   * making `collect` unconditionally required would fail all of them.
+   */
+  .superRefine((value, ctx) => {
+    if (value?.family === 'collect' && !value.collect) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['collect'],
+        message:
+          'a record with family: "collect" must carry a `collect` field — the family draws the ' +
+          'whole page from it, so without it the page renders empty. See MW-19 and ' +
+          'src/components/families/Collect.astro.',
+      });
+    }
+  });
 
 export const SCHEMAS = {
   cards: cardSchema,

@@ -192,7 +192,31 @@ const orbiterUrl = cardTrackId ? `https://orbiter.plantasia.space/?trackId=${car
  * a carousel, so a page gains the bundle by having a gallery on it and by
  * nothing else. Put in BaseLayout it would have shipped to all 134.
  */
-const hasCarousel = /class="carousel"/.test(entry.body ?? '');
+/**
+ * A FAMILY THAT RENDERS ONE COUNTS TOO, and missing that is a silent failure.
+ *
+ * The test below reads the record's BODY, which was sound while every carousel
+ * and every facade on the site was raw HTML inside one. MW-19 moved
+ * `collect/index`'s into `families/Collect.astro`, so both bodies are now empty
+ * — and a body-only test would answer "no carousel, no embed" for a page that
+ * renders both. The page would build, look right in the HTML, and simply not
+ * work: a track that does not slide and a facade that never opens, on both
+ * language halves at once, with every check in the suite green.
+ *
+ * So the question the test asks is widened from "does the body contain one" to
+ * "does this page render one", and the family's own data answers for the part
+ * the body no longer holds. The narrowing MW-7 asked for is untouched — 129
+ * pages still ship no JavaScript, because they neither carry the markup nor
+ * declare the family.
+ */
+const isCollectFamily = d.family === 'collect';
+
+/* Asked of the DATA, not of the family: "does this record describe slides",
+   which is the same question the body regex asks of markup. A family that one
+   day stops drawing a carousel then stops loading the bundle by itself, rather
+   than by someone remembering to edit this line. */
+const hasCarousel =
+  /class="carousel"/.test(entry.body ?? '') || Boolean(d.collect?.journey?.slides?.length);
 const hasPdfEmbed = /class="[^"]*pdf-embed/.test(entry.body ?? '');
 
 /**
@@ -203,7 +227,12 @@ const hasPdfEmbed = /class="[^"]*pdf-embed/.test(entry.body ?? '');
  * understands, so a page with only a Google Form or the radio stream on it stays
  * click-out and ships nothing.
  */
-const hasMediaEmbed = /data-embed-provider="(?:youtube|vimeo|soundcloud|google-calendar)"/.test(entry.body ?? '');
+const hasMediaEmbed =
+  /data-embed-provider="(?:youtube|vimeo|soundcloud|google-calendar)"/.test(entry.body ?? '') ||
+  /* The Collect landing opens on a YouTube facade the family renders. See the
+     note on `hasCarousel` above for why a body-only test is no longer the whole
+     question. */
+  isCollectFamily;
 /* Which sections carry a header, and which picture each one gets, both live in
    SECTION_COLLAGE. A section is given a header by being in that map — there is
    no second list here to fall out of step with it. */
@@ -228,6 +257,54 @@ const alternates = alternatesFor(entry, all);
  * the site. See navPathsFor.
  */
 const navPaths = navPathsFor(d.lang, all);
+
+/**
+ * Where the Collect landing's Orbiters button goes, in this page's language.
+ *
+ * The same resolution the header uses, and deliberately the same: `navPathsFor`
+ * walks the stored translation relation rather than prefixing `/es/`, so it
+ * cannot invent a URL. An untranslated destination keeps its English one, which
+ * is the documented choice there — a gap in coverage beats a 404.
+ *
+ * The two bodies each hardcoded their own answer, and the Spanish one carried a
+ * note explaining that it had to differ from the English one. That note is the
+ * defect stated in the record's own words: it is a rule, so it belongs in code
+ * where it holds for every page, not in a comment on one of them.
+ */
+const collectOrbitersHref = navPaths['/orbiters'] ?? '/orbiters';
+
+/**
+ * The id a page's carousel slides are anchored on.
+ *
+ * `collect/index` → `carousel-collect-index-1`, and slide N is `…-1-N`. That is
+ * byte-for-byte the string `scripts/lib/carousel.mjs` built when these lived in
+ * the bodies, so no anchor moves and `verify:a11y`'s unique-id and
+ * in-page-link assertions see exactly what they saw before.
+ *
+ * Two halves of a pair cannot collide because their `outputPath`s cannot: the
+ * Spanish record's is `es/collect/index`, which gives `carousel-es-collect-index-1`.
+ * The trailing `-1` is the carousel's index on the page; these pages have one.
+ */
+const carouselIdFor = (outputPath: string) => `carousel-${outputPath.replace(/\//g, '-')}-1`;
+
+/**
+ * Has this record a body a reader would see?
+ *
+ * A COMMENT IS NOT CONTENT, and after MW-19 that distinction pays. Both halves
+ * of `collect/index` now hold nothing but a note saying where their structure
+ * went — which is right, because that note is what the next person opening the
+ * file needs. But markdown passes an HTML comment straight through to the
+ * emitted page, so rendering the slot anyway would ship ~1.5kB of English
+ * maintenance prose into both language halves, and add one more flex gap to a
+ * column whose spacing is otherwise deliberate.
+ *
+ * So the slot is rendered when there is something in it, and the note stays a
+ * note. Nothing is given up: a paragraph added to either body renders exactly
+ * where it did before.
+ */
+const bodyHasContent = Boolean(
+  (entry.body ?? '').replace(/<!--[\s\S]*?-->/g, '').trim(),
+);
 
 /**
  * The Lab reads as a dated bibliography, not a list of links, so it groups by
@@ -391,12 +468,28 @@ const labEntries = isYearIndex
 
   {
     /**
-     * The Collect landing. Its opening is still the migrated body and goes in
-     * through the slot; the family owns the closing section, which was three
-     * grey hero plates and a card the theme drew as nothing.
+     * The Collect landing, whose structure is now entirely the family's — MW-19.
+     *
+     * It used to read "its opening is still the migrated body and goes in
+     * through the slot", and that sentence was the defect: the opening was raw
+     * HTML in the record, so it existed twice, once per language, and the two
+     * copies had already drifted. The slot is still passed because a landing
+     * that can never carry a paragraph is one nobody can add one to; both
+     * records are empty today.
      */
-    d.family === 'collect' && (
-      <Collect seed={d.outputPath} label={d.indexLabel ?? d.title} statement={d.description}>
+    isCollectFamily && d.collect && (
+      <Collect
+        seed={d.outputPath}
+        label={d.indexLabel ?? d.title}
+        lang={d.lang}
+        headingHtml={d.headingHtml}
+        title={d.indexLabel ?? d.title}
+        statement={d.description}
+        copy={d.collect}
+        orbitersHref={collectOrbitersHref}
+        carouselId={carouselIdFor(d.outputPath)}
+        hasBody={bodyHasContent}
+      >
         <Content />
       </Collect>
     )

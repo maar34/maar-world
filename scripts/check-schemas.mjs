@@ -149,6 +149,46 @@ const cases = [
     { title: 'about', area: 'elsewhere' },
     false,
   ],
+  /**
+   * MW-19: a family that draws the whole page from a field must have the field.
+   *
+   * Without this the record builds, publishes and renders EMPTY — the family
+   * takes it out of the route's default branch and then has nothing to draw.
+   * Both directions, because a conditional rule that fires on everything is as
+   * broken as one that fires on nothing: the 156 records that declare no family
+   * must stay valid without carrying the copy.
+   */
+  [
+    'rejects a collect-family page with no collect copy',
+    'pages',
+    { outputPath: 'collect/index', title: 'collect', area: 'collect', kind: 'index', lang: 'en', origin: 'migrated', family: 'collect' },
+    false,
+  ],
+  [
+    'accepts a collect-family page that carries its copy',
+    'pages',
+    {
+      outputPath: 'collect/index',
+      title: 'collect',
+      area: 'collect',
+      kind: 'index',
+      lang: 'en',
+      origin: 'migrated',
+      family: 'collect',
+      collect: {
+        pitch: { title: 'a', body: 'b', cta: 'c' },
+        orbiters: { label: 'd' },
+        journey: { title: 'e', carouselLabel: 'f', slides: [{ step: 'I', caption: 'g' }] },
+      },
+    },
+    true,
+  ],
+  [
+    'a page declaring no family needs no collect copy',
+    'pages',
+    { outputPath: 'about', title: 'about', area: 'maar', kind: 'page', lang: 'en', origin: 'migrated' },
+    true,
+  ],
 ];
 
 let failed = 0;

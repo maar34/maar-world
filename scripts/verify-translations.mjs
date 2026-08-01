@@ -83,7 +83,13 @@ function walkRecords(dir) {
   return out;
 }
 
-/** Every page record, with the four fields this check reads. */
+/** A record's body — everything after the frontmatter, verbatim. */
+export const bodyOf = (text) => {
+  const fm = /^---\r?\n[\s\S]*?\r?\n---\r?\n?/.exec(text);
+  return fm ? text.slice(fm[0].length) : text;
+};
+
+/** Every page record, with the fields this check reads. */
 export function loadPageRecords(dirs = PAGE_DIRS) {
   const out = [];
   for (const abs of dirs.flatMap(walkRecords)) {
@@ -96,6 +102,7 @@ export function loadPageRecords(dirs = PAGE_DIRS) {
       lang: field(text, 'lang'),
       translationOf: field(text, 'translationOf'),
       translationKey: field(text, 'translationKey'),
+      body: bodyOf(text),
     });
   }
   return out;
@@ -248,6 +255,164 @@ export function spanishFiling(records, legacy = LEGACY_ES, closedAt = LEGACY_ES_
     .map((r) => `${r.file} publishes /${r.outputPath}`);
 
   return { es, listed, misfiled, staleExceptions, overgrown, offPrefix };
+}
+
+/**
+ * ── STRUCTURE IS AUTHORED IN ENGLISH — MW-19 ──────────────────────────────────
+ *
+ * A Spanish record must not carry structural markup in its body.
+ *
+ * ── The defect ────────────────────────────────────────────────────────────────
+ *
+ * The migration turned Jekyll pages into records whose bodies hold raw HTML, so
+ * translating a page meant copying the WHOLE page and translating the words
+ * inside it. Structure and copy were fused in the body, and then that fusion was
+ * duplicated per language. Changing one component meant editing it twice and
+ * keeping the two in step by hand.
+ *
+ * They did not stay in step. `collect/index` drifted by two elements with nobody
+ * editing it to diverge, and the Spanish page visibly rendered differently from
+ * the English one. NOTHING IN THIS SUITE COULD SEE IT — every URL built, every
+ * link resolved, the whole suite was green throughout, and it took the owner
+ * noticing with their own eyes. This is that report turned into an assertion,
+ * which is the same thing the navigation-leak check above is.
+ *
+ * ── Why this rule and not "the two must not diverge" ──────────────────────────
+ *
+ * Owner's decision, 2026-08-01: ENGLISH IS THE SOURCE OF TRUTH, because it is
+ * the language the site is worked in most. So the rule names ONE SIDE as
+ * correct rather than comparing two things that are both editable — sharper,
+ * and checkable without deciding which of two differing pages is the mistake.
+ *
+ * It does not make Spanish second-class OUTPUT. Both halves render through the
+ * same component and therefore render identically; this decides where the
+ * structure is AUTHORED, not how it is served.
+ *
+ * ── Why there is a list, and what it is ───────────────────────────────────────
+ *
+ * 34 Spanish records carry structural markup today. The rule cannot be enforced
+ * outright until each one's English half has moved its structure into a page
+ * family, which is MW-19 step 2 — sixteen pages, worst first.
+ *
+ * So this is a RATCHET, in the exact shape `LEGACY_ES` above already uses on
+ * this site, and for the same reason: an assertion that cannot be turned on
+ * until a long job finishes is an assertion nobody turns on. What it buys
+ * immediately:
+ *
+ *   · a NEW Spanish page cannot introduce structural markup at all
+ *   · a converted page cannot regress — `collect/index` is not on this list and
+ *     can never be added to it
+ *   · every conversion in step 2 must DELETE a line here, in the same diff a
+ *     reviewer reads
+ *
+ * THE LIST IS CLOSED. It may shrink — that is the work — and it must never
+ * grow. `STRUCTURED_ES_CLOSED_AT` holds it against exactly the bypass that
+ * typing a path into it would be, which is the same bypass as re-freezing a
+ * route manifest to make verify:routes pass, and just as green.
+ *
+ * A line whose record no longer carries markup is reported too. Without that
+ * the list would rot into a record of pages that USED to be a problem, and
+ * every stale line silently widens the hole.
+ */
+export const STRUCTURAL_TAGS = /<(?:div|section|figure|ul|ol|table|article|span|img|iframe|a)\b/gi;
+
+/**
+ * How many structural elements a body carries. The measure MW-19 audited with.
+ *
+ * HTML COMMENTS ARE CUT FIRST, and that is part of the rule rather than part of
+ * reading a file. A converted record explains in a note what its body used to
+ * hold — both halves of `collect/index` do — and a rule that counted the words
+ * of that note would fail the very page it was written to protect. Stripping
+ * here rather than in `bodyOf` keeps the rule self-contained: a fixture holding
+ * a raw body is measured exactly as a real record is.
+ */
+export const structuralCount = (body) =>
+  (String(body ?? '').replace(/<!--[\s\S]*?-->/g, '').match(STRUCTURAL_TAGS) || []).length;
+
+/**
+ * The Spanish records whose bodies still hold structure, by `outputPath`.
+ *
+ * Ordered worst first, which is also the order MW-19 step 2 works in. Delete a
+ * line when its pair's structure moves into a page family; never add one.
+ */
+export const STRUCTURED_ES = new Set([
+  'lab/es/ip-orchestra',
+  'es/radio',
+  'es/orbiters',
+  'es/landings',
+  'lab/es/ip-orchestra-design',
+  'lab/es/ip-2',
+  'lab/es/ip-3',
+  'lab/es/orbits-and-bodies',
+  'lab/es/ip-1',
+  'lab/es/dadada',
+  'es/bookings',
+  'es/collect/docs/tutorials',
+  'es/about',
+  'es/collect/docs/ent-cards',
+  'es/calendar',
+  'es/collect/docs/releases/skysounds',
+  'es/music',
+  'es/collect/cards',
+  'es/collect/docs/ent-cards/nfc',
+  'es/collect/docs/mw',
+  'es/collect/docs/orbiters/development',
+  'es/collect/documentation',
+  'lab/es/helix-eac-montevideo-2025',
+  'es/collect/decks',
+  'es/collect/docs/ent-cards/sustainability',
+  'es/collect/docs/mw/terms',
+  'es/collect/docs/orbiters/how-to-use',
+  'es/collect/privacy',
+  'es/collect/suits',
+  'esp-feedback',
+  'lab/es/cultura-compartida',
+  'lab/es/musica-retorno-al-juego',
+  'es/lab',
+  'es/privacy',
+]);
+
+/** The size `STRUCTURED_ES` may not exceed. It may only shrink. */
+export const STRUCTURED_ES_CLOSED_AT = 34;
+
+/**
+ * Which Spanish records carry structure they are not permitted to carry.
+ *
+ * Pure, and separated from the reporting for the reason `spanishFiling` is: an
+ * assertion nobody can run on a fixture is an assertion nobody has watched fail.
+ * Driven in both directions from scripts/selftest.mjs; the parameters exist for
+ * those fixtures, and production passes none of them.
+ */
+export function spanishStructure(
+  records,
+  permitted = STRUCTURED_ES,
+  closedAt = STRUCTURED_ES_CLOSED_AT,
+) {
+  const es = records.filter((r) => r.lang === 'es');
+
+  const carrying = es.filter((r) => structuralCount(r.body) > 0);
+
+  // The rule itself: markup on a Spanish record the list does not cover.
+  const offending = carrying
+    .filter((r) => !permitted.has(r.outputPath))
+    .map(
+      (r) =>
+        `${r.file} carries ${structuralCount(r.body)} structural element(s) — ` +
+        'structure belongs in a page family, not in a translated body',
+    );
+
+  // A listed page that has been converted must lose its line in the same diff.
+  const byPath = new Map(es.map((r) => [r.outputPath, r]));
+  const stale = [...permitted]
+    .filter((p) => {
+      const r = byPath.get(p);
+      return !r || structuralCount(r.body) === 0;
+    })
+    .map((p) => `/${p} is listed but carries no structural markup any more — remove the line`);
+
+  const overgrown = permitted.size > closedAt ? permitted.size : 0;
+
+  return { es, carrying, offending, stale, overgrown };
 }
 
 /**
@@ -449,6 +614,55 @@ export async function checkTranslations(report) {
       'a new Spanish page is published under /es/',
       `${es.length - listed.length} of ${es.length} Spanish pages under /es/; ` +
         `${listed.length} legacy URLs frozen where they are`,
+    );
+  }
+
+  /**
+   * ── STRUCTURE IS AUTHORED IN ENGLISH ───────────────────────────────────────
+   *
+   * See the long note on `spanishStructure` above for why the rule names one
+   * side as correct instead of comparing two editable things, and why it is a
+   * closed ratchet rather than an absolute rule today.
+   */
+  const structure = spanishStructure(records);
+
+  if (structure.offending.length) {
+    report.fail(
+      'a Spanish record carries no structural markup',
+      `${structure.offending.length}: ${structure.offending.slice(0, 5).join('; ')} — ` +
+        'move the structure into the page family that renders it (MW-19); ' +
+        'adding a line to STRUCTURED_ES is the bypass that list exists to make visible',
+    );
+  } else {
+    report.pass(
+      'a Spanish record carries no structural markup',
+      `${structure.es.length - structure.carrying.length} of ${structure.es.length} Spanish ` +
+        `records hold words only; ${STRUCTURED_ES.size} still awaiting MW-19 step 2`,
+    );
+  }
+
+  if (structure.stale.length) {
+    report.fail(
+      'every listed Spanish record still carries the markup it is listed for',
+      `${structure.stale.length}: ${structure.stale.slice(0, 5).join('; ')}`,
+    );
+  } else {
+    report.pass(
+      'every listed Spanish record still carries the markup it is listed for',
+      `${STRUCTURED_ES.size} listed, none of them already converted`,
+    );
+  }
+
+  if (structure.overgrown) {
+    report.fail(
+      'the structural-markup list is closed',
+      `${structure.overgrown} entries against a closed count of ${STRUCTURED_ES_CLOSED_AT} — ` +
+        'a page loses its line by having its structure moved, it does not gain one',
+    );
+  } else {
+    report.pass(
+      'the structural-markup list is closed',
+      `${STRUCTURED_ES.size} of a permitted ${STRUCTURED_ES_CLOSED_AT} — it may shrink, never grow`,
     );
   }
 
