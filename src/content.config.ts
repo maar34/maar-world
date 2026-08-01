@@ -39,30 +39,32 @@ export const collections = {
     schema: SCHEMAS.cards,
   }),
   /**
-   * Every non-card page, from BOTH of its sources.
+   * Every non-card page, filed by LANGUAGE.
    *
-   *   src/content/migrated/**  came out of the migration originally. NOTHING
-   *                            REGENERATES IT NOW — scripts/migrate-pages.mjs was
-   *                            deleted on 2026-07-31 because it had fallen behind
-   *                            the content and its "regeneration" had become a
-   *                            revert. Hand-edit freely; see .agents/skills/maar-content-authoring/SKILL.md.
-   *   src/content/authored/**  written by a person. No script touches it, ever.
-   *                            This is where a new Lab post goes.
+   *   src/content/pages/en/**   85 English pages
+   *   src/content/pages/es/**   72 Spanish pages
    *
-   * The split is now historical rather than operational: both are hand-maintained
-   * and the loader treats them identically. `migrated/` records where a page came
-   * from, not who may edit it.
+   * One rule, and you can infer it: language, then area, then page. A page and
+   * its translation sit at the same path under different language roots —
+   * `en/lab/dadada.md` and `es/lab/dadada.md` — so finding a page's other half
+   * is looking at the same path, not grepping 157 records.
    *
-   * One collection, one schema, one route: a migrated page and an authored one
-   * are the same kind of record, and `[...page].astro` cannot tell them apart —
-   * which is the point. `outputPath` still decides the URL in both cases.
+   * This replaced a `migrated/` and `authored/` split, which sorted pages by
+   * how they ARRIVED — 2023 migration versus written by hand afterwards. That
+   * is history, it is the one thing a reader cannot infer by looking, and
+   * language cut across it at random: `migrated/` held 84 English records and
+   * 11 Spanish ones. Provenance now lives in the required `origin` field, where
+   * it is stated per record. See
+   * .agents/decisions/0004-content-tree-by-language.md.
    *
-   * Two sources rather than one is what makes this a real seam. With only the
-   * migration writing here there was no way to publish anything the legacy
-   * sites did not already serve.
+   * One collection, one schema, one route: `[...page].astro` cannot tell a
+   * migrated page from an authored one, or an English one from a Spanish one,
+   * which is the point. `outputPath` decides the URL in every case — the tree
+   * was rearranged without moving a single URL, because nothing in `src/` reads
+   * a file's path.
    */
   pages: defineCollection({
-    loader: glob({ pattern: `{migrated,authored}/${pattern}`, base: './src/content' }),
+    loader: glob({ pattern: `{en,es}/${pattern}`, base: './src/content/pages' }),
     schema: SCHEMAS.pages,
   }),
 };

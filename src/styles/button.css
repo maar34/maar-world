@@ -200,9 +200,10 @@
  * the button table applied to markup we do not render, and splitting the button
  * spec across two files to satisfy a folder boundary would be worse.
  *
- * `src/content/migrated/**` is generated from the read-only legacy checkouts, so
- * a class cannot be added to these without the next migration run removing it —
- * and adding presentational classes to content would be the wrong fix anyway.
+ * Adding presentational classes to content would be the wrong fix regardless of
+ * where the records sit, and when this was written it was also impossible: the
+ * records were regenerated from the read-only legacy checkouts on every run.
+ * That is no longer true, and the reasoning does not depend on it.
  * They are selected by element instead. The two Formspree forms use
  * `<button type="submit">`; both Mailchimp embeds use `<input type="submit">`,
  * which cannot contain anything, so it is styled as a block rather than a flex

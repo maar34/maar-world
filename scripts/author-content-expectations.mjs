@@ -72,7 +72,7 @@ import { mainContent } from './verify-content.mjs';
  * this audit wants every record either way: a page with no production baseline
  * is worth a human look whichever directory it came from.
  */
-const PAGE_DIRS = [join(ROOT, 'src/content/migrated'), join(ROOT, 'src/content/authored')];
+const PAGE_DIRS = [join(ROOT, 'src/content/pages')];
 
 /** Read-only legacy checkouts. Never written to. */
 const LEGACY_SITE = {
@@ -339,7 +339,7 @@ const EXCLUSIONS = [
    * So page family 02 lists the entries in ITS OWN language. Every one of the
    * ten headings below is now on /es/lab, the Spanish translation of this page,
    * which the header's language chip links to and which `translationOf` in
-   * src/content/authored/es/lab.md relates to it. Each Spanish article also
+   * src/content/pages/es/lab.md relates to it. Each Spanish article also
    * remains reachable from its English twin's own language switch, and no URL
    * changed.
    *

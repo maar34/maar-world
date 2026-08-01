@@ -49,8 +49,9 @@ lists skips separately so a green run is never mistaken for a complete one.
 
 ## Content
 
-`src/content/migrated/**` and `src/content/authored/**` are both hand-maintained. Nothing
-regenerates them — see `.agents/skills/maar-content-authoring/SKILL.md` before editing either.
+`src/content/pages/en/**` and `src/content/pages/es/**` hold every page, filed by language:
+a page and its translation sit at the same path under the two language roots. Nothing
+regenerates them — see `.agents/skills/maar-content-authoring/SKILL.md` before editing.
 
 ## Working on this repo
 

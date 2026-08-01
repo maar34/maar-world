@@ -85,8 +85,7 @@ export async function getStaticPaths() {
       `\n[translations] ${danglingTranslations.length} translationOf value(s) name a page ` +
         `that does not exist. verify:translations fails on this.\n  ` +
         `${danglingTranslations.join('\n  ')}\n` +
-        '  Check the outputPath spelling — it is byte-for-byte — or check whether ' +
-        'src/content/migrated is mid-regeneration.\n',
+        '  Check the outputPath spelling — it is byte-for-byte.\n',
     );
   }
 

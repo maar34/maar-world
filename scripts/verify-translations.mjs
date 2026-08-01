@@ -37,19 +37,21 @@
  *
  * ── Where a Spanish page lives ────────────────────────────────────────────────
  *
- * Two rules, both asserted below, and both bounded by the same closed list:
+ * Two rules, both asserted below, and they are not the same rule:
  *
- *   ON DISK   a translation sits at `authored/es/` + the path of the page it
- *             translates. Every Spanish record is at that mirror or is named in
- *             `LEGACY_ES` — the set is closed, so a record cannot sit outside
- *             both and go unremarked, which is what eleven of them did.
+ *   ON DISK   a record sits at `pages/<lang>/<its outputPath>`. ALL 157, both
+ *             languages, NO exceptions. This used to be narrower and carried a
+ *             list of eleven exemptions; the content tree was reorganised by
+ *             language so that one rule reaches everything instead.
+ *             See .agents/decisions/0004-content-tree-by-language.md.
  *
  *   AS A URL  a Spanish page is published at `/es/<path>`. This binds NEW
- *             records only. The eleven legacy URLs are frozen in the route
- *             contract and stay exactly where they are; a rule that bound them
- *             could only be satisfied by breaking an invariant.
+ *             records only, and the eleven URLs in `LEGACY_ES` are frozen in
+ *             the route contract — a rule that bound them could only be
+ *             satisfied by breaking an invariant.
  *
- * The list is the whole mechanism, and `LEGACY_ES` documents its own terms.
+ * So `LEGACY_ES` is now a list of frozen URLs and nothing else. Where those
+ * eleven pages SIT stopped being special; where they are PUBLISHED still is.
  */
 
 import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs';
@@ -59,7 +61,7 @@ import { plainText, mainOf } from './lib/html-text.mjs';
 import { ROOT, has, ARTIFACTS, indexDist, readDistFile } from './lib/artifacts.mjs';
 import { resolveRoute } from './lib/routes.mjs';
 
-const PAGE_DIRS = [join(ROOT, 'src/content/migrated'), join(ROOT, 'src/content/authored')];
+const PAGE_DIRS = [join(ROOT, 'src/content/pages')];
 
 /**
  * Frontmatter by regex rather than by a YAML parser, for the same reason
@@ -111,120 +113,141 @@ const urlOf = (outputPath) =>
  */
 const decode = (p) => p.replace(/~20/g, ' ');
 
-/** Where a record actually sits, as a path relative to the authored root. */
+/** Where a record actually sits: path under src/content/pages/, no extension. */
 export const filedAt = (r) =>
-  decode(r.file.replace(/^src\/content\/authored\//, '').replace(/\.mdx?$/, ''));
+  decode(r.file.replace(/^src\/content\/pages\//, '').replace(/\.mdx?$/, ''));
 
 /**
- * Is this record at the mirror of the page it translates?
+ * Where a record MUST sit: `<lang>/` + its own outputPath, with the language
+ * segment taken out of the middle.
  *
- * One definition, used by both the mirror rule and the coverage assertion after
- * it, so the two can never disagree about what "at the mirror" means. A record
- * with no `translationOf` makes no claim to be at a mirror and is not at one.
+ * That last part is what makes the tree uniform rather than nearly uniform. Ten
+ * Lab pages publish `/lab/es/dadada` — language in the MIDDLE of the URL, a
+ * shape frozen in the route contract and unchangeable. Dropping the segment
+ * files them beside every other Spanish page at `es/lab/dadada` while their URL
+ * stays exactly where production put it. The URL keeps its history; the tree
+ * does not have to inherit it.
  */
-export const isAtMirror = (r) => Boolean(r.translationOf) && filedAt(r) === `es/${r.translationOf}`;
+export const expectedAt = (r) =>
+  `${r.lang}/${r.outputPath.split('/').filter((s) => s !== 'en' && s !== 'es').join('/')}`;
 
 /**
- * ── THE LEGACY SPANISH FILING EXCEPTIONS ──────────────────────────────────────
+ * Is this record where its own outputPath says it belongs?
  *
- * Every Spanish record is either at the mirror — `authored/es/<path>`, asserted
- * below — or named here. There is no third state, and that is the entire point.
- * Before this list existed, eleven of the site's seventy-two Spanish records
- * were outside every rule in this file and nothing said so: they were not
- * exempted, they were never looked at. An unlisted exception cannot be told
- * apart from an oversight, and this file could not tell them apart either.
+ * One definition, used by every assertion below, so they cannot disagree about
+ * what "correctly filed" means. It applies to all 157 records in both
+ * languages — not only to translations — which is the difference between a tree
+ * you can navigate and one you have to be told about.
+ */
+export const isWellFiled = (r) => filedAt(r) === expectedAt(r);
+
+/**
+ * ── THE FROZEN OFF-PREFIX SPANISH URLS ────────────────────────────────────────
  *
- * The eleven are frozen, not tolerated-for-now. Their URLs are in
- * `routes/manifest.production.json` and under the contract lock, so
- * `/lab/es/dadada` cannot become `/es/lab/dadada` — moving one is a contract
- * change, not a tidy-up. See AGENTS.md, "Never modify the frozen route manifest".
+ * Eleven Spanish pages do not publish under `/es/`, and never will.
  *
- * Two shapes, and the difference between them matters:
+ * NOTE WHAT THIS LIST IS NOT, ANY MORE. It used to be a list of filing
+ * exceptions — eleven records that sat outside the one rule about where a
+ * Spanish page lives. After the content tree was reorganised by language
+ * (.agents/decisions/0004-content-tree-by-language.md) there are no filing
+ * exceptions left: all 157 records, these eleven included, sit at
+ * `pages/<lang>/<outputPath>` and `isWellFiled` holds for every one of them.
+ * What survives is purely a URL fact, which is the part that was never ours to
+ * change.
  *
- *   'infix'    — filed `<area>/es/<slug>`, the shape the migration produced.
- *                These ten are PAIRED, via `translationKey`. They are exempt
- *                from where they are FILED and from nothing else: all ten are
- *                in `pairsOf` and are held to every other assertion here,
+ * Their URLs are in `routes/manifest.production.json` and under the contract
+ * lock: `/lab/es/dadada` cannot become `/es/lab/dadada`. Moving one is a
+ * contract change, not a tidy-up — see AGENTS.md, "Never modify the frozen
+ * route manifest". Ten carry the language in the middle of the path, the shape
+ * the legacy site served; `/esp-feedback` carries no language marker at all.
+ *
+ * Two shapes, and the difference still matters:
+ *
+ *   'infix'    — publishes `/<area>/es/<slug>`. PAIRED, via `translationKey`.
+ *                All ten are in `pairsOf` and are held to every assertion here,
  *                including the copy check.
  *
- *   'unpaired' — has no other-language half at all and is not supposed to
- *                acquire one. `/esp-feedback` is a retired redirect stub to
- *                `/bookings` (the NOINDEX block in astro.config.mjs). Listing
- *                it IS its fix: a missing pair becomes a stated fact instead of
- *                an unnoticed one. Do not invent a counterpart for it.
+ *   'unpaired' — has no other-language half and is not supposed to acquire one.
+ *                `/esp-feedback` is a retired redirect stub to `/bookings` (the
+ *                NOINDEX block in astro.config.mjs). Listing it is what makes
+ *                its missing pair a stated fact instead of an unnoticed one.
+ *                Do not invent a counterpart for it.
+ *
+ * Keyed by `outputPath` and not by file path, now that the file path is derived
+ * from the outputPath and carries no independent information.
  *
  * THIS LIST IS CLOSED. It may shrink — deleting a legacy page is ordinary work,
  * and the assertion below then requires the line to go with it. It must never
- * grow: a new Spanish page belongs at the mirror, and adding a line here to turn
- * a check green is precisely the bypass these checks exist to catch.
- * `LEGACY_ES_CLOSED_AT` holds the count against exactly that. Raising it is a
- * decision, taken in a diff someone reads — which is the most a source file can
- * ask for, and more than the previous silence asked.
+ * grow: a new Spanish page publishes under `/es/`, and adding a line here to
+ * turn a check green is precisely the bypass these checks exist to catch.
+ * `LEGACY_ES_CLOSED_AT` holds the count against exactly that.
  */
 export const LEGACY_ES = new Map([
-  ['src/content/migrated/lab/es/cultura-compartida.md', 'infix'],
-  ['src/content/migrated/lab/es/dadada.md', 'infix'],
-  ['src/content/migrated/lab/es/helix-eac-montevideo-2025.md', 'infix'],
-  ['src/content/migrated/lab/es/ip-1.md', 'infix'],
-  ['src/content/migrated/lab/es/ip-2.md', 'infix'],
-  ['src/content/migrated/lab/es/ip-3.md', 'infix'],
-  ['src/content/migrated/lab/es/ip-orchestra-design.md', 'infix'],
-  ['src/content/migrated/lab/es/ip-orchestra.md', 'infix'],
-  ['src/content/migrated/lab/es/musica-retorno-al-juego.md', 'infix'],
-  ['src/content/migrated/lab/es/orbits-and-bodies.md', 'infix'],
-  ['src/content/migrated/esp-feedback.md', 'unpaired'],
+  ['lab/es/cultura-compartida', 'infix'],
+  ['lab/es/dadada', 'infix'],
+  ['lab/es/helix-eac-montevideo-2025', 'infix'],
+  ['lab/es/ip-1', 'infix'],
+  ['lab/es/ip-2', 'infix'],
+  ['lab/es/ip-3', 'infix'],
+  ['lab/es/ip-orchestra-design', 'infix'],
+  ['lab/es/ip-orchestra', 'infix'],
+  ['lab/es/musica-retorno-al-juego', 'infix'],
+  ['lab/es/orbits-and-bodies', 'infix'],
+  ['esp-feedback', 'unpaired'],
 ]);
 
 /** The size `LEGACY_ES` may not exceed. See the note above: it may only shrink. */
 export const LEGACY_ES_CLOSED_AT = 11;
 
 /**
- * Where every Spanish record sits, and whether it is allowed to sit there.
+ * Where every record sits, and whether it is allowed to sit there.
  *
  * Pure, and separated from the reporting for the reason `pairsOf` is: an
  * assertion nobody can run on a fixture is an assertion nobody has watched fail.
- * These four lists are exercised directly in scripts/selftest.mjs, in both
+ * These lists are exercised directly in scripts/selftest.mjs, in both
  * directions, so the checks below are known to be falsifiable and not merely
  * green. The parameters exist for those fixtures — production passes neither.
  */
 export function spanishFiling(records, legacy = LEGACY_ES, closedAt = LEGACY_ES_CLOSED_AT) {
-  const byFile = new Map(records.map((r) => [r.file, r]));
+  const byPath = new Map(records.map((r) => [r.outputPath, r]));
   const es = records.filter((r) => r.lang === 'es');
-  const listed = es.filter((r) => legacy.has(r.file));
+  const listed = es.filter((r) => legacy.has(r.outputPath));
 
-  // A Spanish record is at the mirror, or it is named. There is no third state.
-  const unaccounted = es
-    .filter((r) => !isAtMirror(r) && !legacy.has(r.file))
-    .map((r) => `${r.file} → /${r.outputPath}`);
+  // ONE RULE, ALL 157 RECORDS, BOTH LANGUAGES: a record sits at
+  // pages/<lang>/<its outputPath>. No exception list, because after the tree
+  // was reorganised by language there is nothing left to except.
+  const misfiled = records
+    .filter((r) => !isWellFiled(r))
+    .map((r) => `${r.file} — should be src/content/pages/${expectedAt(r)}`);
 
-  // A named exception must still describe a real record, in the recorded shape.
-  // The 'unpaired' arm is the one carrying meaning rather than hygiene: it
-  // asserts /esp-feedback still has no other-language half, so that absence is
-  // a claim the suite makes rather than a thing nobody looked at.
+  // A named URL exception must still describe a real record, in the recorded
+  // shape. The 'unpaired' arm is the one carrying meaning rather than hygiene:
+  // it asserts /esp-feedback still has no other-language half, so that absence
+  // is a claim the suite makes rather than a thing nobody looked at.
   const staleExceptions = [];
-  for (const [file, shape] of legacy) {
-    const r = byFile.get(file);
+  for (const [outputPath, shape] of legacy) {
+    const r = byPath.get(outputPath);
     if (!r) {
-      staleExceptions.push(`${file} is listed but is no longer a page record — remove the line`);
+      staleExceptions.push(`/${outputPath} is listed but is no longer a page record — remove the line`);
     } else if (r.lang !== 'es') {
-      staleExceptions.push(`${file} is listed as Spanish but declares lang "${r.lang}"`);
+      staleExceptions.push(`/${outputPath} is listed as Spanish but declares lang "${r.lang}"`);
     } else if (shape === 'infix' && !r.translationKey) {
-      staleExceptions.push(`${file} is listed as paired but carries no translationKey`);
+      staleExceptions.push(`/${outputPath} is listed as paired but carries no translationKey`);
     } else if (shape === 'unpaired' && (r.translationKey || r.translationOf)) {
-      staleExceptions.push(`${file} is listed as having no other-language half but now names one`);
+      staleExceptions.push(`/${outputPath} is listed as having no other-language half but now names one`);
     }
   }
 
-  // The list may shrink, never grow — otherwise the two lists above are
-  // satisfiable by typing a path into it.
+  // The list may shrink, never grow — otherwise the prefix rule below is
+  // satisfiable by typing a URL into it.
   const overgrown = legacy.size > closedAt ? legacy.size : 0;
 
-  // The prefix rule, binding on everything the closed list does not cover.
+  // The prefix rule, binding on every Spanish URL the closed list does not cover.
   const offPrefix = es
-    .filter((r) => !legacy.has(r.file) && !r.outputPath.startsWith('es/'))
+    .filter((r) => !legacy.has(r.outputPath) && !r.outputPath.startsWith('es/'))
     .map((r) => `${r.file} publishes /${r.outputPath}`);
 
-  return { es, listed, unaccounted, staleExceptions, overgrown, offPrefix };
+  return { es, listed, misfiled, staleExceptions, overgrown, offPrefix };
 }
 
 /**
@@ -290,23 +313,55 @@ export async function checkTranslations(report) {
   }
 
   /**
-   * ── THE MIRROR RULE ────────────────────────────────────────────────────────
+   * ── THE FILING RULE ────────────────────────────────────────────────────────
    *
-   * An authored translation's FILE PATH must be `es/` + the file path of the
-   * page it translates. `authored/es/collect/decks.md` translates
-   * `migrated/collect/decks.md`, and you can see that without opening either.
+   * A record sits at `pages/<lang>/<its own outputPath>`. All 157 of them, in
+   * both languages, with no exception list.
    *
    * This is the assertion the owner asked for in as many words: "if I want to
-   * find the mirror, I can do it." Without it the relation lives only in a
-   * frontmatter field, so finding a page's other half means grepping 157
-   * records — which is exactly what "everything is spread" felt like.
+   * find the mirror, I can do it." `pages/en/collect/decks.md` and
+   * `pages/es/collect/decks.md` are the same page in two languages, and you can
+   * see that without opening either or being told the convention.
    *
-   * It inspects only records carrying `translationOf`. That is a real limit and
-   * not an oversight any more — the assertion after it closes the set.
+   * It used to be narrower — `authored/es/<path>` mirrors `migrated/<path>` —
+   * and it inspected only the 61 records carrying `translationOf`, because the
+   * other 11 Spanish records were filed in shapes the rule could not express.
+   * The tree was reorganised by language so that one rule reaches everything;
+   * the exceptions were not tolerated, they were removed.
+   */
+  const { es, listed, misfiled, staleExceptions, overgrown, offPrefix } = spanishFiling(records);
+
+  if (misfiled.length) {
+    report.fail(
+      'every record sits at pages/<lang>/<its outputPath>',
+      `${misfiled.length}: ${misfiled.slice(0, 5).join('; ')}`,
+    );
+  } else {
+    report.pass(
+      'every record sits at pages/<lang>/<its outputPath>',
+      `${records.length} records, one rule, no exceptions — ` +
+        `${records.length - es.length} en, ${es.length} es`,
+    );
+  }
+
+  /**
+   * ── AND SO A TRANSLATION SITS BESIDE ITS ORIGINAL ──────────────────────────
+   *
+   * This follows from the rule above rather than adding to it: if both halves
+   * are at `<lang>/<path>`, they differ only in the language root. It is
+   * asserted separately because it is the property a person actually uses, and
+   * a derived property that nobody checks is one that quietly stops holding.
    */
   const offMirror = records
-    .filter((r) => r.translationOf && !isAtMirror(r))
-    .map((r) => `${filedAt(r)} — should be es/${r.translationOf}`);
+    .filter((r) => r.translationOf)
+    .map((r) => {
+      const original = byPath.get(r.translationOf);
+      if (!original) return null; // already reported as dangling above
+      return filedAt(r) === `es/${filedAt(original).replace(/^en\//, '')}`
+        ? null
+        : `${filedAt(r)} — its original is at ${filedAt(original)}`;
+    })
+    .filter(Boolean);
 
   if (offMirror.length) {
     report.fail(
@@ -316,45 +371,16 @@ export async function checkTranslations(report) {
   } else {
     report.pass(
       'a translation sits at the mirror of its original',
-      `authored/es/<path> mirrors migrated/<path> — ${records.filter((r) => r.translationOf).length} files`,
+      `es/<path> mirrors en/<path> — ${records.filter((r) => r.translationOf).length} files`,
     );
   }
 
   /**
-   * ── EVERY SPANISH RECORD IS ACCOUNTED FOR ──────────────────────────────────
+   * ── A FROZEN URL STILL DESCRIBES A REAL RECORD ─────────────────────────────
    *
-   * The mirror rule above sees only the 61 records that carry `translationOf`.
-   * This closes the set: a Spanish record is at the mirror, or it is named in
-   * LEGACY_ES. There is no third option, and a record that reaches neither is
-   * reported rather than skipped.
-   *
-   * This is the assertion the gap needed. The eleven records outside the mirror
-   * rule were never wrong — they were unexamined, which is worse, because an
-   * unexamined record and a correct one look identical from a green suite.
-   */
-  const { es, listed, unaccounted, staleExceptions, overgrown, offPrefix } = spanishFiling(records);
-
-  if (unaccounted.length) {
-    report.fail(
-      'every Spanish record is at the mirror or a named exception',
-      `${unaccounted.length} accounted for by neither: ${unaccounted.slice(0, 5).join('; ')}` +
-        ' — file a translation at src/content/authored/es/<outputPath of the page it translates>',
-    );
-  } else {
-    report.pass(
-      'every Spanish record is at the mirror or a named exception',
-      `${es.length} Spanish records — ${es.length - listed.length} at the mirror, ` +
-        `${listed.length} named in LEGACY_ES`,
-    );
-  }
-
-  /**
-   * ── A NAMED EXCEPTION STILL DESCRIBES A REAL RECORD ────────────────────────
-   *
-   * A list of exceptions is only worth as much as its accuracy. Left
-   * unchecked it rots quietly into a list of paths that used to matter, and
-   * every stale line silently widens the hole above. So each entry has to name
-   * a record that exists, in Spanish, in the shape recorded for it.
+   * A list of exceptions is only worth as much as its accuracy. Left unchecked
+   * it rots quietly into a list of URLs that used to matter, and every stale
+   * line silently widens the hole in the prefix rule below.
    *
    * The 'unpaired' arm is the one that carries meaning rather than hygiene: it
    * asserts that /esp-feedback still has no other-language half. That absence
@@ -363,35 +389,35 @@ export async function checkTranslations(report) {
    */
   if (staleExceptions.length) {
     report.fail(
-      'a named exception still describes a real record',
+      'a frozen Spanish URL still describes a real record',
       `${staleExceptions.length}: ${staleExceptions.slice(0, 5).join('; ')}`,
     );
   } else {
     const infix = [...LEGACY_ES.values()].filter((s) => s === 'infix').length;
     report.pass(
-      'a named exception still describes a real record',
-      `${LEGACY_ES.size} listed — ${infix} paired but filed <area>/es/<slug>, ` +
+      'a frozen Spanish URL still describes a real record',
+      `${LEGACY_ES.size} listed — ${infix} publishing /<area>/es/<slug>, ` +
         `${LEGACY_ES.size - infix} with no counterpart by design`,
     );
   }
 
   /**
-   * ── THE EXCEPTION LIST IS CLOSED ───────────────────────────────────────────
+   * ── THE FROZEN LIST IS CLOSED ──────────────────────────────────────────────
    *
-   * Without this, the two assertions above are satisfiable by typing a path
-   * into LEGACY_ES — the same shape of bypass as re-freezing a route manifest
-   * to make verify:routes pass, and just as green. The list may shrink; growing
-   * it means raising a number in the same diff, where a reviewer sees it.
+   * Without this, the prefix rule below is satisfiable by typing a URL into
+   * LEGACY_ES — the same shape of bypass as re-freezing a route manifest to
+   * make verify:routes pass, and just as green. The list may shrink; growing it
+   * means raising a number in the same diff, where a reviewer sees it.
    */
   if (overgrown) {
     report.fail(
-      'the legacy exception list is closed',
+      'the frozen Spanish URL list is closed',
       `${overgrown} entries against a closed count of ${LEGACY_ES_CLOSED_AT} — ` +
-        'a new Spanish page belongs at the mirror, not on this list',
+        'a new Spanish page publishes under /es/, it does not join this list',
     );
   } else {
     report.pass(
-      'the legacy exception list is closed',
+      'the frozen Spanish URL list is closed',
       `${LEGACY_ES.size} of a permitted ${LEGACY_ES_CLOSED_AT} — it may shrink, never grow`,
     );
   }
@@ -406,8 +432,11 @@ export async function checkTranslations(report) {
    * It binds new records ONLY, and it has to. The eleven legacy URLs are frozen
    * in the route contract: a rule worded to cover them would be a rule that
    * cannot be satisfied without breaking an invariant, so it would be turned off
-   * rather than obeyed. LEGACY_ES is exactly the set it does not reach, which
-   * is why the same closed list serves both jobs.
+   * rather than obeyed. LEGACY_ES is exactly the set it does not reach.
+   *
+   * This is the ONLY rule the eleven are still exempt from. Where they sit on
+   * disk stopped being an exception when the tree was reorganised by language;
+   * where they are published never can be.
    */
   if (offPrefix.length) {
     report.fail(

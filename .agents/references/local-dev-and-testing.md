@@ -60,7 +60,7 @@ workspace and `ps-all`.
 | `verify:content` | Content records and their expectations |
 | `verify:links` | Internal links |
 | `verify:a11y` | Accessibility across every built page |
-| `verify:translations` | The `authored/es/<path>` mirror rule |
+| `verify:translations` | The `pages/<lang>/<outputPath>` filing rule, and the `/es/` prefix rule |
 | `verify:schemas`, `verify:build`, `verify:selftest` | Schemas, build, the checks' own tests |
 
 A `SKIP` has not passed — it has not run. `verify` prints skips separately for that reason.

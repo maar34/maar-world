@@ -1,35 +1,41 @@
 ---
 last-verified: 2026-08-01
-verified-against: scripts/verify-translations.mjs (LEGACY_ES, the /es/ prefix rule)
+verified-against: src/content.config.ts, scripts/verify-translations.mjs, verify-routes.mjs
 status: active
 ---
 
 # Writing a page
 
-There are two page sources, and the difference between them is the whole point.
+Every page lives in `src/content/pages/`, filed **by language**:
 
-| Directory | Written by | Wiped by a script? |
-|---|---|---|
-| `src/content/migrated/**` | originally the migration, now **you** | **No.** The migration is gone — see below. |
-| `src/content/authored/**` | you | **Never.** No script writes or deletes here. |
+```
+src/content/pages/
+  en/about.md          es/about.md
+  en/lab/dadada.md     es/lab/dadada.md
+  en/collect/…         es/collect/…
+```
 
-`migrated/` is a historical name now, not a live pipeline. Both directories are
-hand-maintained and equally safe to edit.
+**One rule, and you can infer it: language, then area, then page.** A page and its
+translation sit at the same path under the two language roots, so finding a
+page's other half is looking at the same path.
 
-Both are globbed into the one `pages` collection by `src/content.config.ts`, so a
-page you write is the same kind of record as a migrated one — same schema, same
-route, same `outputPath` → URL rule. `src/pages/[...page].astro` cannot tell them
-apart, which is deliberate.
+**The file's path is not decoration — it is asserted.** A record must sit at
+`pages/<lang>/<its outputPath>`, and `verify:translations` fails if it does not.
+All 157 records, both languages, no exceptions.
 
-> Nothing may live directly in `src/content/authored/` except `.md`/`.mdx` page
-> records and the `.gitkeep`. The collection globs this directory, so a stray
-> `README.md` here would be parsed as a page and fail schema validation. That is
-> why this file lives in `docs/`.
+> This replaced a `migrated/` and `authored/` split, which sorted pages by how
+> they arrived rather than what they are. If you are looking for those folders,
+> they are gone — see `.agents/decisions/0004-content-tree-by-language.md`.
+> Provenance is now the `origin` field.
+
+> Nothing may live in `src/content/pages/` except `.md`/`.mdx` page records. The
+> collection globs it, so a stray `README.md` would be parsed as a page and fail
+> schema validation.
 
 ## Adding a page
 
-Create a `.md` file anywhere under `src/content/authored/`. The path on disk is
-for your convenience; the URL comes from `outputPath` and from nothing else.
+Create a `.md` file at `src/content/pages/<lang>/<path>.md`, where `<path>`
+matches the `outputPath` you want.
 
 ```markdown
 ---
@@ -39,6 +45,7 @@ area: "maar"                        # maar | collect | tree
 kind: "lab"                         # lab | genesis | doc | index | page
 surface: "dark"
 lang: "en"                          # en | es
+origin: "authored"                  # migrated | authored — see below
 indexGroup: "lab"                   # put it in the /lab index
 indexLabel: "My new post"           # the title the index row shows
 date: "2026-08-01"
@@ -48,6 +55,16 @@ date: "2026-08-01"
 
 Body goes here.
 ```
+
+The file for that record goes at `src/content/pages/en/lab/my-new-post.md` — the
+language segment comes out of the middle of the path, because the language is
+already the top folder.
+
+**`origin` is required, and for a new page it is always `"authored"`.**
+It records where the page came from, and it is what authorises the URL:
+an `authored` record authorises itself by existing, a `migrated` one must appear
+in the frozen route policy. `"migrated"` means the page came from the 2023
+migration of the three legacy sites — never use it for a page you are writing.
 
 Then:
 
@@ -60,16 +77,18 @@ npm run verify
 date object, and the schema wants a string — the build fails with
 `InvalidContentEntryDataError` naming the file. `date: "2026-08-01"` is correct.
 
-That is the whole procedure. `verify:routes` reads `outputPath` straight out of
-this directory, so **a page is authorised by existing** — there is no second list
-to update, and deleting the file de-authorises it again.
+That is the whole procedure. `verify:routes` reads `outputPath` off every record
+declaring `origin: "authored"`, so **a page is authorised by existing** — there is
+no second list to update, and deleting the file de-authorises it again.
 
 ## Writing a Spanish page
 
-A Spanish page is published at **`/es/<path>`** and filed at
-**`src/content/authored/es/<path>`**, where `<path>` is the `outputPath` of the
-English page it translates. The URL and the path on disk agree, so either one
-tells you where the other half is without opening anything.
+Put it beside its English half, at the same path under `es/`:
+
+```
+src/content/pages/en/lab/my-new-post.md      the English page
+src/content/pages/es/lab/my-new-post.md      the Spanish one
+```
 
 ```markdown
 ---
@@ -78,27 +97,36 @@ title: "Mi nueva entrada"
 area: "maar"
 kind: "lab"
 lang: "es"
+origin: "authored"
 translationOf: "lab/en/my-new-post"  # the English page's outputPath
 ---
 ```
 
 `translationOf` goes on the Spanish side only and must name a page that exists —
-a value naming nothing fails the build. `verify:translations` asserts both halves
-of the rule: *every Spanish record is at the mirror or a named exception*, and
-*a new Spanish page is published under /es/*.
+a value naming nothing fails the build.
 
-### The eleven pages that do not follow it
+Two separate rules, both asserted, and it is worth knowing they are separate:
 
-Ten Lab pages are filed `migrated/lab/es/<slug>` and publish `/lab/es/<slug>`;
+| | |
+|---|---|
+| **on disk** | `pages/es/<path>` — same as every record, no exceptions |
+| **as a URL** | `outputPath` starts `es/` — **new pages only** |
+
+### The eleven frozen URLs
+
+Ten Lab pages publish `/lab/es/<slug>` — language in the middle — and
 `/esp-feedback` carries no language marker at all and is a retired redirect stub
-with no Spanish/English pair. **Leave all eleven where they are.** Their URLs are
-in the frozen route manifest, so moving one is a contract change and not a
-tidy-up — `/lab/es/dadada` cannot become `/es/lab/dadada`.
+with no Spanish/English pair. **Do not move those URLs.** They are in the frozen
+route manifest, so `/lab/es/dadada` cannot become `/es/lab/dadada`; changing one
+is a contract change, not a tidy-up.
 
-They are named individually in `LEGACY_ES` in `scripts/verify-translations.mjs`,
-and that list is **closed: it may shrink, never grow.** If the check fails because
-a new page is off-prefix, move the page. Adding a line to the list is the bypass
-the list exists to make visible.
+Their *files* are not special — they sit at `pages/es/lab/dadada.md` like
+everything else. Only their URLs are frozen.
+
+The eleven are listed in `LEGACY_ES` in `scripts/verify-translations.mjs`, and
+that list is **closed: it may shrink, never grow.** If the check fails because a
+new page is off-prefix, fix the page's `outputPath`. Adding a line to the list is
+the bypass the list exists to make visible.
 
 ## What you do NOT have to do
 
@@ -126,9 +154,10 @@ was right only until cutover. `scripts/verify-routes.mjs` now separates them.
 - `lang` matters. It sets `<html lang>`, and a Spanish page that does not declare
   `es` is read aloud with English phonemes.
 
-## Fixing a migrated page
+## Fixing a page that came from the migration
 
-Edit it. That is the whole instruction now.
+Edit it. That is the whole instruction now — and it is no longer a different
+kind of file, only a record whose `origin` says `"migrated"`.
 
 **This reversed on 2026-07-31, and the old rule is the opposite of the new one.**
 It used to read "do not edit `src/content/migrated/**` — fix

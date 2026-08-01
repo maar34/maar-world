@@ -172,21 +172,23 @@ export const pageSchema = z
     /**
      * The `outputPath` of the page THIS record translates.
      *
-     * A second way to say the same relation, and it exists for a structural
-     * reason rather than a stylistic one: `translationKey` has to be on BOTH
-     * halves of a pair, and for every page outside the Lab the English half is
-     * a MIGRATED record. `src/content/migrated/**` is wiped and rewritten by
-     * scripts/migrate-pages.mjs on every run, so a key hand-added there lasts
-     * until the next migration and no longer. Pairing the ten Lab articles was
-     * possible without this only because both halves are migrated and the
-     * migration could compute the key for both at once.
+     * A second way to say the same relation. It exists for a structural reason
+     * that has since expired, and is kept for a different one.
      *
-     * So an authored translation names its counterpart instead, and the
-     * relation lives entirely in the one file that publishes it — which is the
-     * property the authored seam was built for. Nothing in `migrated/` changes,
-     * and no migration has to run to publish a translation.
+     * THE ORIGINAL REASON: `translationKey` has to be on BOTH halves of a pair,
+     * and for every page outside the Lab the English half was a MIGRATED
+     * record — a directory `scripts/migrate-pages.mjs` wiped and rewrote on
+     * every run, so a key hand-added there lasted until the next migration and
+     * no longer. Pairing the ten Lab articles was possible without this only
+     * because both halves were migrated and the migration computed both keys at
+     * once. That script was deleted on 2026-07-31; nothing rewrites a record
+     * now, so a `translationKey` would survive on either half.
      *
-     * DIRECTIONAL, AND ONLY EVER SET ON THE AUTHORED SIDE. It names a page; it
+     * WHY IT STAYS: 61 records use it, and it is the better form regardless —
+     * the relation lives entirely in the one file that publishes it, so adding
+     * a translation touches exactly one file and its English half is untouched.
+     *
+     * DIRECTIONAL, AND ONLY EVER SET ON THE TRANSLATION SIDE. It names a page; it
      * is not a group name. `translationKey` remains the grouping form and the
      * two are resolved into one set by src/lib/translations.mjs, so nothing
      * downstream has to know which form a given pair used.

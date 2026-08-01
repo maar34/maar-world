@@ -330,10 +330,11 @@ const ARTICLE_COVER_FALLBACKS: Record<string, ArticleCover> = {
    * about a missing image in a way a borrowed illustration is not.
    *
    * These are the FIRST first-party image in each record's body, read out of
-   * `src/content/migrated/lab/**`. They live here rather than on the records
-   * because the records are generated and would lose the field on the next
-   * migration run; writing `cover:` from scripts/migrate-pages.mjs is the
-   * durable home for this and is a follow-up, not this unit.
+   * the `lab/` subtree under both languages. They live here because the records were
+   * generated when this was written and would have lost a `cover:` field on the
+   * next migration run. That reason is gone — scripts/migrate-pages.mjs was
+   * deleted and nothing rewrites a record now — so moving these onto the
+   * records is a live follow-up rather than a blocked one.
    *
    * FIVE PIECES — TEN RECORDS — CARRY NO IMAGE AT ALL and are deliberately
    * absent from this map, so they render the plate until the owner supplies
