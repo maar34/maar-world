@@ -351,9 +351,7 @@ export const STRUCTURED_ES = new Set([
   'lab/es/dadada',
   'es/collect/docs/ent-cards',
   'es/collect/docs/releases/skysounds',
-  'es/collect/cards',
   'es/collect/docs/mw',
-  'es/collect/documentation',
   'lab/es/helix-eac-montevideo-2025',
 ]);
 
@@ -493,7 +491,7 @@ export const DIVERGENT_PAIRS = new Set([
 export const DIVERGENT_PAIRS_CLOSED_AT = 7;
 
 /** The size `STRUCTURED_ES` may not exceed. It may only shrink. */
-export const STRUCTURED_ES_CLOSED_AT = 9;
+export const STRUCTURED_ES_CLOSED_AT = 7;
 
 /**
  * Which Spanish records carry structure they are not permitted to carry.
