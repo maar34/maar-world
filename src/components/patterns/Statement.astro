@@ -53,9 +53,25 @@ interface Props {
    */
   mark?: string;
   id?: string;
+  /**
+   * Whether the line centres itself.
+   *
+   * `start` is the default and the common case. `center` exists because a
+   * statement can sit in a band that is NOT itself centred — Collect's journey
+   * section is exactly that — where the old markup carried its own
+   * `collect__heading--center` modifier. Dropping that modifier in the swap to
+   * this component is what shunted "Start your journey" to the left, so the
+   * alignment is a prop now rather than something a call site has to remember
+   * to re-add via a class from another component's stylesheet.
+   *
+   * A statement inside an already-centred band (`.collect__band--center`) needs
+   * nothing: that band centres its own items, and passing `center` there would
+   * be a second answer to a question already settled.
+   */
+  align?: 'start' | 'center';
 }
 
-const { text, mark, id } = Astro.props;
+const { text, mark, id, align = 'start' } = Astro.props;
 
 /**
  * Split the line into what comes before the marked word, the word, and what
@@ -93,7 +109,7 @@ const parts = split(text, mark);
  * The `aria-hidden` on the echo is what keeps the line from being announced
  * with one of its words said twice.
  */}
-<h2 class="statement" id={id}>{
+<h2 class:list={['statement', align === 'center' && 'statement--center']} id={id}>{
   parts ? (
     <Fragment>{parts.before}<span class="mark mark--overprint">{parts.word}<span class="mark__echo" aria-hidden="true">{parts.word}</span></span>{parts.after}</Fragment>
   ) : text
@@ -110,8 +126,24 @@ const parts = split(text, mark);
    * lives beneath. The floor is a step above --t-h2-size (34px) so it still
    * reads as a statement rather than as a slightly odd heading.
    */
+  /**
+   * THE VERTICAL RHYTHM IS THE ONE AN h2 ALREADY HAD — do not reset it to 0.
+   *
+   * `prose.css` gives every `h2` `margin-block: var(--s-16) var(--s-4)` under
+   * the rule *"section rhythm — an h2 opens a section"*. A statement IS that
+   * h2, so it opens a section exactly the same way, and the first version of
+   * this component set `margin: 0` out of habit — a scoped `.statement` is
+   * (0,2,0) and quietly outranks `.prose h2` at (0,1,1). The result was two
+   * statements sitting hard against the block above them, with only the band's
+   * `gap` between, and the loss was more obvious here than it would be on a
+   * normal heading because the type is half as large again.
+   *
+   * Restated rather than inherited, deliberately: this component has to carry
+   * its own rhythm to be usable outside a `.prose` container, and it must not
+   * depend on which of two rules happens to win.
+   */
   .statement {
-    margin: 0;
+    margin-block: var(--s-16) var(--s-4);
     font-family: var(--t-display-face);
     font-weight: var(--t-display-weight);
     font-style: italic;
@@ -125,8 +157,28 @@ const parts = split(text, mark);
     text-wrap: balance;
   }
 
-  /* Centred statements centre their own measure too, or the line balances
-     inside a box that is still hard against the left edge. */
+  /**
+   * A statement that centres itself.
+   *
+   * `text-align` alone is not enough. The measure above caps the box at 22ch,
+   * and a capped box inside a flex column sits at the start of it — so the text
+   * would centre neatly inside a narrow box still pinned to the left, which is
+   * the bug wearing a different hat. `margin-inline: auto` centres the box; the
+   * text-align centres the line inside it.
+   */
+  .statement--center {
+    text-align: center;
+    margin-inline: auto;
+  }
+
+  /**
+   * A statement inside an already-centred band.
+   *
+   * `.collect__band--center` sets `align-items: center`, which shrink-wraps its
+   * items — so the 22ch cap would fight the band rather than help it, and the
+   * line would wrap early for no reason. The band is doing the centring; this
+   * only gets out of its way.
+   */
   :global(.collect__band--center) .statement {
     max-inline-size: none;
   }

@@ -332,7 +332,12 @@ const slides = COLLECT_JOURNEY_IMAGES.map((image, i) => ({
   <section class="prose collect__band" aria-labelledby="collect-journey">
     {/* Keeps its id: the section is labelled by this heading, so the element
         the `aria-labelledby` points at must stay put. */}
-    <Statement text={copy.journey.title} mark={copy.journey.mark} id="collect-journey" />
+    <Statement
+      text={copy.journey.title}
+      mark={copy.journey.mark}
+      id="collect-journey"
+      align="center"
+    />
     <Carousel id={carouselId} label={copy.journey.carouselLabel} slides={slides} />
   </section>
 
