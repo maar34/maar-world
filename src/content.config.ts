@@ -15,7 +15,7 @@ import { SCHEMAS } from './content/schemas.mjs';
  *
  * They cost three `[glob-loader] No files found` warnings on every build and
  * read to a newcomer as unfinished work. Removed, with the reasoning in
- * docs/adr/0001-one-pages-collection.md so it is not re-invented.
+ * .agents/decisions/0001-one-pages-collection.md so it is not re-invented.
  */
 
 /**
@@ -45,7 +45,7 @@ export const collections = {
    *                            REGENERATES IT NOW — scripts/migrate-pages.mjs was
    *                            deleted on 2026-07-31 because it had fallen behind
    *                            the content and its "regeneration" had become a
-   *                            revert. Hand-edit freely; see docs/AUTHORING.md.
+   *                            revert. Hand-edit freely; see .agents/skills/maar-content-authoring/SKILL.md.
    *   src/content/authored/**  written by a person. No script touches it, ever.
    *                            This is where a new Lab post goes.
    *

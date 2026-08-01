@@ -7,7 +7,7 @@ import { dirname, join, resolve } from 'node:path';
 import { execSync } from 'node:child_process';
 
 /**
- * LOCAL DEV RUNS ON https://local.maar.world:4321 — see docs/agent/OPERATING-RULES.md.
+ * LOCAL DEV RUNS ON https://local.maar.world:4321 — see docs/LOCAL-DEVELOPMENT.md.
  *
  * Development happens in worktree slots (`maar-world.worktrees/wt-N`), not in
  * the primary checkout. Two consequences are handled here:

@@ -128,7 +128,7 @@ export const HEADER_AREAS: readonly AreaName[] = ['collect'];
  * it was false on all 95 records and read by nothing, and it is gone. A nav
  * derived from content still needs a label and an order per entry, which is
  * exactly the data below — so deriving it would spread one reviewable list
- * across 95 files and gain nothing. See docs/adr/0001-one-pages-collection.md.
+ * across 95 files and gain nothing. See .agents/decisions/0001-one-pages-collection.md.
  */
 export const SECTIONS: Record<AreaName, { href: string; label: string; icon?: NavigationIconName }[]> = {
   maar: [

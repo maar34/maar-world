@@ -1,3 +1,9 @@
+---
+last-verified: 2026-08-01
+verified-against: moved from docs/agent/VISUAL-LANGUAGE.md; measured against the live design source
+status: active
+---
+
 # The visual language, measured out of `Maar World 4a`
 
 ## Why this file exists

@@ -48,9 +48,14 @@ lists skips separately so a green run is never mistaken for a complete one.
 
 ## Working on this repo
 
-Read `docs/agent/OPERATING-RULES.md` first, then `MIGRATION-LEDGER.md`, then `HANDOFF.md`.
+Read `AGENTS.md` for the invariants, then `.agents/AGENTS.md` for the workflow and the skill
+index, then `HANDOFF.md` for what was in flight. Query `MIGRATION-LEDGER.md` with
+`npm run ledger -- find <term>` rather than reading it.
 
-Decision records live in the parent directory as `ARCHITECTURE-REVIEW.md` and
-`ARCHITECTURE-REVIEW-ADDENDUM.md`; the addendum supersedes the review where they conflict.
-The visual source of truth is the Claude Design project, read live — never cached into this
-repo.
+Development happens in worktree slots on `https://local.maar.world:4321`, with `main` as the
+trunk — see `docs/LOCAL-DEVELOPMENT.md`.
+
+Decision records are in `.agents/decisions/`. The wider architecture review lives in the
+parent directory as `ARCHITECTURE-REVIEW.md` and `ARCHITECTURE-REVIEW-ADDENDUM.md`; the
+addendum supersedes the review where they conflict. The visual source of truth is the Claude
+Design project, read live — never cached into this repo.

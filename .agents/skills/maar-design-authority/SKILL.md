@@ -1,3 +1,9 @@
+---
+last-verified: 2026-08-01
+verified-against: moved from docs/agent/DESIGN-REFERENCES.md
+status: active
+---
+
 # Design references, and which one wins
 
 ## Order of authority
@@ -45,7 +51,7 @@ These are not matters of taste — the spec forbids them in as many words:
 > does not fill the line box) and two are 8px diagonal hatch patterns. Neither diffuses anything.
 > An agent that reads "the spec forbids gradients" and deletes them removes two of the seven
 > marks. Only the **radial** washes and the blur behind them are forbidden. See
-> `docs/agent/VISUAL-LANGUAGE.md`.
+> `skills/maar-visual-language/SKILL.md`.
 | `#ff3ec8`, `#8d8798`, `#d6d2cc`, `#141319`, `#a39ead`, `#1a1822` | every value must be *"one of the six approved colours, or ink at a fixed opacity, or one measured step off a surface"* |
 | `'Chivo'` in one stylesheet block | the four faces are Bodoni Moda, Archivo, Libre Franklin, DM Mono |
 

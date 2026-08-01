@@ -203,7 +203,7 @@ const ROMAN = /^(?=[ivxlcdm])m*(c[md]|d?c{0,3})(x[cl]|l?x{0,3})(i[xv]|v?i{0,3})$
  *
  * The stamp is 4a's fourth mark: meta text in a heavy border, tilted hard,
  * reading as a rubber stamp or a hand-numbered edition. 4a uses it for `i / xii`
- * and for a timecode; `docs/agent/VISUAL-LANGUAGE.md` asks for it on "the card
+ * and for a timecode; `.agents/skills/maar-visual-language/SKILL.md` asks for it on "the card
  * pages' suit/number line — `i / xii` is literally what those pages carry".
  *
  * THE NUMBER IS ALREADY IN THE TITLE. `card_title` is `Card IV`, so the edition

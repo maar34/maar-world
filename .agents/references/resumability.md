@@ -1,3 +1,9 @@
+---
+last-verified: 2026-08-01
+verified-against: moved from docs/agent/RESUMABILITY-DRILL.md; command list not re-run since MW-11
+status: partial
+---
+
 # Resumability drill
 
 MW-3 acceptance: *kill an agent mid-run; a fresh agent reading only the ledger, handoff and

@@ -1,3 +1,9 @@
+---
+last-verified: 2026-08-01
+verified-against: moved from docs/AUTHORING.md (MW-15 follow-up)
+status: active
+---
+
 # Writing a page
 
 There are two page sources, and the difference between them is the whole point.

@@ -84,7 +84,7 @@ Still open and needing a human:
 
 ### Type marks — where they stand
 
-`docs/agent/VISUAL-LANGUAGE.md` names seven. **All seven are built.**
+`.agents/skills/maar-visual-language/SKILL.md` names seven. **All seven are built.**
 
 | # | mark | state |
 |---|---|---|
@@ -127,11 +127,11 @@ odd, open it — the explanation is there.
 
 | Question | File |
 |---|---|
-| How do I publish a page? | `docs/AUTHORING.md` |
-| What is a type mark? | `docs/agent/VISUAL-LANGUAGE.md` |
-| Which design reference wins? | `docs/agent/DESIGN-REFERENCES.md` |
-| What are the rules? | `docs/agent/OPERATING-RULES.md` |
-| Why two collections? | `docs/adr/0001-one-pages-collection.md` |
+| How do I publish a page? | `.agents/skills/maar-content-authoring/SKILL.md` |
+| What is a type mark? | `.agents/skills/maar-visual-language/SKILL.md` |
+| Which design reference wins? | `.agents/skills/maar-design-authority/SKILL.md` |
+| What are the rules? | `.agents/AGENTS.md` |
+| Why two collections? | `.agents/decisions/0001-one-pages-collection.md` |
 
 ## Repo shape
 

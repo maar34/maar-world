@@ -320,7 +320,7 @@ if (isEntryPoint) switch (cmd) {
      *
      * An entry's job is: what changed, the number that moved, and where to
      * look. The REASONING belongs in a comment beside the code it explains,
-     * where it costs nothing until someone opens that file, or in docs/adr/
+     * where it costs nothing until someone opens that file, or in .agents/decisions/
      * when it is a decision rather than an explanation.
      */
     const MAX_DETAIL = 500;
@@ -328,7 +328,7 @@ if (isEntryPoint) switch (cmd) {
       console.error(
         `ledger append failed: detail is ${text.length} chars, limit ${MAX_DETAIL}.\n\n` +
           'Say what changed, the number that moved, and which file to open.\n' +
-          'Put the reasoning in a comment next to the code, or an ADR in docs/adr/.\n' +
+          'Put the reasoning in a comment next to the code, or an ADR in .agents/decisions/.\n' +
           'The ledger is append-only and every future session reads it.\n\n' +
           `First ${MAX_DETAIL} chars of what you tried to write:\n${text.slice(0, MAX_DETAIL)}…`,
       );

@@ -100,7 +100,7 @@ const cases = [
     false,
   ],
   // The `genesis`, `lab` and `docs` collections are gone — see
-  // docs/adr/0001-one-pages-collection.md. A Lab article is a `pages` record
+  // .agents/decisions/0001-one-pages-collection.md. A Lab article is a `pages` record
   // with `kind: 'lab'`, and these two cases assert that shape instead.
   [
     'rejects a page without a language',
