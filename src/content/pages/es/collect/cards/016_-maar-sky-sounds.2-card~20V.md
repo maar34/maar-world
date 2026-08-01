@@ -23,7 +23,7 @@ snip_player: "https://play.maar.world/?g=333&s=1&c=5"
 
   QUÉ NO SE TOCA, Y POR QUÉ. `suit_title` y `card_title` quedan idénticos: la
   ruta los usa para unir esta carta con su registro NFC y encontrar el trackId
-  del Orbiter — una carta, un id, en un solo lugar — así que traducirlos
+  del orbitador — una carta, un id, en un solo lugar — así que traducirlos
   rompería el reproductor. `title` e `indexLabel` también quedan: son la
   designación de catálogo de una edición, como un número de obra, y es la misma
   en cualquier idioma.
@@ -32,4 +32,4 @@ snip_player: "https://play.maar.world/?g=333&s=1&c=5"
   línea del cuerpo.
 -->
 
-<p class="card-unlock">Coleccioná esta carta para desbloquear el acceso al<br /> Orbiter y descargar los archivos de audio en alta calidad.</p>
+<p class="card-unlock">Coleccioná esta carta para desbloquear el acceso al<br /> orbitador y descargar los archivos de audio en alta calidad.</p>

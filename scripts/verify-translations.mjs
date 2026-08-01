@@ -387,6 +387,39 @@ export const SHARED_CHROME_WORDS = new Set([
 ]);
 
 /**
+ * "Orbiters" IS A NAME. "un orbitador" IS A THING. BOTH ARE CORRECT SPANISH.
+ *
+ * The owner, 2026-08-01, after reading a Spanish page: *"we need to change in
+ * Spanish when we say 'orbiter' — 'Orbiter' is in English, we need to say it in
+ * Spanish."* And, in the same breath, that the product keeps its name.
+ *
+ * So the distinction is grammatical, not editorial:
+ *
+ *   NAME     "Orbiters", "Orbiters Orchestra", "Maar Orbiter",
+ *            orbiter.plantasia.space, /orbiters — untouched, the way
+ *            "Maar World" is. It is on SHARED_CHROME_WORDS for that reason.
+ *   THING    "tocar un orbitador", "los orbitadores tienen 7 modos",
+ *            "el acceso al orbitador" — a common noun, so it takes the
+ *            language of the sentence it sits in.
+ *
+ * This matches on an ARTICLE immediately before the word, which is exactly what
+ * separates the two: a name does not take one. "el Maar Orbiter" does not match
+ * — the article belongs to "Maar Orbiter", and there is a word in between.
+ *
+ * "Orbiters Orchestra" IS THE ONE NAME THAT TAKES AN ARTICLE — "el afiche de la
+ * Orbiters Orchestra" — because the article belongs to *orquesta*, a feminine
+ * Spanish noun the name stands in for. The check found that itself on its first
+ * run, on `lab/es/ip-orchestra-design`, which is the only reason it is written
+ * down here rather than discovered again later.
+ *
+ * It is here rather than in a style guide because the repo's documented failure
+ * mode is a rule held between files by hand with nothing asserting it, and this
+ * rule spans 39 files.
+ */
+export const SPANISH_ORBITER_AS_NOUN =
+  /\b(?:el|la|los|las|un|una|unos|unas|del|al)\s+Orbiters?\b(?!\s+Orchestra)/g;
+
+/**
  * The only pairs whose PICTURES may legitimately differ, by English outputPath.
  *
  * A photograph is the same photograph in Spanish, so two halves showing
@@ -1090,6 +1123,43 @@ export async function checkTranslations(report) {
       'a Spanish page names its navigation in Spanish',
       `${localisedChrome} Spanish page(s) — every navigation label translated, ` +
         `${SHARED_CHROME_WORDS.size} words shared by both languages on purpose`,
+    );
+  }
+
+  /**
+   * The English common noun, on a Spanish page. See SPANISH_ORBITER_AS_NOUN.
+   *
+   * Zero, and it may never be anything else — there is no permitted-list to add
+   * a path to, deliberately. A page that genuinely needs the English word is
+   * naming the product, and a name takes no article, so it does not match.
+   */
+  const anglicised = records
+    .filter((r) => r.lang === 'es')
+    .flatMap((r) => {
+      /* COMMENTS ARE CUT FIRST, exactly as `structuralCount` cuts them and for
+         the same reason: a translator's note is addressed to whoever edits the
+         file, never to a reader, and this rule is about what a Spanish reader
+         reads. Without this, a note explaining the rule — "no digas el
+         Orbiter, decí el orbitador" — would fail the check it documents. */
+      const body = String(r.body ?? '')
+        .replace(/<!--[\s\S]*?-->/g, '')
+        .replace(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g, '');
+      const hits = body.match(SPANISH_ORBITER_AS_NOUN) ?? [];
+      return hits.map((h) => `${r.file}: "${h}"`);
+    });
+
+  if (anglicised.length) {
+    report.fail(
+      'a Spanish page says orbitador, not Orbiter',
+      `${anglicised.length} English common-noun use(s): ${anglicised.slice(0, 5).join('; ')} — ` +
+        'the PRODUCT is called Orbiters and keeps its name; one of them is "un orbitador". ' +
+        'A name takes no article, so if this fired the word is being used as a thing',
+    );
+  } else {
+    report.pass(
+      'a Spanish page says orbitador, not Orbiter',
+      `${records.filter((r) => r.lang === 'es').length} Spanish records — ` +
+        'the name "Orbiters" is kept, the common noun is Spanish',
     );
   }
 

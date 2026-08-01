@@ -1,6 +1,6 @@
 # Handoff
 
-**State:** `npm run verify` = **95 passed, 0 failed, 0 skipped**.
+**State:** `npm run verify` = **96 passed, 0 failed, 0 skipped**.
 
 **Last shipped:** MW-19 IS DONE. All sixteen pairs converted — the last nine in
 this session, six commits, on `wt/1-mw-19-separate-structure-from-copy`.
@@ -99,6 +99,34 @@ language, plus `GATE`) and `src/config/articles.ts`.
 caller was `/radio`, which was deleted rather than converted, so an entry would
 replace no markup — adding one would be exactly the speculative
 pre-population that file forbids. The comment there says so now.
+
+### "ORBITERS" IS A NAME. "UN ORBITADOR" IS A THING.
+
+The owner's call, 2026-08-01, and the split is grammatical rather than
+editorial:
+
+| | stays | becomes |
+|---|---|---|
+| the product, the section, the workshop | `Orbiters`, `Orbiters Orchestra`, `Maar Orbiter` | — |
+| the header link, the URLs, the domain | `labelEs: 'Orbiters'`, `/orbiters`, `orbiter.plantasia.space` | — |
+| the word used as a common noun | — | `un orbitador`, `los orbitadores` |
+
+39 Spanish files changed: the two Orbiters docs, `ent-cards`, `tutorials`, the
+Collect landing's button, and all 34 card records ("el acceso al orbitador").
+
+**A check enforces it** — *a Spanish page says orbitador, not Orbiter*. It
+matches an ARTICLE immediately before the word, which is exactly what separates
+a name from a noun: a name takes no article, so `Maar Orbiter` cannot fire.
+There is no permitted-list to add a path to, deliberately.
+
+Two things that check taught us on its first run, both now written into it:
+
+- **`Orbiters Orchestra` is the one name that DOES take an article** — "el
+  afiche de la Orbiters Orchestra" — because the article belongs to *orquesta*.
+  It is excluded by a lookahead.
+- **It must cut comments first**, exactly as `structuralCount` does. Without
+  that, a translator's note explaining the rule fails the check that enforces
+  it. Thirty-nine notes fired before this was added.
 
 ### /radio IS GONE
 
