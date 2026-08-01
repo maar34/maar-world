@@ -3,18 +3,38 @@
 **State:** `npm run verify` = **84 passed, 0 failed, 1 skipped**. The one skip is
 `verify:cards`' host-canary assertion, which needs MW-10 upstream.
 
-**Last shipped:** MW-13, MW-14 and MW-16, then MW-11's Spanish filing rules — see
-the `MW-13`/`MW-14`/`MW-16` and `i18n/spanish-filing-closed` lines at the end of
-the ledger.
+**Last shipped:** MW-13, MW-14 and MW-16, then MW-11's i18n structure work — the
+`i18n/spanish-filing-closed`, `i18n/origin-field-not-directory` and
+`i18n/content-tree-by-language` lines at the end of the ledger.
 
-**ALL 72 SPANISH RECORDS ARE NOW ASSERTED.** 61 sit at the mirror
-(`authored/es/<path>`); the other 11 are named individually in `LEGACY_ES` in
-`scripts/verify-translations.mjs` — the 10 Lab pages filed `<area>/es/<slug>`,
-plus `/esp-feedback`, which has no other-language half and must not be given one.
-**That list is closed: it may shrink, never grow.** A new Spanish page goes at
-`/es/<path>`; adding a line to `LEGACY_ES` to turn a check green is the bypass
-the list exists to make visible. Rule for authors:
-`.agents/skills/maar-content-authoring/SKILL.md`.
+**`src/content/` IS ORGANISED BY LANGUAGE NOW. `migrated/` AND `authored/` ARE GONE.**
+
+```
+src/content/pages/en/**   85 English      src/content/pages/es/**   72 Spanish
+```
+
+One rule, asserted over all 157 records with no exceptions: **a record sits at
+`pages/<lang>/<its outputPath>`**, language segment taken out of the middle of
+the path. A page and its translation sit at the same path under the two language
+roots. `verify:translations` fails if a record is anywhere else.
+
+Provenance moved into a required **`origin: migrated | authored`** field, because
+the folder was carrying a security rule — `verify-routes.mjs` read
+`authored/**` by directory to decide which URLs were allowed to exist. It reads
+the field now. **An `authored` record authorises its own URL; a `migrated` one
+must appear in the frozen policy.** Never set `origin: "authored"` to make
+`verify:routes` pass.
+
+**No URL moved and none may.** All 426 built files were byte-identical across the
+reorganisation. `outputPath` is authoritative; nothing in `src/` reads a file's
+path. `LEGACY_ES` in `scripts/verify-translations.mjs` is now purely **eleven
+frozen URLs** — the ten `/lab/es/<slug>` pages and `/esp-feedback`, which has no
+other-language half and must not be given one. Their *files* are ordinary; only
+their URLs are frozen. **That list is closed: it may shrink, never grow** —
+adding a line to turn a check green is the bypass it exists to make visible.
+
+Authors: `.agents/skills/maar-content-authoring/SKILL.md`.
+Reasoning: `.agents/decisions/0004-content-tree-by-language.md`.
 
 **THERE IS ONE SURFACE NOW.** `layouts/shell-paper`, the `[data-surface='paper']`
 token block, the `surface` frontmatter field and the `paper` entry in
