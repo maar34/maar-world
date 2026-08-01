@@ -76,10 +76,26 @@ and still serving, now at `maar34.github.io/maar.world-site`. Putting `maar.worl
 *its* Pages settings (and removing it here) restores the old site. Leave that repository alone
 until MW-12 says otherwise.
 
-Still open from MW-10: `collect.maar.world` and `tree.maar.world` continue to serve their own
-legacy repositories rather than redirecting to `/collect` and `/tree`. GitHub Pages has no
-`_redirects` and no header control, so those 301s need either a redirect-capable host or a
-per-subdomain redirect stub.
+`collect.maar.world` and `tree.maar.world` now redirect here, served by two redirect-only
+repositories — `maar34/collect.maar.world-redirect` and `maar34/tree.maar.world-redirect`.
+Each holds nothing but one small HTML file per legacy address plus a `404.html` catch-all,
+built by `npm run shim` from `routes/redirects.map`. Pages cannot emit a 301, so each file is
+a 200 carrying an instant meta refresh, which search engines treat as permanent.
+
+The original websites are archived read-only, with their full history, at
+`maar34/collect.maar.world` and `maar34/tree.maar.world`. Nothing rebuilds from them.
+
+Rollback for every step of the move is in `docs/ROLLBACK.md`. No DNS record was ever changed,
+so all of it reverses through Pages settings alone.
+
+| Command | What it does |
+|---|---|
+| `npm run shim` | build the redirect sites into `dist-shim/`, then verify them |
+| `npm run shim:verify` | resolve all 127 lines of `redirects.map` the way Pages would, and compare targets |
+
+The shim is deployed by copying `dist-shim/<host>/` into the matching `-redirect` repository.
+It is deliberately disposable: if those subdomains ever move to a redirect-capable host, real
+301s replace it and both repositories are deleted.
 
 ### The host canary
 
