@@ -12,7 +12,9 @@ indexOrder: "04-orbiters/01-how-to-use.md"
 indexLabel: "Cómo se usa"
 ---
 
-<!--
+import Mark from '../../../../../../components/patterns/Mark.astro';
+
+{/*
   La traducción de src/content/pages/en/collect/docs/orbiters/how-to-use.md.
 
   DOS COSAS QUE HAY QUE MIRAR CON EL OWNER, y por eso quedan marcadas acá en vez
@@ -29,9 +31,9 @@ indexLabel: "Cómo se usa"
   La cita de Orosz et al. se deja EN INGLÉS y con su referencia bibliográfica
   intacta: es una cita textual de un paper publicado, y traducir una cita entre
   comillas la convierte en otra cosa.
--->
+*/}
 
-# Cómo se <span class="mark mark--cut mark--tilt-3 mark--tear-1">usa</span>
+# Cómo se <Mark tilt={3} tear={1}>usa</Mark>
 
 ## Un planeta es un vinilo + una dimensión
 
@@ -73,6 +75,6 @@ Los tres modos de órbita están hechos con las mismas medidas en distintas esca
 
 Los botones de equilibrio XYZ funcionan como botones de información, porque no se puede sobrescribir el control que los datos del exoplaneta ejercen sobre los parámetros. Al apretarlos aparece una ayuda superpuesta. 
 
-> -- <cite>Its binary stars have an orbital period of ∼7.5 days, the shortest known in any CBP system. The innermost planet (Kepler-47 b) has an orbital period of ∼49.5 days, and is the smallest of the known CBPs (∼3R⊕). The Uranus-size outer planet (Kepler-47 c) has a ∼303 day orbit, placing it well within the habitable zone </cite> -- < 
+> -- <cite>Its binary stars have an orbital period of ∼7.5 days, the shortest known in any CBP system. The innermost planet (Kepler-47 b) has an orbital period of ∼49.5 days, and is the smallest of the known CBPs (∼3R⊕). The Uranus-size outer planet (Kepler-47 c) has a ∼303 day orbit, placing it well within the habitable zone </cite> -- \< 
 
 Jerome A. Orosz et al., "Discovery of a Third Transiting Planet in the Kepler-47 Circumbinary System" (2019, AJ 157 174).

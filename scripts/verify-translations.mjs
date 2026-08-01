@@ -365,21 +365,10 @@ export const STRUCTURED_ES = new Set([
   'es/collect/docs/orbiters/development',
   'es/collect/documentation',
   'lab/es/helix-eac-montevideo-2025',
-  'es/collect/decks',
-  'es/collect/docs/ent-cards/sustainability',
-  'es/collect/docs/mw/terms',
-  'es/collect/docs/orbiters/how-to-use',
-  'es/collect/privacy',
-  'es/collect/suits',
-  'esp-feedback',
-  'lab/es/cultura-compartida',
-  'lab/es/musica-retorno-al-juego',
-  'es/lab',
-  'es/privacy',
 ]);
 
 /** The size `STRUCTURED_ES` may not exceed. It may only shrink. */
-export const STRUCTURED_ES_CLOSED_AT = 30;
+export const STRUCTURED_ES_CLOSED_AT = 19;
 
 /**
  * Which Spanish records carry structure they are not permitted to carry.
