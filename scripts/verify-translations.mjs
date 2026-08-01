@@ -367,6 +367,82 @@ export const STRUCTURED_ES = new Set([
   'lab/es/helix-eac-montevideo-2025',
 ]);
 
+/**
+ * A page's shape, with every word removed: tag names and first classes, in order.
+ *
+ * Pure, and exported, for the reason `spanishFiling` and `spanishStructure` are:
+ * an assertion nobody can run on a fixture is an assertion nobody has watched
+ * fail. `scripts/selftest.mjs` drives it in both directions.
+ *
+ * ── WHAT IT DELIBERATELY IGNORES ─────────────────────────────────────────────
+ *
+ * THE CHROME. Only the rendered body is measured. The header, the language
+ * switcher and the footer are drawn by the layout from the record's own `lang`,
+ * so they differ between two halves BY DESIGN, and a check that compared them
+ * would fail on the one thing that is supposed to be per-language.
+ *
+ * EVERY ATTRIBUTE BUT THE FIRST CLASS. Ids are per-language on purpose — a
+ * carousel's slide anchors carry an `es-` prefix so the two halves cannot
+ * collide — and `alt`, `title` and `aria-label` are copy. Comparing them would
+ * report a correct translation as a defect. Tag plus first class is enough to
+ * catch the thing that matters: a band, a plate or a list that exists on one
+ * half and not the other.
+ */
+export const elementSkeleton = (html) => {
+  const m = /<div class="prose"[\s\S]*?(?=<\/main>|<footer)/.exec(html);
+  return (
+    (m ? m[0] : html)
+      .match(/<([a-z][\w-]*)\b[^>]*>/g)
+      ?.map((t) => {
+        const tag = /^<([a-z][\w-]*)/.exec(t)[1];
+        const cls = /class="([^"]*)"/.exec(t);
+        return cls ? `${tag}.${cls[1].split(/\s+/)[0]}` : tag;
+      })
+      .join(' ') ?? ''
+  );
+};
+
+/**
+ * THE PAIRS THAT STILL RENDER AS TWO WEBSITES INSTEAD OF ONE.
+ *
+ * The owner's sentence, 2026-08-01, and it is the clearest statement of what
+ * MW-19 is for:
+ *
+ *   "The same page. It's one website using two languages. It's not two websites
+ *    with two different languages. It's one."
+ *
+ * `STRUCTURED_ES` asserts that a Spanish record carries no structural markup —
+ * a rule about the SOURCE. This asserts the property that rule exists to
+ * produce, about the OUTPUT: a page and its translation render the same
+ * elements in the same order. It is the stronger of the two, because a pair can
+ * satisfy the first and still diverge — `collect/docs/orbiters/how-to-use` has
+ * no markup in either half and its two bodies still disagree, one writing a list
+ * item where the other writes a paragraph.
+ *
+ * Keyed by the ENGLISH outputPath, because English is the source of truth.
+ *
+ * CLOSED: it may shrink, never grow. A pair leaves this list by having its
+ * structure moved into a component both halves render — never by editing one
+ * body until it matches the other, which is two websites kept in step by hand
+ * and is exactly the labour this issue removes. A line that no longer describes
+ * a real divergence is reported too, so the list cannot rot into a record of
+ * pages that USED to disagree.
+ */
+export const DIVERGENT_PAIRS = new Set([
+  'collect/docs/mw',
+  'collect/docs/orbiters/how-to-use',
+  'collect/docs/releases/skysounds',
+  'lab/en/dadada',
+  'lab/en/ip-2',
+  'lab/en/ip-orchestra-design',
+  'lab/en/orbits-and-bodies',
+  'music',
+  'radio',
+]);
+
+/** The size `DIVERGENT_PAIRS` may not exceed. It may only shrink. */
+export const DIVERGENT_PAIRS_CLOSED_AT = 9;
+
 /** The size `STRUCTURED_ES` may not exceed. It may only shrink. */
 export const STRUCTURED_ES_CLOSED_AT = 19;
 
@@ -816,6 +892,73 @@ export async function checkTranslations(report) {
     report.pass(
       'a translation is not its original',
       `${pairs.length} pairs compared on rendered body text`,
+    );
+  }
+
+  // ── ONE WEBSITE IN TWO LANGUAGES ──────────────────────────────────────────
+
+  const structureOf = (outputPath) => {
+    const file = resolveRoute(urlOf(outputPath), set);
+    return file ? elementSkeleton(readDistFile(file)) : null;
+  };
+
+  const divergent = [];
+  let identical = 0;
+  for (const { original, translation } of pairs) {
+    const a = structureOf(original.outputPath);
+    const b = structureOf(translation.outputPath);
+    if (a === null || b === null) continue;
+    if (a === b) {
+      identical += 1;
+      continue;
+    }
+    const A = a.split(' ');
+    const B = b.split(' ');
+    let i = 0;
+    while (i < A.length && i < B.length && A[i] === B[i]) i += 1;
+    divergent.push(
+      `${original.outputPath} (${A.length} elements) vs ${translation.outputPath} (${B.length}) — ` +
+        `first difference at element ${i + 1}: ${A[i] ?? '(end)'} / ${B[i] ?? '(end)'}`,
+    );
+  }
+
+  const unexpected = divergent.filter(
+    (d) => !DIVERGENT_PAIRS.has(d.slice(0, d.indexOf(' ('))),
+  );
+  const healed = [...DIVERGENT_PAIRS].filter(
+    (p) => !divergent.some((d) => d.startsWith(`${p} (`)),
+  );
+
+  if (unexpected.length) {
+    report.fail(
+      'a page and its translation render the same structure',
+      `${unexpected.length} pair(s) diverge: ${unexpected.slice(0, 4).join('; ')} — ` +
+        'this is one website in two languages, not two websites; move the structure into a ' +
+        'component both halves render (MW-19) rather than editing one body to match the other',
+    );
+  } else if (healed.length) {
+    report.fail(
+      'a page and its translation render the same structure',
+      `${healed.length} pair(s) listed as divergent no longer are: ${healed.join(', ')} — ` +
+        'delete them from DIVERGENT_PAIRS in the same commit that converged them',
+    );
+  } else {
+    report.pass(
+      'a page and its translation render the same structure',
+      `${identical} of ${identical + divergent.length} pairs render an identical element ` +
+        `skeleton; ${divergent.length} still awaiting MW-19 step 2`,
+    );
+  }
+
+  if (DIVERGENT_PAIRS.size > DIVERGENT_PAIRS_CLOSED_AT) {
+    report.fail(
+      'the divergent-pair list is closed',
+      `${DIVERGENT_PAIRS.size} listed, ${DIVERGENT_PAIRS_CLOSED_AT} permitted — it may shrink, never grow`,
+    );
+  } else {
+    report.pass(
+      'the divergent-pair list is closed',
+      `${DIVERGENT_PAIRS.size} of a permitted ${DIVERGENT_PAIRS_CLOSED_AT} — it may shrink, never grow`,
     );
   }
 

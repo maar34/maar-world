@@ -1334,6 +1334,37 @@ check('a listed page that has been converted must lose its line', () => {
   return { ok, detail: ok ? 'the list cannot rot into pages that used to be a problem' : `got ${JSON.stringify(s.stale)}` };
 });
 
+/**
+ * ── One website in two languages — MW-19 ─────────────────────────────────────
+ *
+ * The owner's words, 2026-08-01: "It's one website using two languages. It's not
+ * two websites with two different languages." `elementSkeleton` is how that
+ * sentence is checked — two halves must render the same elements in the same
+ * order — so what it IGNORES matters as much as what it catches, and both
+ * directions are driven here.
+ */
+const SKEL_EN = '<div class="prose"><h1 id="a">Landings</h1><p>words</p><div class="hero hero--center"><p>more</p></div></div><footer>';
+const SKEL_ES = '<div class="prose"><h1 id="b">Aterrizajes</h1><p>palabras</p><div class="hero hero--center"><p>más</p></div></div><footer>';
+
+check('two halves with the same shape and different words are one page', () => {
+  const ok = VT.elementSkeleton(SKEL_EN) === VT.elementSkeleton(SKEL_ES);
+  return { ok, detail: ok ? 'translated text, per-language ids and attributes are not a divergence' : `${VT.elementSkeleton(SKEL_EN)} vs ${VT.elementSkeleton(SKEL_ES)}` };
+});
+
+check('a band present on one half and not the other is a divergence', () => {
+  const dropped = SKEL_ES.replace('<div class="hero hero--center"><p>más</p></div>', '<p>más</p>');
+  const ok = VT.elementSkeleton(SKEL_EN) !== VT.elementSkeleton(dropped);
+  return { ok, detail: ok ? 'a missing plate is exactly what this catches' : 'a dropped band went unnoticed' };
+});
+
+check('the chrome outside the body is not compared', () => {
+  // The header and the switcher are drawn per language BY DESIGN. A check that
+  // compared them would fail on the one thing that is supposed to differ.
+  const withChrome = '<header><a href="/es/landings">es</a></header>' + SKEL_EN;
+  const ok = VT.elementSkeleton(withChrome) === VT.elementSkeleton(SKEL_EN);
+  return { ok, detail: ok ? 'only the rendered body is measured' : 'chrome leaked into the comparison' };
+});
+
 check('growing the structural-markup list does not go unremarked', () => {
   const grown = VT.spanishStructure([esMarkup], new Set(['es/radio', 'es/nuevo']), 1);
   const closed = VT.spanishStructure([esMarkup], PERMITTED, 1);
