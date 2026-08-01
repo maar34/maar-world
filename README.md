@@ -66,23 +66,35 @@ Two settings live outside this repo and are set once, in **Settings → Pages**:
 URLs byte-stable. On the default `maar34.github.io/maar-world/` path those paths all resolve
 one level too high, so a custom domain is not cosmetic here, it is what makes the deploy work.
 
-`maar.world` itself is still served by the legacy `maar.world-site` repository, and GitHub
-allows one repository per domain. Moving it is the cutover — **MW-10/MW-12**, owner-only,
-DNS-touching. Before it, this deploys to a staging subdomain; after it, the domain simply
-moves to this repository's Pages settings and nothing in the build changes.
+**`maar.world` is served by this repository** since 2026-08-01. GitHub allows one repository
+per domain, so the cutover was a domain *move*: released from `maar34/maar.world-site`,
+claimed here. No DNS record changed — the apex A records and the `www` CNAME already pointed
+at GitHub Pages and still do, which is also what makes rollback cheap.
 
-First deploy on any new host, prove the `.html` fallback the card URLs depend on. It is host
-behaviour, so no build can assert it — which is why `verify:cards` reports one SKIP until a
-canary exists:
+**Rollback is a settings change, not a rebuild.** `maar34/maar.world-site` is still deployed
+and still serving, now at `maar34.github.io/maar.world-site`. Putting `maar.world` back in
+*its* Pages settings (and removing it here) restores the old site. Leave that repository alone
+until MW-12 says otherwise.
+
+Still open from MW-10: `collect.maar.world` and `tree.maar.world` continue to serve their own
+legacy repositories rather than redirecting to `/collect` and `/tree`. GitHub Pages has no
+`_redirects` and no header control, so those 301s need either a redirect-capable host or a
+per-subdomain redirect stub.
+
+### The host canary
+
+`build.format: 'file'` emits only `CODE.html`. The extensionless `/CODE` is the **host's**
+`.html` fallback, so no build can assert it — `verify:cards` reports one SKIP until a canary
+records that the fallback was seen on the real host:
 
 ```sh
-curl -sSI https://<host>/EBT5599 | head -1      # 200, not 301, not 404
-curl -sSI https://<host>/EBT5599.html | head -1 # 200
+curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' https://<host>/EBT5599      # 200, no redirect
+curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' https://<host>/EBT5599.html # 200, no redirect
 ```
 
-Both 200 and neither redirected, then record it in `verify/host-canary.json` —
-`{ "extensionlessFallback": true, "host": "<host>", "verifiedAt": "<date>" }` — and that skip
-turns into a pass. A `false` there fails the build, which is the point: 35 physical cards.
+`verify/host-canary.json` holds that result. It says `true` for `maar.world`, verified across
+all 70 card URLs. A `false` there **fails** the build, which is the point: 35 physical cards.
+Re-run it and update the file on any host change.
 
 ## Content
 

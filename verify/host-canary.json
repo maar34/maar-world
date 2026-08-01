@@ -1,0 +1,15 @@
+{
+  "note": "MW-10 step 1. `build.format: 'file'` emits only CODE.html; the extensionless /CODE is the HOST's .html fallback, so no build can assert it. This file records that the fallback was observed on the real host. Re-run the checks below and update this file whenever the host changes — a `false` here fails the build, which is the point: 35 physical cards.",
+  "extensionlessFallback": true,
+  "host": "maar.world",
+  "hostProvider": "GitHub Pages (Actions source, maar34/maar-world)",
+  "verifiedAt": "2026-08-01",
+  "method": "curl -sS -o /dev/null -w '%{http_code} %{redirect_url}' https://maar.world/<CODE>",
+  "observed": {
+    "cardUrls": "70/70 returned 200 directly — both /CODE and /CODE.html, no redirect on any of them",
+    "spaceAndTrailingSpaceUrl": "/route-proof/032_-maar-sky-sounds.3-card%20X%20.html served 200",
+    "pdfContentType": "all 4 PDFs under /img/pdf/ served as application/pdf",
+    "httpToHttps": "301",
+    "www": "301 to the apex"
+  }
+}
