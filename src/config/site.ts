@@ -171,10 +171,24 @@ export const SECTIONS: Record<
  * Home's two intentional next steps. The labels and destinations are data, but
  * their visual treatment comes from `ui/action` so this pair can be reused or
  * reconfigured without a page-family CSS exception.
+ *
+ * The icons are not decoration and they are not chosen per button: they are the
+ * same symbols the header uses for the same two destinations. An action reading
+ * "collect cards" takes `category` because that is what collect is in `AREAS`,
+ * and "Enter the lab" takes `science` because that is what `/lab` is in
+ * `SECTIONS`. Changing one of those entries and not the other is the drift this
+ * is written to make visible — a home action and its nav entry pointing at one
+ * place should never wear two different symbols.
  */
 export const HOME_ACTIONS = [
-  { href: '/collect/cards', label: 'collect cards', labelEs: 'coleccionar cartas', variant: 'primary' },
-  { href: '/lab', label: 'Enter the lab', labelEs: 'entrá al lab', variant: 'secondary' },
+  {
+    href: '/collect/cards',
+    label: 'collect cards',
+    labelEs: 'coleccionar cartas',
+    variant: 'primary',
+    icon: 'category',
+  },
+  { href: '/lab', label: 'Enter the lab', labelEs: 'entrá al lab', variant: 'secondary', icon: 'science' },
 ] as const;
 
 /**

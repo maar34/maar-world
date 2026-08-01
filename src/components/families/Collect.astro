@@ -83,9 +83,17 @@
  *                     no single legacy spelling to preserve when the two halves
  *                     disagree, so they are `ui/Action` — the site's own
  *                     component, whose whole purpose is that a page family does
- *                     not spell button classes for itself. THE SPANISH ICONS
- *                     COME OFF. If they should come back they now come back
- *                     once, for both languages, which is the point.
+ *                     not spell button classes for itself. The Spanish icons
+ *                     came off, on the condition that if they came back they
+ *                     came back once, for both languages.
+ *
+ *                     THEY CAME BACK, and on that condition: `ui/Action` takes
+ *                     an `icon`, and it is set below on the call rather than in
+ *                     either record, so `en` and `es` cannot drift apart again.
+ *                     They are not the Spanish half's SVGs restored — they are
+ *                     the site's own symbols for these destinations, `category`
+ *                     for collect and `satellite_alt` for an Orbiter, the same
+ *                     ones the header uses.
  *   the opening line  the Spanish body repeated the record's own `description`
  *                     as a paragraph under the H1. Both records pass that
  *                     sentence to the collage as `statement`, so `/es/collect`
@@ -274,7 +282,12 @@ const slides = COLLECT_JOURNEY_IMAGES.map((image, i) => ({
 
     <h2 class="collect__heading">{copy.pitch.title}</h2>
     <p class="collect__lede">{copy.pitch.body}</p>
-    <Action href={COLLECT_STORE_URL} label={copy.pitch.cta} variant="collect" />
+    {/* `category` is collect's own symbol in `AREAS` — the same one the header
+        wears on this area and the home page wears on "collect cards". The icon
+        is named here rather than in the record because it belongs to the
+        destination, not to the sentence: `en` says "Collect" and `es` says
+        "Coleccionar", and both are the same action. */}
+    <Action href={COLLECT_STORE_URL} label={copy.pitch.cta} variant="collect" icon="category" />
   </section>
 
   {/* A picture and nothing else. In the migrated body this was a background
@@ -284,7 +297,9 @@ const slides = COLLECT_JOURNEY_IMAGES.map((image, i) => ({
   <img class="collect__banner" src={COLLECT_BAND_IMAGE} alt="" />
 
   <section class="prose collect__band collect__band--center" aria-label={copy.orbiters.label}>
-    <Action href={orbitersHref} label={copy.orbiters.label} variant="secondary" />
+    {/* The link asks what an Orbiter is, so it wears what an Orbiter is: the
+        `satellite_alt` the header already gives `/orbiters` in `SECTIONS`. */}
+    <Action href={orbitersHref} label={copy.orbiters.label} variant="secondary" icon="satellite_alt" />
   </section>
 
   <section class="prose collect__band" aria-labelledby="collect-journey">

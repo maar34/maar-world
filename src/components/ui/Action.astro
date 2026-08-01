@@ -5,16 +5,44 @@
  * `button.css` already owns the visual variants and their opposed tilts. This
  * wrapper prevents every page family from spelling those classes independently
  * while keeping an action a real link whenever it navigates.
+ *
+ * ── THE ICON, AND WHY IT IS HERE RATHER THAN AT THE CALL SITES ───────────────
+ *
+ * The legacy halves disagreed: English drew these buttons with a bare word
+ * inside, Spanish drew them with an inline SVG. `families/Collect.astro` records
+ * the decision that settled it — the Spanish icons came off, and if they came
+ * back they would "come back once, for both languages", which meant here. This
+ * is that return. An action names an icon; neither language names one, so the
+ * two halves cannot drift apart again.
+ *
+ * `icon` is a `NavigationIconName` and NOT a free string on purpose. The set in
+ * `config/site` is the site's iconography: `category` is collect, `science` is
+ * the lab, `satellite_alt` is an Orbiter, wherever they appear. Typing the prop
+ * to that set is what makes "if it says collect, it is the collect icon" a
+ * compile error to break rather than a convention to remember. A CTA needing a
+ * symbol that is not in the set is a decision about the iconography — add it to
+ * `NAVIGATION_ICONS` and `ui/navigation-icon` deliberately, in one place.
+ *
+ * The mark is `ui/navigation-icon` rather than a second icon component because
+ * that one already compiles the official Material Symbol source in as raw SVG,
+ * inheriting `currentColor`. A button inverts its colour on hover; an icon that
+ * did not follow it would be the reason to have written a second one, and it
+ * does follow it. `.nav-icon` carries its own trailing margin, so no gap rule
+ * is needed on `.btn` — see `styles/shell.css`.
  */
+import NavigationIcon from './NavigationIcon.astro';
+import type { NavigationIconName } from '../../config/site';
+
 type Variant = 'primary' | 'secondary' | 'collect' | 'text';
 
 interface Props {
   href: string;
   label: string;
   variant?: Variant;
+  icon?: NavigationIconName;
 }
 
-const { href, label, variant = 'primary' } = Astro.props;
+const { href, label, variant = 'primary', icon } = Astro.props;
 ---
 
-<a class:list={['btn', `btn--${variant}`]} href={href}>{label}</a>
+<a class:list={['btn', `btn--${variant}`]} href={href}>{icon && <NavigationIcon name={icon} />}{label}</a>

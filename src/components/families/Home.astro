@@ -102,7 +102,12 @@ const labelId = 'home-entries';
         />
         <nav class="home__actions" aria-label="Featured collection actions">
           {HOME_ACTIONS.map((action) => (
-            <Action href={action.href} label={labelFor(action, lang)} variant={action.variant} />
+            <Action
+              href={action.href}
+              label={labelFor(action, lang)}
+              variant={action.variant}
+              icon={action.icon}
+            />
           ))}
         </nav>
       </section>
