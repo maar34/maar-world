@@ -3,7 +3,6 @@ outputPath: "calendar"
 title: "Calendar - MAAR WORLD"
 area: "maar"
 kind: "page"
-surface: "dark"
 tags: []
 source: "maar.world/collections/_pages/calendar.md"
 lang: "en"

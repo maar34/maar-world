@@ -3,7 +3,6 @@ outputPath: "es/calendar"
 title: "Calendario - MAAR WORLD"
 area: "maar"
 kind: "page"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "calendar"

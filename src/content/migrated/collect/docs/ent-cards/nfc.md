@@ -3,14 +3,12 @@ outputPath: "collect/docs/ent-cards/nfc"
 title: "NFC - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "dark"
 tags: []
 source: "collect.maar.world/collections/_documentation/03-ent-cards/04-nfc.md"
 lang: "en"
 indexGroup: "collect-docs"
 indexOrder: "03-ent-cards/04-nfc.md"
 indexLabel: "NFC"
-cover: "/img/docs/covers/nfc-cover.jpeg"
 ---
 
 # <span class="mark mark--cut mark--tilt-3 mark--tear-2">NFC</span>

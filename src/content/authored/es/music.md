@@ -3,7 +3,6 @@ outputPath: "es/music"
 title: "Música - MAAR WORLD"
 area: "maar"
 kind: "page"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "music"

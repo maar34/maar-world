@@ -115,17 +115,14 @@
  * inline padding goes, so the text inside a hero lines up with the text above it
  * instead of being indented by a plate that is no longer drawn.
  *
- * On paper the wash still separates, so it is kept there — one rule, scoped.
+ * A second rule used to restore the wash under `[data-surface='paper']`, where
+ * it still separated. MW-16 removed that surface — there is one screen surface
+ * now — so the exception went with the thing it was excepting from.
  */
 .prose .hero--dark {
   background: none;
   padding-block: var(--s-8);
   border-radius: var(--r-0);
-}
-
-[data-surface='paper'] .prose .hero--dark {
-  background: var(--sf-sunken);
-  padding: var(--s-8);
 }
 
 /**

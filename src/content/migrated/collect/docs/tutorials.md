@@ -3,14 +3,12 @@ outputPath: "collect/docs/tutorials"
 title: "Tutorials - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "dark"
 tags: []
 source: "collect.maar.world/collections/_documentation/02-tutorials.md"
 lang: "en"
 indexGroup: "collect-docs"
 indexOrder: "02-tutorials.md"
 indexLabel: "Tutorials"
-cover: "/img/docs/covers/tutorials-cover.jpeg"
 ---
 
 # <span class="mark mark--cut mark--tilt-4 mark--tear-1">Tutorials</span>

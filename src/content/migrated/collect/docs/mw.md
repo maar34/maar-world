@@ -3,14 +3,12 @@ outputPath: "collect/docs/mw"
 title: "Information - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "dark"
 tags: []
 source: "collect.maar.world/collections/_documentation/07-mw.md"
 lang: "en"
 indexGroup: "collect-docs"
 indexOrder: "07-mw.md"
 indexLabel: "Information"
-cover: "/img/docs/covers/information-cover.jpg"
 ---
 
 # <span class="mark mark--cut mark--tilt-2 mark--tear-2">Information</span>

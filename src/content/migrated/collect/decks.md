@@ -3,7 +3,6 @@ outputPath: "collect/decks"
 title: "Decks - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "page"
-surface: "dark"
 tags: []
 source: "collect.maar.world/collections/_pages/decks.html"
 lang: "en"

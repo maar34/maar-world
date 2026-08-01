@@ -3,7 +3,6 @@ outputPath: "helix-diagram"
 title: "Helix Diagram"
 area: "maar"
 kind: "page"
-surface: "dark"
 tags: []
 source: "maar.world/helix-diagram.html"
 lang: "en"

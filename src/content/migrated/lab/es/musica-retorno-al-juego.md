@@ -3,7 +3,6 @@ outputPath: "lab/es/musica-retorno-al-juego"
 title: "Música, Abstracción y el Retorno al Juego - MAAR WORLD"
 area: "maar"
 kind: "lab"
-surface: "dark"
 tags: ["ES", "Música", "Capital", "Cultural", "Participación", "Escucha", "Inteligencia", "es"]
 source: "maar.world/collections/_lab/es/2026-01-20-music-abstraction-return-playing.md"
 lang: "es"

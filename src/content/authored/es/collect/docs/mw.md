@@ -3,14 +3,12 @@ outputPath: "es/collect/docs/mw"
 title: "Información - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/docs/mw"
 indexGroup: "collect-docs"
 indexOrder: "07-mw.md"
 indexLabel: "Información"
-cover: "/img/docs/covers/information-cover.jpg"
 ---
 
 <!--

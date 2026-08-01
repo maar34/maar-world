@@ -3,14 +3,12 @@ outputPath: "collect/docs/mw/terms"
 title: "TERMS AND CONDITIONS - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "dark"
 tags: []
 source: "collect.maar.world/collections/_documentation/07-mw/02-Terms&Conditions.md"
 lang: "en"
 indexGroup: "collect-docs"
 indexOrder: "07-mw/02-Terms&Conditions.md"
 indexLabel: "TERMS AND CONDITIONS"
-cover: "/img/docs/covers/terms-cover.jpg"
 ---
 
 # TERMS AND <span class="mark mark--cut mark--tilt-3 mark--tear-3">CONDITIONS</span>

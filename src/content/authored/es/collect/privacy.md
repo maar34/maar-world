@@ -3,14 +3,12 @@ outputPath: "es/collect/privacy"
 title: "Privacidad - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "page"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/privacy"
 indexGroup: "collect-docs"
 indexOrder: "07-mw/03-Privacy.md"
 indexLabel: "Privacidad"
-cover: "/img/docs/covers/terms-cover.jpg"
 ---
 
 <!--

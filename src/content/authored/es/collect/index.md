@@ -3,7 +3,6 @@ outputPath: "es/collect/index"
 title: "Sky Sounds - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "index"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/index"

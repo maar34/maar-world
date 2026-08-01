@@ -3,7 +3,6 @@ outputPath: "revx000"
 title: "Revx000 - MAAR WORLD"
 area: "maar"
 kind: "genesis"
-surface: "dark"
 tags: []
 source: "maar.world/collections/_genesis/revx000.md"
 lang: "en"

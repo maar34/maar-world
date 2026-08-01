@@ -3,7 +3,6 @@ outputPath: "bookings"
 title: "Bookings - MAAR WORLD"
 area: "maar"
 kind: "page"
-surface: "dark"
 tags: []
 source: "maar.world/collections/_pages/bookings.md"
 lang: "en"

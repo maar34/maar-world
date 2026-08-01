@@ -3,7 +3,6 @@ outputPath: "collect/samples"
 title: "Entangled World Docs - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "page"
-surface: "dark"
 tags: []
 source: "collect.maar.world/samples.html"
 lang: "en"

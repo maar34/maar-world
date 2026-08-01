@@ -3,7 +3,6 @@ outputPath: "es/collect/suits"
 title: "Palos - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "page"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/suits"

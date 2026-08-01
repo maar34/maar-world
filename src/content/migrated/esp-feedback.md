@@ -3,7 +3,6 @@ outputPath: "esp-feedback"
 title: "Redirecting…"
 area: "maar"
 kind: "page"
-surface: "dark"
 tags: []
 source: "maar.world/collections/_pages/1-feedback-esp.html"
 lang: "es"

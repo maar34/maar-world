@@ -3,7 +3,6 @@ outputPath: "es/lab"
 title: "Lab - MAAR WORLD"
 area: "maar"
 kind: "page"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "lab"

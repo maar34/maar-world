@@ -3,14 +3,12 @@ outputPath: "collect/docs/releases/skysounds"
 title: "Sky Sounds - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "dark"
 tags: []
 source: "collect.maar.world/collections/_documentation/02-ent-releases/01-skysounds.md"
 lang: "en"
 indexGroup: "collect-docs"
 indexOrder: "02-ent-releases/01-skysounds.md"
 indexLabel: "Sky Sounds"
-cover: "/img/docs/covers/skysounds-cover.jpg"
 ---
 
 # Sky <span class="mark mark--cut mark--tilt-3 mark--tear-1">Sounds</span>

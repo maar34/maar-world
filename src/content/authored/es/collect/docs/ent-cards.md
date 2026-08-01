@@ -3,14 +3,12 @@ outputPath: "es/collect/docs/ent-cards"
 title: "Cartas ENT - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/docs/ent-cards"
 indexGroup: "collect-docs"
 indexOrder: "03-ent-cards.md"
 indexLabel: "Cartas ENT"
-cover: "/img/docs/covers/ent-cards-cover.jpg"
 ---
 
 <!--

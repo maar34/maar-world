@@ -3,7 +3,6 @@ outputPath: "landings"
 title: "Landings - MAAR WORLD"
 area: "maar"
 kind: "page"
-surface: "dark"
 tags: []
 source: "maar.world/collections/_pages/landings.md"
 lang: "en"

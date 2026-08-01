@@ -482,25 +482,28 @@ export function classesPainting(css, token) {
 }
 
 /**
- * The two surfaces, and the attribute a page carries to select each one.
+ * The surfaces, and the attribute a page carries to select each one.
  *
- * Only the surfaces a page in `dist/` actually renders are measured, and the
- * report names which those were. That is a narrower claim than "both surfaces
- * pass", and deliberately so — the alternative is a check that reports on
- * pixels no visitor can reach. It gets stronger by itself: the day a content
- * record sets `surface: paper`, that surface starts being asserted on the same
- * run that ships it.
+ * There is one. `paper` was a second entry here until MW-16: a cream surface
+ * selected by `surface: paper` in a record's frontmatter, used by nine
+ * documentation articles. The owner had those moved to dark — the docs were
+ * the one part of the site that turned white under the reader — and then
+ * removed the surface itself, so `layouts/shell-paper`, the
+ * `[data-surface='paper']` token block and the frontmatter field are all gone.
+ * Nothing can select it, so measuring it would be reporting on pixels that
+ * cannot exist.
  *
- * At MW-11 sign-off, `paper` renders on zero of 133 pages. Measured anyway, by
- * hand, it passes every pair except `--ink-faint`, which composites to 2.56:1
- * over cream where over the dark surface it reaches 3.32:1 — recorded in
- * MIGRATION-LEDGER.md as `MW-11 NOTE a11y/ink-faint-on-paper`, because the fix
- * is a token value and token values come from the design spec, not from here.
+ * The list is still a list, and `pagesOnSurface` still groups by the attribute,
+ * because the shape is what makes the check honest: only surfaces a page in
+ * `dist/` actually renders are measured, and the report names which those were.
+ * A second surface added tomorrow starts being asserted on the run that ships
+ * it, without this file changing shape.
+ *
+ * `@media print` is deliberately NOT here. Its contrast is a different question
+ * — ink on real paper, not composited pixels — and this check measures what a
+ * screen shows.
  */
-const SURFACES = [
-  { name: 'dark', selector: ':root', attribute: 'dark' },
-  { name: 'paper', selector: '\\[data-surface=[\'"]?paper[\'"]?\\]', attribute: 'paper' },
-];
+const SURFACES = [{ name: 'dark', selector: ':root', attribute: 'dark' }];
 
 /** The pages a given surface is actually painted on. */
 const pagesOnSurface = (documents, attribute) =>

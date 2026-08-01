@@ -3,14 +3,12 @@ outputPath: "collect/docs/ent-cards/sustainability"
 title: "Sustainability - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "dark"
 tags: []
 source: "collect.maar.world/collections/_documentation/03-ent-cards/01-sustainability.md"
 lang: "en"
 indexGroup: "collect-docs"
 indexOrder: "03-ent-cards/01-sustainability.md"
 indexLabel: "Sustainability"
-cover: "/img/docs/covers/sustainability-cover.jpeg"
 ---
 
 # <span class="mark mark--cut mark--tilt-2 mark--tear-1">Sustainability</span>

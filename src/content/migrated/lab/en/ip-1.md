@@ -3,7 +3,6 @@ outputPath: "lab/en/ip-1"
 title: "Interplanetary ancestors 1-3 (EN) - MAAR WORLD"
 area: "maar"
 kind: "lab"
-surface: "dark"
 tags: ["EW", "orbiter", "EN"]
 source: "maar.world/collections/_lab/en/2023-08-25-01_IP1.md"
 lang: "en"

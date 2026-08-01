@@ -3,7 +3,6 @@ outputPath: "es/index"
 title: "Maar World - MAAR WORLD"
 area: "maar"
 kind: "index"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "index"

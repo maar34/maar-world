@@ -3,7 +3,6 @@ outputPath: "rthw00"
 title: "Rthw00 - MAAR WORLD"
 area: "maar"
 kind: "genesis"
-surface: "dark"
 tags: []
 source: "maar.world/collections/_genesis/rthw00.md"
 lang: "en"

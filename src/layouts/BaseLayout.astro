@@ -2,9 +2,10 @@
 /**
  * The shell every route renders inside.
  *
- * Two surfaces, per the design spec: `dark` is the surface for all product
- * routes, `paper` is reached only by document routes (print, export, long-form
- * reading). Dark is not a theme toggle.
+ * One surface: dark, on every route. It is not a theme toggle and there is
+ * nothing to toggle to — see the note on `Shell` below for the second shell
+ * that used to exist and why MW-16 removed it. Printing is handled by
+ * `@media print` in tokens.css, which is a different question from this one.
  *
  * Fonts are imported from @fontsource and therefore served from this origin.
  * No page may request a font, script, style or frame from a third-party host —
@@ -79,12 +80,10 @@ import { SITE, AREAS, type AreaName } from '../config/site';
  * check that reads a page's body text then sees an empty document.
  */
 import ShellDark from './shell-dark/Shell.astro';
-import ShellPaper from './shell-paper/Shell.astro';
 
 interface Props {
   title: string;
   description?: string;
-  surface?: 'dark' | 'paper';
   noindex?: boolean;
   canonical?: string;
   /**
@@ -137,7 +136,6 @@ interface Props {
 const {
   title,
   description,
-  surface = 'dark',
   noindex = false,
   canonical,
   area = 'maar',
@@ -162,11 +160,26 @@ const canonicalUrl = canonical ?? (redirectTo
 const chromeLang = lang === 'en' ? undefined : 'en';
 
 /**
- * Dark is the surface and the default; paper is reached only by document routes.
- * The two shells are separate files because the spec's folder map names them
- * separately; the surface swap itself is entirely in tokens.css.
+ * ONE SCREEN SURFACE. Dark is not a theme, a default or a preference — it is
+ * what this site is made of, and there is nothing to switch to.
+ *
+ * There was a second shell. `shell-paper` swapped the surface and ink tokens
+ * for a cream page and was reached by `surface: paper` in a record's
+ * frontmatter. Nine documentation articles used it, which meant the docs were
+ * the one part of the site that turned white under you — MW-16 is the owner
+ * asking for that to stop. Once those nine moved, the paper shell rendered on
+ * zero of 195 pages: a whole second surface, its token block, and a branch in
+ * every page's layout, kept alive for nobody. The owner's call was to remove it.
+ *
+ * PRINTING STILL GETS PAPER, and that is a different thing. `@media print` in
+ * tokens.css swaps the same values for actual paper, where a black page is a
+ * cartridge. That block stays and is now the only place those values live.
+ *
+ * `data-surface` stays on the element even though it can only say one word:
+ * `verify:a11y` groups its contrast measurements by it, and the styles read
+ * `:root`.
  */
-const Shell = surface === 'paper' ? ShellPaper : ShellDark;
+const Shell = ShellDark;
 const globalLanguageChoices = languageChoices ?? [
   { lang: 'en', label: 'english', current: lang === 'en', unavailable: lang !== 'en' },
   { lang: 'es', label: 'español', current: lang === 'es', unavailable: lang !== 'es' },
@@ -174,7 +187,7 @@ const globalLanguageChoices = languageChoices ?? [
 ---
 
 <!doctype html>
-<html lang={lang} data-surface={surface} style={`--area-pigment: ${AREAS[area].pigment}`}>
+<html lang={lang} data-surface="dark" style={`--area-pigment: ${AREAS[area].pigment}`}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

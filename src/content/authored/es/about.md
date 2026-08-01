@@ -3,7 +3,6 @@ outputPath: "es/about"
 title: "Acerca de - MAAR WORLD"
 area: "maar"
 kind: "page"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "about"

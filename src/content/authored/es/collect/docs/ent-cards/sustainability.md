@@ -3,14 +3,12 @@ outputPath: "es/collect/docs/ent-cards/sustainability"
 title: "Sustentabilidad - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/docs/ent-cards/sustainability"
 indexGroup: "collect-docs"
 indexOrder: "03-ent-cards/01-sustainability.md"
 indexLabel: "Sustentabilidad"
-cover: "/img/docs/covers/sustainability-cover.jpeg"
 ---
 
 <!--

@@ -3,14 +3,16 @@
 **State:** `npm run verify` = **80 passed, 0 failed, 1 skipped**. The one skip is
 `verify:cards`' host-canary assertion, which needs MW-10 upstream.
 
-**In flight:** worktree slot `wt-2`, branch `wt/2-mw-13-14-16-…`, holding MW-13,
-MW-14 and MW-16. Committed there, **not merged to `main`** — awaiting the owner's
-go-ahead. See the four `MW-13`/`MW-14`/`MW-16` lines at the end of the ledger.
+**Last shipped:** MW-13, MW-14 and MW-16 — see the `MW-13`/`MW-14`/`MW-16` lines
+at the end of the ledger.
 
-One decision is left open there deliberately: `collect/docs` were the only pages
-using `surface: paper`, so `layouts/shell-paper` and the `[data-surface='paper']`
-token block are now unused. Deleting the second surface is a design call, not a
-consequence of MW-16 — `ledger -- find shell-paper-now-unused`.
+**THERE IS ONE SURFACE NOW.** `layouts/shell-paper`, the `[data-surface='paper']`
+token block, the `surface` frontmatter field and the `paper` entry in
+`verify-a11y`'s `SURFACES` are all deleted — the docs were the only pages using
+them, and the owner removed the second surface once they moved to dark. Do not
+reintroduce a light theme without asking. **`@media print` in tokens.css keeps
+the cream values** and is now the only place they live; printing is a different
+question from theming. `ledger -- find shell-paper-removed`.
 
 ---
 

@@ -3,14 +3,12 @@ outputPath: "collect/privacy"
 title: "Privacy - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "page"
-surface: "dark"
 tags: []
 source: "collect.maar.world/collections/_documentation/07-mw/03-Privacy.md"
 lang: "en"
 indexGroup: "collect-docs"
 indexOrder: "07-mw/03-Privacy.md"
 indexLabel: "Privacy"
-cover: "/img/docs/covers/terms-cover.jpg"
 ---
 
 # <span class="mark mark--cut mark--tilt-2 mark--tear-1">Privacy</span>

@@ -3,7 +3,6 @@ outputPath: "es/privacy"
 title: "Privacidad - MAAR WORLD"
 area: "maar"
 kind: "page"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "privacy"

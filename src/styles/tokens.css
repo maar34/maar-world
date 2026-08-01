@@ -34,10 +34,13 @@
   /* ---- surface roles -------------------------------------------------- */
   /**
    * The spec's surface-roles table names four surfaces, so all four exist here
-   * under its own names. `--sf-paper` and `--sf-paper-raised` are the paper
-   * shell's constants; the [data-surface='paper'] block below swaps them into
-   * --sf-base / --sf-raised so every component keeps referring to one pair of
-   * role tokens and never branches on surface itself.
+   * under its own names. `--sf-paper` and `--sf-paper-raised` are constants
+   * rather than a surface a page can be in: `@media print` swaps them into
+   * --sf-base / --sf-raised, and a cut word's field is paper on screen too, so
+   * every component keeps referring to one pair of role tokens and never
+   * branches on surface itself. (Until MW-16 a `[data-surface='paper']` block
+   * did the same swap for nine documentation pages. There is one screen
+   * surface now — see BaseLayout.)
    *
    * Dark is not a theme toggle — it is the surface, and it is the default.
    */
@@ -547,11 +550,10 @@
    * why hover moved down a step too — from --sf-raised-2 to --sf-raised — so it
    * is still ONE step away from rest rather than two.
    *
-   * PAPER IS NOT CHANGED. There the raised step is a measured colour rather
+   * PRINT IS NOT CHANGED. On paper the raised step is a measured colour rather
    * than an ink opacity, and it is what separates a card from the sheet, so the
-   * original pair is restored in the [data-surface='paper'] block below and in
-   * @media print. A black card on paper would be an inversion, not an
-   * integration.
+   * original pair is restored in the @media print block below. A black card on
+   * paper would be an inversion, not an integration.
    */
   --card-field: var(--sf-base);
   --card-field-hover: var(--sf-raised);
@@ -708,30 +710,23 @@
   --press-nudge: 1px;
 }
 
-/* ---- surface roles: paper ---------------------------------------------- */
-/* Document routes only — print, export, long-form reading. Same components,
-   surface and ink swapped, pastels unchanged. */
-[data-surface='paper'] {
-  --sf-base: var(--sf-paper);
-  --ink: #100f14;
-
-  /* Paper's raised steps are measured colours, not ink opacities. */
-  --sf-raised: var(--sf-paper-raised);
-  --sf-raised-2: #e8dfd0;
-  --sf-sunken: #e3d9c8;
-
-  /* The card keeps its field on paper — see the card block above. */
-  --card-field: var(--sf-raised);
-  --card-field-hover: var(--sf-raised-2);
-
-  --focus-c: var(--ink);
-
-  /* The tree pigment on paper is 1.35:1 — a stamp nobody can see. See the
-     stamp block above. A pastel rule on paper is the same problem. */
-  --mark-stamp-rule: var(--ink-meta);
-  --mark-strike-rule: var(--pigment-ink);
-}
-
+/* ---- surface roles: paper, for actual paper ------------------------------ */
+/**
+ * THE ONLY PAPER SURFACE LEFT, AND IT IS THE REAL ONE.
+ *
+ * There used to be a `[data-surface='paper']` block above this one, identical
+ * in every value, selected by `surface: paper` in a record's frontmatter and
+ * rendered through `layouts/shell-paper`. Nine documentation articles used it
+ * — the one part of the site that turned white under the reader — and MW-16 is
+ * the owner asking for that to stop. With those nine moved to dark it selected
+ * nothing on 195 pages, so the block, the shell and the frontmatter field went
+ * with it.
+ *
+ * Printing is a different question and keeps its answer. A black page costs a
+ * cartridge, so print swaps the surface and ink for cream and near-black,
+ * leaves the pastels alone, and is reached by printing rather than by a
+ * content field. These values are duplicated nowhere now.
+ */
 @media print {
   :root {
     --sf-base: var(--sf-paper);

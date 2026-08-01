@@ -3,7 +3,6 @@ outputPath: "collect/suits"
 title: "Suits - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "page"
-surface: "dark"
 tags: []
 source: "collect.maar.world/collections/_pages/suits.html"
 lang: "en"

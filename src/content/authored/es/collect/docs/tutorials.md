@@ -3,14 +3,12 @@ outputPath: "es/collect/docs/tutorials"
 title: "Tutoriales - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/docs/tutorials"
 indexGroup: "collect-docs"
 indexOrder: "02-tutorials.md"
 indexLabel: "Tutoriales"
-cover: "/img/docs/covers/tutorials-cover.jpeg"
 ---
 
 <!--

@@ -443,9 +443,13 @@ const EXCLUSIONS = [
    * question is "did production content vanish"; the answer is that it was
    * deliberately substituted, and the substitute is not an `<img>`.
    *
-   * The files themselves are untouched in media/collect/img/docs/covers/, so
-   * this is reversible by passing `cover` again in the index — nothing was
-   * deleted.
+   * THE FILES ARE GONE TOO, on the owner's instruction once the glyphs were
+   * seen: "you can remove them from the repository, they are old and we don't
+   * want them anymore". The nine cover files and the `cover:` field on all
+   * twenty records (ten articles x two languages) went with them. Only
+   * qr-technology.jpg stays in that folder — it is a diagram inside the ENT
+   * Cards article, not a card cover. So this is not reversible by flipping a
+   * prop; restoring it would mean restoring the images from git history.
    *
    * Ledger: MW-16 design/docs-index-glyphs.
    */
@@ -457,8 +461,8 @@ const EXCLUSIONS = [
       'the ten Docs entry covers. They were dark photographs of unrelated subjects that read as ' +
       'ten identical black rectangles at card size. MW-16 replaces them with one inline Material ' +
       'Symbol per article plus the article\'s own opening sentence — a substitution the owner ' +
-      'asked for, not content loss, and the source files remain in media/collect/img/docs/covers/. ' +
-      'Ledger MW-16 design/docs-index-glyphs.',
+      'asked for, not content loss. The owner then had the nine files deleted from the repo as ' +
+      'well. Ledger MW-16 design/docs-index-glyphs.',
   },
   /**
    * PRODUCTION SERVES A BROKEN PAGE HERE AND THE STUB IS THE FIX.

@@ -3,7 +3,6 @@ outputPath: "lab/en/dadada"
 title: "Dadada (EN) - MAAR WORLD"
 area: "maar"
 kind: "lab"
-surface: "dark"
 tags: ["EW", "orbiter", "EN"]
 source: "maar.world/collections/_lab/en/2023-12-09-Dadada.md"
 lang: "en"

@@ -1,10 +1,11 @@
 ---
 /**
- * shell-dark — the primary shell. Header, footer, all product routes.
+ * shell-dark — the shell. Header, footer, every route.
  *
- * Dark is not a theme toggle: it is the surface, and it is the default. Every
- * route in this build renders here except the document routes, which reach
- * shell-paper instead.
+ * Dark is not a theme toggle: it is the surface, and since MW-16 it is the only
+ * one. There was a `shell-paper` beside this file, reached by `surface: paper`
+ * in a record's frontmatter and used by nine documentation articles; the owner
+ * moved those to dark and removed the second surface. See BaseLayout.
  *
  * The landmarks are real ones — <header>, <nav>, <main>, <footer> — and <main>
  * belongs to the shell rather than to each page family, so there is exactly one

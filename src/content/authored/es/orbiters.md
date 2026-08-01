@@ -3,7 +3,6 @@ outputPath: "es/orbiters"
 title: "Orbiters - MAAR WORLD"
 area: "maar"
 kind: "page"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "orbiters"

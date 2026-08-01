@@ -4,7 +4,6 @@ title: "TREE.MAAR.WORLD"
 area: "tree"
 kind: "index"
 family: "tree"
-surface: "dark"
 tags: []
 source: "tree.maar.world/index.html"
 lang: "en"

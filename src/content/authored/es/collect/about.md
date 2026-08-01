@@ -3,7 +3,6 @@ outputPath: "es/collect/about"
 title: "Acerca de - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "page"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/about"

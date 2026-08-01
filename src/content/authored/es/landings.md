@@ -3,7 +3,6 @@ outputPath: "es/landings"
 title: "Aterrizajes - MAAR WORLD"
 area: "maar"
 kind: "page"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "landings"

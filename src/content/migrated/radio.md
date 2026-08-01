@@ -3,7 +3,6 @@ outputPath: "radio"
 title: "Radio - MAAR WORLD"
 area: "maar"
 kind: "page"
-surface: "dark"
 tags: []
 source: "maar.world/collections/_pages/radio.md"
 lang: "en"

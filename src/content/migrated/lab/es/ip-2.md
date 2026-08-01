@@ -3,7 +3,6 @@ outputPath: "lab/es/ip-2"
 title: "Ancestros interplanetarios 2-3 (ES) - MAAR WORLD"
 area: "maar"
 kind: "lab"
-surface: "dark"
 tags: ["EW", "orbiter", "ES"]
 source: "maar.world/collections/_lab/es/2023-08-25-01_IP2.md"
 lang: "es"

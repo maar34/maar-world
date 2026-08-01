@@ -174,7 +174,6 @@ export const pageSchema = z
     translationOf: z.string().min(1).optional(),
 
     permalink: permalink.optional(),
-    surface: z.enum(['dark', 'paper']).default('dark'),
     /**
      * The shared shell-width contract. Standard is deliberately the default
      * for every route; a narrower reading page must name that exceptional

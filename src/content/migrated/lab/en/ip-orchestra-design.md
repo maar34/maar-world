@@ -3,7 +3,6 @@ outputPath: "lab/en/ip-orchestra-design"
 title: "Orbital Creation Workshop - MAAR WORLD"
 area: "maar"
 kind: "lab"
-surface: "dark"
 tags: ["orbiter", "EN"]
 source: "maar.world/collections/_lab/en/2024-09-01-Orbital Creation Workshop.md"
 lang: "en"

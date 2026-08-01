@@ -3,14 +3,12 @@ outputPath: "collect/docs/orbiters/how-to-use"
 title: "How to use - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "dark"
 tags: []
 source: "collect.maar.world/collections/_documentation/04-orbiters/01-how-to-use.md"
 lang: "en"
 indexGroup: "collect-docs"
 indexOrder: "04-orbiters/01-how-to-use.md"
 indexLabel: "How to use"
-cover: "/img/docs/covers/how-to.jpg"
 ---
 
 # How to <span class="mark mark--cut mark--tilt-3 mark--tear-1">use</span>

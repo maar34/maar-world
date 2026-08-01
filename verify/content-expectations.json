@@ -4157,7 +4157,7 @@
         {
           "kind": "images",
           "count": 10,
-          "reason": "the ten Docs entry covers. They were dark photographs of unrelated subjects that read as ten identical black rectangles at card size. MW-16 replaces them with one inline Material Symbol per article plus the article's own opening sentence — a substitution the owner asked for, not content loss, and the source files remain in media/collect/img/docs/covers/. Ledger MW-16 design/docs-index-glyphs."
+          "reason": "the ten Docs entry covers. They were dark photographs of unrelated subjects that read as ten identical black rectangles at card size. MW-16 replaces them with one inline Material Symbol per article plus the article's own opening sentence — a substitution the owner asked for, not content loss. The owner then had the nine files deleted from the repo as well. Ledger MW-16 design/docs-index-glyphs."
         }
       ],
       "ownPropertyLinksNotAsserted": 0,

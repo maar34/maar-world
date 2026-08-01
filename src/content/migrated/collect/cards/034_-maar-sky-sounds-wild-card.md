@@ -3,7 +3,6 @@ outputPath: "collect/cards/034_-maar-sky-sounds-wild-card"
 title: "034_ Maar Sky Sounds Wild Card - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "collect-card"
-surface: "dark"
 tags: []
 source: "collect.maar.world/collections/_cards/034_-maar-sky-sounds-wild-card.md"
 lang: "en"

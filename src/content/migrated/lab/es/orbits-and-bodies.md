@@ -3,7 +3,6 @@ outputPath: "lab/es/orbits-and-bodies"
 title: "Órbitas y Cuerpos - MAAR WORLD"
 area: "maar"
 kind: "lab"
-surface: "dark"
 tags: ["EW", "orbiter", "ES", "performance", "audiovisual", "exoplanetas"]
 source: "maar.world/collections/_lab/es/2025-08-24-01-Orbit-and-Bodies.md"
 lang: "es"

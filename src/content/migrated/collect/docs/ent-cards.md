@@ -3,14 +3,12 @@ outputPath: "collect/docs/ent-cards"
 title: "ENT Cards - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "dark"
 tags: []
 source: "collect.maar.world/collections/_documentation/03-ent-cards.md"
 lang: "en"
 indexGroup: "collect-docs"
 indexOrder: "03-ent-cards.md"
 indexLabel: "ENT Cards"
-cover: "/img/docs/covers/ent-cards-cover.jpg"
 ---
 
 # ENT <span class="mark mark--highlight">Cards</span>

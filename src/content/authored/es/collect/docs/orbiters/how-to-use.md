@@ -3,14 +3,12 @@ outputPath: "es/collect/docs/orbiters/how-to-use"
 title: "Cómo se usa - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/docs/orbiters/how-to-use"
 indexGroup: "collect-docs"
 indexOrder: "04-orbiters/01-how-to-use.md"
 indexLabel: "Cómo se usa"
-cover: "/img/docs/covers/how-to.jpg"
 ---
 
 <!--

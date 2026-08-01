@@ -3,7 +3,6 @@ outputPath: "resume"
 title: "Resume - MAAR WORLD"
 area: "maar"
 kind: "page"
-surface: "dark"
 tags: []
 source: "maar.world/collections/_pages/resume.md"
 lang: "en"

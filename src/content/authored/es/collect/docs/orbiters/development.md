@@ -3,14 +3,12 @@ outputPath: "es/collect/docs/orbiters/development"
 title: "Desarrollo - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/docs/orbiters/development"
 indexGroup: "collect-docs"
 indexOrder: "04-orbiters/02-development.md"
 indexLabel: "Desarrollo"
-cover: "/img/docs/covers/dev-cover.jpeg"
 ---
 
 <!--

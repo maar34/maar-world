@@ -3,7 +3,6 @@ outputPath: "skyl000"
 title: "Skyl000 - MAAR WORLD"
 area: "maar"
 kind: "genesis"
-surface: "dark"
 tags: []
 source: "maar.world/collections/_genesis/skyl000.md"
 lang: "en"

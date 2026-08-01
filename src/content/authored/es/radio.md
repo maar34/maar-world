@@ -3,7 +3,6 @@ outputPath: "es/radio"
 title: "Radio - MAAR WORLD"
 area: "maar"
 kind: "page"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "radio"

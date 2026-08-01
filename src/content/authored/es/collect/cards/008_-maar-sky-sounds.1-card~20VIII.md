@@ -3,7 +3,6 @@ outputPath: "es/collect/cards/008_-maar-sky-sounds.1-card VIII"
 title: "008_ Maar Sky Sounds.1 Card viii - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "collect-card"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/cards/008_-maar-sky-sounds.1-card VIII"

@@ -3,14 +3,12 @@ outputPath: "collect/docs/orbiters/development"
 title: "Development - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "dark"
 tags: []
 source: "collect.maar.world/collections/_documentation/04-orbiters/02-development.md"
 lang: "en"
 indexGroup: "collect-docs"
 indexOrder: "04-orbiters/02-development.md"
 indexLabel: "Development"
-cover: "/img/docs/covers/dev-cover.jpeg"
 ---
 
 # <span class="mark mark--cut mark--tilt-3 mark--tear-2">Development</span>

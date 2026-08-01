@@ -3,14 +3,12 @@ outputPath: "es/collect/docs/mw/terms"
 title: "TÉRMINOS Y CONDICIONES - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/docs/mw/terms"
 indexGroup: "collect-docs"
 indexOrder: "07-mw/02-Terms&Conditions.md"
 indexLabel: "TÉRMINOS Y CONDICIONES"
-cover: "/img/docs/covers/terms-cover.jpg"
 ---
 
 <!--
