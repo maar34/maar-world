@@ -55,6 +55,45 @@ h1,
   }
 }
 
+/**
+ * The page's own symbol, in front of its title — the same one its entry wears
+ * in the header, so arriving on `/lab` shows the flask twice rather than a
+ * flask and then a bare word.
+ *
+ * ONLY WHERE THERE IS A TITLE TO PUT IT IN FRONT OF, and the selector is what
+ * enforces that rather than a second flag someone has to remember to unset: a
+ * record with no heading renders no `h1`, so there is nothing to match and no
+ * icon appears. `--page-icon` is set only for a destination that HAS a symbol,
+ * so both halves must be true before one is drawn.
+ *
+ * TWO ANCHORS, ONE TREATMENT. An ordinary page's `<h1>` is authored inside its
+ * own body, so the layout can only mark the wrapper around it and reach in —
+ * that is the descendant form. A page family that draws its own title
+ * (`families/LabIndex`) has the element in hand and carries the attribute on the
+ * `<h1>` itself. Splitting these into two rules is how the two would drift.
+ *
+ * `first-of-type` and not `first-child`: a body may open with something that
+ * renders nothing but still counts, and these pages carry exactly one h1.
+ *
+ * A MASK, NOT A BACKGROUND. The icon is the heading's own `currentColor`, so it
+ * cannot be left behind as a black glyph when the title's colour changes —
+ * in print, on paper, or on a surface added later. Sizing in `em` ties it to the
+ * title the same way, so it follows the responsive h1 above instead of needing
+ * its own breakpoints.
+ */
+[data-page-icon] .prose h1:first-of-type::before,
+h1[data-page-icon]::before {
+  content: '';
+  display: inline-block;
+  inline-size: 1em;
+  block-size: 1em;
+  margin-inline-end: 0.25em;
+  vertical-align: -0.08em;
+  background: currentColor;
+  mask: var(--page-icon) center / contain no-repeat;
+  -webkit-mask: var(--page-icon) center / contain no-repeat;
+}
+
 @media (min-width: 900px) {
   h1,
   .t-display {

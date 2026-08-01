@@ -6,21 +6,12 @@
  * SVG sources are compiled directly into the header. The paths inherit their
  * link's colour in hover and current-page states, with no mask support or
  * browser-specific URL parsing involved.
+ *
+ * The source list itself lives in `lib/nav-icons.mjs`, because a page heading
+ * needs the same symbols as a mask and two import blocks naming the same files
+ * is how the two sets drift apart.
  */
-import category from '@material-symbols/svg-400/outlined/category.svg?raw';
-import satelliteAlt from '@material-symbols/svg-400/outlined/satellite_alt.svg?raw';
-import science from '@material-symbols/svg-400/outlined/science.svg?raw';
-import travelExplore from '@material-symbols/svg-400/outlined/travel_explore.svg?raw';
-import speakerGroup from '@material-symbols/svg-400/outlined/speaker_group.svg?raw';
-import info from '@material-symbols/svg-400/outlined/info.svg?raw';
-import language from '@material-symbols/svg-400/outlined/language.svg?raw';
-import keyboardArrowDown from '@material-symbols/svg-400/outlined/keyboard_arrow_down.svg?raw';
-import menu from '@material-symbols/svg-400/outlined/menu.svg?raw';
-import close from '@material-symbols/svg-400/outlined/close.svg?raw';
-import hearing from '@material-symbols/svg-400/outlined/hearing.svg?raw';
-/* `description` is the ligature the legacy Collect header leaked beside its own
-   Docs label — the same symbol, now compiled in rather than font-loaded. */
-import description from '@material-symbols/svg-400/outlined/description.svg?raw';
+import { NAV_ICON_SVG } from '../../lib/nav-icons.mjs';
 import type { NavigationIconName } from '../../config/site';
 
 interface Props {
@@ -29,20 +20,7 @@ interface Props {
 }
 
 const { name, class: className } = Astro.props;
-const symbols: Record<NavigationIconName, string> = {
-  category,
-  satellite_alt: satelliteAlt,
-  science,
-  travel_explore: travelExplore,
-  speaker_group: speakerGroup,
-  info,
-  language,
-  keyboard_arrow_down: keyboardArrowDown,
-  menu,
-  close,
-  hearing,
-  description,
-};
+const symbols = NAV_ICON_SVG as Record<NavigationIconName, string>;
 ---
 
 <span class:list={['nav-icon', className]} aria-hidden="true" set:html={symbols[name]}></span>

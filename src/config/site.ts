@@ -196,6 +196,37 @@ export const SECTIONS: Record<
 };
 
 /**
+ * The symbol a page's own heading wears — the one its header entry already has.
+ *
+ * A visitor arriving on `/lab` saw the flask in the navigation and a bare word
+ * as the title. The page and its nav entry are the same destination, so they
+ * carry the same symbol; this reads the answer out of `SECTIONS` and `AREAS`
+ * rather than restating it, which is what stops the two drifting.
+ *
+ * Keyed on `outputPath` with any language segment taken off the front, because
+ * a translation does NOT share its original's path: English `/lab` is
+ * `outputPath: "lab"` and its Spanish half is `"es/lab"`. Matching the raw value
+ * silently gave every Spanish page no icon while every English one had one —
+ * the failure looks like nothing at all, which is why the prefix is stripped
+ * here, once, rather than at each call site.
+ *
+ * Returning a name here is not the same as drawing one. A page with no title
+ * has nothing to put it in front of, and the layout decides that: this answers
+ * "which symbol belongs to this destination", not "does this page show one".
+ */
+export function pageIcon(outputPath: string | undefined): NavigationIconName | undefined {
+  if (!outputPath) return undefined;
+  const href = `/${outputPath}`.replace(/^\/(?:en|es)\//, '/');
+  for (const entries of Object.values(SECTIONS)) {
+    const hit = entries.find((e) => e.href === href);
+    if (hit?.icon) return hit.icon;
+  }
+  /* An area's index — `collect/index` is the page `/collect` points at. */
+  const area = Object.values(AREAS).find((a) => a.pathPrefix && `${a.pathPrefix}/index` === href);
+  return area?.icon;
+}
+
+/**
  * Home's two intentional next steps. The labels and destinations are data, but
  * their visual treatment comes from `ui/action` so this pair can be reused or
  * reconfigured without a page-family CSS exception.

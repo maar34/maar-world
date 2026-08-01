@@ -77,6 +77,14 @@ interface Props {
   label: string;
   /** The page's heading, already carrying its overprint mark. */
   headingHtml: string;
+  /**
+   * The symbol in front of that heading — the one `/lab` wears in the header.
+   *
+   * A ready `mask-image` value rather than an icon name, because this family
+   * draws its own `<h1>` and the treatment is the shared one in `styles/type.css`;
+   * the family's job is to hand the element the value, not to decide it.
+   */
+  headingIcon?: string;
   /** The statement under it. One measure, no marks. */
   lede: string;
   /** Every word this family prints, in the page's language. See LAB_INTRO. */
@@ -96,7 +104,7 @@ interface Props {
   pinnedKey?: string | null;
 }
 
-const { entries, collage, label, headingHtml, lede, strings, pinnedKey } = Astro.props;
+const { entries, collage, label, headingHtml, headingIcon, lede, strings, pinnedKey } = Astro.props;
 
 const readableDate = (iso: string) => {
   const [y, m, d] = iso.split('-');
@@ -202,7 +210,12 @@ const metaOf = (e: LabEntry) => `${e.minutes} ${strings.readTime}`;
   }
   <div class="lab__head">
     <div class="lab__intro">
-      <h1 class="lab__title" set:html={headingHtml} />
+      <h1
+        class="lab__title"
+        data-page-icon={headingIcon ? '' : undefined}
+        style={headingIcon ? `--page-icon: ${headingIcon}` : undefined}
+        set:html={headingHtml}
+      />
       <p class="lab__lede">{lede}</p>
     </div>
 

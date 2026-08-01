@@ -48,7 +48,8 @@ import DocGlyph from '../components/ui/DocGlyph.astro';
 import { globalLanguageChoices, alternatesFor, validateTranslations, navPathsFor, urlOf, LANGS } from '../lib/translations.mjs';
 import { stampText } from '../lib/mark.mjs';
 import { docExcerpt } from '../lib/doc-excerpt.mjs';
-import { collageFor, articleCoverFor, articleCoverFitFor, docGlyphFor, docReadMoreFor, suitPigment, LAB_INTRO, LAB_PINNED } from '../config/site';
+import { collageFor, articleCoverFor, articleCoverFitFor, docGlyphFor, docReadMoreFor, suitPigment, pageIcon, LAB_INTRO, LAB_PINNED } from '../config/site';
+import { navIconMask } from '../lib/nav-icons.mjs';
 
 export async function getStaticPaths() {
   const pages = await getCollection('pages');
@@ -181,6 +182,21 @@ const isCard = d.kind === 'collect-card';
  * same address by construction rather than by coincidence.
  */
 const cardTrackId = isCard ? trackIdBySuitAndTitle?.[`${d.suit_title}|${d.card_title}`] : null;
+
+/**
+ * The symbol this page's heading wears, where its header entry has one.
+ *
+ * Set as a mask on `.page`, and drawn by `prose.css` on the body's own `<h1>` —
+ * the heading is authored in the record, so there is no element here to render
+ * an icon into. A page whose destination has no symbol, and every card, gets
+ * nothing: `data-page-icon` is simply absent and the rule never matches.
+ *
+ * A CARD IS NOT A SECTION. Cards render their own `<h1>` above the prose and
+ * carry two marks in it already — the icon would be a third, and the rules-of-use
+ * table caps h1 at two. `isCard` is excluded here rather than in the CSS so the
+ * attribute never reaches the markup.
+ */
+const headingIcon = isCard ? undefined : navIconMask(pageIcon(d.outputPath));
 const orbiterUrl = cardTrackId ? `https://orbiter.plantasia.space/?trackId=${cardTrackId}` : null;
 
 /**
@@ -546,6 +562,7 @@ const labEntries = isYearIndex
         collage={sectionCollage}
         label={d.indexLabel ?? d.title}
         headingHtml={(LAB_INTRO[d.lang] ?? LAB_INTRO.en).headingHtml}
+        headingIcon={headingIcon}
         lede={(LAB_INTRO[d.lang] ?? LAB_INTRO.en).lede}
         strings={(LAB_INTRO[d.lang] ?? LAB_INTRO.en).strings}
         pinnedKey={LAB_PINNED}
@@ -557,7 +574,11 @@ const labEntries = isYearIndex
   <Fragment>
   {/* The shell owns <main> and the standard content frame. This route supplies
       structure only; no route or content type sets its own outer width. */}
-  <div class:list={['page', (sectionCollage || d.family === 'home') && 'page--hero']}>
+  <div
+    class:list={['page', (sectionCollage || d.family === 'home') && 'page--hero']}
+    data-page-icon={headingIcon ? '' : undefined}
+    style={headingIcon ? `--page-icon: ${headingIcon}` : undefined}
+  >
     {
       /* The label line, with no mark on it.
          The rules-of-use table permits marks at h1 and card-cover level and
