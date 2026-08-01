@@ -1,192 +1,105 @@
 # Handoff
 
-**State:** `npm run verify` = **90 passed, 0 failed, 1 skipped**. The one skip is
+**State:** `npm run verify` = **94 passed, 0 failed, 1 skipped**. The one skip is
 `verify:cards`' host-canary assertion, which needs MW-10 upstream.
 
-**Last shipped:** MW-13, MW-14 and MW-16, then MW-11's i18n structure work, then
-**MW-19 steps 1 and 3 plus the first of step 2** — the `arch/collect-structure-once`
-and `arch/ip-orchestra-structure-once` lines at the end of the ledger.
+**Last shipped:** MW-13, MW-14, MW-16, MW-11's i18n structure work, and **MW-19
+through fourteen of its sixteen pairs** — sixteen commits, merged to `main`
+2026-08-01. Nine pairs remain and none of them blocks a deploy.
 
-## MW-19 — TWO PAIRS DONE OF SIXTEEN. READ ALL OF THIS BEFORE TOUCHING IT.
+## MW-19 — NINE PAIRS LEFT. READ THE LAST SECTION FIRST.
 
-**The owner is out of patience with this issue, and the reason is fair.** Their
-words, 2026-08-01, after a session spent on the wrong page:
+**Fourteen pairs converted. `/radio` deleted and 404ing. The suite is 94 checks.**
 
-> *"There's no shortcut here. We need to do the things right. Don't try to skip
-> the work that you need to do. We built this site from the beginning, from the
-> root, to make it Spanish and English. And it's the fourth time that I ask
-> this."*
+`STRUCTURED_ES` in `scripts/verify-translations.mjs` is down to **9**, and there
+are now THREE ratchets, all closed, all shrink-only:
 
-So: **do not ask which pages matter. They all matter.** Only `/radio` is
-deprecated. Everything else on the list below is live, in use, and expected to
-work in both languages. Convert them properly, one at a time, and do not
-propose a reduced scope.
+| list | holds | meaning |
+|---|---|---|
+| `STRUCTURED_ES` | 9 | Spanish records still carrying markup |
+| `DIVERGENT_PAIRS` | 7 | pairs whose two halves still render different structure |
+| `TRANSLATED_ARTWORK` | 2 | pairs whose pictures legitimately differ (poster with type on it) |
 
-### DO THESE FIRST, IN THIS ORDER — the owner named them explicitly
+### THE OWNER'S VERDICT ON HOW THIS WAS BUILT — read this before deciding how to do the rest
 
-1. **`landings`** — 47 duplicated elements. Central navigation.
-2. **`bookings`** — 9. Central navigation.
+2026-08-01, and it is correct:
 
-They are the two most important pages on the site and were expected done
-already. Start here, not at the top of the element-count ranking. **Element
-count measures how broken a page is, not how much it matters** — sorting by it
-is what sent the last session to `/radio`, which turned out to be dead. That
-mistake cost an hour and is the direct cause of the quote above.
+> *"I can't believe we migrated all the trash of the old website… instead of
+> doing the page correctly, doing the structure correctly, we keep doing
+> everything in the most complex way possible. We need to make 20 pages or 30,
+> I don't mind."*
 
-Then the rest, all of them, none optional: `orbiters` (49), `about` (7),
-`calendar` (5), `music` (4), `collect/docs/tutorials` (9),
-`collect/docs/ent-cards` (7), `collect/docs/releases/skysounds` (4),
-`collect/cards` (3), `collect/docs/ent-cards/nfc` (3), `collect/docs/mw` (3),
-`collect/docs/orbiters/development` (3), `collect/documentation` (3),
-`lab/es/ip-orchestra-design` (19), `ip-2` (18), `ip-3` (15),
-`orbits-and-bodies` (15), `ip-1` (13), `dadada` (11),
-`helix-eac-montevideo-2025` (2), and the one-element tail.
+The migration imported a dead Jekyll site wholesale — its markup, its dead
+classes, its empty spacers, its single-child grid wrappers — and MW-19 is the
+bill for that. **For several of the nine that remain, REWRITING the page is
+cheaper and better than converting it.** That is the shortcut nobody has been
+taking, and it is the legitimate one:
 
-`STRUCTURED_ES` in `scripts/verify-translations.mjs` is the live work list —
-**32 Spanish records** — and it is **closed: it may shrink, never grow.**
-Converting a pair deletes its line, and the check fails if a listed record no
-longer carries markup, so the deletion lands in the same diff.
+- `collect/docs/mw` — two raw `<table>`s. Write them as markdown tables.
+- `collect/docs/ent-cards` — five nested divs around a picture and a list.
+- `collect/docs/releases/skysounds` — a raw table plus two links.
+- `collect/cards`, `collect/documentation` — one wrapper each.
 
-### `/radio` IS DEPRECATED AND MUST 404 — and it is BLOCKED
+Only these four need real component work:
+`lab/*/ip-orchestra-design` (19), `lab/*/orbits-and-bodies` (15),
+`lab/*/dadada` (11 — its Spanish half says "listen on soundcloud" in English,
+fix it in the conversion), `lab/*/helix-eac-montevideo-2025` (2).
 
-Owner, 2026-08-01: *"the radio page is deprecated… for me it's just remove the
-page. 404."* They were asked whether to relock or leave a redirect stub and
-answered that they do not know what those are and do not want to choose. **Do
-not ask them again. The answer is: the page 404s.**
+### WHAT EXISTS NOW, SO NOTHING GETS WRITTEN TWICE
 
-It is blocked on machinery, not on a decision:
+`media/EmbedPlate` · `media/PdfEmbed` · `media/PlayFrame` (bare player + its
+full-screen link) · `media/PlayEmbed` (player in a captioned band, has `level`)
+· `media/Picture` · `media/Carousel` (has `autoplayMs`) · `media/EmbedFacade` ·
+`media/EmbedGroup` · `patterns/Band` · `patterns/Mark` · `patterns/EditorialProfile`
+· `ui/ContactForm` · `ui/LogoGrid` · `ui/SubscribeStub`.
 
-- `src/content/pages/en/radio.md` is `origin: "migrated"` and `/radio` +
-  `/radio.html` are `policy: "preserve"` in `routes/policy.json`, under the
-  contract lock. Deleting the record fails **verify:routes** (2 preserved routes
-  missing), **verify:content** (it has a production baseline), and
-  **verify:links** (3 external links vanish: eepurl.com, maarworld.gumroad.com,
-  s1.ssl-stream.com).
-- `src/content/pages/es/radio.md` is `origin: "authored"` and deletes cleanly.
+Strings and addresses: `src/config/embeds.ts` (facade words by provider AND
+language — add an entry when you convert a page that needs one; `soundcloud`
+and `external` are still missing on purpose) and `src/config/articles.ts`
+(every image path and query string, named once for both halves).
 
-Making those pass needs `npm run contract:relock -- --accept-removals`, plus
-recording the link removals through `npm run links:review-removals` into
-`routes/external-link-removals.json`, plus dropping `/radio` from
-`verify/content-expectations.json`.
+### FOUR TRAPS THIS SESSION HIT, ON TOP OF THE SIX BELOW
 
-**AGENTS.md forbids re-locking as a way to turn a check green** — "if a re-lock
-is what makes a check pass, that is not a fix". The owner has authorised the
-OUTCOME (the page 404s) but a re-lock is a contract change and the invariant
-says a human must take it deliberately. Confirm the relock specifically, in
-those words, then do all four steps in one commit. `ledger -- find
-radio-deprecated`.
+- **`*/` inside a block comment closes it.** Writing `lab/*/ip-1` in an
+  `.astro` comment broke the build twice, with an error pointing at the next
+  word rather than the comment.
+- **`STRUCTURAL_TAGS` is case-INSENSITIVE**, so a component named `<Figure>`
+  counts as a `<figure>` tag. `Section`, `Article`, `Table`, `Span` are the
+  remaining names a component must not take.
+- **An `<a>` inside `<object>`** makes Astro's parser reconstruct the anchor
+  twice further down the document — two nameless links, caught only by
+  `verify:a11y`. `media/PdfEmbed` injects that fallback as escaped HTML.
+- **Clearing `.astro` while `npm run dev` is running kills the preview the
+  owner is watching.** It 404s every page until restarted. Do not clear the
+  cache mid-session without restarting dev afterwards.
 
-### TWO WORKED EXAMPLES, CONVERTED DIFFERENTLY ON PURPOSE
+### WHAT WAS WRONG BEYOND STRUCTURE, AND IS NOW FIXED
 
-Which shape a page takes is the first decision and it follows from what the page
-is:
+Worth knowing because none of it was visible to any check, and all of it was
+what the owner actually saw:
 
-| | |
-|---|---|
-| **a landing** — `collect/index` | a page family. `families/Collect.astro` draws the whole page from record fields; the body is empty. |
-| **an article** — `lab/*/ip-orchestra` | `.mdx`. Prose stays markdown and a block calls a component where it goes. A family cannot express an article: its prose and blocks interleave, and fixed slots would move every carousel to the end of the piece. |
+- **Five Spanish pages had NO header at all** — `/es/landings`, `/es/bookings`,
+  `/es/orbiters`, `/es/about`, `/es/calendar`. `SECTION_COLLAGE` is keyed by
+  `outputPath` and a miss returned null silently.
+- **The Spanish home drew one of three cards with no picture** —
+  `ARTICLE_COVER_FALLBACKS` held only the English href.
+- **The whole shell was English on every Spanish page.** `BaseLayout` set
+  `chromeLang="en"` and a comment explained that the shell "is written in
+  English on every page" — an honest label on a defect. `SECTIONS` and
+  `HOME_ACTIONS` carry `labelEs` now, read through one `labelFor`.
+- **Thirteen Spanish players said "Play full screen"** in English.
 
-`landings` and `bookings` are landings, so they are probably family work — but
-**read them before deciding**, because the shape follows the page.
+Three checks were added so none of it can come back: *a page and its
+translation render the same structure* (body), *…show the same pictures* (whole
+document — the header is chrome and that is exactly where the bugs were), and
+*a Spanish page names its navigation in Spanish* (labels, not hrefs — the
+existing href check passed throughout).
 
-`@astrojs/mdx` (v4 — v5 needs Astro 6) was added on the owner's approval of
-2026-08-01. It ships no JavaScript; the components are `.astro`. `.md` is still
-the default — convert a body when you are lifting its structure out, not before.
+### /radio IS GONE
 
-Read `families/Collect.astro`, `src/content/pages/en/lab/ip-orchestra.mdx` and
-`src/config/articles.ts` before converting anything. The three places a string
-can live:
-
-| | |
-|---|---|
-| the page's own copy | a field on the record, or prose in an `.mdx` body |
-| what a FAMILY or component says on any page | `site.ts` / the component, keyed by language, both halves adjacent |
-| a URL or an image path | neither — no language, so named once in `site.ts` or `config/articles.ts` |
-
-Components that already exist, so do not write the markup again:
-`media/Carousel`, `media/EmbedFacade`, `media/PlayEmbed`, `media/EmbedGroup`,
-`ui/ContactForm`, `ui/LogoGrid`, `ui/SubscribeStub`, `patterns/Mark`.
-
-### Step 3 is already in, as a ratchet
-
-*A Spanish record must not carry structural markup in its body.* English is the
-source of truth for structure (owner, 2026-08-01), so the rule names one side as
-correct instead of comparing two editable things. It cannot be absolute until
-the list is empty; `STRUCTURED_ES` holds the line meanwhile, and a NEW Spanish
-page is bound by it fully today.
-
-### TRAPS — every one of these was silent, and every one shipped green
-
-- **`hasCarousel` / `hasMediaEmbed` in `[...page].astro` read the record BODY**
-  to decide which pages ship JavaScript. Markup moved into a family or a
-  component stops matching, so the page renders a carousel and ships nothing to
-  drive it. This happened TWICE. `verify:build` now asserts the property — a
-  built page whose HTML holds a carousel, or a facade the gate opens, must
-  reference the script — so it cannot happen a third time silently.
-- **Only facades whose provider the gate KNOWS should load the gate.** Testing
-  for the component alone put 2.6kB of unused JavaScript on a click-out page.
-- **`data-embed-provider` is a KEY; the provider name a reader sees is COPY.**
-  They are the same word for youtube/vimeo/soundcloud and different elsewhere.
-- **A CSS background path is invisible to every check.** `/radio` had
-  `url("img/…")` with no leading slash in both halves: fine at a root-level URL,
-  404 at `/es/…`. `verify:links` reads `href` and `src`, not `style`. **If a
-  page you are converting has a background image, resolve it against the SPANISH
-  URL.**
-- **A record declaring `family: "collect"` without the `collect` field renders
-  an EMPTY page.** The schema refuses it now.
-- **Check chrome for language.** `/es/collect` shipped two English cards and an
-  English contact form under Spanish body copy, and had no visual header at all
-  because `SECTION_COLLAGE` is keyed by `outputPath`.
-
-### Still outstanding, and shared by every carousel/facade page
-
-`ui/CarouselScript` announces "slide 1 of 5" and labels its arrows "previous
-slide" / "next slide" in English on Spanish pages; `ui/EmbedConsentScript`
-prints "plays from youtube". That chrome belongs to the components, so fix it
-once, for every page, rather than per conversion.
-
-### Where the work is
-
-Branch `wt/1-mw-19-separate-structure-from-copy` in slot `wt-1`, three commits,
-**not merged to trunk** and awaiting the owner's go-ahead. `npm run verify` =
-90 passed, 0 failed, 1 skipped. selftest 139/139.
-
-**`src/content/` IS ORGANISED BY LANGUAGE NOW. `migrated/` AND `authored/` ARE GONE.**
-
-```
-src/content/pages/en/**   85 English      src/content/pages/es/**   72 Spanish
-```
-
-One rule, asserted over all 157 records with no exceptions: **a record sits at
-`pages/<lang>/<its outputPath>`**, language segment taken out of the middle of
-the path. A page and its translation sit at the same path under the two language
-roots. `verify:translations` fails if a record is anywhere else.
-
-Provenance moved into a required **`origin: migrated | authored`** field, because
-the folder was carrying a security rule — `verify-routes.mjs` read
-`authored/**` by directory to decide which URLs were allowed to exist. It reads
-the field now. **An `authored` record authorises its own URL; a `migrated` one
-must appear in the frozen policy.** Never set `origin: "authored"` to make
-`verify:routes` pass.
-
-**No URL moved and none may.** All 426 built files were byte-identical across the
-reorganisation. `outputPath` is authoritative; nothing in `src/` reads a file's
-path. `LEGACY_ES` in `scripts/verify-translations.mjs` is now purely **eleven
-frozen URLs** — the ten `/lab/es/<slug>` pages and `/esp-feedback`, which has no
-other-language half and must not be given one. Their *files* are ordinary; only
-their URLs are frozen. **That list is closed: it may shrink, never grow** —
-adding a line to turn a check green is the bypass it exists to make visible.
-
-Authors: `.agents/skills/maar-content-authoring/SKILL.md`.
-Reasoning: `.agents/decisions/0004-content-tree-by-language.md`.
-
-**THERE IS ONE SURFACE NOW.** `layouts/shell-paper`, the `[data-surface='paper']`
-token block, the `surface` frontmatter field and the `paper` entry in
-`verify-a11y`'s `SURFACES` are all deleted — the docs were the only pages using
-them, and the owner removed the second surface once they moved to dark. Do not
-reintroduce a light theme without asking. **`@media print` in tokens.css keeps
-the cream values** and is now the only place they live; printing is a different
-question from theming. `ledger -- find shell-paper-removed`.
+Deleted, `policy: drop` on both URLs, the three external links recorded as
+reviewed removals, contract relocked (policy sha `5ad5bb98`, preserve 355→353).
+Done with the owner's own hand on the relock, because AGENTS.md reserves it.
 
 ---
 
