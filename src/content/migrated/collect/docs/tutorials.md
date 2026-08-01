@@ -3,7 +3,7 @@ outputPath: "collect/docs/tutorials"
 title: "Tutorials - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "paper"
+surface: "dark"
 tags: []
 source: "collect.maar.world/collections/_documentation/02-tutorials.md"
 lang: "en"

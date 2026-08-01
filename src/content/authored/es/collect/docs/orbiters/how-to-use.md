@@ -3,7 +3,7 @@ outputPath: "es/collect/docs/orbiters/how-to-use"
 title: "Cómo se usa - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "paper"
+surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/docs/orbiters/how-to-use"

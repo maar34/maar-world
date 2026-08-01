@@ -18,6 +18,17 @@
   padding-block: var(--paper-phrase-rail-pad-block);
   contain: paint;
   isolation: isolate;
+  /**
+   * THE THING A LANE MEASURES ITSELF AGAINST — see `.paper-phrase__lane`.
+   *
+   * A lane has to be at least as wide as the window it scrolls through, or the
+   * loop runs out of words before it comes round. Saying so as `100%` made the
+   * lane measure the RAIL, which is sized from the lanes — a cycle, and the
+   * reason the loop was broken (MW-14). Declaring the viewport a container lets
+   * the lane say `100cqi` and measure the window instead, which is what the
+   * rule always meant and is not circular.
+   */
+  container-type: inline-size;
 }
 
 .paper-phrase__rail,
@@ -35,9 +46,32 @@
   transform: translate3d(0, 0, 0);
 }
 
+/**
+ * ONE LANE IS ONE TURN OF THE LOOP, AND THE RAIL IS EXACTLY TWO OF THEM.
+ *
+ * That equality is the whole mechanism: the keyframe travels `-50%` of the
+ * rail, so `-50%` has to land on lane 2's start. It only does if the rail's own
+ * box is exactly two lanes wide.
+ *
+ * `min-inline-size: 100%` broke precisely that. A percentage here resolves
+ * against the rail — and the rail is `max-content`, sized FROM these lanes — so
+ * the lane's minimum depended on a width that depended on the lane. Chrome cut
+ * the cycle by sizing the rail to ONE lane while it went on containing two:
+ * measured 7,791px of box around 15,583px of content. `-50%` of that box is
+ * 3,896px, half a lane, so every cycle ended by snapping the rail back half a
+ * lane — the "first world appears fully rendered" jump in MW-14, and why no
+ * amount of tuning the duration ever made it seamless.
+ *
+ * `100cqi` is the same intent — never narrower than the window it scrolls
+ * through, so the loop never runs out of words mid-viewport — measured against
+ * the viewport (see `container-type` above) instead of against the rail. It is
+ * a length, not a percentage of the thing being sized, so there is no cycle:
+ * the rail's `max-content` is now honestly the sum of two lanes, `-50%` is one
+ * lane, and the first phrase enters from the right edge as the last leaves.
+ */
 .paper-phrase__lane {
   flex: none;
-  min-inline-size: 100%;
+  min-inline-size: 100cqi;
   gap: var(--paper-phrase-lane-gap);
   padding-inline-end: var(--paper-phrase-lane-gap);
 }

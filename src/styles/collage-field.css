@@ -2,8 +2,12 @@
   --collage-active-height: var(--collage-header-height);
   block-size: var(--collage-active-height);
   min-block-size: 0;
-  inline-size: 100vw;
-  margin-inline: calc(50% - 50vw);
+  /* Full bleed measured against the layout width, not the viewport width — see
+     `.shell__main` in shell.css. `100vw` counts the scrollbar and overhangs the
+     page by it, which is what put a permanent horizontal scrollbar on the site
+     (MW-13). `cqi` is that same width with the scrollbar already subtracted. */
+  inline-size: 100cqi;
+  margin-inline: calc(50% - 50cqi);
   position: relative;
   display: grid;
   overflow: hidden;

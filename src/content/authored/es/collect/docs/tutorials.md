@@ -3,7 +3,7 @@ outputPath: "es/collect/docs/tutorials"
 title: "Tutoriales - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "paper"
+surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/docs/tutorials"

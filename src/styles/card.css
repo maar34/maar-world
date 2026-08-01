@@ -378,6 +378,54 @@
   user-select: none;
 }
 
+/* ---- the cover glyph ----------------------------------------------------- */
+/**
+ * A COVER THAT IS A MARK — the Docs grid, MW-16.
+ *
+ * The ten Documentation entries used to show ten dark photographs of unrelated
+ * subjects. At card width they were ten near-identical black rectangles: the
+ * grid spent its whole visual budget on pictures and the reader still had to
+ * read every title to tell the cards apart. One symbol per article is less
+ * picture and more information.
+ *
+ * It keeps the plate and the frame rather than replacing them, so a glyph card
+ * and a photograph card are the same object at the same size and the grid stays
+ * even. The hatch plate underneath is the same designed empty state §04 draws —
+ * the glyph sits ON the plate, it does not stand in for it.
+ *
+ * `currentColor` is the reason this is inline SVG and not an `<img>`: the mark
+ * is drawn in the card's own ink, so it dims and lifts with the card instead of
+ * being a foreign object pasted onto it.
+ */
+.card__glyph {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--card-glyph-ink);
+  transition: color var(--m-fast) var(--ease);
+}
+
+.card__glyph svg {
+  inline-size: var(--card-glyph-size);
+  block-size: var(--card-glyph-size);
+  fill: currentColor;
+}
+
+/* The card leans and its mark lights up together — one hover, one response.
+   The pigment is the area's own, which is what makes a Collect glyph pink
+   without any Collect-specific rule existing here. */
+.card:hover .card__glyph,
+.card:focus-visible .card__glyph {
+  color: var(--area-pigment, var(--c-maar));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card__glyph {
+    transition: none;
+  }
+}
+
 /* ---- the cover state badge ----------------------------------------------- */
 /**
  * §04, "state badge bottom-right" — a flat pigment field with dark type, which

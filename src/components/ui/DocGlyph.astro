@@ -1,0 +1,65 @@
+---
+/**
+ * The mark a documentation entry wears on its card — §04's cover slot, filled
+ * by a symbol instead of a photograph.
+ *
+ * WHY A GLYPH AND NOT A PICTURE. The ten Docs entries carried ten dark
+ * photographs whose subjects had nothing to do with the articles under them:
+ * at card size they read as ten identical near-black rectangles, so the grid
+ * said nothing and the reader scanned titles alone. MW-16's instruction is to
+ * replace them with "a simpler visual language" — one legible mark per
+ * article. A symbol survives being 3rem tall on a dark plate; a photograph of
+ * a table does not.
+ *
+ * SAME SOURCE AND SAME MECHANISM AS `ui/NavigationIcon`, deliberately. The
+ * Material Symbols package is already a dependency and already compiled into
+ * the header this way, so this adds a second consumer rather than a second
+ * approach — and, critically, no network request: the fonts-and-third-party
+ * invariant forbids `fonts.googleapis.com`, and an icon font is exactly the
+ * thing the old Collect header used to pull.
+ *
+ * Inline `<svg>` rather than `<img src="…svg">` for one reason that decides it:
+ * inline paths inherit `currentColor`, so a glyph is tinted by the card it sits
+ * on and follows the area pigment on hover. An `<img>` is an opaque document
+ * with its own colour and would have to be re-authored per surface.
+ *
+ * `aria-hidden`, always. The glyph names the article's subject a second time —
+ * the card's own title has already said it in words, and the whole card is one
+ * link. A screen reader that announced "school, Tutorials" would be reading the
+ * decoration and the content as if they were two things.
+ */
+import album from '@material-symbols/svg-400/outlined/album.svg?raw';
+import school from '@material-symbols/svg-400/outlined/school.svg?raw';
+import style from '@material-symbols/svg-400/outlined/style.svg?raw';
+import eco from '@material-symbols/svg-400/outlined/eco.svg?raw';
+import nfc from '@material-symbols/svg-400/outlined/nfc.svg?raw';
+import menuBook from '@material-symbols/svg-400/outlined/menu_book.svg?raw';
+import code from '@material-symbols/svg-400/outlined/code.svg?raw';
+import info from '@material-symbols/svg-400/outlined/info.svg?raw';
+import gavel from '@material-symbols/svg-400/outlined/gavel.svg?raw';
+import lock from '@material-symbols/svg-400/outlined/lock.svg?raw';
+import description from '@material-symbols/svg-400/outlined/description.svg?raw';
+import type { DocGlyphName } from '../../config/site';
+
+interface Props {
+  name: DocGlyphName;
+}
+
+const { name } = Astro.props;
+
+const symbols: Record<DocGlyphName, string> = {
+  album,
+  school,
+  style,
+  eco,
+  nfc,
+  menu_book: menuBook,
+  code,
+  info,
+  gavel,
+  lock,
+  description,
+};
+---
+
+<span class="card__glyph" aria-hidden="true" set:html={symbols[name]}></span>

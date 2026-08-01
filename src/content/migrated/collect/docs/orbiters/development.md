@@ -3,7 +3,7 @@ outputPath: "collect/docs/orbiters/development"
 title: "Development - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "paper"
+surface: "dark"
 tags: []
 source: "collect.maar.world/collections/_documentation/04-orbiters/02-development.md"
 lang: "en"

@@ -44,9 +44,11 @@ import CarouselScript from '../components/ui/CarouselScript.astro';
 import PdfViewerScript from '../components/ui/PdfViewerScript.astro';
 import EmbedConsentScript from '../components/ui/EmbedConsentScript.astro';
 import HelixIsland from '../components/react/HelixIsland.astro';
+import DocGlyph from '../components/ui/DocGlyph.astro';
 import { globalLanguageChoices, alternatesFor, validateTranslations, LANGS } from '../lib/translations.mjs';
 import { stampText } from '../lib/mark.mjs';
-import { collageFor, articleCoverFor, articleCoverFitFor, LAB_INTRO, LAB_PINNED } from '../config/site';
+import { docExcerpt } from '../lib/doc-excerpt.mjs';
+import { collageFor, articleCoverFor, articleCoverFitFor, docGlyphFor, docReadMoreFor, LAB_INTRO, LAB_PINNED } from '../config/site';
 
 export async function getStaticPaths() {
   const pages = await getCollection('pages');
@@ -229,6 +231,28 @@ const alternates = alternatesFor(entry, all);
  * be updated when a year rolls over.
  */
 const isYearIndex = d.indexOf === 'lab';
+
+/**
+ * THE DOCUMENTATION INDEX, WHICH IS A COVERED INDEX THAT SHOWS NO COVERS.
+ *
+ * It is still `card-grid` and still `card.entry` — MW-16 asks for cards that
+ * are "visually consistent with the rest of the website", so this is the same
+ * component at the same size, not a Docs-only card. Three slots change and
+ * nothing else does:
+ *
+ *   cover   → dropped for a glyph. The ten records DO carry a `cover`, so this
+ *             is a deliberate override rather than an empty field falling
+ *             through: they are dark photographs of unrelated subjects that
+ *             rendered as ten near-identical black rectangles. See DOC_GLYPHS.
+ *   excerpt → the article's own opening sentence, read out of its body, since
+ *             none of these records has a `description`. See lib/doc-excerpt.
+ *   meta    → "read more" instead of the language code. Every entry on this
+ *             page is already in the page's own language (the `listed` filter
+ *             above), so "en" on all ten said nothing; the meta line is where
+ *             this site puts a card's call to action, exactly as the Collect
+ *             landing puts "watch tutorials" and "collect" there.
+ */
+const isDocsIndex = d.indexOf === 'collect-docs';
 
 /**
  * READING TIME, COUNTED RATHER THAN CLAIMED.
@@ -537,15 +561,21 @@ const labEntries = isYearIndex
               href={hrefOf(p.data.outputPath)}
               title={p.data.indexLabel ?? p.data.title}
               level={2}
-              cover={p.data.cover}
+              cover={isDocsIndex ? undefined : p.data.cover}
               coverShape={d.indexCoverShape}
               scatter={d.indexScatter}
               badge={p.data.suit_title}
               badgeOutline={p.data.date ? String(p.data.date).slice(0, 4) : undefined}
-              excerpt={p.data.card_description ?? p.data.description}
-              meta={p.data.lang}
+              excerpt={
+                p.data.card_description ??
+                p.data.description ??
+                (isDocsIndex ? docExcerpt(p.body) ?? undefined : undefined)
+              }
+              meta={isDocsIndex ? docReadMoreFor(d.lang) : p.data.lang}
               seed={p.data.outputPath}
-            />
+            >
+              {isDocsIndex && <DocGlyph slot="cover" name={docGlyphFor(p.data.outputPath)} />}
+            </Card>
           ))}
         </div>
       )

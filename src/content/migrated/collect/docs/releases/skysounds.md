@@ -3,7 +3,7 @@ outputPath: "collect/docs/releases/skysounds"
 title: "Sky Sounds - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "paper"
+surface: "dark"
 tags: []
 source: "collect.maar.world/collections/_documentation/02-ent-releases/01-skysounds.md"
 lang: "en"

@@ -1,7 +1,16 @@
 # Handoff
 
-**State:** last work commit `af173c3`, plus the commit that updated this file.
-`npm run verify` = **73 passed, 2 failed, 1 skipped**. selftest 106/106.
+**State:** `npm run verify` = **80 passed, 0 failed, 1 skipped**. The one skip is
+`verify:cards`' host-canary assertion, which needs MW-10 upstream.
+
+**In flight:** worktree slot `wt-2`, branch `wt/2-mw-13-14-16-…`, holding MW-13,
+MW-14 and MW-16. Committed there, **not merged to `main`** — awaiting the owner's
+go-ahead. See the four `MW-13`/`MW-14`/`MW-16` lines at the end of the ledger.
+
+One decision is left open there deliberately: `collect/docs` were the only pages
+using `surface: paper`, so `layouts/shell-paper` and the `[data-surface='paper']`
+token block are now unused. Deleting the second surface is a design call, not a
+consequence of MW-16 — `ledger -- find shell-paper-now-unused`.
 
 ---
 
@@ -39,14 +48,25 @@ assertions — prose elements, and component classes. Both were **added**; no ch
 was changed, relaxed or removed. A correspondence held between two files by hand
 is the failure mode this codebase has actually shipped three times.
 
-Both failures are known, deliberate and human-gated. Neither is a regression:
+The two failures this file used to list are both closed; the suite is green end to
+end. Two figures from them are still worth carrying forward as ceilings:
 
-- **`verify:links`** — 73 on-load refs to `www.dropbox.com` (MW-6 card art). **Must never go up.**
-- **`verify:content`** — 49 problems / 48 pages. All check-side. **Do not edit content to fix them.**
-  Why: `npm run ledger -- find residue-is-check-side`
+- **`verify:links`** — the on-load `www.dropbox.com` references (MW-6 card art).
+  Now baselined and passing. **The count must never go up.**
+- **`verify:content`** — passing. Where the build legitimately departs from
+  production, the reason is a named entry in `EXCLUSIONS` in
+  `scripts/author-content-expectations.mjs`, never an edit to the content.
+  **Do not edit content to make this check pass.**
 
-Everything else is green: selftest 106/106 · schemas 12/12 · build 8/8 · contract 3/3 ·
-routes 8/8 · cards 20/20 (+1 skip, needs MW-10) · a11y 24/24.
+Everything is green: selftest · schemas · build · contract · routes ·
+cards (+1 skip, needs MW-10) · a11y · content · links · translations · ledger.
+
+⚠ **`npm run author:content-expectations` cannot be run from a worktree.** It
+reads the read-only legacy `_site` checkouts at `ROOT/../maar.world-site` etc.,
+which from `maar-world.worktrees/wt-N` resolve to nothing — it then silently
+falls back to a weaker baseline and rewrites the whole file (measured: 2,424
+deletions, every `legacy-site-exact` baseline lost). Run it from the primary
+checkout, or hand-apply the one page an exclusion changes.
 
 ---
 

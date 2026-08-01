@@ -447,6 +447,91 @@ export const SECTION_COLLAGE: Record<string, string> = {
 };
 
 /**
+ * THE DOCUMENTATION GRID'S MARKS — one symbol per article, MW-16.
+ *
+ * The Docs index used each record's `cover`, and those ten covers were dark
+ * photographs of unrelated subjects. At card size they were ten near-identical
+ * black rectangles: the grid carried a picture for every entry and told the
+ * reader nothing, which is what the issue means by "no longer rely on the
+ * current images". A symbol is the opposite trade — it holds almost no
+ * information, but the information it holds survives being small.
+ *
+ * Keyed by `outputPath`, the same key `SECTION_COLLAGE` uses, so the two maps
+ * that decide "what picture does this route show" are addressed the same way.
+ *
+ * A name added here must also be imported in `ui/DocGlyph.astro` — the import
+ * has to be static for Vite to inline it, the same constraint TREE_LINKS
+ * records below. `docGlyphFor` falls back to `description`, the generic
+ * document symbol, so a new doc page renders a sensible mark on the day it is
+ * added rather than an empty plate.
+ */
+export const DOC_GLYPHS = {
+  album: 'album',
+  school: 'school',
+  style: 'style',
+  eco: 'eco',
+  nfc: 'nfc',
+  menu_book: 'menu_book',
+  code: 'code',
+  info: 'info',
+  gavel: 'gavel',
+  lock: 'lock',
+  description: 'description',
+} as const;
+
+export type DocGlyphName = keyof typeof DOC_GLYPHS;
+
+/**
+ * Which symbol each documentation entry wears. The choice is about the
+ * article's subject, not its position in the list.
+ */
+export const DOC_GLYPH_BY_PATH: Record<string, DocGlyphName> = {
+  'collect/docs/releases/skysounds': 'album',
+  'collect/docs/tutorials': 'school',
+  'collect/docs/ent-cards': 'style',
+  'collect/docs/ent-cards/sustainability': 'eco',
+  'collect/docs/ent-cards/nfc': 'nfc',
+  'collect/docs/orbiters/how-to-use': 'menu_book',
+  'collect/docs/orbiters/development': 'code',
+  'collect/docs/mw': 'info',
+  'collect/docs/mw/terms': 'gavel',
+  'collect/privacy': 'lock',
+};
+
+/**
+ * The Spanish Docs index lists the Spanish records, whose `outputPath` is the
+ * English one under `es/`. Same article, same subject, therefore same mark —
+ * derived rather than listed twice, so the two indexes cannot drift apart.
+ */
+export function docGlyphFor(outputPath: string): DocGlyphName {
+  const canonical = outputPath.replace(/^es\//, '');
+  return DOC_GLYPH_BY_PATH[canonical] ?? 'description';
+}
+
+/**
+ * The Docs card's call to action, IN THE INDEX'S OWN LANGUAGE.
+ *
+ * This is the one string MW-16 adds to the page body, and body text is not
+ * chrome. BaseLayout's rule is that the shell stays English on every page and
+ * says so with `chromeLang`, precisely so a screen reader is not handed English
+ * words to pronounce as Spanish. A card's meta line is inside `<main>`, in a
+ * document declared `lang="es"`, with no such escape hatch — an English "read
+ * more" there is the exact defect that rule exists to prevent, one level down.
+ *
+ * The slot it replaced held `p.data.lang`, a language code, which was
+ * language-neutral by accident. Translating is what keeps this a change of what
+ * the card says rather than a change of what language it says it in.
+ */
+const DOC_READ_MORE: Record<string, string> = {
+  en: 'read more',
+  es: 'leer más',
+};
+
+export function docReadMoreFor(lang: string): string {
+  return DOC_READ_MORE[lang] ?? DOC_READ_MORE.en;
+}
+
+/**
  * The Tree hub's links, and the one place to edit them.
  *
  * Tree is a link-in-bio page: it is given out directly and is the address in a

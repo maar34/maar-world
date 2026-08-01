@@ -57,8 +57,50 @@
 }
 
 /* The footer sits at the bottom on short pages without being fixed to it. */
+/**
+ * IT IS ALSO THE MEASURING STICK FOR FULL BLEED — and that is not decoration.
+ *
+ * "Full-bleed" used to be spelled `inline-size: 100vw; margin-inline: calc(50% -
+ * 50vw)`, which is the pattern everyone writes and which is wrong by exactly one
+ * scrollbar: `100vw` is the viewport INCLUDING the classic scrollbar, while the
+ * layout a page is laid out in is `documentElement.clientWidth`, which excludes
+ * it. So every full-bleed section overhung the page by ~7.5px on each side, the
+ * document's scrollWidth exceeded its clientWidth by ~8px, and the site carried a
+ * permanent horizontal scrollbar that revealed nothing (MW-13).
+ *
+ * `main` is the widest element that is actually the layout width — it is a plain
+ * block child of `.shell`, so its inline size IS clientWidth, scrollbar already
+ * subtracted. Declaring it an inline-size container makes `cqi` mean "the width
+ * the page really has", and a full-bleed child sized `100cqi` lands flush with
+ * both edges instead of 7.5px past them.
+ *
+ * WHAT DECLARING A CONTAINER COSTS, checked rather than assumed — because the
+ * obvious worry here is real. `container-type` carries layout containment, and
+ * layout containment normally makes an element a containing block for `position:
+ * fixed` descendants. Main HAS one: `.tree-hub__backdrop` is fixed, it lives
+ * inside main, and tree-hub.css keeps it fixed specifically so the picture holds
+ * still while the link column scrolls over it. If main captured it, the Tree
+ * page's backdrop would start scrolling with the page.
+ *
+ * It does not. Measured in Chrome on /tree, both on the real backdrop and on a
+ * synthetic `position: fixed; inset: 0` probe injected into main: main sits at
+ * top 76 and is 1784 tall, the fixed box resolves to top 0 and the full 2048 of
+ * the viewport, and it stays at top 0 across a scroll. Size containers do not
+ * capture fixed descendants — that is the behaviour container queries shipped
+ * with, and it is why this is a safe place to put one.
+ *
+ * The rest is quieter: the sticky header and the footer are SIBLINGS of main,
+ * not descendants, so main's stacking context cannot reach them, and main's own
+ * width comes from its parent rather than its contents, so inline-size
+ * containment changes no measurement.
+ *
+ * If the Tree backdrop is ever seen to scroll with the page, THIS is the rule
+ * that did it — move the container onto a wrapper that excludes tree-hub rather
+ * than reaching for `100vw` again.
+ */
 .shell__main {
   flex: 1 1 auto;
+  container-type: inline-size;
 }
 
 /**

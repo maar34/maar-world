@@ -257,6 +257,21 @@ const bodyClass = twoColumn ? 'card__body' : undefined;
       <div class="card__cover plate">
         {cover && <img src={cover} alt="" loading="lazy" decoding="async" />}
         {
+          /* A COVER THAT IS DRAWN RATHER THAN PHOTOGRAPHED — §04's cover slot,
+             filled by a component instead of a file. The Docs grid passes a
+             `ui/DocGlyph` here (MW-16); nothing else uses it yet.
+
+             A slot and not another string prop, because what goes in is markup
+             with its own imports — the same reason `metaLeadHtml` exists, one
+             step further. `Astro.slots.has` keeps every current caller
+             byte-identical: a card that passes nothing renders no element.
+
+             Second to `cover`, never instead of it. A record with a real
+             photograph shows the photograph; the glyph is what a record with no
+             picture worth showing gets, one step above the bare hatch plate. */
+          !cover && Astro.slots.has('cover') && <slot name="cover" />
+        }
+        {
           /* §04, "index numeral top-left". Decorative: it names a position in
              a grid, not anything about the entry, so reordering the grid must
              not change what a screen reader hears. */

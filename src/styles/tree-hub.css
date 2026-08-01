@@ -13,9 +13,11 @@
      backdrop is `fixed`, so it covers the viewport whatever height this is; the
      content decides the height instead, and lands under the header. */
   min-block-size: auto;
-  /* Full-bleed out of the shared content column. */
-  inline-size: 100vw;
-  margin-inline: calc(50% - 50vw);
+  /* Full-bleed out of the shared content column, measured against the layout
+     width rather than the viewport width — `100vw` counts the scrollbar and
+     overhangs the page by it (MW-13). See `.shell__main` in shell.css. */
+  inline-size: 100cqi;
+  margin-inline: calc(50% - 50cqi);
   display: grid;
   place-items: center;
   /* Breathing room that shrinks on a short screen rather than pushing the last
@@ -25,15 +27,36 @@
   isolation: isolate;
 }
 
-/* The picture is 1080×1920 and is used at that shape: fixed, covering, behind.
-   `fixed` keeps it still while a long list scrolls over it. */
+/**
+ * THIS BLOCK'S THREE LAYERS ARE STACKED FORWARD, NOT BACKWARD.
+ *
+ * The picture, the scrim over it and the column of links used to be z-index -2,
+ * -1 and auto: two layers reaching BEHIND their parent to sit under it. That
+ * works only for as long as no ancestor forms a stacking context — a negative
+ * z-index cannot escape one, and the layer is painted against the ancestor's
+ * backdrop instead of the page's.
+ *
+ * `.shell__main` now forms one, because MW-13 made it the inline-size container
+ * that full-bleed blocks measure themselves against (see shell.css). The first
+ * cut of that fix rendered this page as a black rectangle: the photograph was
+ * still loaded, still fixed, still full-viewport, and no longer painted.
+ *
+ * So the same three layers are expressed as 0 / 1 / 2 instead. Identical
+ * result — verified against the pre-change render — and it no longer depends on
+ * what any ancestor does, which is the property that was missing. `.tree-hub`
+ * already carries `isolation: isolate`, so these numbers are scoped to this
+ * block and cannot reach the site header.
+ *
+ * The picture is 1080×1920 and is used at that shape: fixed, covering, behind.
+ * `fixed` keeps it still while a long list scrolls over it.
+ */
 .tree-hub__backdrop {
   position: fixed;
   inset: 0;
   inline-size: 100%;
   block-size: 100%;
   object-fit: cover;
-  z-index: -2;
+  z-index: 0;
 }
 
 /* The type sits on someone else's photograph, so the surface it needs is
@@ -43,7 +66,8 @@
   content: '';
   position: fixed;
   inset: 0;
-  z-index: -1;
+  /* Above the photograph, below the type — see the layering note above. */
+  z-index: 1;
   background: linear-gradient(
     to bottom,
     rgb(0 0 0 / 0.45),
@@ -53,6 +77,11 @@
 }
 
 .tree-hub__column {
+  /* The top of the three layers. `relative` is what makes the z-index apply at
+     all — an auto-positioned box ignores it — and every visible thing on this
+     page is inside this column, so one layer carries the lot. */
+  position: relative;
+  z-index: 2;
   /* Wide enough for the longest label to stay on one line. A label that wraps
      makes its pill 30px taller than the rest and the set stops reading as a set,
      which is why "Get Your Cards on Bandcamp" was shortened rather than the

@@ -421,6 +421,46 @@ const EXCLUSIONS = [
       'design decision about content, not a check artifact — worth re-confirming with the owner.',
   },
   /**
+   * THE TEN DOCUMENTATION COVERS, REPLACED BY MARKS RATHER THAN LOST.
+   *
+   * Production's Docs index carried one photograph per entry. All ten were dark
+   * pictures of subjects unrelated to the articles beneath them, and at card
+   * size they rendered as ten near-identical black rectangles: the grid spent a
+   * picture on every entry and still told the reader nothing, so every card had
+   * to be read to be told apart.
+   *
+   * The owner's instruction in MW-16 is explicit — "documentation cards no
+   * longer rely on the current images", replaced with "a simpler visual
+   * language, such as Google Material icons or lightweight vector
+   * illustrations". Each card now carries an inline Material Symbol chosen for
+   * that article's subject (DOC_GLYPHS in src/config/site.ts) plus the
+   * article's own opening sentence, which production did not show at all.
+   *
+   * IT IS AN EXCLUSION AND NOT A REGENERATION, which is the distinction that
+   * matters here: the floor stays at ten everywhere else, this page states what
+   * it no longer asserts and why, and if the glyphs were ever quietly dropped
+   * the card grid's own assertions would still be there to notice. The check's
+   * question is "did production content vanish"; the answer is that it was
+   * deliberately substituted, and the substitute is not an `<img>`.
+   *
+   * The files themselves are untouched in media/collect/img/docs/covers/, so
+   * this is reversible by passing `cover` again in the index — nothing was
+   * deleted.
+   *
+   * Ledger: MW-16 design/docs-index-glyphs.
+   */
+  {
+    url: '/collect/documentation',
+    kind: 'images',
+    count: 10,
+    reason:
+      'the ten Docs entry covers. They were dark photographs of unrelated subjects that read as ' +
+      'ten identical black rectangles at card size. MW-16 replaces them with one inline Material ' +
+      'Symbol per article plus the article\'s own opening sentence — a substitution the owner ' +
+      'asked for, not content loss, and the source files remain in media/collect/img/docs/covers/. ' +
+      'Ledger MW-16 design/docs-index-glyphs.',
+  },
+  /**
    * PRODUCTION SERVES A BROKEN PAGE HERE AND THE STUB IS THE FIX.
    *
    * Jekyll printed the entire redirect document as ESCAPED VISIBLE TEXT. What

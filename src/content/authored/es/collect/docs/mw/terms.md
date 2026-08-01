@@ -3,7 +3,7 @@ outputPath: "es/collect/docs/mw/terms"
 title: "TÉRMINOS Y CONDICIONES - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "paper"
+surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/docs/mw/terms"

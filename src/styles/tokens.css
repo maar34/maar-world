@@ -641,6 +641,27 @@
   --card-numeral-ink: color-mix(in srgb, var(--ink) 32%, transparent);
   --card-numeral-inset: 12px;
   --card-numeral-inset-lg: 14px;
+  /**
+   * The cover glyph — the Docs grid's mark, MW-16. See `.card__glyph`.
+   *
+   * Sized against the cover rather than the type scale: it is a picture's
+   * replacement, so it is measured as a share of the frame it fills. 33% keeps
+   * a symbol reading as an object on a plate — large enough to be identified at
+   * a glance in a three-up grid, short of filling the frame, which would make
+   * the plate look like a button.
+   *
+   * DELIBERATELY STRONGER THAN `--card-numeral-ink`'s 32%, and the difference
+   * is the job, not a preference. The numeral is `aria-hidden` because it names
+   * a position in a grid and says nothing about the entry — 32% is right for
+   * something that must not compete. This glyph is the card's subject: it is
+   * the only thing distinguishing ten otherwise identical plates at a glance,
+   * and at 32% over the hatch texture the stripes read louder than the symbol.
+   *
+   * Still short of body ink, because it lifts to the area pigment on hover and
+   * a mark that is already bright has nowhere to go.
+   */
+  --card-glyph-size: 33%;
+  --card-glyph-ink: color-mix(in srgb, var(--ink) 55%, transparent);
   --t-card-title-article-size: 23px;
   --t-card-title-article-line: 1.12;
   /* The lead entry. The design's own "clamp(30px,3.2vw,38px)/1.06" — NOT

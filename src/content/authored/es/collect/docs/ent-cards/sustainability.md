@@ -3,7 +3,7 @@ outputPath: "es/collect/docs/ent-cards/sustainability"
 title: "Sustentabilidad - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "paper"
+surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/docs/ent-cards/sustainability"

@@ -3,7 +3,7 @@ outputPath: "es/collect/docs/releases/skysounds"
 title: "Sky Sounds - COLLECT.MAAR.WORLD"
 area: "collect"
 kind: "doc"
-surface: "paper"
+surface: "dark"
 tags: []
 lang: "es"
 translationOf: "collect/docs/releases/skysounds"

@@ -85,7 +85,7 @@
     "legacy-site-approximate": 14
   },
   "headingsAsserted": 384,
-  "imagesAsserted": 179,
+  "imagesAsserted": 169,
   "embedsAsserted": 158,
   "linksAsserted": 179,
   "pages": [
@@ -4153,13 +4153,19 @@
         "article-footer-el",
         "hidden-elements x2"
       ],
-      "excludedPerPage": [],
+      "excludedPerPage": [
+        {
+          "kind": "images",
+          "count": 10,
+          "reason": "the ten Docs entry covers. They were dark photographs of unrelated subjects that read as ten identical black rectangles at card size. MW-16 replaces them with one inline Material Symbol per article plus the article's own opening sentence — a substitution the owner asked for, not content loss, and the source files remain in media/collect/img/docs/covers/. Ledger MW-16 design/docs-index-glyphs."
+        }
+      ],
       "ownPropertyLinksNotAsserted": 0,
       "headings": [
         "Documentation"
       ],
       "minTextLength": 107,
-      "images": 10,
+      "images": 0,
       "embeds": 0,
       "links": []
     },
