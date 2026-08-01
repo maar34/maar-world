@@ -173,6 +173,93 @@ export const CALENDAR = {
     'https://calendar.google.com/calendar/appointments/schedules/AcZssZ2E7HM16smJlViabRPO6puSuIFX9H8KtN2opGDoMW3P_dzN9WYnVEyfWp4O4mendFmkBYVsPzvY?gv=true',
 } as const;
 
+/**
+ * Orbital Creation Workshop — `lab/{en,es}/ip-orchestra-design`.
+ *
+ * A DIFFERENT ARTICLE FROM `IP_ORCHESTRA` above, which is
+ * `lab/{en,es}/ip-orchestra`. They share the workshop and the two instruments
+ * and they are still two entries, for the reason `ORBITERS` states one screen
+ * up: MW-19 removes the duplication between a page and its own translation, not
+ * between two pages that happen to show the same thing today.
+ *
+ * ── THE POSTER IS THE ONE PICTURE THAT IS GENUINELY PER-LANGUAGE ─────────────
+ *
+ * Two fields, not one. `Interplanetary-Orchestra.ENG.png` and `.ESP.png` are
+ * the same designed sheet with the type set in two languages, which is why this
+ * pair is on TRANSLATED_ARTWORK in scripts/verify-translations.mjs — the only
+ * exemption to "a photograph is the same photograph in Spanish", and it exists
+ * for artwork with WORDS PRINTED ON IT. Showing a Spanish reader the English
+ * sheet would be the same half-translated chrome this issue removes.
+ *
+ * The other addresses have no language and are single fields, as everywhere.
+ */
+export const IP_ORCHESTRA_DESIGN = {
+  poster: {
+    en: '/img/lab/Interplanetary-Orchestra.ENG.png',
+    es: '/img/lab/Interplanetary-Orchestra.ESP.png',
+  },
+  summaryVideo: 'https://youtu.be/3FYGWpvH8Gs',
+  instruments: {
+    controlTheSound: '?g=335&s=1&c=2',
+    regenerativeModes: '?g=8&s=0&c=21',
+  },
+  /** Formspree. The same inbox as IP_ORCHESTRA today, still its own field. */
+  formAction: 'https://formspree.io/f/mqkrdkde',
+} as const;
+
+/**
+ * Dadada — `lab/{en,es}/dadada`.
+ *
+ * One soundcloud track and one instrument, and the two halves were spelling
+ * both. `track` is the widget address the facade's anchor points at, kept whole
+ * because it is soundcloud's and not ours to reassemble; `liveSet` is a query
+ * string, like every other instrument here, because `media/PlayFrame` writes
+ * the play.maar.world host.
+ *
+ * The two soundcloud attribution links stay in the bodies. A link inside a
+ * sentence is part of the sentence — the same rule LANDINGS records.
+ */
+export const DADADA = {
+  track:
+    'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1685947338%3Fsecret_token%3Ds-LAlb1xhIGLz&color=%23ff5500&auto_play=false&hide_related=true&show_comments=true&show_user=true&show_reposts=false&show_teaser=false&visual=true',
+  liveSet: '?g=8&s=0&c=20',
+} as const;
+
+/**
+ * Orbits and Bodies — `lab/{en,es}/orbits-and-bodies`.
+ *
+ * A conference paper and the two videos of the performance it describes. All
+ * three are the same file in either language: the paper is one PDF, written in
+ * English and presented as it is, and a recording is not translated. The words
+ * that name them — the PDF's accessible label, the fallback sentence, the link
+ * inside it — stay in the two bodies, where they can be read as prose.
+ */
+export const ORBITS_AND_BODIES = {
+  paper: '/img/pdf/WAC25-Orbits-and-Bodies-Bruna-Gabriel.pdf',
+  videos: {
+    performance: 'https://youtu.be/Tp--LJcp_5o',
+    talk: 'https://youtu.be/jaPHJNyjZ1s',
+  },
+} as const;
+
+/**
+ * Helix technical requirements — `lab/en/helix-technical-requirements` and
+ * `lab/es/helix-eac-montevideo-2025`.
+ *
+ * One address, and it is FIRST-PARTY: the interactive diagram is a page of this
+ * site, so `media/DiagramFrame` frames it directly rather than behind a
+ * click-to-load facade. It is here rather than in either body for the reason
+ * every entry in this file is: a diagram is the same diagram in Spanish, and
+ * both halves were spelling the path.
+ *
+ * Note the two halves publish under DIFFERENT slugs — the English one is named
+ * for what it is, the Spanish one for the exhibition it was written for — which
+ * is exactly why the shared thing has to live somewhere neither of them owns.
+ */
+export const HELIX = {
+  diagram: '/helix-diagram.html',
+} as const;
+
 /** One track — `{music,es/music}`. A query string; PlayFrame writes the host. */
 export const MUSIC = {
   rabbitHole: '?g=401&s=0&c=0',

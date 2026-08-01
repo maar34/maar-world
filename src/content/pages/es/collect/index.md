@@ -16,7 +16,7 @@ collect:
     body: "Sky Sounds es la primera colección de cartas que, al escanearlas, te deja escuchar su música y transformarla según el movimiento de los exoplanetas a los que pertenece."
     cta: "Coleccionar"
   orbiters:
-    label: "¿Qué es un Orbiter?"
+    label: "¿Qué es un orbitador?"
   journey:
     title: "Empezá tu viaje"
     carouselLabel: "5 fotografías"
@@ -63,7 +63,7 @@ collect:
       "carousel-es-collect-index-1" solo. Dos mitades de un par no pueden
       chocar porque sus outputPath no pueden.
 
-  (2) El botón "¿Qué es un Orbiter?" apuntaba a /es/orbiters escrito a mano,
+  (2) El botón "¿Qué es un orbitador?" apuntaba a /es/orbiters escrito a mano,
       con una nota explicando que mandar a alguien que lee en español a la
       página en inglés sería perder el idioma en un clic. Eso es una regla, no
       una excepción de esta página: la ruta la resuelve con `navPathsFor`, la

@@ -1,0 +1,47 @@
+---
+/**
+ * media/diagram-frame — a first-party page shown inside the article that links
+ * to it. Today that is `/helix-diagram.html`, on both halves of the Helix
+ * technical requirements.
+ *
+ * ── WHY THIS IS NOT `media/EmbedFacade` ──────────────────────────────────────
+ *
+ * A facade exists because of the invariant in AGENTS.md: no third-party request
+ * fires on load. This frame is SAME-ORIGIN — the diagram is a page of this site,
+ * built from `src/pages/helix-diagram` — so there is no third party to withhold
+ * and a click-to-load gate would be ceremony protecting nobody. The same
+ * reasoning `play.maar.world` embeds get, one step further in: that is a
+ * sibling domain, this is the site itself.
+ *
+ * ── WHY IT IS NOT `media/PlayFrame` EITHER ───────────────────────────────────
+ *
+ * PlayFrame writes `https://play.maar.world` in front of a query string and
+ * follows the frame with a full-screen link, because an instrument has both.
+ * A diagram has neither: the address is a whole path and there is nothing to
+ * open beside it.
+ *
+ * ── THE NAME ─────────────────────────────────────────────────────────────────
+ *
+ * NOT `Frame`, `Figure`, `Section` or `Iframe`. `STRUCTURAL_TAGS` in
+ * scripts/verify-translations.mjs matches CASE-INSENSITIVELY, so a component
+ * named for an element counts as that element and puts every record calling it
+ * back on STRUCTURED_ES. `DiagramFrame` collides with nothing in that list.
+ */
+
+interface Props {
+  /** Root-relative, first-party. The diagram's own URL. */
+  src: string;
+  /** The frame's accessible name, in the page's own language. Copy, so a prop. */
+  title: string;
+  /**
+   * The frame's height. The diagram sets its own internal layout and the host
+   * page cannot measure it, so the caller states it — 980px on both halves
+   * today, and the same number for both because a diagram is not translated.
+   */
+  height: string;
+}
+
+const { src, title, height } = Astro.props;
+---
+
+<iframe src={src} title={title} width="100%" height={height} frameborder="0" allowfullscreen></iframe>

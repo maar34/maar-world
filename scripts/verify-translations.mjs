@@ -346,15 +346,6 @@ export const structuralCount = (body) =>
  * line when its pair's structure moves into a page family; never add one.
  */
 export const STRUCTURED_ES = new Set([
-  'lab/es/ip-orchestra-design',
-  'lab/es/orbits-and-bodies',
-  'lab/es/dadada',
-  'es/collect/docs/ent-cards',
-  'es/collect/docs/releases/skysounds',
-  'es/collect/cards',
-  'es/collect/docs/mw',
-  'es/collect/documentation',
-  'lab/es/helix-eac-montevideo-2025',
 ]);
 
 /**
@@ -379,11 +370,15 @@ export const SHARED_CHROME_WORDS = new Set([
   /* The wordmark, as the brand link announces it. A brand is not translated. */
   'Maar World',
   'maar world',
-  /* The two product areas. Translating "Orbiters" would rename the instrument,
-     and "Collect" is the name of a section of this site, not the verb. */
+  /* "Collect" is the name of a section of this site, not the verb.
+     "Orbiters" WAS ON THIS LIST AND IS NOT ANY MORE. It was here on the
+     reasoning that translating it would rename the instrument — and that was
+     simply wrong about this product: it is called "Orbitadores" in Spanish and
+     has been for a year. Its `labelEs` says so now, so the word no longer
+     appears identically in both headers and no exemption is needed. Leaving the
+     entry would have let the English label come back silently. */
   'collect',
   'Collect',
-  'Orbiters',
   'Lab',
   /* The language chips themselves — a reader looking for Spanish looks for
      "es", in either language. */
@@ -394,6 +389,35 @@ export const SHARED_CHROME_WORDS = new Set([
      accessible name, since a link with no text cannot be announced. */
   'info',
 ]);
+
+/**
+ * THE PRODUCT IS CALLED "ORBITADORES" IN SPANISH AND "ORBITERS" IN ENGLISH.
+ *
+ * Two names for one product, one per language, and it has been that way for a
+ * year. The owner, 2026-08-01, after this was got wrong twice: *"we have been
+ * one year working with orbitadores in Spanish and orbiters in English … The
+ * product is called orbitadores in Spanish."*
+ *
+ * So this is NOT a name-versus-common-noun distinction — that was the wrong
+ * model and it left the Spanish header reading "orbiters" under Spanish copy.
+ * A Spanish page says "orbitadores" everywhere it names the product: the
+ * navigation, the page title, the h1 and the running text alike.
+ *
+ * ── THE THREE THINGS THAT KEEP THE ENGLISH SPELLING ──────────────────────────
+ *
+ *   "Orbiters Orchestra"      the proper name of a workshop, not the product
+ *   orbiter.plantasia.space   a real address
+ *   /orbiters, /es/orbiters   frozen in the route manifest; AGENTS.md forbids
+ *                             touching it, and a URL is not copy
+ *
+ * The first is excluded by a lookahead, and that lookahead SKIPS MARKUP: the
+ * Lab article writes its own title as
+ * `Orbiters <Mark tilt={2} tear={3}>Orchestra</Mark>`, so the two words of the
+ * name have a component call between them. The other two never match, because
+ * this reads a record's BODY and TITLE and not its `outputPath` or its links.
+ */
+export const SPANISH_ORBITER_ENGLISH =
+  /\bOrbiters?\b(?!\s*(?:<[^>]*>\s*)*Orchestra)/g;
 
 /**
  * The only pairs whose PICTURES may legitimately differ, by English outputPath.
@@ -479,21 +503,16 @@ export const elementSkeleton = (html) => {
  * pages that USED to disagree.
  */
 export const DIVERGENT_PAIRS = new Set([
-  'collect/docs/mw',
   /* radio's line is gone: the page is deleted, not converged. 2026-08-01. */
   'collect/docs/orbiters/how-to-use',
-  'collect/docs/releases/skysounds',
-  'lab/en/dadada',
   'lab/en/ip-2',
-  'lab/en/ip-orchestra-design',
-  'lab/en/orbits-and-bodies',
 ]);
 
 /** The size `DIVERGENT_PAIRS` may not exceed. It may only shrink. */
-export const DIVERGENT_PAIRS_CLOSED_AT = 7;
+export const DIVERGENT_PAIRS_CLOSED_AT = 2;
 
 /** The size `STRUCTURED_ES` may not exceed. It may only shrink. */
-export const STRUCTURED_ES_CLOSED_AT = 9;
+export const STRUCTURED_ES_CLOSED_AT = 0;
 
 /**
  * Which Spanish records carry structure they are not permitted to carry.
@@ -1104,6 +1123,71 @@ export async function checkTranslations(report) {
       'a Spanish page names its navigation in Spanish',
       `${localisedChrome} Spanish page(s) — every navigation label translated, ` +
         `${SHARED_CHROME_WORDS.size} words shared by both languages on purpose`,
+    );
+  }
+
+  /**
+   * The English spelling on a Spanish page. See SPANISH_ORBITER_ENGLISH.
+   *
+   * Zero, and there is no permitted-list to add a path to — deliberately. This
+   * check exists because the rule was got wrong twice in one session: first by
+   * leaving the word in English everywhere, then by translating only the
+   * running prose and leaving the NAVIGATION saying "orbiters" on every Spanish
+   * page. The header is the one place a reader sees on all 71 of them.
+   *
+   * The title is read as well as the body, because `/es/orbiters` shipped
+   * `title: "Orbiters - MAAR WORLD"` — the tab, the feed and the card grid all
+   * take their words from there, and none of them are the body.
+   */
+  const anglicised = records
+    .filter((r) => r.lang === 'es')
+    .flatMap((r) => {
+      /* COMMENTS ARE CUT FIRST, exactly as `structuralCount` cuts them and for
+         the same reason: a translator's note is addressed to whoever edits the
+         file, never to a reader, and this rule is about what a reader reads.
+         Without this, a note explaining the rule fails the check enforcing it. */
+      const text = `${r.data?.title ?? ''}\n${String(r.body ?? '')
+        .replace(/<!--[\s\S]*?-->/g, '')
+        .replace(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g, '')}`;
+      return (text.match(SPANISH_ORBITER_ENGLISH) ?? []).map((h) => `${r.file}: "${h}"`);
+    });
+
+  /* THE HEADER, READ OFF THE BUILT PAGE. This is the half that was missed:
+     every record can be perfect and the navigation still says "orbiters" on all
+     71 Spanish pages, because the header comes from SECTIONS and not from any
+     record. `chromeLabelsOf` is the same reader the check above uses. */
+  const esNavEnglish = [];
+  for (const { translation } of pairs) {
+    const labels = chromeLabelsOf(translation.outputPath) ?? [];
+    if (labels.some((l) => SPANISH_ORBITER_ENGLISH.test(l))) {
+      SPANISH_ORBITER_ENGLISH.lastIndex = 0;
+      esNavEnglish.push(translation.outputPath);
+    }
+    SPANISH_ORBITER_ENGLISH.lastIndex = 0;
+  }
+
+  if (anglicised.length || esNavEnglish.length) {
+    report.fail(
+      'a Spanish page says Orbitadores, not Orbiters',
+      [
+        anglicised.length
+          ? `${anglicised.length} English spelling(s): ${anglicised.slice(0, 5).join('; ')}`
+          : '',
+        esNavEnglish.length
+          ? `${esNavEnglish.length} Spanish page(s) whose HEADER still says it in English`
+          : '',
+      ]
+          .filter(Boolean)
+          .join(' — ') +
+        ' — the product is "Orbitadores" in Spanish and "Orbiters" in English. ' +
+        'Only "Orbiters Orchestra", the orbiter.plantasia.space address and the frozen ' +
+        '/orbiters URLs keep the English spelling',
+    );
+  } else {
+    report.pass(
+      'a Spanish page says Orbitadores, not Orbiters',
+      `${records.filter((r) => r.lang === 'es').length} Spanish records and the header — ` +
+        'the product is named in Spanish everywhere, including the navigation',
     );
   }
 

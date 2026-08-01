@@ -1,105 +1,146 @@
 # Handoff
 
-**State:** `npm run verify` = **94 passed, 0 failed, 1 skipped**. The one skip is
-`verify:cards`' host-canary assertion, which needs MW-10 upstream.
+**State:** `npm run verify` = **96 passed, 0 failed, 0 skipped**.
 
-**Last shipped:** MW-13, MW-14, MW-16, MW-11's i18n structure work, and **MW-19
-through fourteen of its sixteen pairs** — sixteen commits, merged to `main`
-2026-08-01. Nine pairs remain and none of them blocks a deploy.
+**Last shipped:** MW-19 IS DONE. All sixteen pairs converted — the last nine in
+this session, six commits, on `wt/1-mw-19-separate-structure-from-copy`.
 
-## MW-19 — NINE PAIRS LEFT. READ THE LAST SECTION FIRST.
+## MW-19 — FINISHED. WHAT IT LEFT BEHIND.
 
-**Fourteen pairs converted. `/radio` deleted and 404ing. The suite is 94 checks.**
+`STRUCTURED_ES` is **empty**. Not one Spanish record on this site carries
+structural markup. The three ratchets now stand at:
 
-`STRUCTURED_ES` in `scripts/verify-translations.mjs` is down to **9**, and there
-are now THREE ratchets, all closed, all shrink-only:
+| list | holds | closed at | meaning |
+|---|---|---|---|
+| `STRUCTURED_ES` | **0** | 0 | Spanish records still carrying markup |
+| `DIVERGENT_PAIRS` | **2** | 2 | pairs whose halves still render differently |
+| `TRANSLATED_ARTWORK` | 2 | — | pairs whose pictures legitimately differ |
 
-| list | holds | meaning |
-|---|---|---|
-| `STRUCTURED_ES` | 9 | Spanish records still carrying markup |
-| `DIVERGENT_PAIRS` | 7 | pairs whose two halves still render different structure |
-| `TRANSLATED_ARTWORK` | 2 | pairs whose pictures legitimately differ (poster with type on it) |
+### THE TWO PAIRS STILL DIVERGENT, AND WHY THEY ARE NOT MW-19
 
-### THE OWNER'S VERDICT ON HOW THIS WAS BUILT — read this before deciding how to do the rest
+`collect/docs/orbiters/how-to-use` and `lab/en/ip-2`. **Neither carries any
+markup in either half** — they were never on `STRUCTURED_ES` and nothing in
+this issue's brief covered them. They diverge for the other reason the list
+names: two bodies written by hand that drifted.
 
-2026-08-01, and it is correct:
+- `how-to-use` — the Spanish half writes a list item where the English writes a
+  paragraph. One line of prose, one element.
+- `ip-2` — the Spanish half has an extra `ol`/`li` and the English an extra
+  paragraph, around the third instrument.
 
-> *"I can't believe we migrated all the trash of the old website… instead of
-> doing the page correctly, doing the structure correctly, we keep doing
-> everything in the most complex way possible. We need to make 20 pages or 30,
-> I don't mind."*
+Both are a copy-editing job on one body each, not a component job. They are the
+whole of what is left on that ratchet.
 
-The migration imported a dead Jekyll site wholesale — its markup, its dead
-classes, its empty spacers, its single-child grid wrappers — and MW-19 is the
-bill for that. **For several of the nine that remain, REWRITING the page is
-cheaper and better than converting it.** That is the shortcut nobody has been
-taking, and it is the legitimate one:
+### THE REWRITE WAS THE RIGHT CALL, AND HERE IS WHAT IT COST
 
-- `collect/docs/mw` — two raw `<table>`s. Write them as markdown tables.
-- `collect/docs/ent-cards` — five nested divs around a picture and a list.
-- `collect/docs/releases/skysounds` — a raw table plus two links.
-- `collect/cards`, `collect/documentation` — one wrapper each.
+The owner's verdict was acted on. Five of the nine were **rewritten as
+markdown**, not converted:
 
-Only these four need real component work:
-`lab/*/ip-orchestra-design` (19), `lab/*/orbits-and-bodies` (15),
-`lab/*/dadada` (11 — its Spanish half says "listen on soundcloud" in English,
-fix it in the conversion), `lab/*/helix-eac-montevideo-2025` (2).
+- `collect/docs/mw` — two raw tables. The first was ONE cell with
+  `role="presentation"`: a box of text drawn as a table. It is a paragraph.
+- `collect/docs/releases/skysounds` — a credits table with nine hand-written
+  `th scope="row"` cells. One markdown table with a real header row.
+- `collect/docs/ent-cards` — five nested divs around a picture, a heading and
+  one sentence, spaced with seven empty line breaks.
+- `collect/cards`, `collect/documentation` — a wrapper around nothing. The card
+  grid on both is drawn by `[...page].astro` from `indexOf`, never by the body.
+
+Four needed real components, and every component they needed already existed
+except one: `media/DiagramFrame`, for a FIRST-PARTY page shown in a frame.
+
+### FOUR DEFECTS FOUND ON THE WAY, ALL SHIPPED, NONE CAUGHT BY A CHECK
+
+1. **The embed gate spoke English on every Spanish page.** Once JavaScript
+   replaces a facade, the poster said "plays from youtube", its accessible name
+   ended "loads the player from youtube-nocookie.com", and the calendar said
+   "open the booking calendar here" — on top of a correctly translated facade.
+   Fixed: `GATE` in `src/config/embeds.ts`, keyed by `<html lang>`. **This
+   affected every gated embed on the site, not only the converted pages.**
+2. **`lab/es/dadada` said "listen on soundcloud"** in English. Fixed by
+   `soundcloud` existing in `EMBED_FACADE` with its own Spanish label.
+3. **`orbits-and-bodies` shipped four literal asterisks** around the artist's
+   name in English: `**𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 **` — a closing `**` after a space is not
+   a closer. Only the pair check noticed, because the Spanish half was correct.
+4. **A Spanish translator note in an HTML comment SHIPS to the reader** — and
+   `elementSkeleton` counts tag names written inside it, so a note that spelled
+   `<thead>` shifted the pair comparison by one element and made two pairs look
+   divergent when they were not. Every converted ES record uses `{/* … */}`
+   now, which renders nothing. **`structuralCount` strips comments and
+   `elementSkeleton` does not** — that asymmetry is still there, and is the
+   trap to know if a pair ever looks divergent for no visible reason.
+
+### TRAPS THIS SESSION HIT, ON TOP OF THE ONES BELOW
+
+- **MDX rejects a bare `<br>`.** The build fails with *"Expected a closing tag
+  for `<br>`"* pointing at the END of the paragraph, several lines below the
+  actual tag. Use markdown hard breaks (two trailing spaces) or `<br />`.
+- **A `<span>` in an `h1` is a structural tag.** Every one of these pages
+  needed `patterns/Mark` and therefore `.mdx`, even the ones whose only other
+  content was prose. That is most of why five "markdown rewrites" are `.mdx`.
+- **HTML comments are not valid MDX.** Converting a `.md` with a translator
+  note means converting the note too.
+- **`npm run ledger -- append` silently drops an entry over 500 chars** but
+  still exits 0 — the commit after it succeeds with no ledger line. Check
+  `ledger:check`'s entry count moved.
 
 ### WHAT EXISTS NOW, SO NOTHING GETS WRITTEN TWICE
 
-`media/EmbedPlate` · `media/PdfEmbed` · `media/PlayFrame` (bare player + its
-full-screen link) · `media/PlayEmbed` (player in a captioned band, has `level`)
-· `media/Picture` · `media/Carousel` (has `autoplayMs`) · `media/EmbedFacade` ·
-`media/EmbedGroup` · `patterns/Band` · `patterns/Mark` · `patterns/EditorialProfile`
-· `ui/ContactForm` · `ui/LogoGrid` · `ui/SubscribeStub`.
+`media/EmbedPlate` · `media/PdfEmbed` · `media/PlayFrame` · `media/PlayEmbed`
+(has `level`) · `media/Picture` · `media/Carousel` (has `autoplayMs`) ·
+`media/EmbedFacade` · `media/EmbedGroup` · **`media/DiagramFrame`** (new —
+first-party frame, no consent gate) · `patterns/Band` · `patterns/Mark` ·
+`patterns/EditorialProfile` · `ui/ContactForm` · `ui/LogoGrid` ·
+`ui/SubscribeStub`.
 
-Strings and addresses: `src/config/embeds.ts` (facade words by provider AND
-language — add an entry when you convert a page that needs one; `soundcloud`
-and `external` are still missing on purpose) and `src/config/articles.ts`
-(every image path and query string, named once for both halves).
+Strings and addresses: `src/config/embeds.ts` (`EMBED_FACADE` by provider AND
+language, plus `GATE`) and `src/config/articles.ts`.
 
-### FOUR TRAPS THIS SESSION HIT, ON TOP OF THE SIX BELOW
+**`external` is deliberately still absent from `EMBED_FACADE`.** Its only
+caller was `/radio`, which was deleted rather than converted, so an entry would
+replace no markup — adding one would be exactly the speculative
+pre-population that file forbids. The comment there says so now.
 
-- **`*/` inside a block comment closes it.** Writing `lab/*/ip-1` in an
-  `.astro` comment broke the build twice, with an error pointing at the next
-  word rather than the comment.
-- **`STRUCTURAL_TAGS` is case-INSENSITIVE**, so a component named `<Figure>`
-  counts as a `<figure>` tag. `Section`, `Article`, `Table`, `Span` are the
-  remaining names a component must not take.
-- **An `<a>` inside `<object>`** makes Astro's parser reconstruct the anchor
-  twice further down the document — two nameless links, caught only by
-  `verify:a11y`. `media/PdfEmbed` injects that fallback as escaped HTML.
-- **Clearing `.astro` while `npm run dev` is running kills the preview the
-  owner is watching.** It 404s every page until restarted. Do not clear the
-  cache mid-session without restarting dev afterwards.
+### THE PRODUCT IS "ORBITADORES" IN SPANISH AND "ORBITERS" IN ENGLISH
 
-### WHAT WAS WRONG BEYOND STRUCTURE, AND IS NOW FIXED
+Two names for one product, one per language, and it has been that way for a
+year. Not a name-versus-common-noun distinction — that was tried in this
+session and it was wrong: it left the **navigation reading "orbiters" on all 71
+Spanish pages**, which is the one place a reader sees on every one of them.
 
-Worth knowing because none of it was visible to any check, and all of it was
-what the owner actually saw:
+A Spanish page says **Orbitadores** everywhere it names the product: the header,
+the page title, the `h1`, the running text, the card copy.
 
-- **Five Spanish pages had NO header at all** — `/es/landings`, `/es/bookings`,
-  `/es/orbiters`, `/es/about`, `/es/calendar`. `SECTION_COLLAGE` is keyed by
-  `outputPath` and a miss returned null silently.
-- **The Spanish home drew one of three cards with no picture** —
-  `ARTICLE_COVER_FALLBACKS` held only the English href.
-- **The whole shell was English on every Spanish page.** `BaseLayout` set
-  `chromeLang="en"` and a comment explained that the shell "is written in
-  English on every page" — an honest label on a defect. `SECTIONS` and
-  `HOME_ACTIONS` carry `labelEs` now, read through one `labelFor`.
-- **Thirteen Spanish players said "Play full screen"** in English.
+Only three things keep the English spelling:
 
-Three checks were added so none of it can come back: *a page and its
-translation render the same structure* (body), *…show the same pictures* (whole
-document — the header is chrome and that is exactly where the bugs were), and
-*a Spanish page names its navigation in Spanish* (labels, not hrefs — the
-existing href check passed throughout).
+| keeps English | why |
+|---|---|
+| `Orbiters Orchestra` | the proper name of a workshop, not the product |
+| `orbiter.plantasia.space` | a real address |
+| `/orbiters`, `/es/orbiters` | frozen in the route manifest — a URL is not copy |
 
-### /radio IS GONE
+**A check enforces it** — *a Spanish page says Orbitadores, not Orbiters*. It
+reads each Spanish record's **body and title**, and the **header off the built
+page**, because the header comes from `SECTIONS` and not from any record —
+which is exactly how the first attempt passed while the nav stayed English.
+There is no permitted-list to add a path to.
+
+`'Orbiters'` was removed from `SHARED_CHROME_WORDS` in the same commit. It was
+there on the reasoning that translating it would rename the instrument, and
+that reasoning was simply wrong about this product. Leaving the entry would
+have let the English label come back silently.
+
+Two things the check caught on its own runs, both now written into it:
+
+- **`Orbiters Orchestra` is split by a component** in the Lab article's title —
+  `Orbiters <Mark …>Orchestra</Mark>` — so the lookahead has to skip markup.
+- **"Los Orbiters combinan…"** on `ip-orchestra-design`, missed by a
+  case-sensitive first pass. Sentence-initial capitals are why the rule is a
+  check and not a search-and-replace.
+
+### /radio IS GONE### /radio IS GONE
 
 Deleted, `policy: drop` on both URLs, the three external links recorded as
 reviewed removals, contract relocked (policy sha `5ad5bb98`, preserve 355→353).
-Done with the owner's own hand on the relock, because AGENTS.md reserves it.
 
 ---
 
@@ -285,7 +326,8 @@ navigational only.
 - **Self-host every font. No analytics, no cookie banner. No third-party request
   on page load.**
 - **No Tailwind, no CSS-in-JS, no CMS, no backend.** React only in the Helix island.
-- **Application JavaScript on two things only: the Helix island and `ui/carousel`.**
+- **Application JavaScript on three things only: the Helix island, `ui/carousel`
+  and `ui/embed-consent`.**
   The carousel exception is the owner's, after two no-script attempts failed — the
   engine is Embla's plain-JS core (no React, no Tailwind), bundled by Vite, loaded on
   the 5 pages that have a carousel. `ledger -- find carousel-embla`. A third is a
