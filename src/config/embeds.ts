@@ -36,14 +36,18 @@
  *
  * One entry per provider a converted page needs, added by the conversion that
  * needs it. It is deliberately NOT pre-populated from a grep of the unconverted
- * bodies: `soundcloud`, `google-calendar` and `external` still have their
- * strings written into `lab/dadada`, `calendar` and `radio`, and copying them
- * here before those pages are converted would create the second spelling this
- * file exists to remove. Add the entry and delete the markup in one commit.
+ * bodies: copying a string here before the page that holds it is converted
+ * would create the second spelling this file exists to remove. Add the entry
+ * and delete the markup in one commit.
  *
- * NOTE FOR WHOEVER CONVERTS `lab/dadada`: its Spanish half currently says
- * "listen on soundcloud" — the English label, on a Spanish page. That is a bug
- * to fix in the conversion, not a string to transcribe faithfully.
+ * `external` IS STILL ABSENT, AND THAT IS NOT AN OVERSIGHT. Its only caller was
+ * `/radio`, and that page was deleted rather than converted — so there is no
+ * page whose markup an `external` entry would replace, and adding one would be
+ * exactly the speculative pre-population the paragraph above forbids. Whoever
+ * next needs a facade for a link that is not a named platform adds it then, and
+ * picks the reader-facing name at that point: "the source" / "la fuente" is
+ * what `/radio` used, and it is recorded here as a starting point, not a
+ * decision already taken.
  */
 
 /** The languages the site is published in. English is the source of truth. */
@@ -76,6 +80,20 @@ export const EMBED_FACADE: Record<string, Record<Lang, FacadeStrings>> = {
    * against "google calendar" — which is the distinction this table exists to
    * keep, and the first entry where the two actually differ.
    */
+  /**
+   * The Dadada live set. THE VERB IS THE POINT: you *listen* to a track and you
+   * *watch* a video, and nothing derives one from the other — which is the
+   * reason `label` is per provider in this table rather than composed from the
+   * name the way `note` is.
+   *
+   * Its Spanish half was the note at the top of this file: `lab/es/dadada`
+   * shipped "listen on soundcloud", the English sentence, under Spanish copy
+   * and a Spanish heading. Fixed by existing here rather than in that body.
+   */
+  soundcloud: {
+    en: { name: 'soundcloud', label: 'listen to this track on soundcloud' },
+    es: { name: 'soundcloud', label: 'escuchar este track en soundcloud' },
+  },
   'google-calendar': {
     en: { name: 'google calendar', label: 'open the booking calendar on google calendar' },
     es: { name: 'google calendar', label: 'abrir el calendario de reservas en google calendar' },

@@ -174,6 +174,24 @@ export const CALENDAR = {
 } as const;
 
 /**
+ * Dadada — `lab/{en,es}/dadada`.
+ *
+ * One soundcloud track and one instrument, and the two halves were spelling
+ * both. `track` is the widget address the facade's anchor points at, kept whole
+ * because it is soundcloud's and not ours to reassemble; `liveSet` is a query
+ * string, like every other instrument here, because `media/PlayFrame` writes
+ * the play.maar.world host.
+ *
+ * The two soundcloud attribution links stay in the bodies. A link inside a
+ * sentence is part of the sentence — the same rule LANDINGS records.
+ */
+export const DADADA = {
+  track:
+    'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1685947338%3Fsecret_token%3Ds-LAlb1xhIGLz&color=%23ff5500&auto_play=false&hide_related=true&show_comments=true&show_user=true&show_reposts=false&show_teaser=false&visual=true',
+  liveSet: '?g=8&s=0&c=20',
+} as const;
+
+/**
  * Orbits and Bodies — `lab/{en,es}/orbits-and-bodies`.
  *
  * A conference paper and the two videos of the performance it describes. All
