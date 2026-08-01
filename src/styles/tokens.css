@@ -28,6 +28,39 @@
   --c-tree: #bdbd8c;    /* tree — growth, time, lineage */
   --c-dark: #000000;
 
+  /* ---- suit pigments --------------------------------------------------- */
+  /**
+   * The Sky Sounds suits, so a card index can be read by suit at a glance.
+   *
+   * A DIFFERENT ROLE from the three above. Those are areas — wayfinding between
+   * maar, collect and tree. A suit is a set inside one area, and every Sky
+   * Sounds badge was drawing the collect pigment: the badge was saying only
+   * what the URL already said. The suit is what the badge actually names.
+   *
+   * THE HUE IS THE PRINTED CARD'S, MEASURED, NOT CHOSEN. Each keeps the hue of
+   * its own suit's marker ink, sampled from the full-size artwork:
+   *
+   *   suit 1   #fff104  the yellow S1 tag on the red face
+   *   suit 2   #1b91b6  the blue rule and caption on the yellow face
+   *   suit 3   #bc252b  the red rule and caption on the black face
+   *
+   * The saturation and lightness are NOT the print's. "A pastel is always a
+   * background, never type" and "type on any pastel is always dark", so each hue
+   * is lifted into the register the area pigments occupy (S 27-43%, L 59-65%).
+   * The print red is why this is not optional: #bc252b carries 3.44:1 against
+   * the black ink that sits on it, which fails AA. Lifted, the set runs
+   * 6.18 / 8.89 / 14.78 — the floor clears --c-maar's own 5.71, so no suit badge
+   * is the weakest pair in the build.
+   *
+   * The wild card takes --sf-paper rather than a fifth near-white: its wordmark
+   * is plain white, paper is the approved white, and a value one step off
+   * #efe7da would be one nobody could see and everybody would maintain.
+   */
+  --c-suit-1: #e4dd58;
+  --c-suit-2: #68b3ca;
+  --c-suit-3: #d76a6e;
+  --c-suit-wild: var(--sf-paper);
+
   /* Type on any pastel is always dark, on both surfaces. */
   --pigment-ink: var(--c-dark);
 

@@ -48,7 +48,7 @@ import DocGlyph from '../components/ui/DocGlyph.astro';
 import { globalLanguageChoices, alternatesFor, validateTranslations, navPathsFor, urlOf, LANGS } from '../lib/translations.mjs';
 import { stampText } from '../lib/mark.mjs';
 import { docExcerpt } from '../lib/doc-excerpt.mjs';
-import { collageFor, articleCoverFor, articleCoverFitFor, docGlyphFor, docReadMoreFor, LAB_INTRO, LAB_PINNED } from '../config/site';
+import { collageFor, articleCoverFor, articleCoverFitFor, docGlyphFor, docReadMoreFor, suitPigment, LAB_INTRO, LAB_PINNED } from '../config/site';
 
 export async function getStaticPaths() {
   const pages = await getCollection('pages');
@@ -694,6 +694,7 @@ const labEntries = isYearIndex
               coverShape={d.indexCoverShape}
               scatter={d.indexScatter}
               badge={p.data.suit_title}
+              badgePigment={suitPigment(p.data.suit_title)}
               badgeOutline={p.data.date ? String(p.data.date).slice(0, 4) : undefined}
               excerpt={
                 p.data.card_description ??

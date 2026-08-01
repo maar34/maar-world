@@ -84,6 +84,15 @@ interface Props {
   strip?: string[];
   /** The pigment badge — an area, a suit, a set. */
   badge?: string;
+  /**
+   * The badge's own pigment, where the set it names has one.
+   *
+   * Defaults to the area pigment, which is right for a badge naming the area
+   * and useless for one naming a suit inside it — every Sky Sounds badge drew
+   * the same collect green and told a reader nothing the URL had not. A caller
+   * that knows the set's colour passes it; nothing else changes.
+   */
+  badgePigment?: string;
   /** The outline badge — a year, a count in words. "badges max two." */
   badgeOutline?: string;
   excerpt?: string;
@@ -174,6 +183,7 @@ const {
   scatter = false,
   strip,
   badge,
+  badgePigment,
   badgeOutline,
   excerpt,
   meta,
@@ -304,7 +314,14 @@ const bodyClass = twoColumn ? 'card__body' : undefined;
       /* "badges max two" — the props allow exactly two and no more. */
       (badge || badgeOutline) && (
         <div class="card__badges">
-          {badge && <span class="card__badge card__badge--pigment">{badge}</span>}
+          {badge && (
+            <span
+              class="card__badge card__badge--pigment"
+              style={badgePigment ? `--card-badge-pigment: ${badgePigment}` : undefined}
+            >
+              {badge}
+            </span>
+          )}
           {badgeOutline && <span class="card__badge card__badge--outline">{badgeOutline}</span>}
         </div>
       )

@@ -168,8 +168,11 @@
 
 /* One pigment per component instance; never two pastels touching — so only the
    first badge is ever a field and the second is always the outline. */
+/* The set's own pigment where it has one, the area's where it does not — see
+   `suitPigment` in config/site. The ink is unchanged either way: every value
+   this can take is a pastel, and type on a pastel is always dark. */
 .card__badge--pigment {
-  background: var(--area-pigment, var(--c-maar));
+  background: var(--card-badge-pigment, var(--area-pigment, var(--c-maar)));
   color: var(--pigment-ink);
 }
 

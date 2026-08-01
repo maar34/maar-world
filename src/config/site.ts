@@ -83,6 +83,34 @@ export const AREAS: Record<'maar' | 'collect' | 'tree', AreaConfig> = {
 export type AreaName = keyof typeof AREAS;
 
 /**
+ * A Sky Sounds suit's own pigment, for the badge on a card index.
+ *
+ * Keyed on the record's `suit_title` after normalising, and normalising is not
+ * tidying: the 35 records spell the third suit two ways — 10 say `SkySounds.3`
+ * and `NTH7336` says `SkySounds 3` with a space. Both are the same suit and
+ * must draw the same colour, and the records are content that is printed on the
+ * page, so this reads around the difference rather than editing it. Matching on
+ * the trailing digit does that, and survives the next record that arrives
+ * spelled a third way.
+ *
+ * `SkySounds` with no number is the WildCard — deliberately last in the chain,
+ * because it is the only suit whose name is a prefix of every other one.
+ *
+ * Anything that is not a Sky Sounds suit returns null and keeps the area
+ * pigment: `Stoney_Way` is a separate release, not a fifth suit, and a colour
+ * that said otherwise would be a lie about the set it belongs to.
+ */
+export function suitPigment(suitTitle: string | undefined): string | undefined {
+  if (!suitTitle) return undefined;
+  if (!/^skysounds/i.test(suitTitle.trim())) return undefined;
+  const n = suitTitle.match(/(\d)\s*$/)?.[1];
+  if (n === '1') return 'var(--c-suit-1)';
+  if (n === '2') return 'var(--c-suit-2)';
+  if (n === '3') return 'var(--c-suit-3)';
+  return n ? undefined : 'var(--c-suit-wild)';
+}
+
+/**
  * Which areas the header actually offers, and why it is not all three.
  *
  * `AREAS` is the pigment and path registry for the three merged origins — every
