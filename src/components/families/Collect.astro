@@ -106,6 +106,7 @@ import {
   COLLECT_VIDEO_URL,
   collageFor,
 } from '../../config/site';
+import { facadeStrings } from '../../config/embeds';
 
 interface Slide {
   step: string;
@@ -171,7 +172,22 @@ const {
 } = Astro.props;
 
 const strings = COLLECT_LANDING[lang] ?? COLLECT_LANDING.en;
-const { method, offer, form, video, pairLabel } = strings;
+const { method, offer, form, pairLabel } = strings;
+
+/**
+ * What the facade says, from the site-wide table rather than from this family.
+ *
+ * It used to be `COLLECT_LANDING.video`, with the note beside it saying that the
+ * pair would want "one shared table keyed by provider and language" once the
+ * other conversions arrived. They have — `src/config/embeds.ts` — so this reads
+ * from it, and the sentence exists once for every facade on the site instead of
+ * once per family and once per page body.
+ *
+ * The fallback matches the line above it: an unknown language is drawn in
+ * English rather than failing, because a landing with no words is worse than a
+ * landing in the wrong ones.
+ */
+const video = facadeStrings('youtube', lang === 'es' ? 'es' : 'en');
 const collage = collageFor(seed);
 
 /**

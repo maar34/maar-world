@@ -1,0 +1,73 @@
+---
+/**
+ * media/embed-plate — a captioned click-to-load video, centred on the page.
+ *
+ * The markup existed eleven times: six on `landings`, four on `orbiters`, one on
+ * `radio` — and each of those spelled twice, once per language, so twenty-two
+ * copies of a wrapper whose only per-page value is one line of caption.
+ *
+ * It is `media/EmbedFacade` plus the two things the migration always wrapped it
+ * in: the theme's centred band, and a small line naming the video underneath.
+ *
+ * ── WHY THE THEME'S CLASS NAMES SURVIVE HERE ─────────────────────────────────
+ *
+ * `hero hero--center hero--dark` is the dead Jekyll theme's, and `legacy.css`
+ * still draws it — scoped `.prose`, like every rule in that file. This component
+ * is called from article bodies, which ARE rendered inside `.prose`, so those
+ * rules still apply and rewriting them under honest names would be a second
+ * spelling of a live rule rather than a replacement for a dead one. That is the
+ * same reasoning `media/EmbedGroup` records, and the same reason
+ * `families/Collect.astro` did the opposite: the Collect landing left `.prose`
+ * entirely, so its rules stopped applying and had to be replaced.
+ *
+ * When `legacy.css` is finally deleted this file changes once.
+ *
+ * ── WHAT THE INLINE STYLES BECAME ────────────────────────────────────────────
+ *
+ * Each copy carried `style="margin:…"` on the band and four declarations on the
+ * caption. The band's margin was `.75rem 0 1rem` on four of the six, `.75rem 0 0`
+ * on one and `.5rem 0 1rem` on another — a difference nobody chose and nobody
+ * could see. It is gone: `.prose .hero` already sets `padding-block`, which is
+ * the band's rhythm, and one plate now spaces like every other plate.
+ *
+ * The caption's `text-align:center` was already true of `.hero--center`, and its
+ * size and opacity are now `.embed-plate__caption` in legacy.css, next to the
+ * facade rules it sits under.
+ *
+ * ── THE GATE ─────────────────────────────────────────────────────────────────
+ *
+ * `[...page].astro` decides which pages load `ui/EmbedConsentScript` by reading
+ * the record body, so a body that calls THIS instead of `<EmbedFacade>` has to
+ * be matched there too — see the note on `hasMediaEmbed`. That list of spellings
+ * has failed twice; `verify:build` asserts the property itself, that a built
+ * page holding a facade the gate opens also ships the script, so a third miss
+ * cannot be silent.
+ */
+
+import EmbedFacade from './EmbedFacade.astro';
+import { facadeStrings } from '../../config/embeds';
+
+interface Props {
+  /** The gate's key, and `data-embed-provider`: youtube | vimeo | … */
+  provider: string;
+  /** The real, public URL — where the anchor goes with no JavaScript. */
+  href: string;
+  /** The page's language. Chooses the facade's words; never guessed. */
+  lang: 'en' | 'es';
+  /**
+   * The line under the video, naming it. The page's own copy, so it is a prop
+   * and not a lookup: "Exoplanetas — set híbrido (fragmento, Vimeo)" is a
+   * sentence this page writes, unlike the facade's label, which every page on
+   * the site shares.
+   */
+  caption: string;
+}
+
+const { provider, href, lang, caption } = Astro.props;
+const { label, note } = facadeStrings(provider, lang);
+---
+
+<div class="hero hero--center hero--dark">
+  <EmbedFacade provider={provider} href={href} label={label} note={note} />
+  <p class="embed-plate__caption">{caption}</p>
+</div>

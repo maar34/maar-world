@@ -64,3 +64,31 @@ export const IP_ORCHESTRA = {
   /** The host university, linked from both halves' opening paragraph. */
   universityUrl: 'https://www.uartes.edu.ec/sitio/',
 } as const;
+
+/**
+ * Sonic events on planet earth — `{landings,es/landings}`.
+ *
+ * Six captioned videos punctuate a concert history that runs from 2025 back to
+ * 2011. Only the addresses are here: a video is the same video in Spanish, and
+ * the caption naming it is not, so the captions stay in the two bodies.
+ *
+ * ── WHY THE PROSE LINKS ARE NOT IN THIS LIST ─────────────────────────────────
+ *
+ * Four of these six also appear as an ordinary link in the running text just
+ * above their plate, and those links stay written out in both bodies. That is
+ * deliberate rather than an oversight: a markdown link carries its own target —
+ * `[words](address)` takes no expression — so hoisting them here would mean
+ * writing raw anchor markup back into the bodies, which is the exact thing this
+ * conversion removes, and would put both halves back on the STRUCTURED_ES list.
+ * A link inside a sentence is part of the sentence. A plate is structure.
+ */
+export const LANDINGS = {
+  videos: {
+    trappistLive: 'https://youtu.be/GYhV2qAPZ6w',
+    exoplanetasExcerpt: 'https://vimeo.com/252728417',
+    exoplanetasMore: 'https://youtu.be/riEIWUQ-OWQ',
+    watsonSays: 'https://vimeo.com/235986660',
+    luminiscencia: 'https://vimeo.com/137703428',
+    tembey: 'https://vimeo.com/104399616',
+  },
+} as const;

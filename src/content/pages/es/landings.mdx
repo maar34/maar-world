@@ -1,0 +1,194 @@
+---
+outputPath: "es/landings"
+title: "Aterrizajes - MAAR WORLD"
+area: "maar"
+kind: "page"
+tags: []
+lang: "es"
+origin: "authored"
+translationOf: "landings"
+---
+
+{/*
+  La traducción de src/content/pages/en/landings.mdx — MW-19.
+
+  Es un historial de conciertos, y la mayor parte no se traduce: fechas,
+  ciudades, nombres propios y títulos de obra quedan como están. Lo que sí
+  cambia es el idioma de los encabezados, de las descripciones, de los países y
+  de los pies de los seis videos.
+
+  ESTE ARCHIVO YA NO TIENE ESTRUCTURA, y esa es toda la cuestión de MW-19. Las
+  seis placas de video estaban escritas enteras acá y otra vez en el archivo en
+  inglés: veintidós elementos cada una, dos veces, de manera que cambiar el
+  marco de un video eran dos ediciones. Ahora las dibuja `media/EmbedPlate`, una
+  sola vez, y las dos lenguas cambian juntas.
+
+  Las direcciones de los videos están en `LANDINGS`, en src/config/articles.ts:
+  un video es el mismo video en español. Acá quedan las palabras — incluido el
+  pie de cada placa, que nombra el video para quien lee y por lo tanto es texto.
+
+  El gate de consentimiento se engancha al atributo `data-embed-provider`, no al
+  texto, así que traducir la etiqueta no toca el comportamiento: no se le pide
+  nada a YouTube ni a Vimeo hasta que la persona lo elige. La etiqueta y la nota
+  ya no se escriben acá tampoco; salen de src/config/embeds.ts según el idioma,
+  que es lo que impide que una página en español muestre la frase en inglés.
+*/}
+
+import EmbedPlate from '../../../components/media/EmbedPlate.astro';
+import Mark from '../../../components/patterns/Mark.astro';
+import { LANDINGS as M } from '../../../config/articles';
+
+# <Mark tilt={2} tear={3}>Aterrizajes</Mark>
+## Eventos sonoros en el planeta tierra
+
+ENT Worlds
+
+- 19 / 11 / 2025  - 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 & Gabriel Vigliensoni - Web Audio Conference - Órbitas y Cuerpos - 📍 IRCAM, París, Francia  
+  [Ver artículo](/lab/es/orbits-and-bodies.html)
+
+- 13 / 09 / 2024  - 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 & Orbiters Orchestra - 📍 Universidad de las Artes, Guayaquil, Ecuador  
+  [Ver artículo](/lab/es/ip-orchestra)
+
+- 17 / 12 / 2023  - 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - Grabación de Radio EP05 - 📍 Espacio Pulpo, Mallorca, España 
+- 29 / 10 / 2023  - 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - Radio en vivo EP04 📍 MW-Lab-Berlín, Alemania 
+- 06 / 10 / 2023  - Music x Web3 - Past Present Future 📍 Factory Berlin, Alemania 
+- 24 / 09 / 2023  - 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - Radio en vivo EP03 📍 MW-Lab-Berlín, Alemania 
+- 27 / 08 / 2023  - 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - Radio en vivo EP02  📍 MW-Lab-Berlín, Alemania 
+- 30 / 07 / 2023  - 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - Lanzamiento de Radio en vivo EP01  📍 Lab Berlín, Alemania 
+- 10 / 06 / 2022  - Maquina Grillo y 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - En vivo   📍 Montevideo, Uruguay 
+- 24 / 05 / 2023  - 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - Lanzamiento de Sky Sounds - Magma Futura 📍 Montevideo, Uruguay 
+- 05 / 01 / 2023  - 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - Dj Set - Serendipia 📍 Cabo Polonio, Uruguay 
+- 04 / 01 / 2023  - 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - Dj Set - Serendipia 📍 Cabo Polonio, Uruguay 
+- 08 / 12 / 2022  - 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - Dj Set en bicicleta - Musimovil Luna Llena 📍 Montevideo, Uruguay 
+- 01 / 12 / 2022  - 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - Dj Set - Avant Garten 📍 Buenos Aires, Argentina 
+- 27 / 11 / 2022  - Maquina Grillo y 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - En vivo - Absynth Multiespacio  📍 Mendoza, Argentina 
+- 26 / 11 / 2022  - 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - Set híbrido - Alles Ist Gut - Cultural Aurora  📍 Mendoza, Argentina 
+
+- 04 / 09 / 2022  - 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 y Daiana Romero - En vivo - Feeding Freedom Festival, Prinzengarten 📍 Berlín, Alemania 
+- 03 / 09 / 2022  - 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 - Live AV Set - Chilean Conexion Festival, Monopol - 📍 Berlín, Alemania 
+- 02 / 07 / 2022  - Maar World Genesis - La cueva de ArteArtesanía - 📍 Sóller, España 
+
+[𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 Set híbrido - Aventures Sonores y los elementos clásicos](https://www.instagram.com/aventuresonores/) 
+
+- 11 / 06 / 2022  - Patiki Beach - 📍 Port de Sóller, España 
+- 24 / 04 / 2022  - Patiki Beach - 📍 Port de Sóller, España 
+- 20 / 04 / 2022  - Piso 24 -  con Emma Lohan - 📍 Palma de Mallorca, España
+- 26 / 02 / 2022  - Pulpismo 04 -  Espacio Pulpo - con Hamid, Halbert, Todd 📍 Palma de Mallorca, España
+
+[TRAPPIST - 01 LIVE AV Head Brothers](https://youtu.be/GYhV2qAPZ6w)
+
+<EmbedPlate
+  provider="youtube"
+  href={M.videos.trappistLive}
+  lang="es"
+  caption="TRAPPIST - 01 live AV (Head Brothers)"
+/>
+
+- 18 / 12 / 2019 El Hangar - 📍 Buenos Aires, Argentina
+- 01 / 12 / 2019 Ábalos - 📍 Montevideo, Uruguay
+- 16 / 11 / 2019  - Pulse - Frecuencias - 1.ª Cumbre Int. de Música Electrónica y Arte Digital - 📍 Montevideo, Uruguay
+
+[TRAPPIST - 01 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 SET HÍBRIDO - Exoplanetas + Head Brothers](https://youtu.be/geiH3eAzo2c)
+
+  - 16/3/19 📍 Sauce de Portezuelo, Uruguay - 
+  - 05/01/19 📍 La Pedrera, Uruguay
+  - 31/3/18 📍 Paysandú,   Uruguay
+  - 22/7/17 📍 Montevideo, Uruguay 
+  - 15/7/17 📍 Montevideo, Uruguay
+  - 28/4/17 📍 Montevideo, Uruguay
+  - 8/12/17 📍 Montevideo, Uruguay
+  - 21/7/18 📍 Villa Serrana, Minas, Uruguay
+
+<EmbedPlate
+  provider="vimeo"
+  href={M.videos.exoplanetasExcerpt}
+  lang="es"
+  caption="Exoplanetas — set híbrido (fragmento, Vimeo)"
+/>
+
+[🙏🏼](https://youtu.be/riEIWUQ-OWQ)
+
+<EmbedPlate
+  provider="youtube"
+  href={M.videos.exoplanetasMore}
+  lang="es"
+  caption="Exoplanetas — otro fragmento"
+/>
+
+- [Experiencias inmersivas](http://headbrothers.com/idm2018/) para el cierre de FING Ingeniería Demuestra. Head Brothers + MEDIALAB  📍 Montevideo, Uruguay
+
+  - [2018](https://youtu.be/oqCx9AirINA)
+  - [2017](https://www.youtube.com/watch?v=HSOOaRpHp4s)
+  - [2016](https://youtu.be/m_ALtO6uhE0)
+  - [2015](https://www.youtube.com/watch?v=w-FEgGAZaLY)
+
+  <br />
+
+- [Watson Says.](https://vimeo.com/235986660) Head Brothers, IBM, Juanita Fernández, Sebastián Pereira. 
+  - 05/08/2017 Producción musical con la supercomputadora Watson. 📍 Montevideo, Uruguay
+
+<EmbedPlate
+  provider="vimeo"
+  href={M.videos.watsonSays}
+  lang="es"
+  caption="Watson Says. (Vimeo)"
+/>
+
+  <br />
+
+- [Luminiscencia, ](https://vimeo.com/135519258) Matías Romero Balado, Sebastián Segarra, Head Brothers. 
+  - 16/06/2016 📍 Pestana Palace, Lisboa, Portugal. 
+  - 16/09/2016 📍 Sala Camacuá, Montevideo, Uruguay. 
+
+<EmbedPlate
+  provider="vimeo"
+  href={M.videos.luminiscencia}
+  lang="es"
+  caption="Luminiscencia Litoraleña (Vimeo)"
+/>
+
+  <br />
+
+-    [Tembey Concierto Audiovisual](https://vimeo.com/110938519), Head Brothers
+      - 06/16 2.º Festival de Audio y Acústica de Centroamérica, 📍 San José de Costa Rica.
+      - 10/2014 Seminario Internacional de Narrativas Hiper / Texto NHT, 📍 UdelaR, Montevideo
+      -  4/9/14  LabLT, laboratorio de lenguajes transversales. 📍 Montevideo, Uruguay
+      -23/9/14 INAE, Festival Equinoccio de Arte y Ciencia, Montevideo, 📍 Uruguay. 
+      - 9/9/14 Cruces Sonoros. Museo de Arte Contemporáneo de la Universidad de Chile. 📍 Santiago de Chile.
+
+<EmbedPlate
+  provider="vimeo"
+  href={M.videos.tembey}
+  lang="es"
+  caption="Tembey Concierto Audiovisual (Vimeo)"
+/>
+ 
+  
+  <br />
+
+- Gira 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 Paisajes sonoros del Río Uruguay. 
+    - 05/05/2013 - Centro Cultural Bastión del Carmen, 📍 Colonia del Sacramento, Uruguay 
+    - 08/05/2013 - Liceo N.º 1, 📍 Mercedes, Uruguay 
+    - 10/05/2013 - Liceo N.º 1 Mario W. Long, 📍 Young, Uruguay 
+    - 14/05/2013 - Centro Juvenil, Programa Con los pies en la Tierra, 📍 Paysandú, Uruguay 
+    - 16/05/2013 - Sala Edmundo Prati de la Biblioteca Felisa Lisasola 📍 Salto, Uruguay 
+    - 17/05/2013 - Sala Edmundo Prati de la Biblioteca Felisa Lisasola 📍 Salto, Uruguay 
+    - 19/05/2013 - Feria Culturalmente (ex Imaginateatro) 📍 Paysandú, Uruguay 
+
+  <br />
+
+- [𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 VJ Set curado por Gilles Peterson](http://www.truthandliesmusic.com/projects/2014/3/23/ox5wi8hue9l4p659afj4789efsoxxm) . 
+    - 8/9/12  Fiesta de apertura del World Event of Young Artists.  📍 Nottingham, Inglaterra.
+
+       <br />
+- [Because](https://www.youtube.com/watch?v=OcP2sSbR5H4)
+  - 10/12 WEYA, Nottingham Contemporary, 📍 Nottingham, Inglaterra.
+  - 12/11/11 TSONAMI Festival de arte sonoro, Palacio Cousiño, 📍 Valparaíso, Chile.  
+
+  <br />
+
+- 𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 Diseño sonoro y de experiencia para el Pabellón de Uruguay en la Bienal de Arquitectura de Venecia. Head Brothers 
+  - [2018](http://headbrothers.com/prison-to-prison) 📍 Venecia, Italia 
+  - [2021](https://www.proximamente.uy/) 📍 Venecia, Italia 
+
+  ![rama](/img/branch.png)

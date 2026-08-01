@@ -351,6 +351,27 @@
   outline-offset: var(--focus-o);
 }
 
+/**
+ * The line under a captioned video — media/EmbedPlate.
+ *
+ * Ours, not the theme's, but it sits here because it is only ever drawn under a
+ * facade and the facade's rules are here. It replaces four inline declarations
+ * that the migration wrote onto every one of the eleven plates:
+ * `text-align:center` was already true of `.hero--center`; `font-size:.85rem`
+ * and `opacity:.85` are the two below, on the scale rather than in raw pixels;
+ * and `margin:.35rem 0 0` is gone because `.prose .hero` is a flex column whose
+ * `gap` already spaces its children.
+ *
+ * Muted rather than meta — 75%, not 60%. This line names the video, so it is
+ * read; the note above it is a reassurance, which is there to be available
+ * rather than read, and is set quieter on purpose.
+ */
+.prose .embed-plate__caption {
+  color: var(--ink-muted);
+  font-size: var(--t-small-size);
+  margin: 0;
+}
+
 /* ---- the per-embed consent gate -----------------------------------------
    ui/embed-consent builds all of this at runtime, so none of it exists for a
    visitor without JavaScript — who keeps the click-out above, unchanged.

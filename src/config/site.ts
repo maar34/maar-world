@@ -280,17 +280,19 @@ export const COLLECT_LANDING: Record<
     /** The offer's destination is COLLECT_STORE_URL — one address, not a field. */
     offer: { title: string; excerpt: string; meta: string };
     /**
-     * What the video facade SAYS — not what it points at.
+     * WHAT THE VIDEO FACADE SAYS IS NO LONGER HERE.
      *
-     * `href` is absent for the same reason `offer.href` is: one video, both
-     * languages, so it is `COLLECT_VIDEO_URL` above and not a field that could
-     * come to differ. These two strings are chrome rather than page copy — the
-     * identical pair appears on eight pages — which is why they sit here and not
-     * on the record. When the remaining fifteen pairs are converted they will
-     * want one shared table keyed by provider and language; this is that table's
-     * first entry, not a per-page value.
+     * It was `video: { label, note }`, with a note saying the pair would want
+     * "one shared table keyed by provider and language" once the rest of MW-19
+     * landed. It did: `src/config/embeds.ts`, keyed exactly that way, read by
+     * `families/Collect.astro` and by every converted article. The strings were
+     * chrome — the identical pair appears on eight pages — so keeping a copy
+     * here would have left the site with two spellings of one sentence, which
+     * is the defect the issue exists to remove.
+     *
+     * `href` was never here either, for the reason `offer.href` is not: one
+     * video, both languages, so it is `COLLECT_VIDEO_URL` above.
      */
-    video: { label: string; note: string };
     /**
      * The contact form. `action` is deliberately absent: the Formspree endpoint
      * is one address in `families/Collect.astro`, not a per-language field.
@@ -319,10 +321,6 @@ export const COLLECT_LANDING: Record<
       excerpt: 'Eleven Sky Sounds cards, posted to you.',
       meta: 'collect',
     },
-    video: {
-      label: 'watch this video on youtube',
-      note: 'opens in a new tab. nothing is requested from youtube until you choose it.',
-    },
     form: {
       heading: 'Contact us',
       lede: 'Curious about something? Let us know by filling out the form.',
@@ -348,10 +346,6 @@ export const COLLECT_LANDING: Record<
       title: 'Sobre de 11 cartas 33€',
       excerpt: 'Once cartas Sky Sounds, enviadas a tu casa.',
       meta: 'coleccionar',
-    },
-    video: {
-      label: 'ver este video en youtube',
-      note: 'se abre en una pestaña nueva. no se le pide nada a youtube hasta que lo elijas.',
     },
     form: {
       heading: 'Escribinos',

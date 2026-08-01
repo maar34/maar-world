@@ -243,8 +243,13 @@ const hasPdfEmbed = /class="[^"]*pdf-embed/.test(entry.body ?? '');
  */
 const hasMediaEmbed =
   /data-embed-provider="(?:youtube|vimeo|soundcloud|google-calendar)"/.test(entry.body ?? '') ||
-  /* A converted `.mdx` body calls the component instead of writing the markup. */
-  /<EmbedFacade[\s/>]/.test(entry.body ?? '') ||
+  /* A converted `.mdx` body calls a component instead of writing the markup.
+     `EmbedPlate` renders an `EmbedFacade` inside a captioned band, so a body
+     that calls it holds a facade without ever naming one — the third way this
+     test could have gone quietly wrong. It is matched here, and `verify:build`
+     asserts the property rather than the spelling, which is what actually stops
+     a fourth. */
+  /<Embed(?:Facade|Plate)[\s/>]/.test(entry.body ?? '') ||
   /* The Collect landing opens on a YouTube facade the family renders. See the
      note on `hasCarousel` above for why a body-only test is no longer the whole
      question, and `verify:build` for the assertion that does not take its word. */

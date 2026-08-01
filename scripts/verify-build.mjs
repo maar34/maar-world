@@ -498,6 +498,9 @@ const COMPONENT_CLASSES = [
   { prefix: 'mark', css: 'src/styles/mark.css' },
   { prefix: 'card', css: 'src/styles/card.css' },
   { prefix: 'carousel', css: 'src/styles/carousel.css' },
+  /* media/EmbedPlate. Drawn in legacy.css beside the facade rules it sits under,
+     because it is only ever rendered under a facade — see the rule's own note. */
+  { prefix: 'embed-plate', css: 'src/styles/legacy.css' },
 ];
 
 /**
