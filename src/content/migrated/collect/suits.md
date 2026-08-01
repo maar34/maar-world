@@ -6,6 +6,7 @@ kind: "page"
 tags: []
 source: "collect.maar.world/collections/_pages/suits.html"
 lang: "en"
+origin: "migrated"
 description: "Collect Suits with 11 cards."
 ---
 

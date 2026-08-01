@@ -5,6 +5,7 @@ area: "collect"
 kind: "doc"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "collect/docs/mw/terms"
 indexGroup: "collect-docs"
 indexOrder: "07-mw/02-Terms&Conditions.md"

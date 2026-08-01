@@ -67,27 +67,52 @@ function loadScaffolding() {
 /**
  * The outputPath of every hand-written page record.
  *
- * Read straight from `src/content/authored/**`, which is the same directory the
- * `pages` collection globs, so there is no second list to keep in step — a page
- * is authorised by existing, and de-authorised by being deleted. Frontmatter is
- * matched rather than parsed because this check must not depend on a YAML
- * library or on Astro being able to build.
+ * A page is authorised by EXISTING and declaring `origin: "authored"`, and
+ * de-authorised by being deleted. There is no second list to keep in step.
+ * Frontmatter is matched rather than parsed because this check must not depend
+ * on a YAML library or on Astro being able to build.
  *
- * Migrated records are deliberately NOT read here. They are already authorised
- * by the policy, and reading them would let a migration bug authorise its own
- * output.
+ * ── Why this reads a field and not a directory ────────────────────────────────
+ *
+ * It used to walk `src/content/authored/**` and take everything in it. That
+ * worked, and it quietly made the folder layout load-bearing: `authored/` was
+ * not a filing choice, it was the authorisation boundary, so ANY reorganisation
+ * of the content tree moved a security decision by accident. The tree could not
+ * be arranged for a reader without the check silently changing meaning.
+ *
+ * `origin` is now a required field on every page record, so provenance is
+ * stated per record and visible in a diff. Files may sit wherever they read
+ * best; this reads what a record SAYS it is.
+ *
+ * Migrated records are still deliberately excluded. The original reason was
+ * that reading them would let a migration bug authorise its own output — that
+ * particular threat died with scripts/migrate-pages.mjs, but the rule holds for
+ * a better reason: their URLs are already authorised by the frozen policy, and
+ * a record that could authorise itself out of the policy would make the policy
+ * advisory. Flipping a record from 'migrated' to 'authored' is now a one-line
+ * diff someone reads, rather than a `git mv` nobody looks twice at.
+ *
+ * The `cards` COLLECTION is skipped: different schema, no `origin`, and its 35
+ * records are checked by verify:cards against their own contract. Matched by
+ * full path and not by name — `collect/cards/` is a page directory holding the
+ * 34 Spanish card pages, and skipping it by name de-authorises all of them.
  */
-export function authoredRoutes(dir = join(ROOT, 'src/content/authored')) {
+const CARDS_COLLECTION = join(ROOT, 'src/content/cards');
+
+export function authoredRoutes(dir = join(ROOT, 'src/content')) {
   if (!existsSync(dir)) return [];
   const out = [];
   for (const name of readdirSync(dir).sort()) {
     const abs = join(dir, name);
+    if (abs === CARDS_COLLECTION) continue;
     if (statSync(abs).isDirectory()) {
       out.push(...authoredRoutes(abs));
       continue;
     }
     if (!name.endsWith('.md') && !name.endsWith('.mdx')) continue;
-    const m = /^outputPath:\s*"(.*)"\s*$/m.exec(readFileSync(abs, 'utf8'));
+    const text = readFileSync(abs, 'utf8');
+    if (!/^origin:\s*"authored"\s*$/m.test(text)) continue;
+    const m = /^outputPath:\s*"(.*)"\s*$/m.exec(text);
     if (m) out.push(m[1]);
   }
   return out;

@@ -6,6 +6,7 @@ kind: "doc"
 tags: []
 source: "collect.maar.world/collections/_documentation/02-ent-releases/01-skysounds.md"
 lang: "en"
+origin: "migrated"
 indexGroup: "collect-docs"
 indexOrder: "02-ent-releases/01-skysounds.md"
 indexLabel: "Sky Sounds"

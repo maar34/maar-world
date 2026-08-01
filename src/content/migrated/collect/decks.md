@@ -6,6 +6,7 @@ kind: "page"
 tags: []
 source: "collect.maar.world/collections/_pages/decks.html"
 lang: "en"
+origin: "migrated"
 description: "Collect Full Album with 34 cards."
 ---
 

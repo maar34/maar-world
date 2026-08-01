@@ -5,6 +5,7 @@ area: "collect"
 kind: "page"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "collect/cards"
 indexOf: "collect-cards"
 indexCovers: true

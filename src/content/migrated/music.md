@@ -6,6 +6,7 @@ kind: "page"
 tags: []
 source: "maar.world/collections/_pages/music.md"
 lang: "en"
+origin: "migrated"
 ---
 
 # <span class="mark mark--cut mark--tilt-2 mark--tear-1">Music</span>

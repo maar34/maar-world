@@ -5,6 +5,7 @@ area: "maar"
 kind: "page"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "orbiters"
 description: "Imaginá convertir tu navegador en una bandeja giradiscos del espacio exterior."
 ---

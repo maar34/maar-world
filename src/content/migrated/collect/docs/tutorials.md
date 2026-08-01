@@ -6,6 +6,7 @@ kind: "doc"
 tags: []
 source: "collect.maar.world/collections/_documentation/02-tutorials.md"
 lang: "en"
+origin: "migrated"
 indexGroup: "collect-docs"
 indexOrder: "02-tutorials.md"
 indexLabel: "Tutorials"

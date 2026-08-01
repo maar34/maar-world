@@ -131,6 +131,31 @@ export const pageSchema = z
     lang: z.enum(['en', 'es']),
 
     /**
+     * Where this page CAME FROM. Not where it lives, and not who may edit it.
+     *
+     * REQUIRED, for the reason `lang` above is required: it decides something
+     * load-bearing, so it belongs in the record where a diff shows it, not in a
+     * directory name where it is inferred.
+     *
+     * It carries the one job the `migrated/` vs `authored/` folder split was
+     * still doing. `verify-routes.mjs` reads it to decide which URLs are allowed
+     * to exist: an 'authored' page authorises itself by existing, a 'migrated'
+     * one must appear in the frozen policy. That rule used to be a directory
+     * lookup, which is why the folders could not be reorganised without moving
+     * a security decision by accident.
+     *
+     * 'migrated' — came out of the 2023 migration of the three legacy sites.
+     *              Its URL is in routes/manifest.production.json and frozen.
+     * 'authored' — written by hand afterwards. Was never on a legacy site, and
+     *              is not supposed to appear in the manifest.
+     *
+     * Both are hand-maintained now; scripts/migrate-pages.mjs was deleted on
+     * 2026-07-31. So this records history and authorisation, nothing about
+     * editing. See .agents/decisions/0004-content-tree-by-language.md.
+     */
+    origin: z.enum(['migrated', 'authored']),
+
+    /**
      * Which pages are the same page in another language.
      *
      * A relation, not a scalar — and it is stored rather than derived because

@@ -5,6 +5,7 @@ area: "collect"
 kind: "doc"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "collect/docs/ent-cards/sustainability"
 indexGroup: "collect-docs"
 indexOrder: "03-ent-cards/01-sustainability.md"

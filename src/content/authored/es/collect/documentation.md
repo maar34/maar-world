@@ -5,6 +5,7 @@ area: "collect"
 kind: "page"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "collect/documentation"
 indexOf: "collect-docs"
 indexCovers: true

@@ -6,6 +6,7 @@ kind: "genesis"
 tags: []
 source: "maar.world/collections/_genesis/skyl00.md"
 lang: "en"
+origin: "migrated"
 ---
 
 # <span class="mark mark--cut mark--tilt-4 mark--tear-4">Skylight.2</span>

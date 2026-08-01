@@ -5,6 +5,7 @@ area: "collect"
 kind: "doc"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "collect/docs/ent-cards"
 indexGroup: "collect-docs"
 indexOrder: "03-ent-cards.md"

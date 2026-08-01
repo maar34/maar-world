@@ -6,6 +6,7 @@ kind: "page"
 tags: []
 source: "maar.world/collections/_pages/lab.md"
 lang: "en"
+origin: "migrated"
 indexOf: "lab"
 ---
 

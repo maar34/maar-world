@@ -6,6 +6,7 @@ kind: "page"
 tags: []
 source: "maar.world/collections/_pages/subscribe.md"
 lang: "en"
+origin: "migrated"
 redirectTo: "/"
 noindex: true
 ---

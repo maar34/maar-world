@@ -6,6 +6,7 @@ kind: "lab"
 tags: ["ES", "Capital", "Cultural", "Música", "Compartida", "Acceso"]
 source: "maar.world/collections/_lab/es/2026-01-07-Music-access-human-mind.md"
 lang: "es"
+origin: "migrated"
 translationKey: "2026-01-07-music-access-human-mind"
 indexGroup: "lab"
 indexOrder: "es/2026-01-07-Music-access-human-mind.md"

@@ -6,6 +6,7 @@ kind: "page"
 tags: []
 source: "maar.world/collections/_pages/1-feedback-eng.html"
 lang: "en"
+origin: "migrated"
 redirectTo: "/bookings"
 noindex: true
 ---

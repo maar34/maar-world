@@ -6,6 +6,7 @@ kind: "doc"
 tags: []
 source: "collect.maar.world/collections/_documentation/04-orbiters/01-how-to-use.md"
 lang: "en"
+origin: "migrated"
 indexGroup: "collect-docs"
 indexOrder: "04-orbiters/01-how-to-use.md"
 indexLabel: "How to use"

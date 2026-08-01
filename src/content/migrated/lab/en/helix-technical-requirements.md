@@ -6,6 +6,7 @@ kind: "lab"
 tags: ["EN", "Helix", "EAC", "Montevideo", "installation", "interaction", "network", "Plantasia"]
 source: "maar.world/collections/_lab/en/2026-03-24-Helix-EAC-Montevideo.md"
 lang: "en"
+origin: "migrated"
 translationKey: "2026-03-24-helix-eac-montevideo"
 indexGroup: "lab"
 indexOrder: "en/2026-03-24-Helix-EAC-Montevideo.md"

@@ -6,6 +6,7 @@ kind: "doc"
 tags: []
 source: "collect.maar.world/collections/_documentation/03-ent-cards/01-sustainability.md"
 lang: "en"
+origin: "migrated"
 indexGroup: "collect-docs"
 indexOrder: "03-ent-cards/01-sustainability.md"
 indexLabel: "Sustainability"

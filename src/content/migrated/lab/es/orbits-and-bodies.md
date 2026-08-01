@@ -6,6 +6,7 @@ kind: "lab"
 tags: ["EW", "orbiter", "ES", "performance", "audiovisual", "exoplanetas"]
 source: "maar.world/collections/_lab/es/2025-08-24-01-Orbit-and-Bodies.md"
 lang: "es"
+origin: "migrated"
 translationKey: "2025-08-24-01-orbit-and-bodies"
 indexGroup: "lab"
 indexOrder: "es/2025-08-24-01-Orbit-and-Bodies.md"

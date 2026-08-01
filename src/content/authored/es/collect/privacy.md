@@ -5,6 +5,7 @@ area: "collect"
 kind: "page"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "collect/privacy"
 indexGroup: "collect-docs"
 indexOrder: "07-mw/03-Privacy.md"

@@ -5,6 +5,7 @@ area: "collect"
 kind: "doc"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "collect/docs/releases/skysounds"
 indexGroup: "collect-docs"
 indexOrder: "02-ent-releases/01-skysounds.md"

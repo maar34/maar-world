@@ -6,6 +6,7 @@ kind: "page"
 tags: []
 source: "maar.world/interplanetary-players.md"
 lang: "en"
+origin: "migrated"
 redirectTo: "/orbiters"
 noindex: true
 ---

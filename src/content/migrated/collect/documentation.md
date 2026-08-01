@@ -6,6 +6,7 @@ kind: "page"
 tags: []
 source: "collect.maar.world/collections/_pages/documentation.html"
 lang: "en"
+origin: "migrated"
 indexOf: "collect-docs"
 indexCovers: true
 ---

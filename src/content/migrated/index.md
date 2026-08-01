@@ -6,6 +6,7 @@ kind: "index"
 tags: []
 source: "maar.world/index.md"
 lang: "en"
+origin: "migrated"
 family: "home"
 headingHtml: "Maar <span class=\"mark mark--cut mark--tilt-4 mark--tear-4\">World</span>"
 lede: "A space for fluid music‑making that moves beyond binaries, between physical and digital formats, a human–machine commonwealth, a blend of innovation and a continuation of tradition."

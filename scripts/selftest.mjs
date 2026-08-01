@@ -826,17 +826,41 @@ check('an authored page passes verify:routes', (root) => {
     join(root, 'dist', 'new-post.html'),
     '<!doctype html><html><head><title>new</title></head><body><p>authored</p></body></html>',
   );
-  mkdirSync(join(root, 'src/content/authored'), { recursive: true });
+  mkdirSync(join(root, 'src/content/pages/en'), { recursive: true });
   writeFileSync(
-    join(root, 'src/content/authored/new-post.md'),
-    '---\noutputPath: "new-post"\ntitle: "New"\narea: "maar"\nkind: "page"\n---\n\nbody\n',
+    join(root, 'src/content/pages/en/new-post.md'),
+    '---\noutputPath: "new-post"\ntitle: "New"\narea: "maar"\nkind: "page"\nlang: "en"\norigin: "authored"\n---\n\nbody\n',
   );
   const { code, out } = run(root, 'verify-routes.mjs');
   // `extra of` appears only in the FAIL detail — the PASS line quotes the
   // assertion's own name, which contains "no production route asks for", so a
   // negative match on that phrase passes vacuously.
   const ok = code === 0 && !/extra of/.test(out);
-  return { ok, detail: ok ? 'exit 0, authored route accepted' : `expected exit 0, got ${code}\n${out}` };
+  return { ok, detail: ok ? 'exit 0, authored route accepted from any directory' : `expected exit 0, got ${code}\n${out}` };
+});
+
+/**
+ * The other half, and the one that matters: `origin` is the authorisation
+ * boundary now that the directory is not. A record that does NOT claim to be
+ * authored must not authorise its own URL — otherwise moving the rule off the
+ * folder would have quietly turned the frozen policy into a suggestion.
+ *
+ * Same file, same place, one field different.
+ */
+check('a migrated-origin record does not authorise its own URL', (root) => {
+  goodFixture(root);
+  writeFileSync(
+    join(root, 'dist', 'new-post.html'),
+    '<!doctype html><html><head><title>new</title></head><body><p>migrated</p></body></html>',
+  );
+  mkdirSync(join(root, 'src/content/pages/en'), { recursive: true });
+  writeFileSync(
+    join(root, 'src/content/pages/en/new-post.md'),
+    '---\noutputPath: "new-post"\ntitle: "New"\narea: "maar"\nkind: "page"\nlang: "en"\norigin: "migrated"\n---\n\nbody\n',
+  );
+  const { code, out } = run(root, 'verify-routes.mjs');
+  const ok = code !== 0 && /extra of/.test(out);
+  return { ok, detail: ok ? 'a page claiming migrated provenance is still held to the policy' : `expected failure, got ${code}\n${out}` };
 });
 
 // ...and the split must not become a hole. An emitted page with no authored

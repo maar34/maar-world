@@ -5,6 +5,7 @@ area: "collect"
 kind: "doc"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "collect/docs/tutorials"
 indexGroup: "collect-docs"
 indexOrder: "02-tutorials.md"

@@ -5,6 +5,7 @@ area: "maar"
 kind: "index"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "index"
 family: "home"
 headingHtml: "Maar <span class=\"mark mark--cut mark--tilt-4 mark--tear-4\">World</span>"

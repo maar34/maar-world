@@ -5,6 +5,7 @@ area: "collect"
 kind: "collect-card"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "collect/cards/029_-maar-sky-sounds.3-card VII"
 indexGroup: "collect-cards"
 indexOrder: "029_-maar-sky-sounds.3-card VII.md"

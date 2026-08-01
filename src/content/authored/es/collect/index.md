@@ -5,6 +5,7 @@ area: "collect"
 kind: "index"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "collect/index"
 family: "collect"
 description: "Explorá una dimensión musical nueva con Sky Sounds, una colección de cartas que abren las puertas a un viaje sonoro por el cosmos."

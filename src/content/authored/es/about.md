@@ -5,6 +5,7 @@ area: "maar"
 kind: "page"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "about"
 description: "Maar World es un sello discográfico para una nueva era de la escucha y la creación musical."
 ---

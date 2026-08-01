@@ -6,6 +6,7 @@ kind: "index"
 tags: []
 source: "collect.maar.world/index.html"
 lang: "en"
+origin: "migrated"
 family: "collect"
 description: "Explore a new musical dimension with Sky Sounds, a collection of cards that open the doors to a sonic journey through the cosmos."
 ---

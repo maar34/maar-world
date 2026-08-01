@@ -5,6 +5,7 @@ area: "collect"
 kind: "page"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "collect/decks"
 description: "Coleccioná el álbum completo, 34 cartas."
 ---

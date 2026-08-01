@@ -6,6 +6,7 @@ kind: "lab"
 tags: ["EW", "orbiter", "ES"]
 source: "maar.world/collections/_lab/es/2023-08-25-01_IP3.md"
 lang: "es"
+origin: "migrated"
 translationKey: "2023-08-25-01-ip3"
 indexGroup: "lab"
 indexOrder: "es/2023-08-25-01_IP3.md"

@@ -6,6 +6,7 @@ kind: "genesis"
 tags: []
 source: "maar.world/collections/_genesis/sphe0.md"
 lang: "en"
+origin: "migrated"
 ---
 
 # <span class="mark mark--highlight">Spherical</span> Drops

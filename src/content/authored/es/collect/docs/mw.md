@@ -5,6 +5,7 @@ area: "collect"
 kind: "doc"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "collect/docs/mw"
 indexGroup: "collect-docs"
 indexOrder: "07-mw.md"

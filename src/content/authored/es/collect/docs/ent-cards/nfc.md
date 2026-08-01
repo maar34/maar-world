@@ -5,6 +5,7 @@ area: "collect"
 kind: "doc"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "collect/docs/ent-cards/nfc"
 indexGroup: "collect-docs"
 indexOrder: "03-ent-cards/04-nfc.md"

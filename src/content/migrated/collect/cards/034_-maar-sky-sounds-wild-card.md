@@ -6,6 +6,7 @@ kind: "collect-card"
 tags: []
 source: "collect.maar.world/collections/_cards/034_-maar-sky-sounds-wild-card.md"
 lang: "en"
+origin: "migrated"
 indexGroup: "collect-cards"
 indexOrder: "034_-maar-sky-sounds-wild-card.md"
 indexLabel: "WildCard"

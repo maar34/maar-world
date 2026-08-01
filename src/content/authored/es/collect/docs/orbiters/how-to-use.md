@@ -5,6 +5,7 @@ area: "collect"
 kind: "doc"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "collect/docs/orbiters/how-to-use"
 indexGroup: "collect-docs"
 indexOrder: "04-orbiters/01-how-to-use.md"

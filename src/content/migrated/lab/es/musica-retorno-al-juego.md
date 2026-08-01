@@ -6,6 +6,7 @@ kind: "lab"
 tags: ["ES", "Música", "Capital", "Cultural", "Participación", "Escucha", "Inteligencia", "es"]
 source: "maar.world/collections/_lab/es/2026-01-20-music-abstraction-return-playing.md"
 lang: "es"
+origin: "migrated"
 translationKey: "2026-01-20-music-abstraction-return-playing"
 indexGroup: "lab"
 indexOrder: "es/2026-01-20-music-abstraction-return-playing.md"

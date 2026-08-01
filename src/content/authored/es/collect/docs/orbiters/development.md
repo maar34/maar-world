@@ -5,6 +5,7 @@ area: "collect"
 kind: "doc"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "collect/docs/orbiters/development"
 indexGroup: "collect-docs"
 indexOrder: "04-orbiters/02-development.md"

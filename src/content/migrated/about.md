@@ -6,6 +6,7 @@ kind: "page"
 tags: []
 source: "maar.world/collections/_pages/about.md"
 lang: "en"
+origin: "migrated"
 ---
 
 <header class="page-header">

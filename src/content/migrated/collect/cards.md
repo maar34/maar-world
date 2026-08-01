@@ -6,6 +6,7 @@ kind: "page"
 tags: []
 source: "collect.maar.world/collections/_pages/cards.html"
 lang: "en"
+origin: "migrated"
 indexOf: "collect-cards"
 indexCovers: true
 indexCoverShape: "card"

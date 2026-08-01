@@ -6,6 +6,7 @@ kind: "collect-card"
 tags: []
 source: "collect.maar.world/collections/_cards/012_-maar-sky-sounds.2-card I.md"
 lang: "en"
+origin: "migrated"
 indexGroup: "collect-cards"
 indexOrder: "012_-maar-sky-sounds.2-card I.md"
 indexLabel: "Card I"

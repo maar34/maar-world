@@ -105,13 +105,28 @@ const cases = [
   [
     'rejects a page without a language',
     'pages',
-    { outputPath: 'lab/en/x', title: 'interplanetary players', area: 'maar', kind: 'lab' },
+    { outputPath: 'lab/en/x', title: 'interplanetary players', area: 'maar', kind: 'lab', origin: 'migrated' },
+    false,
+  ],
+  // `origin` decides whether a record authorises its own URL — see
+  // authoredRoutes() in verify-routes.mjs. A record that omits it must not
+  // build, for the same reason one that omits `lang` must not.
+  [
+    'rejects a page without an origin',
+    'pages',
+    { outputPath: 'lab/en/x', title: 'interplanetary players', area: 'maar', kind: 'lab', lang: 'en' },
+    false,
+  ],
+  [
+    'rejects an origin that is neither migrated nor authored',
+    'pages',
+    { outputPath: 'lab/en/x', title: 'x', area: 'maar', kind: 'lab', lang: 'en', origin: 'hand-written' },
     false,
   ],
   [
     'accepts a lab article as a page record',
     'pages',
-    { outputPath: 'lab/en/x', title: 'interplanetary players', area: 'maar', kind: 'lab', lang: 'en', tags: ['EN'] },
+    { outputPath: 'lab/en/x', title: 'interplanetary players', area: 'maar', kind: 'lab', lang: 'en', origin: 'migrated', tags: ['EN'] },
     true,
   ],
   [
@@ -123,6 +138,7 @@ const cases = [
       area: 'maar',
       kind: 'lab',
       lang: 'es',
+      origin: 'migrated',
       translationKey: '2026-01-07-music-access-human-mind',
     },
     true,
@@ -158,6 +174,7 @@ const widthDefault = SCHEMAS.pages.safeParse({
   area: 'maar',
   kind: 'page',
   lang: 'en',
+  origin: 'authored',
 });
 if (widthDefault.success && widthDefault.data.contentWidth === 'standard') {
   console.log('  PASS  defaults every page to the shared standard content width');

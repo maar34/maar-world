@@ -5,6 +5,7 @@ area: "collect"
 kind: "page"
 tags: []
 lang: "es"
+origin: "authored"
 translationOf: "collect/suits"
 description: "Coleccioná palos de 11 cartas."
 ---

@@ -6,6 +6,7 @@ kind: "lab"
 tags: ["orbiter", "ES"]
 source: "maar.world/collections/_lab/es/2024-08-30-IP_Orchestra.md"
 lang: "es"
+origin: "migrated"
 translationKey: "2024-08-30-ip-orchestra"
 indexGroup: "lab"
 indexOrder: "es/2024-08-30-IP_Orchestra.md"

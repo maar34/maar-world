@@ -6,6 +6,7 @@ kind: "doc"
 tags: []
 source: "collect.maar.world/collections/_documentation/07-mw/02-Terms&Conditions.md"
 lang: "en"
+origin: "migrated"
 indexGroup: "collect-docs"
 indexOrder: "07-mw/02-Terms&Conditions.md"
 indexLabel: "TERMS AND CONDITIONS"
