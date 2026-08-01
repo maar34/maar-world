@@ -174,6 +174,40 @@ export const CALENDAR = {
 } as const;
 
 /**
+ * Orbital Creation Workshop — `lab/{en,es}/ip-orchestra-design`.
+ *
+ * A DIFFERENT ARTICLE FROM `IP_ORCHESTRA` above, which is
+ * `lab/{en,es}/ip-orchestra`. They share the workshop and the two instruments
+ * and they are still two entries, for the reason `ORBITERS` states one screen
+ * up: MW-19 removes the duplication between a page and its own translation, not
+ * between two pages that happen to show the same thing today.
+ *
+ * ── THE POSTER IS THE ONE PICTURE THAT IS GENUINELY PER-LANGUAGE ─────────────
+ *
+ * Two fields, not one. `Interplanetary-Orchestra.ENG.png` and `.ESP.png` are
+ * the same designed sheet with the type set in two languages, which is why this
+ * pair is on TRANSLATED_ARTWORK in scripts/verify-translations.mjs — the only
+ * exemption to "a photograph is the same photograph in Spanish", and it exists
+ * for artwork with WORDS PRINTED ON IT. Showing a Spanish reader the English
+ * sheet would be the same half-translated chrome this issue removes.
+ *
+ * The other addresses have no language and are single fields, as everywhere.
+ */
+export const IP_ORCHESTRA_DESIGN = {
+  poster: {
+    en: '/img/lab/Interplanetary-Orchestra.ENG.png',
+    es: '/img/lab/Interplanetary-Orchestra.ESP.png',
+  },
+  summaryVideo: 'https://youtu.be/3FYGWpvH8Gs',
+  instruments: {
+    controlTheSound: '?g=335&s=1&c=2',
+    regenerativeModes: '?g=8&s=0&c=21',
+  },
+  /** Formspree. The same inbox as IP_ORCHESTRA today, still its own field. */
+  formAction: 'https://formspree.io/f/mqkrdkde',
+} as const;
+
+/**
  * Dadada — `lab/{en,es}/dadada`.
  *
  * One soundcloud track and one instrument, and the two halves were spelling

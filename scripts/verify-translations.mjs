@@ -346,7 +346,6 @@ export const structuralCount = (body) =>
  * line when its pair's structure moves into a page family; never add one.
  */
 export const STRUCTURED_ES = new Set([
-  'lab/es/ip-orchestra-design',
 ]);
 
 /**
@@ -474,14 +473,13 @@ export const DIVERGENT_PAIRS = new Set([
   /* radio's line is gone: the page is deleted, not converged. 2026-08-01. */
   'collect/docs/orbiters/how-to-use',
   'lab/en/ip-2',
-  'lab/en/ip-orchestra-design',
 ]);
 
 /** The size `DIVERGENT_PAIRS` may not exceed. It may only shrink. */
-export const DIVERGENT_PAIRS_CLOSED_AT = 3;
+export const DIVERGENT_PAIRS_CLOSED_AT = 2;
 
 /** The size `STRUCTURED_ES` may not exceed. It may only shrink. */
-export const STRUCTURED_ES_CLOSED_AT = 1;
+export const STRUCTURED_ES_CLOSED_AT = 0;
 
 /**
  * Which Spanish records carry structure they are not permitted to carry.
