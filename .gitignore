@@ -6,6 +6,7 @@
 node_modules
 .certs
 dist/
+dist-shim/
 .astro/
 .public/
 .DS_Store

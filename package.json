@@ -30,6 +30,8 @@
     "check:links": "node scripts/check-external-links.mjs",
     "links:review-removals": "node scripts/review-link-removals.mjs",
     "author:redirects": "node scripts/author-redirects.mjs",
+    "shim": "node scripts/author-redirect-shim.mjs && node scripts/verify-shim.mjs",
+    "shim:verify": "node scripts/verify-shim.mjs",
     "author:content-expectations": "node scripts/author-content-expectations.mjs"
   },
   "dependencies": {
