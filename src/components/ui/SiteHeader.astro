@@ -103,6 +103,7 @@ const sectionEntries = sections.map((s) => ({
   href: localise(s.href),
   seed: s.href,
   label: labelFor(s, chromeLang),
+  iconOnly: s.iconOnly ?? false,
   icon: s.icon,
   pigment: AREAS[area].pigment,
   current: here === localise(s.href) ? ('page' as const) : undefined,
@@ -155,9 +156,10 @@ const hasLanguages = Boolean(currentLanguage && otherLanguages.length > 0);
                     href={entry.href}
                     style={`--area-pigment: ${entry.pigment}`}
                     aria-current={entry.current}
+                    aria-label={entry.iconOnly ? entry.label : undefined}
                   >
                     {entry.icon && <NavigationIcon name={entry.icon} />}
-                    {entry.label}
+                    {!entry.iconOnly && entry.label}
                   </a>
                 </li>
               ))}
@@ -177,9 +179,10 @@ const hasLanguages = Boolean(currentLanguage && otherLanguages.length > 0);
                     href={entry.href}
                     style={`--area-pigment: ${entry.pigment}`}
                     aria-current={entry.current}
+                    aria-label={entry.iconOnly ? entry.label : undefined}
                   >
                     {entry.icon && <NavigationIcon name={entry.icon} />}
-                    {entry.label}
+                    {!entry.iconOnly && entry.label}
                   </a>
                 </li>
               ))}

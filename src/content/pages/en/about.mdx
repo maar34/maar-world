@@ -1,0 +1,50 @@
+---
+outputPath: "about"
+title: "About - MAAR WORLD"
+area: "maar"
+kind: "page"
+tags: []
+source: "maar.world/collections/_pages/about.md"
+lang: "en"
+origin: "migrated"
+description: "Maar World is a record label for a new era of music listening and making."
+---
+
+{/*
+  THIS FILE IS `.mdx` AND ITS SPANISH HALF IS TOO — MW-19.
+
+  The portrait-and-bio layout is `patterns/EditorialProfile` now. It used to be
+  seven elements written out here and seven more written out in Spanish, and
+  the Spanish record said so in a note: "la estructura y las clases son las
+  mismas a propósito… si cambia el marcado del original, hay que cambiarlo
+  también acá" — change it here, remember to change it there. That instruction
+  was the defect. There is nothing to remember now.
+
+  THE "FOUNDER" HEADING IS GONE, in both halves, on the owner's decision of
+  2026-08-01: "I don't like fundadora. Can we use another thing? Maybe
+  nothing." Nothing. The bio simply follows the statement. The section's
+  `aria-labelledby` pointed at that heading and went with it rather than being
+  left naming an element that no longer exists.
+
+  The photograph is `ABOUT.portrait` in src/config/articles.ts — one file, both
+  languages. Its `alt` is here, because that is a sentence a reader hears.
+*/}
+
+import EditorialProfile from '../../../components/patterns/EditorialProfile.astro';
+import { ABOUT as M } from '../../../config/articles';
+
+# About
+
+<EditorialProfile portrait={M.portrait} portraitAlt="Bruna Guarnieri portrait">
+
+<Fragment slot="statement">
+## Connecting artists and listeners with novel tools for future music co‑creation.
+
+Maar World is a record label for a new era of music listening and making. Currently developing new formats for music distribution of independent artists, merging physical and digital releases, music making and listening.
+</Fragment>
+
+<Fragment slot="bio">
+My name is 𝐵𝓇𝓊𝓃𝒶 𝑀𝒶𝒶𝓇 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾 𝒞𝑜𝓁𝒶𝓈𝓈𝑜. I am a sound artist and engineer working at the intersection of art, science and technology. After studying Sound Design and Engineering in Montevideo and Santiago de Chile, I collaborated on sound and interaction design for large-scale installations across the Americas and Europe. Highlights include the 2021 AI & Music S+T+ARTS Festival Hackathon award, sound design for national pavilions at major expos and the lead development of artist-run initiatives such as [Head Brothers](http://headbrothers.com) and [Exoplanetas](http://headbrothers.com/exoplanetas). Over a decade I have assembled an archive of soundscapes, poetry, testimonies, native South American chants, radio signals and eclectic music to create experiences that connect people and cultures through sound.
+</Fragment>
+
+</EditorialProfile>

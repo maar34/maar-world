@@ -1,0 +1,57 @@
+---
+/**
+ * patterns/editorial-profile — the About page's portrait-and-bio layout.
+ *
+ * Seven elements, written out in full in both halves of `/about`, with a note
+ * in the Spanish record admitting the arrangement: *"la estructura y las clases
+ * son las mismas a propósito… si cambia el marcado del original, hay que
+ * cambiarlo también acá"* — change it here, and remember to change it there.
+ * That sentence is MW-19's whole subject, written down by the person doing it.
+ * Now there is one component and nothing to remember.
+ *
+ * ── THERE IS NO "FOUNDER" HEADING ANY MORE ───────────────────────────────────
+ *
+ * Both halves carried an `<h2>` above the bio — "Founder" / "Fundadora" — and
+ * it was also the section's accessible name via `aria-labelledby`. The owner,
+ * 2026-08-01: *"I don't like fundadora. Can we use another thing? Maybe
+ * nothing."* Nothing it is, in both languages, and the `aria-labelledby` went
+ * with it rather than being left pointing at an id that no longer exists.
+ *
+ * The section keeps no accessible name at all, deliberately. A `<section>`
+ * without one is not exposed as a landmark, which is correct here: this is the
+ * page's only content, the `<h1>` above already names it, and inventing a
+ * hidden label to replace a heading the owner asked to remove would be putting
+ * the word back where only a screen reader could find it.
+ *
+ * ── WHAT IS A PROP AND WHAT IS A SLOT ────────────────────────────────────────
+ *
+ * The portrait's `alt` is a prop because it is one short sentence of copy. The
+ * statement and the bio are slots because they are prose — paragraphs with
+ * links inside them — and prose belongs in the body where it can be written as
+ * markdown and read as text.
+ *
+ * The photograph itself is neither: it is the same photograph in Spanish, so it
+ * is `ABOUT.portrait` in src/config/articles.ts.
+ */
+
+interface Props {
+  /** The portrait. From config — one file, both languages. */
+  portrait: string;
+  /** What a reader hears in place of the photograph. Copy, so per language. */
+  portraitAlt: string;
+}
+
+const { portrait, portraitAlt } = Astro.props;
+---
+
+<section class="editorial-profile">
+  <figure class="editorial-profile__portrait plate">
+    <img src={portrait} alt={portraitAlt} />
+  </figure>
+  <div class="editorial-profile__statement">
+    <slot name="statement" />
+  </div>
+  <div class="editorial-profile__bio">
+    <slot name="bio" />
+  </div>
+</section>

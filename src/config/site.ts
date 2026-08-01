@@ -132,14 +132,23 @@ export const HEADER_AREAS: readonly AreaName[] = ['collect'];
  */
 export const SECTIONS: Record<
   AreaName,
-  { href: string; label: string; labelEs?: string; icon?: NavigationIconName }[]
+  { href: string; label: string; labelEs?: string; icon?: NavigationIconName; iconOnly?: boolean }[]
 > = {
   maar: [
     { href: '/orbiters', label: 'Orbiters', labelEs: 'Orbiters', icon: 'satellite_alt' },
     { href: '/lab', label: 'Lab', labelEs: 'Lab', icon: 'science' },
     { href: '/landings', label: 'Landings', labelEs: 'Aterrizajes', icon: 'travel_explore' },
     { href: '/bookings', label: 'Bookings', labelEs: 'Contrataciones', icon: 'speaker_group' },
-    { href: '/about', label: 'About', labelEs: 'Nosotrxs', icon: 'info' },
+      /**
+   * THE INFO BUTTON. Drawn as its icon alone, in both languages — the owner,
+   * 2026-08-01: "just leave the info button. Simple."
+   *
+   * `label` and `labelEs` survive as the ACCESSIBLE name, because a link with
+   * no text is a link a screen reader cannot announce and `verify:a11y` fails
+   * it. "info" rather than "about" or "nosotrxs": it names the button a reader
+   * sees rather than a word neither language asked for.
+   */
+  { href: '/about', label: 'info', labelEs: 'info', icon: 'info', iconOnly: true },
   ],
   /**
    * Cards is first because it is what Collect is for.

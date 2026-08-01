@@ -354,7 +354,6 @@ export const STRUCTURED_ES = new Set([
   'lab/es/ip-1',
   'lab/es/dadada',
   'es/collect/docs/tutorials',
-  'es/about',
   'es/collect/docs/ent-cards',
   'es/calendar',
   'es/collect/docs/releases/skysounds',
@@ -399,6 +398,10 @@ export const SHARED_CHROME_WORDS = new Set([
      "es", in either language. */
   'es',
   'en',
+  /* The About link is drawn as its icon alone — "just leave the info button"
+     — and "info" is the same word in both languages. It exists only as the
+     accessible name, since a link with no text cannot be announced. */
+  'info',
 ]);
 
 /**
@@ -500,7 +503,7 @@ export const DIVERGENT_PAIRS = new Set([
 export const DIVERGENT_PAIRS_CLOSED_AT = 9;
 
 /** The size `STRUCTURED_ES` may not exceed. It may only shrink. */
-export const STRUCTURED_ES_CLOSED_AT = 19;
+export const STRUCTURED_ES_CLOSED_AT = 18;
 
 /**
  * Which Spanish records carry structure they are not permitted to carry.

@@ -149,3 +149,14 @@ export const LANDINGS = {
     tembey: 'https://vimeo.com/104399616',
   },
 } as const;
+
+/**
+ * The About page — `{about,es/about}`.
+ *
+ * One field, and it still belongs here rather than in either record: the
+ * portrait is the same photograph in Spanish. The `alt` is not — it is a
+ * sentence a reader hears — so it stays in each half.
+ */
+export const ABOUT = {
+  portrait: '/img/about/bruna-profile.webp',
+} as const;
