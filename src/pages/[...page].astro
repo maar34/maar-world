@@ -231,7 +231,13 @@ const hasCarousel =
   /class="carousel"/.test(entry.body ?? '') ||
   /<Carousel[\s/>]/.test(entry.body ?? '') ||
   Boolean(d.collect?.journey?.slides?.length);
-const hasPdfEmbed = /class="[^"]*pdf-embed/.test(entry.body ?? '');
+/* The raw form, plus the component a converted `.mdx` body calls instead — the
+   same widening the carousel and the facade each needed. `verify:build` now
+   carries a DRIVEN_MARKUP rule for the reader too, so if this misses the next
+   spelling the page that used it fails rather than quietly serving an
+   un-upgraded object. */
+const hasPdfEmbed =
+  /class="[^"]*pdf-embed/.test(entry.body ?? '') || /<PdfEmbed[\s/>]/.test(entry.body ?? '');
 
 /**
  * Which pages load the embed consent gate — only pages with a facade the gate

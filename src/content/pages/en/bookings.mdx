@@ -1,0 +1,75 @@
+---
+outputPath: "bookings"
+title: "Bookings - MAAR WORLD"
+area: "maar"
+kind: "page"
+tags: []
+source: "maar.world/collections/_pages/bookings.md"
+lang: "en"
+origin: "migrated"
+---
+
+{/*
+  THIS FILE IS `.mdx` AND ITS SPANISH HALF IS TOO — MW-19.
+
+  Three blocks carried all nine of this page's duplicated elements, and every
+  one of them was written out again in Spanish: the press-kit viewer, the
+  enquiry form, and an empty spacer.
+
+    the PDF viewer  ->  `media/PdfEmbed`, new with this conversion
+    the form        ->  `ui/ContactForm`, which already existed
+    the spacer      ->  gone. It was an empty element with no rule anywhere in
+                        the stylesheets, drawn as nothing, present twice.
+
+  THE EPK ADDRESS IS NOT HERE. It is `BOOKINGS` in src/config/articles.ts,
+  named once, because both halves link the SAME file — there is no Spanish cut
+  of the press kit. What IS here is every word, including the frame titles and
+  the object's accessible name, which are sentences a reader hears.
+
+  WHY THIS IS AN ARTICLE AND NOT A PAGE FAMILY, given that it is one of the
+  five pages in the header. `landings` and this were both expected to be family
+  work, and the shape follows the page rather than its place in the navigation.
+  This page is a document: a title, a press kit, four specification lines, a
+  section of prose and a form, in that order and reading top to bottom. There
+  is no repeating unit for a family to draw from data. So it stays markdown and
+  calls a component where a block goes.
+*/}
+
+import PdfEmbed from '../../../components/media/PdfEmbed.astro';
+import ContactForm from '../../../components/ui/ContactForm.astro';
+import Mark from '../../../components/patterns/Mark.astro';
+import { BOOKINGS as M } from '../../../config/articles';
+
+# <Mark tilt={2} tear={2}>Bookings</Mark>
+
+𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾
+
+[Download EPK (PDF)](/img/pdf/English-EPK_Bruna_Guarnieri.pdf)
+
+<PdfEmbed
+  href={M.epk}
+  label="Electronic Press Kit PDF"
+  height="1500px"
+  frameTitle="EPK PDF"
+  fallbackText="Your browser cannot display embedded PDFs."
+  fallbackLink="Download the EPK"
+  openLabel="Open / Download EPK (PDF)"
+/>
+
+**Performance:** Live AV, Live, Hybrid, DJ set.  
+**Genres:** Regenerative Music / Union of world genres / You choose the genre, I choose the style :)  
+**Artist using:** Sensors, controllers, synths, custom Max software, Ableton Live, Traktor.  
+Live AV includes custom Max Software and Synths. 
+
+## Hybrid (Live + DJ) sets
+
+From thirty minutes to four hours: sonic or audiovisual journeys through classical elements, expeditions to solar systems, exoplanets, and stars.
+
+Each concept appears under musical moods ranging from ambient and downtempo to house and techno, always adapting to the moment. Soundscapes and voices bring narrative strands. Over a decade assembling an archive of soundscapes, poetry, testimonies, native South American chants, radio signals, and eclectic music to connect people and cultures through sound.
+
+<ContactForm
+  action={M.formAction}
+  heading="Contact"
+  lede="Send a booking inquiry."
+  labels={{ name: 'Your name:', email: 'Your email:', message: 'Your message:', submit: 'Send' }}
+/>

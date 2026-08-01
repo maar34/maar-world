@@ -1,0 +1,115 @@
+---
+/**
+ * media/pdf-embed — a local PDF, shown in the page.
+ *
+ * Five bodies hold this markup today: both halves of `bookings`, both halves of
+ * `orbits-and-bodies`, and `resume` twice. Every one of them was written
+ * out by hand, so the shape drifted — `resume`'s objects carry `data-doc` and a
+ * `zoom=100`, and its fallback sentence is a different English sentence from the
+ * one on `bookings`. This is that markup once, for `bookings`; the other three
+ * pages join it as they are converted. MW-19.
+ *
+ * ── THE SCRIPT THIS MARKUP NEEDS ─────────────────────────────────────────────
+ *
+ * `ui/PdfViewerScript` upgrades `.pdf-embed` into a small PDF.js reader, and
+ * `[...page].astro` decides which pages load it by matching `class="pdf-embed"`
+ * against the record BODY. A body that calls this component holds the class
+ * without containing the string — the same trap that shipped two dead carousels
+ * under a green suite, twice in this issue.
+ *
+ * So two things changed with this component, not one: the route's test was
+ * widened, AND `verify:build` gained a third `DRIVEN_MARKUP` rule so the PDF
+ * reader is now asserted the way the carousel and the consent gate are. It was
+ * the one driven thing on the site with no assertion behind it. A list of
+ * spellings has failed twice here; the property is what holds.
+ *
+ * ── THE HIDDEN FALLBACK IS KEPT ON PURPOSE ───────────────────────────────────
+ *
+ * `.pdf-fallback` is `aria-hidden` AND `display:none`, and nothing on the site
+ * ever un-hides it — `ui/PdfViewerScript` does not look at it. It is dead in
+ * every state, for every visitor. It is still here because production serves it
+ * and `verify:content` measures this build against production's text: removing
+ * it is a content change, and content changes are not made to tidy markup.
+ * Worth proposing to the owner as a deletion across all five pages at once.
+ *
+ * `verify:a11y` already judges this block correct as it stands — `aria-hidden`
+ * with `display:none` leaves nothing in the tab order — so it is inert, not a
+ * defect.
+ *
+ * ── WHY THE FALLBACK SENTENCE IS A PROP ──────────────────────────────────────
+ *
+ * "Your browser cannot display embedded PDFs" is chrome and by rights belongs
+ * to this component, keyed by language. It is a prop anyway, because `resume`
+ * says "Your browser does not support PDFs" instead, and choosing between the
+ * two here would silently rewrite a page this conversion is not converting.
+ * When the other three pages are converted, collapse the sentences into one
+ * table keyed by language — the way `src/config/embeds.ts` did for the facades
+ * — and drop these props. That is a deliberate step, not a side effect.
+ */
+
+interface Props {
+  /** The PDF's own URL, same-origin. Used by the object, the frame and both links. */
+  href: string;
+  /** The object's accessible name — this document, named in the page's language. */
+  label: string;
+  /** The legacy `height` attribute. `prose.css` sets the real height in CSS. */
+  height: string;
+  /**
+   * The nested frame's title. Present on `bookings`, absent on `resume` — an
+   * object's fallback content only renders if the object fails, so the frame is
+   * a second fallback behind the first. Omit it and no frame is written.
+   */
+  frameTitle?: string;
+  /** "Your browser cannot display embedded PDFs." See the note above. */
+  fallbackText: string;
+  /** The link inside that sentence: "Download the EPK". */
+  fallbackLink: string;
+  /** The hidden button's label: "Open / Download EPK (PDF)". */
+  openLabel: string;
+}
+
+const { href, label, height, frameTitle, fallbackText, fallbackLink, openLabel } = Astro.props;
+
+/**
+ * THE OBJECT'S FALLBACK IS INJECTED AS HTML, NOT WRITTEN AS TEMPLATE, and that
+ * is a workaround for a real defect rather than a style choice.
+ *
+ * `<a>` is an HTML formatting element, and Astro's template parser does not
+ * treat `<object>` as a boundary for one. Written the obvious way — an anchor
+ * inside the object's fallback paragraph — the compiler left that anchor on its
+ * list of active formatting elements and RECONSTRUCTED it twice further down:
+ * one empty `<a href>` after `</object>` and another inside `.pdf-fallback`.
+ * Two nameless links, both keyboard tab stops, on both halves of the page.
+ *
+ * It was caught by `verify:a11y` ("every link has an accessible name"), which
+ * is the only reason it is not in the build now — nothing about the page looked
+ * wrong, and the markup came out of a component that reads correctly in source.
+ * The `.md` body never hit it because raw HTML in markdown passes through
+ * untouched; the parser only sees it once markup becomes a template.
+ *
+ * So the fallback is built as a string and injected verbatim. Every value is
+ * escaped: `href` is same-origin config and the words are page copy, but a
+ * component that concatenates HTML should not be the one place that assumes its
+ * inputs are safe.
+ */
+const esc = (s: string) =>
+  String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+const fallbackHtml = [
+  frameTitle
+    ? `<iframe src="${esc(href)}" title="${esc(frameTitle)}" style="width:100%;height:1400px;border:none;"></iframe>`
+    : '',
+  `<p>${esc(fallbackText)} <a href="${esc(href)}">${esc(fallbackLink)}</a>.</p>`,
+]
+  .filter(Boolean)
+  .join('\n');
+---
+
+<div class="pdf-embed pdf-preview">
+  <object data={`${href}#toolbar=0`} type="application/pdf" aria-label={label} width="100%" height={height}>
+    <Fragment set:html={fallbackHtml} />
+  </object>
+  <div class="pdf-fallback" aria-hidden="true" style="display:none;">
+    <a class="button button--outline-info button--rounded" style="font-size:.75rem;" target="_blank" rel="noopener" href={href}>{openLabel}</a>
+  </div>
+</div>

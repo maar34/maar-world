@@ -82,6 +82,27 @@ export const IP_ORCHESTRA = {
  * conversion removes, and would put both halves back on the STRUCTURED_ES list.
  * A link inside a sentence is part of the sentence. A plate is structure.
  */
+/**
+ * Booking enquiries — `{bookings,es/bookings}`.
+ *
+ * ONE EPK, AND IT IS THE ENGLISH ONE. There is no Spanish cut of the press kit,
+ * so both halves point at the same file and the Spanish page says in its link
+ * text which language the document is in. Linking a PDF that does not exist
+ * would be worse than linking the one that does. If a Spanish EPK ever appears,
+ * this becomes two fields and the Spanish record's link text loses its note —
+ * which is the whole reason the address is here and not written into both
+ * bodies, where only one of the two would get changed.
+ *
+ * `formAction` matches `IP_ORCHESTRA.formAction` today, and they are still two
+ * fields rather than one shared constant. They are two forms that happen to
+ * post to one inbox; merging them would assert that they must, and the site's
+ * forms are deliberately not all one inbox.
+ */
+export const BOOKINGS = {
+  epk: '/img/pdf/English-EPK_Bruna_Guarnieri.pdf',
+  formAction: 'https://formspree.io/f/mqkrdkde',
+} as const;
+
 export const LANDINGS = {
   videos: {
     trappistLive: 'https://youtu.be/GYhV2qAPZ6w',

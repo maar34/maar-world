@@ -337,6 +337,30 @@ const DRIVEN_MARKUP = [
        own source, not from the page's markup. */
     script: /EmbedConsentScript|embed-facade__poster/,
   },
+  {
+    what: 'a PDF embed the reader upgrades',
+    /**
+     * THE ONE DRIVEN THING ON THIS SITE THAT HAD NO ASSERTION BEHIND IT.
+     *
+     * `ui/PdfViewerScript` queries `.pdf-embed` and replaces the authored
+     * `<object>` with a PDF.js reader. `[...page].astro` decided which pages
+     * load it by matching the class against the record BODY — the identical
+     * arrangement that shipped two dead carousels, and it was still standing
+     * here after both of those were fixed, simply because no page had moved its
+     * PDF into a component yet. `media/PdfEmbed` is the first, so the rule is
+     * added with it rather than after the third failure.
+     *
+     * The authored `<object>` is a real fallback, so a page missing the script
+     * is not blank — it is the legacy strip-of-document rendering that
+     * `prose.css` describes, which is exactly the kind of failure that looks
+     * fine in a screenshot and is why this is asserted rather than eyeballed.
+     */
+    markup: /class="[^"]*\bpdf-embed\b/,
+    /* pdfjs-dist is far past the inlining threshold, so the module name is in a
+       `src`. `pdf-viewer__control` is a class the script writes and would still
+       be found if it ever were inlined. */
+    script: /PdfViewerScript|pdf-viewer__control/,
+  },
 ];
 
 /**

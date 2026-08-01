@@ -344,7 +344,6 @@ export const STRUCTURED_ES = new Set([
   'lab/es/orbits-and-bodies',
   'lab/es/ip-1',
   'lab/es/dadada',
-  'es/bookings',
   'es/collect/docs/tutorials',
   'es/about',
   'es/collect/docs/ent-cards',
@@ -371,7 +370,7 @@ export const STRUCTURED_ES = new Set([
 ]);
 
 /** The size `STRUCTURED_ES` may not exceed. It may only shrink. */
-export const STRUCTURED_ES_CLOSED_AT = 32;
+export const STRUCTURED_ES_CLOSED_AT = 31;
 
 /**
  * Which Spanish records carry structure they are not permitted to carry.

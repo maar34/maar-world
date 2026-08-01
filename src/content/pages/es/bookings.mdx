@@ -1,0 +1,75 @@
+---
+outputPath: "es/bookings"
+title: "Contrataciones - MAAR WORLD"
+area: "maar"
+kind: "page"
+tags: []
+lang: "es"
+origin: "authored"
+translationOf: "bookings"
+---
+
+{/*
+  La traducción de src/content/pages/en/bookings.mdx — MW-19.
+
+  ESTE ARCHIVO YA NO TIENE ESTRUCTURA. El visor del EPK y el formulario estaban
+  escritos enteros acá y otra vez en el archivo en inglés. Ahora los dibujan
+  `media/PdfEmbed` y `ui/ContactForm`, una sola vez cada uno, y las dos lenguas
+  cambian juntas. El elemento vacío del final se fue: no tenía ninguna regla en
+  ninguna hoja de estilos, no dibujaba nada, y estaba dos veces.
+
+  DOS COSAS QUE NO CAMBIAN, A PROPÓSITO.
+
+  (1) El EPK es el archivo en inglés. No existe una versión en español del PDF;
+      enlazar uno que no existe sería peor que enlazar el que hay, así que el
+      enlace apunta al mismo archivo y el texto dice en qué idioma está. La
+      dirección ahora está una sola vez, en BOOKINGS de src/config/articles.ts:
+      si algún día aparece un EPK en español, se cambia ahí, y no en dos
+      archivos de los cuales se cambiaría uno solo.
+
+  (2) El formulario apunta al MISMO endpoint de Formspree que la versión en
+      inglés. Un segundo endpoint partiría las consultas en dos bandejas.
+      Los campos llevan name en inglés (name / email / message) porque es lo
+      que Formspree muestra en el panel; lo que se traduce es la etiqueta que
+      lee la persona, que es lo que el label asocia al control — y por eso las
+      etiquetas son props del componente y no texto fijo adentro de él.
+*/}
+
+import PdfEmbed from '../../../components/media/PdfEmbed.astro';
+import ContactForm from '../../../components/ui/ContactForm.astro';
+import Mark from '../../../components/patterns/Mark.astro';
+import { BOOKINGS as M } from '../../../config/articles';
+
+# <Mark tilt={2} tear={2}>Contrataciones</Mark>
+
+𝐵𝓇𝓊𝓃𝒶 𝒢𝓊𝒶𝓇𝓃𝒾𝑒𝓇𝒾
+
+[Descargar EPK (PDF, en inglés)](/img/pdf/English-EPK_Bruna_Guarnieri.pdf)
+
+<PdfEmbed
+  href={M.epk}
+  label="Electronic Press Kit en PDF"
+  height="1500px"
+  frameTitle="EPK en PDF"
+  fallbackText="Tu navegador no puede mostrar PDFs incrustados."
+  fallbackLink="Descargá el EPK"
+  openLabel="Abrir / Descargar EPK (PDF, en inglés)"
+/>
+
+**Formatos:** Live AV, en vivo, híbrido, DJ set.  
+**Géneros:** Música regenerativa / Unión de géneros del mundo / Vos elegís el género, yo elijo el estilo :)  
+**Instrumental:** Sensores, controladores, sintetizadores, software propio en Max, Ableton Live, Traktor.  
+El Live AV incluye software propio en Max y sintetizadores. 
+
+## Sets híbridos (en vivo + DJ)
+
+De treinta minutos a cuatro horas: viajes sonoros o audiovisuales por los elementos clásicos, expediciones a sistemas solares, exoplanetas y estrellas.
+
+Cada concepto aparece bajo climas musicales que van del ambient y el downtempo al house y al techno, siempre adaptándose al momento. Los paisajes sonoros y las voces traen hilos narrativos. Más de una década reuniendo un archivo de paisajes sonoros, poesía, testimonios, cantos originarios sudamericanos, señales de radio y música ecléctica para conectar a las personas y a las culturas a través del sonido.
+
+<ContactForm
+  action={M.formAction}
+  heading="Contacto"
+  lede="Enviá una consulta de contratación."
+  labels={{ name: 'Tu nombre:', email: 'Tu correo electrónico:', message: 'Tu mensaje:', submit: 'Enviar' }}
+/>
