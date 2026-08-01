@@ -273,14 +273,23 @@ const slides = COLLECT_JOURNEY_IMAGES.map((image, i) => ({
   {/* The video, click-to-load. Nothing is requested from YouTube until the
       reader chooses it — the invariant in AGENTS.md, and the reason this is a
       facade rather than an iframe. */}
-  <section class="prose collect__band collect__band--center" aria-label={copy.pitch.title}>
+  {/* ITS OWN BAND, AND THAT IS THE SPACING FIX.
+      The video is not part of the pitch's sentence — it is the thing before it.
+      It used to sit inside the pitch band and be pushed away from the statement
+      by the statement's own 64px top margin, which made one band silently
+      contain two groups. A group boundary is now a band boundary, so the 96px
+      between them comes from `.collect`'s single gap like every other gap on
+      the page, instead of from a margin that only that one element carried. */}
+  <section class="prose collect__band collect__band--center" aria-label={video.label}>
     <EmbedFacade
       provider="youtube"
       href={COLLECT_VIDEO_URL}
       label={video.label}
       note={video.note}
     />
+  </section>
 
+  <section class="prose collect__band collect__band--center" aria-label={copy.pitch.title}>
     {/* The page's opening statement, in the Lab h1's voice. See
         `patterns/statement` for why an h2 is allowed a mark here and what that
         exception does not extend to. */}
@@ -445,12 +454,44 @@ const slides = COLLECT_JOURNEY_IMAGES.map((image, i) => ({
     border: 0;
   }
 
-  /* The same rhythm the home family uses — "sibling groups use gap, never
-     margins" — so the two landings read as one site rather than two. */
+  /**
+   * THE PAGE'S VERTICAL RHYTHM — two values, and one source for each.
+   *
+   * "sibling groups use gap, never margins" is the spec's rule, and this page
+   * was following the first half of it while quietly breaking the second. Three
+   * independent sources were stacking on every vertical distance:
+   *
+   *   this gap                --s-16   between every top-level block
+   *   .collect__band padding  --s-8    on both edges of a band
+   *   prose margins           --s-16 / --s-4 on the h2s and paragraphs inside
+   *
+   * Flex gap and margins ADD — there is no collapsing in a flex container — so
+   * no distance on the page had been chosen by anyone. Each one was a sum, and
+   * the sums disagreed: two bands sitting next to each other came to 128px
+   * (32 + 64 + 32) while a band beside the banner image came to 96px (64 + 32),
+   * even though both are the same relationship — one group, then the next.
+   * That inconsistency is what reads as inharmonic, not any single number.
+   *
+   * So there are now exactly two distances on this page, and each has exactly
+   * one source:
+   *
+   *   between groups   --s-24 (96px)   this gap, and nothing else
+   *   inside a group   --s-8  (32px)   the band's gap, and nothing else
+   *
+   * A 3:1 ratio, both values on the spacing scale, both deliberate. A band no
+   * longer carries block padding and its children no longer carry margins, so
+   * changing a distance means changing one number rather than discovering which
+   * three things add up to it.
+   *
+   * The corollary is structural: a group boundary must be a BAND boundary. The
+   * video moved into a band of its own for exactly that reason — it was relying
+   * on the statement's margin to push it away, which is the old system wearing
+   * a different hat.
+   */
   .collect {
     display: flex;
     flex-direction: column;
-    gap: var(--s-16);
+    gap: var(--s-24);
     padding-block: 0 var(--s-24);
   }
 
@@ -465,9 +506,34 @@ const slides = COLLECT_JOURNEY_IMAGES.map((image, i) => ({
   .collect__band {
     display: flex;
     flex-direction: column;
-    gap: var(--s-4);
-    padding-block: var(--s-8);
+    gap: var(--s-8);
     inline-size: 100%;
+  }
+
+  /**
+   * The band owns its rhythm, so nothing inside it brings its own.
+   *
+   * This is the second half of "sibling groups use gap, never margins" actually
+   * being applied. `prose.css` gives an h2 `--s-16 / --s-4` and a paragraph
+   * `0 / --s-4`, which is right for an arbitrary migrated body — prose.css says
+   * why it has to use margins there — and wrong for a flex column that already
+   * has a gap, because the two add.
+   *
+   * DIRECT CHILDREN ONLY. A migrated body nested inside a band keeps the prose
+   * rhythm all the way down; this reaches one level, which is exactly the level
+   * the band's own gap reaches.
+   *
+   * ── THE COMMENT THIS REPLACES WAS TECHNICALLY WRONG ─────────────────────────
+   *
+   * It said a rule here "could not win it anyway: Astro scopes these selectors
+   * with `:where()`, which adds no specificity, so `.collect__heading` (0,1,0)
+   * loses to `.prose h2` (0,1,1)". That is not what this Astro version emits —
+   * the compiled rule is `.collect__band[data-astro-cid-…] > *`, an attribute
+   * selector at (0,2,0), which beats `.prose h2` comfortably. Verified in the
+   * built CSS rather than assumed, because the old note had been assumed.
+   */
+  .collect__band > * {
+    margin-block: 0;
   }
 
   /* `.hero--center` — the theme centred both the text and the items in it. */
@@ -477,15 +543,18 @@ const slides = COLLECT_JOURNEY_IMAGES.map((image, i) => ({
   }
 
   /**
-   * PROSE OWNS THE TYPE RHYTHM IN A BAND, AND IS LEFT TO.
+   * THE BAND OWNS THE RHYTHM NOW — see `.collect__band > *` above.
    *
-   * Every band carries `.prose`, so `prose.css` sets the heading and paragraph
-   * margins — which is exactly what these elements had inside the migrated
-   * body, alongside the theme's flex gap. Reproducing the gap and then zeroing
-   * the margins would be a change of spacing dressed as a refactor, so it is
-   * not done. Note also that a rule here could not win it anyway: Astro scopes
-   * these selectors with `:where()`, which adds no specificity, so
-   * `.collect__heading` (0,1,0) loses to `.prose h2` (0,1,1).
+   * This block used to argue the opposite: that prose should keep owning the
+   * margins inside a band, and that "reproducing the gap and then zeroing the
+   * margins would be a change of spacing dressed as a refactor". The first half
+   * was a reasonable position while the numbers happened to look right. What
+   * settled it is that they did not: running both systems made the same
+   * group-to-group relationship measure 96px in one place and 128px in another,
+   * which is a change of spacing that had already happened, by accident.
+   *
+   * It was also resting on a claim about Astro's scoping that the built CSS
+   * does not support. Both halves are corrected above.
    */
   .collect__heading--center {
     text-align: center;

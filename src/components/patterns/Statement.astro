@@ -127,23 +127,28 @@ const parts = split(text, mark);
    * reads as a statement rather than as a slightly odd heading.
    */
   /**
-   * THE VERTICAL RHYTHM IS THE ONE AN h2 ALREADY HAD — do not reset it to 0.
+   * NO VERTICAL MARGIN — the container owns the rhythm.
    *
-   * `prose.css` gives every `h2` `margin-block: var(--s-16) var(--s-4)` under
-   * the rule *"section rhythm — an h2 opens a section"*. A statement IS that
-   * h2, so it opens a section exactly the same way, and the first version of
-   * this component set `margin: 0` out of habit — a scoped `.statement` is
-   * (0,2,0) and quietly outranks `.prose h2` at (0,1,1). The result was two
-   * statements sitting hard against the block above them, with only the band's
-   * `gap` between, and the loss was more obvious here than it would be on a
-   * normal heading because the type is half as large again.
+   * This went back and forth twice, so here is where it landed and why.
    *
-   * Restated rather than inherited, deliberately: this component has to carry
-   * its own rhythm to be usable outside a `.prose` container, and it must not
-   * depend on which of two rules happens to win.
+   * `prose.css` gives every `h2` `margin-block: var(--s-16) var(--s-4)`, and a
+   * statement IS an h2, so carrying that margin looked like the faithful thing
+   * to do. It is not, because the containers these live in are flex columns
+   * with a `gap`, and flex gap and margin ADD — no collapsing. Every distance
+   * became a sum of the two, and the sums disagreed across the page. The spec's
+   * rule settles it: *"sibling groups use gap, never margins."*
+   *
+   * So the component contributes nothing vertical and the container decides.
+   * That is what makes a statement droppable into any layout without arriving
+   * with an opinion that has to be cancelled — and `.collect__band > *` would
+   * cancel it anyway, which would leave this declaration dead at every call
+   * site it has.
+   *
+   * A statement placed somewhere with no gap and no margins will sit flush.
+   * That is the container's bug to fix, in the container.
    */
   .statement {
-    margin-block: var(--s-16) var(--s-4);
+    margin-block: 0;
     font-family: var(--t-display-face);
     font-weight: var(--t-display-weight);
     font-style: italic;
