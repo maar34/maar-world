@@ -5621,53 +5621,6 @@
       "links": []
     },
     {
-      "url": "/radio",
-      "production": {
-        "origin": "maar.world",
-        "url": "/radio",
-        "baseline": "legacy-site-exact",
-        "textLength": 1440,
-        "textSha256": "9230bd9f6ad35428",
-        "bodyTextLength": 1017,
-        "headings": 4,
-        "bodyHeadings": 3,
-        "imageCount": 4,
-        "iframeCount": 3,
-        "outboundLinks": 6
-      },
-      "excludedRegions": [
-        "document-head",
-        "icon-glyphs",
-        "site-header",
-        "site-footer",
-        "aside-toc",
-        "disqus",
-        "cookie-banner",
-        "search-modal",
-        "hidden-elements x4"
-      ],
-      "excludedPerPage": [
-        {
-          "kind": "images",
-          "count": 1,
-          "reason": "the Mailchimp eep.io logo. Serving it fires a third-party request on page load, which the no-analytics / no-cookie-banner invariant forbids."
-        }
-      ],
-      "ownPropertyLinksNotAsserted": 1,
-      "headings": [
-        "Radio",
-        "Collect",
-        "Join mail list"
-      ],
-      "minTextLength": 864,
-      "images": 3,
-      "embeds": 2,
-      "links": [
-        "http://eepurl.com/if7emL",
-        "https://maarworld.gumroad.com"
-      ]
-    },
-    {
       "url": "/resume",
       "production": {
         "origin": "maar.world",

@@ -2636,16 +2636,14 @@
     {
       "url": "/radio",
       "origin": "maar.world",
-      "policy": "preserve",
-      "reason": "maar.world route preserved at its existing path",
-      "servedAt": "/radio"
+      "policy": "drop",
+      "reason": "deprecated by the owner 2026-08-01; the page 404s. See MIGRATION-LEDGER arch/radio-deprecated"
     },
     {
       "url": "/radio.html",
       "origin": "maar.world",
-      "policy": "preserve",
-      "reason": "maar.world route preserved at its existing path",
-      "servedAt": "/radio.html"
+      "policy": "drop",
+      "reason": "deprecated by the owner 2026-08-01; the page 404s. See MIGRATION-LEDGER arch/radio-deprecated"
     },
     {
       "url": "/resume",
