@@ -349,9 +349,6 @@ export const STRUCTURED_ES = new Set([
   'lab/es/ip-orchestra-design',
   'lab/es/orbits-and-bodies',
   'lab/es/dadada',
-  'es/collect/docs/ent-cards',
-  'es/collect/docs/releases/skysounds',
-  'es/collect/docs/mw',
   'lab/es/helix-eac-montevideo-2025',
 ]);
 
@@ -477,10 +474,8 @@ export const elementSkeleton = (html) => {
  * pages that USED to disagree.
  */
 export const DIVERGENT_PAIRS = new Set([
-  'collect/docs/mw',
   /* radio's line is gone: the page is deleted, not converged. 2026-08-01. */
   'collect/docs/orbiters/how-to-use',
-  'collect/docs/releases/skysounds',
   'lab/en/dadada',
   'lab/en/ip-2',
   'lab/en/ip-orchestra-design',
@@ -488,10 +483,10 @@ export const DIVERGENT_PAIRS = new Set([
 ]);
 
 /** The size `DIVERGENT_PAIRS` may not exceed. It may only shrink. */
-export const DIVERGENT_PAIRS_CLOSED_AT = 7;
+export const DIVERGENT_PAIRS_CLOSED_AT = 5;
 
 /** The size `STRUCTURED_ES` may not exceed. It may only shrink. */
-export const STRUCTURED_ES_CLOSED_AT = 7;
+export const STRUCTURED_ES_CLOSED_AT = 4;
 
 /**
  * Which Spanish records carry structure they are not permitted to carry.
