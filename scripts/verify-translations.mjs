@@ -175,10 +175,15 @@ export const isWellFiled = (r) => filedAt(r) === expectedAt(r);
  *                including the copy check.
  *
  *   'unpaired' — has no other-language half and is not supposed to acquire one.
- *                `/esp-feedback` is a retired redirect stub to `/bookings` (the
- *                NOINDEX block in astro.config.mjs). Listing it is what makes
- *                its missing pair a stated fact instead of an unnoticed one.
- *                Do not invent a counterpart for it.
+ *                `/esp-feedback` is a retired redirect stub, pointing at
+ *                `/es/bookings` (the NOINDEX block in astro.config.mjs). It
+ *                targeted the ENGLISH `/bookings` until 2026-08-06, which meant
+ *                a Spanish URL silently handed its reader to an English page —
+ *                the "links stay in Spanish" assertion below now covers
+ *                meta-refresh precisely because no `<a>` on this page pointed
+ *                anywhere. Listing it here is what makes its missing pair a
+ *                stated fact instead of an unnoticed one. Do not invent a
+ *                counterpart for it.
  *
  * Keyed by `outputPath` and not by file path, now that the file path is derived
  * from the outputPath and carries no independent information.
@@ -894,8 +899,20 @@ export async function checkTranslations(report) {
     }
   }
 
+  /**
+   * A link's PATH, comparable against `enToEs`' keys.
+   *
+   * The query and the fragment come off first, and that is not tidying: this
+   * check compares against keys built from `outputPath`, which never carry
+   * either, so `/bookings?utm=x` and `/bookings#form` would both miss the map
+   * and be reported clean while sending a Spanish reader to an English page.
+   * No such href exists in the build today — which is exactly why it is worth
+   * closing now, while the answer is one line rather than a bug report.
+   */
   const normalise = (href) =>
-    decodeURI(href).replace(/\.html$/, '').replace(/\/index$/, '') || '/';
+    decodeURI(href.split('#')[0].split('?')[0])
+      .replace(/\.html$/, '')
+      .replace(/\/index$/, '') || '/';
 
   const leaks = [];
   for (const r of es) {
