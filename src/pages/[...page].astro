@@ -664,12 +664,16 @@ const labEntries = isYearIndex
       /**
        * THE OFFER, and why it sits ABOVE the player rather than under it.
        *
-       * The note says the Orbiter is playing further down this page, and that
-       * has to be readable as a description of what the visitor is looking at,
-       * not as a claim they have to scroll back up to check. Above the embed
-       * the sentence points forward at the thing itself; below it, it points at
-       * nothing and the page has already spent its one purchase moment on a
-       * ten-second WebGL boot.
+       * The Orbiter takes ~10s to boot and then fills the screen with a running
+       * WebGL scene. Anything placed after it is read by whoever is still there
+       * once the music starts, which is not the same audience and is a much
+       * smaller one. The offer goes where the visitor still is: straight after
+       * the card's own description, while they are reading about this card.
+       *
+       * It also means the player is the thing directly BELOW the offer, so the
+       * page ends on the music rather than on a sales pitch — the note names
+       * the goods and stops, and the Orbiter makes the rest of the argument by
+       * simply playing.
        *
        * ONE STAMP, ONE VIEW. These pages carried no controls at all, so this
        * spends the whole budget `scripts/verify-actions.mjs` counts — deliberately,

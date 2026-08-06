@@ -180,19 +180,31 @@ export function suitDisplayName(suitTitle: string | undefined): string | null {
 }
 
 /**
- * WHAT COLLECTING ACTUALLY GETS YOU — one copy, both languages.
+ * WHAT COLLECTING GETS YOU — one copy, both languages. THIS IS THE SELL.
  *
- * What this replaces was wrong, and wrong in the one way that costs a sale: it
- * said collecting the card is what unlocks the Orbiter. The Orbiter is open to
- * everyone and is embedded further down this very page, playing, for free. A
- * visitor who believes the old line either buys for something they already have
- * or — reading the page and seeing the player run — concludes the offer is not
- * to be trusted.
+ * It names the goods and stops. It does not explain, qualify, or reassure, and
+ * the discipline is harder to hold than it looks — the first draft of this line
+ * broke it. What was here before said the Orbiter is open to everyone and is
+ * playing further down the page, which is TRUE and was still the wrong sentence:
+ * it spends the one selling moment on what the visitor is NOT paying for. A line
+ * that opens by clarifying something nobody asked about reads as a defence, and
+ * a defence is not an offer.
  *
- * What the purchase is: the physical card, and the high-quality audio files.
- * And it is sold BY THE SUIT — eleven cards — which the old line never said, so
- * the page invited a visitor to "collect this card" and then sent them to a
- * shop that has no such thing.
+ * (It was written that way to correct a real error. The line it replaced said
+ * collecting the card is what unlocks the Orbiter, and the Orbiter is free and
+ * embedded on that very page, playing — so the page argued with itself, and a
+ * visitor who noticed learned the offer was not to be trusted. But the fix for a
+ * false claim is to stop making it, NOT to narrate the correction on the page.)
+ *
+ * So: the goods, verified against the Bandcamp listing on 2026-08-06 — eleven
+ * physical cards, an edition of 50, and the original audio files. Concrete,
+ * countable, scarce, true. The Orbiter is not mentioned; it is running fifty
+ * pixels below this sentence and argues for itself.
+ *
+ * NUMBERS IN COPY ARE A LIABILITY — the "11" and the "50" are the two things
+ * here that can quietly go stale, and neither is checked by anything. If the
+ * edition size or the suit length ever changes, this line is the place it has
+ * to change too.
  *
  * Held here rather than in the records because it was authored as the last line
  * of all 68 card bodies, en and es, as a literal `<p class="card-unlock">`. That
@@ -201,17 +213,32 @@ export function suitDisplayName(suitTitle: string | undefined): string | null {
  */
 export const CARD_OFFER: Record<string, { note: string; cta: (suit: string) => string }> = {
   en: {
-    note: 'The Orbiter is open to everyone — it is playing further down this page. What you collect is the physical card and the high-quality audio files.',
-    /* Names the SUIT, not the card. The offer is eleven cards, and a button
-       reading "collect this card" is what sent people to a shop that sells no
-       single cards. */
-    cta: (suit) => `Collect the ${suit} suit`,
+    note: '11 physical cards and the original audio files. Edition of 50.',
+    cta: (suit) => `Collect ${suit}`,
   },
   es: {
-    note: 'El orbitador es de acceso libre — está sonando más abajo en esta página. Lo que coleccionás es la carta física y los archivos de audio en alta calidad.',
-    /* `palo` is the word the Collect landing already uses — "Coleccioná palos
-       de 11 cartas". The button must not introduce a second word for it. */
-    cta: (suit) => `Coleccioná el palo ${suit}`,
+    note: '11 cartas físicas y los audios originales. Edición de 50.',
+    /**
+     * NO NOUN — and that is the decision, not an omission.
+     *
+     * This read `Coleccioná el palo ${suit}`, matching the Collect landing's
+     * own "Coleccioná palos de 11 cartas". The owner rejected it on 2026-08-06:
+     * `palo` carries too many other senses in Spanish, several of them nothing
+     * to do with cards, and a purchase button is the last place to make a
+     * reader pick the right one.
+     *
+     * The alternatives all name the unit some other way — `la serie`, `la
+     * edición`, `las 11 cartas` — and none is needed, because the line directly
+     * above already says "11 cartas físicas … edición de 50". The button does
+     * not have to restate what the sentence touching it just said, so it names
+     * the thing and the verb and nothing else. English drops `suit` for the
+     * same reason, not to mirror the Spanish.
+     *
+     * THE LANDING PAGE STILL SAYS `palos`. It was not in this change's scope
+     * and has not been touched — if the word is going, that is where it goes
+     * next.
+     */
+    cta: (suit) => `Coleccioná ${suit}`,
   },
 };
 
