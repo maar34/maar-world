@@ -17,5 +17,3 @@ card_image: "/img/cards/SkySounds1_11.webp"
 card_description: "Beneath the roots of the ancient, towering trees, the inhabitants have had to learn to recognize the importance of each element, from the tiniest microbe to the largest mountain, and their role in the balance of the natural world. Despite this understanding, there have been times when the exploitation of resources has threatened the planet's biodiversity and the well-being of its inhabitants. The laws of physics and chemistry have shown that resources are interconnected, but it is a constant challenge to navigate these connections in order to use them sustainably. It is also a challenge to reconcile the sacredness and value of these resources with the need for development and progress. The inhabitants of Maar continue to strive for balance and harmony, but it is a constant evolution process that requires constant adaptation and resolution of issues that arise."
 snip_player: "https://play.maar.world/?g=333&s=0&c=11"
 ---
-
-<p class="card-unlock">Collect this card to unlock access to the<br /> Orbiter and download high-quality audio files.</p>

@@ -111,6 +111,141 @@ export function suitPigment(suitTitle: string | undefined): string | undefined {
 }
 
 /**
+ * WHICH SUIT A CARD BELONGS TO — the number, or null for anything that is not
+ * one of the three.
+ *
+ * Split out of `suitPigment` rather than duplicated inside it because the suit
+ * is now asked two different questions — what colour is it, and where is it
+ * sold — and the normalising rule above ("10 say `SkySounds.3`, `NTH7336` says
+ * `SkySounds 3`") has to give the same answer to both. Two copies of that regex
+ * is exactly how the third spelling gets a badge but no shop link.
+ */
+export function suitNumber(suitTitle: string | undefined): '1' | '2' | '3' | null {
+  if (!suitTitle) return null;
+  if (!/^skysounds/i.test(suitTitle.trim())) return null;
+  const n = suitTitle.match(/(\d)\s*$/)?.[1];
+  return n === '1' || n === '2' || n === '3' ? n : null;
+}
+
+/**
+ * WHERE A SUIT IS SOLD, and why this is the one exception to `COMMERCE`.
+ *
+ * `COMMERCE.destinationUrl` stays null and stays the rule for the 35 NFC card
+ * pages — `/AXP3732` and friends render no destination, because those URLs are
+ * printed on objects already in people's hands and the owner's MW-1/MW-6 rule
+ * is that a physical card never sells anything. THAT IS UNCHANGED. Nothing here
+ * is read by `[cardCode].astro`.
+ *
+ * These are the PUBLIC catalogue pages — `/collect/cards/…` — which a visitor
+ * reaches by browsing the site, and which had no way to buy anything at all.
+ * The owner's decision of 2026-08-06: each of the three suits is sold as a
+ * suit, on its own Bandcamp page, so the catalogue links to the suit the card
+ * is part of rather than to the shop's front door. See
+ * `.agents/decisions/0005-public-card-pages-sell-the-suit.md`.
+ *
+ * Held here, and per-suit rather than per-card, for the reason `COMMERCE`'s
+ * comment gives in as many words: 183 links died at once when every card record
+ * carried its own copy. Three addresses cover 33 cards. The schemas still
+ * reject commerce fields on records, so this stays the only door.
+ *
+ * The WildCard is not a suit and is not sold as one — it returns null and the
+ * page renders no offer, rather than pointing at a page that does not sell the
+ * thing the visitor is looking at.
+ */
+export const SUIT_STORE_URLS: Record<'1' | '2' | '3', string> = {
+  '1': 'https://maar-world.bandcamp.com/merch/skysounds-1',
+  '2': 'https://maar-world.bandcamp.com/merch/skysounds-2',
+  '3': 'https://maar-world.bandcamp.com/merch/skysounds-3',
+};
+
+export function suitStoreUrl(suitTitle: string | undefined): string | null {
+  const n = suitNumber(suitTitle);
+  return n ? SUIT_STORE_URLS[n] : null;
+}
+
+/**
+ * The suit's name as the OFFER says it, which is not always the name the record
+ * says it.
+ *
+ * `NTH7336` spells its suit `SkySounds 3`; the other ten in that suit spell it
+ * `SkySounds.3`. The label line at the top of the page prints the record
+ * verbatim — that is content, and `suitPigment`'s comment is explicit that the
+ * difference is read around rather than edited. A BUTTON is not content: eleven
+ * cards that offer the same purchase must name it identically, or the eleventh
+ * reads as a different product.
+ */
+export function suitDisplayName(suitTitle: string | undefined): string | null {
+  const n = suitNumber(suitTitle);
+  return n ? `SkySounds.${n}` : null;
+}
+
+/**
+ * WHAT COLLECTING GETS YOU — one copy, both languages. THIS IS THE SELL.
+ *
+ * It names the goods and stops. It does not explain, qualify, or reassure, and
+ * the discipline is harder to hold than it looks — the first draft of this line
+ * broke it. What was here before said the Orbiter is open to everyone and is
+ * playing further down the page, which is TRUE and was still the wrong sentence:
+ * it spends the one selling moment on what the visitor is NOT paying for. A line
+ * that opens by clarifying something nobody asked about reads as a defence, and
+ * a defence is not an offer.
+ *
+ * (It was written that way to correct a real error. The line it replaced said
+ * collecting the card is what unlocks the Orbiter, and the Orbiter is free and
+ * embedded on that very page, playing — so the page argued with itself, and a
+ * visitor who noticed learned the offer was not to be trusted. But the fix for a
+ * false claim is to stop making it, NOT to narrate the correction on the page.)
+ *
+ * So: the goods, verified against the Bandcamp listing on 2026-08-06 — eleven
+ * physical cards, an edition of 50, and the original audio files. Concrete,
+ * countable, scarce, true. The Orbiter is not mentioned; it is running fifty
+ * pixels below this sentence and argues for itself.
+ *
+ * NUMBERS IN COPY ARE A LIABILITY — the "11" and the "50" are the two things
+ * here that can quietly go stale, and neither is checked by anything. If the
+ * edition size or the suit length ever changes, this line is the place it has
+ * to change too.
+ *
+ * Held here rather than in the records because it was authored as the last line
+ * of all 68 card bodies, en and es, as a literal `<p class="card-unlock">`. That
+ * is 68 copies of one sentence and it is how it came to be untrue in 68 places
+ * at once. Same move MW-19 made on the Collect landing.
+ */
+export const CARD_OFFER: Record<string, { note: string; cta: (suit: string) => string }> = {
+  en: {
+    note: '11 physical cards and the original audio files. Edition of 50.',
+    cta: (suit) => `Collect ${suit}`,
+  },
+  es: {
+    note: '11 cartas físicas y los audios originales. Edición de 50.',
+    /**
+     * NO NOUN — and that is the decision, not an omission.
+     *
+     * This read `Coleccioná el palo ${suit}`, matching the Collect landing's
+     * own "Coleccioná palos de 11 cartas". The owner rejected it on 2026-08-06:
+     * `palo` carries too many other senses in Spanish, several of them nothing
+     * to do with cards, and a purchase button is the last place to make a
+     * reader pick the right one.
+     *
+     * No replacement noun is needed HERE, because the line directly above
+     * already says "11 cartas físicas … edición de 50". The button does not
+     * have to restate what the sentence touching it just said, so it names the
+     * thing and the verb and nothing else. English drops `suit` for the same
+     * reason, not to mirror the Spanish.
+     *
+     * WHERE THE UNIT DOES HAVE TO BE NAMED — `/es/collect/suits` and four docs
+     * pages — the Spanish word is now `serie`: carta → serie de 11 → mazo de
+     * 34. `edición` was NOT available, because these cards already use it for
+     * the print run ("edición de 50") and one word cannot mean both. That
+     * reasoning is written out in `src/content/pages/es/collect/suits.mdx`.
+     * English keeps `Suits`, which is unambiguous in its own language and whose
+     * heading is frozen in verify/content-expectations.json.
+     */
+    cta: (suit) => `Coleccioná ${suit}`,
+  },
+};
+
+/**
  * Which areas the header actually offers, and why it is not all three.
  *
  * `AREAS` is the pigment and path registry for the three merged origins — every

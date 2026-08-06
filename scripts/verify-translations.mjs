@@ -175,10 +175,15 @@ export const isWellFiled = (r) => filedAt(r) === expectedAt(r);
  *                including the copy check.
  *
  *   'unpaired' — has no other-language half and is not supposed to acquire one.
- *                `/esp-feedback` is a retired redirect stub to `/bookings` (the
- *                NOINDEX block in astro.config.mjs). Listing it is what makes
- *                its missing pair a stated fact instead of an unnoticed one.
- *                Do not invent a counterpart for it.
+ *                `/esp-feedback` is a retired redirect stub, pointing at
+ *                `/es/bookings` (the NOINDEX block in astro.config.mjs). It
+ *                targeted the ENGLISH `/bookings` until 2026-08-06, which meant
+ *                a Spanish URL silently handed its reader to an English page —
+ *                the "links stay in Spanish" assertion below now covers
+ *                meta-refresh precisely because no `<a>` on this page pointed
+ *                anywhere. Listing it here is what makes its missing pair a
+ *                stated fact instead of an unnoticed one. Do not invent a
+ *                counterpart for it.
  *
  * Keyed by `outputPath` and not by file path, now that the file path is derived
  * from the outputPath and carries no independent information.
@@ -855,7 +860,7 @@ export async function checkTranslations(report) {
   }
 
   /**
-   * ── A SPANISH PAGE'S NAVIGATION STAYS IN SPANISH ───────────────────────────
+   * ── A SPANISH PAGE'S LINKS STAY IN SPANISH — EVERY LINK ON IT ──────────────
    *
    * The header's destinations live in SECTIONS as absolute English paths, and
    * for a long time every page rendered that same list. So the language
@@ -868,10 +873,24 @@ export async function checkTranslations(report) {
    * which page you meant to arrive at, so it took the owner reporting it. This
    * is that report turned into an assertion.
    *
+   * THIS CHECK USED TO READ THE `<header>` ONLY, AND THAT WAS THE SAME MISTAKE
+   * ONE SCOPE SMALLER. On 2026-08-06 the owner reported the identical symptom
+   * from the BODY: `/es` drew two CTAs whose labels came from `HOME_ACTIONS`'
+   * `labelEs` while their `href` stayed the shared English path, so both
+   * buttons read Spanish and landed in English — and `es/esp-feedback`
+   * redirected a Spanish reader to `/bookings`. A translated word pointing at
+   * an untranslated page is worse than an English label, because it gives no
+   * warning. Three links, none of them in a header, none of them visible to a
+   * check that stopped at `</header>`.
+   *
+   * So the scope is now the whole document. A page family that grows a new CTA
+   * tomorrow is covered by construction rather than by somebody remembering to
+   * widen this — which is the only reason it catches anything at all.
+   *
    * The switcher itself is excluded, and precisely: its links are the ones
    * carrying `hreflang`, which is exactly what marks a link as deliberately
-   * crossing languages. Any other header link pointing at an English page that
-   * HAS a Spanish half is the defect.
+   * crossing languages. Any other link pointing at an English page that HAS a
+   * Spanish half is the defect.
    */
   const enToEs = new Map();
   for (const { original, translation } of pairs) {
@@ -880,20 +899,30 @@ export async function checkTranslations(report) {
     }
   }
 
+  /**
+   * A link's PATH, comparable against `enToEs`' keys.
+   *
+   * The query and the fragment come off first, and that is not tidying: this
+   * check compares against keys built from `outputPath`, which never carry
+   * either, so `/bookings?utm=x` and `/bookings#form` would both miss the map
+   * and be reported clean while sending a Spanish reader to an English page.
+   * No such href exists in the build today — which is exactly why it is worth
+   * closing now, while the answer is one line rather than a bug report.
+   */
   const normalise = (href) =>
-    decodeURI(href).replace(/\.html$/, '').replace(/\/index$/, '') || '/';
+    decodeURI(href.split('#')[0].split('?')[0])
+      .replace(/\.html$/, '')
+      .replace(/\/index$/, '') || '/';
 
   const leaks = [];
   for (const r of es) {
     const file = resolveRoute(urlOf(r.outputPath), set);
     if (!file) continue;
     const html = readDistFile(file);
-    const header = /<header[\s\S]*?<\/header>/.exec(html);
-    if (!header) continue;
     // The WHOLE opening tag, because `hreflang` is written after `href` in the
     // markup and a pattern that stops at `href` would read every switcher link
     // as a defect — which is what the first cut of this check did.
-    for (const [, tag] of header[0].matchAll(/<a\b([^>]*)>/g)) {
+    for (const [, tag] of html.matchAll(/<a\b([^>]*)>/g)) {
       if (/\bhreflang=/.test(tag)) continue; // the switcher, deliberately crossing
       const href = (/\bhref="([^"]+)"/.exec(tag) || [])[1];
       if (!href || /^(https?:)?\/\//.test(href) || href.startsWith('#')) continue;
@@ -902,17 +931,34 @@ export async function checkTranslations(report) {
         leaks.push(`/${r.outputPath} links to ${to} — ${enToEs.get(to)} is its Spanish half`);
       }
     }
+
+    /**
+     * The meta-refresh redirect, which is a link in every sense that matters.
+     *
+     * `es/esp-feedback` is a frozen legacy Spanish URL whose whole job is to
+     * forward, and it forwarded to the English `/bookings`. It carries no `<a>`
+     * to that address at all, so a check reading only anchors would call the
+     * page clean while it silently changed the reader's language — the one
+     * outcome this whole check exists to prevent.
+     */
+    const refresh = /<meta[^>]+http-equiv="refresh"[^>]+content="[^"]*url=([^"';]+)/i.exec(html);
+    if (refresh) {
+      const to = normalise(refresh[1].trim());
+      if (enToEs.has(to)) {
+        leaks.push(`/${r.outputPath} redirects to ${to} — ${enToEs.get(to)} is its Spanish half`);
+      }
+    }
   }
 
   if (leaks.length) {
     report.fail(
-      "a Spanish page's navigation stays in Spanish",
+      "a Spanish page's links stay in Spanish",
       `${leaks.length}: ${[...new Set(leaks)].slice(0, 5).join('; ')}`,
     );
   } else {
     report.pass(
-      "a Spanish page's navigation stays in Spanish",
-      `${es.length} Spanish pages — no header link drops the reader back to English`,
+      "a Spanish page's links stay in Spanish",
+      `${es.length} Spanish pages, every link and redirect on them — none drops the reader back to English`,
     );
   }
 

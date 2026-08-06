@@ -76,10 +76,14 @@ const NOINDEX = new Set([
   // Retired 2026-07-30 by the owner: the newsletter sign-up. Redirect stub to /.
   '/subscribe', '/subscribe.html',
   // Retired 2026-07-30 by the owner: both were a Google Form and the content was
-  // out of date. They are redirect stubs to /bookings now, and a redirect has no
-  // business in a sitemap — the same reasoning as the line above.
-  '/eng-feedback', '/eng-feedback.html',
-  '/esp-feedback', '/esp-feedback.html',
+  // out of date. They are redirect stubs now, and a redirect has no business in
+  // a sitemap — the same reasoning as the line above.
+  //
+  // EACH GOES TO ITS OWN LANGUAGE'S BOOKINGS PAGE, which is not a detail: both
+  // pointed at the English /bookings until 2026-08-06, so the Spanish stub
+  // changed its reader's language on the way through.
+  '/eng-feedback', '/eng-feedback.html', //   → /bookings
+  '/esp-feedback', '/esp-feedback.html', //   → /es/bookings
 ]);
 
 /**

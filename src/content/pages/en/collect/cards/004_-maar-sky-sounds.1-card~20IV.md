@@ -17,5 +17,3 @@ card_image: "/img/cards/SkySounds1_4.webp"
 card_description: "The voice of water is heard in many corners of the world, it sings in the rivers, whispers in the streams, and roars in the sea. The water is a constant companion, shaping the land and the lives of its inhabitants. Different species have always listened to the voice of the water, and they have woven it into their music, stories, and legends. Water is a vital source of life, providing nourishment for the earth and sustaining all living things. It is also a force that shapes the land, carving canyons and creating powerful floods. The voice of water reminds us of its importance for life, and the need to respect and preserve it. It is a reminder that water is not just a resource, but a fundamental part of the natural world to be protected and respected."
 snip_player: "https://play.maar.world/?g=333&s=0&c=4"
 ---
-
-<p class="card-unlock">Collect this card to unlock access to the<br /> Orbiter and download high-quality audio files.</p>

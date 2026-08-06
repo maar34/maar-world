@@ -63,10 +63,49 @@ interface Props {
    * whose only two buttons said "collect cards" and "Enter the lab".
    */
   lang?: string;
+  /**
+   * English URL → this language's URL, from `navPathsFor`. Empty on English.
+   *
+   * TRANSLATING THE LABEL IS HALF THE JOB. `lang` above fixed the words on
+   * these buttons and stopped there, so `/es` shipped two Spanish-labelled
+   * buttons that both landed on the English page — "coleccionar cartas" went
+   * to `/collect/cards`, and the reader silently lost their language. A
+   * translated word pointing at an untranslated page is arguably worse than
+   * the English label, because it gives no warning.
+   *
+   * `HOME_ACTIONS.href` cannot itself be per-language: it is one shared config
+   * entry, and the Spanish URL is not derivable from the English one by rule
+   * (11 Spanish pages are frozen at `/<area>/es/<slug>`, not `/es/<path>`).
+   * The map is the site's answer to that, and it is the SAME map and the same
+   * `?? href` fallback the header uses — see `ui/SiteHeader.astro`. A second
+   * mechanism here would be a second thing to keep correct.
+   */
+  navPaths?: Record<string, string>;
 }
 
-const { headingHtml, title, lede, feature, entries = [], tonguesLabel, tongues = [], seed, lang } =
-  Astro.props;
+const {
+  headingHtml,
+  title,
+  lede,
+  feature,
+  entries = [],
+  tonguesLabel,
+  tongues = [],
+  seed,
+  lang,
+  navPaths = {},
+} = Astro.props;
+
+/**
+ * Identical to `SiteHeader`'s, deliberately — including the fallback.
+ *
+ * A path with no entry in the map is returned untouched, which is right for
+ * three different cases at once: an external URL, a page that has no half in
+ * this language, and a record that already spells its own localised path (the
+ * Spanish home's third card points straight at `/lab/es/orbits-and-bodies`).
+ * None of them should become a dead link, and none of them do.
+ */
+const localise = (href: string) => navPaths[href] ?? href;
 
 const labelId = 'home-entries';
 ---
@@ -92,7 +131,7 @@ const labelId = 'home-entries';
       <section class="home__feature" aria-label="Featured collection">
         <Card
           variant="feature"
-          href={feature.href}
+          href={localise(feature.href)}
           title={feature.title}
           level={2}
           cover={feature.cover}
@@ -103,7 +142,7 @@ const labelId = 'home-entries';
         <nav class="home__actions" aria-label="Featured collection actions">
           {HOME_ACTIONS.map((action) => (
             <Action
-              href={action.href}
+              href={localise(action.href)}
               label={labelFor(action, lang)}
               variant={action.variant}
               emphasis={action.emphasis}
@@ -140,7 +179,7 @@ const labelId = 'home-entries';
           {entries.map((e) => (
             <Card
               variant="entry"
-              href={e.href}
+              href={localise(e.href)}
               title={e.title}
               level={3}
               cover={e.cover ?? articleCoverFor(e.href)}
