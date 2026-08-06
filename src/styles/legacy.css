@@ -31,21 +31,23 @@
  * printed and the order these were worth writing in.
  */
 
-/* ---- the card tail — 34 pages ------------------------------------------- */
+/* ---- the card tail — GONE, all 34 pages --------------------------------- */
 /**
- * The migration's own class name, written by CARD_TAIL in
- * scripts/migrate-pages.mjs to restore the tail the `card.collect` layout used
- * to render.
+ * `.card-unlock` was here, and it has gone with the markup it styled — the same
+ * way `.card-player-note` went on 2026-07-31 when the owner removed the Snippet
+ * heading and the unmute/PLAY note. A rule matching nothing is worse than no
+ * rule: it reads as live styling and hides that the element is gone.
  *
- * `.card-player-note` was here too and has gone with the markup it styled: the
- * owner removed the Snippet heading and the unmute/PLAY note on 2026-07-31,
- * because both described the old play.maar.world player rather than the Orbiter
- * these pages now embed. A rule matching nothing is worse than no rule — it
- * reads as live styling and hides that the element is gone.
+ * The line it styled said collecting the card is what unlocks the Orbiter,
+ * which stopped being true when the Orbiter opened to everyone — and it was
+ * authored into all 68 card bodies, so it was untrue in 68 places at once. The
+ * owner's replacement is `CARD_OFFER` in src/config/site.ts, rendered by
+ * `[...page].astro` as `.card-offer`, styled there beside the markup. 2026-08-06.
+ *
+ * That leaves this file with no card-tail rules at all, which is the second of
+ * the two routes the header describes — the migration's names are leaving the
+ * bodies rather than being restyled. This file gets shorter from here.
  */
-.prose .card-unlock {
-  color: var(--ink-muted);
-}
 
 /* The Lab index tag chip used to be here, scoped to the body wrapper. It has
    been moved to src/pages/[...page].astro, because the index is rendered by the

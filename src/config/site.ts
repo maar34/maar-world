@@ -111,6 +111,111 @@ export function suitPigment(suitTitle: string | undefined): string | undefined {
 }
 
 /**
+ * WHICH SUIT A CARD BELONGS TO — the number, or null for anything that is not
+ * one of the three.
+ *
+ * Split out of `suitPigment` rather than duplicated inside it because the suit
+ * is now asked two different questions — what colour is it, and where is it
+ * sold — and the normalising rule above ("10 say `SkySounds.3`, `NTH7336` says
+ * `SkySounds 3`") has to give the same answer to both. Two copies of that regex
+ * is exactly how the third spelling gets a badge but no shop link.
+ */
+export function suitNumber(suitTitle: string | undefined): '1' | '2' | '3' | null {
+  if (!suitTitle) return null;
+  if (!/^skysounds/i.test(suitTitle.trim())) return null;
+  const n = suitTitle.match(/(\d)\s*$/)?.[1];
+  return n === '1' || n === '2' || n === '3' ? n : null;
+}
+
+/**
+ * WHERE A SUIT IS SOLD, and why this is the one exception to `COMMERCE`.
+ *
+ * `COMMERCE.destinationUrl` stays null and stays the rule for the 35 NFC card
+ * pages — `/AXP3732` and friends render no destination, because those URLs are
+ * printed on objects already in people's hands and the owner's MW-1/MW-6 rule
+ * is that a physical card never sells anything. THAT IS UNCHANGED. Nothing here
+ * is read by `[cardCode].astro`.
+ *
+ * These are the PUBLIC catalogue pages — `/collect/cards/…` — which a visitor
+ * reaches by browsing the site, and which had no way to buy anything at all.
+ * The owner's decision of 2026-08-06: each of the three suits is sold as a
+ * suit, on its own Bandcamp page, so the catalogue links to the suit the card
+ * is part of rather than to the shop's front door. See
+ * `.agents/decisions/0005-public-card-pages-sell-the-suit.md`.
+ *
+ * Held here, and per-suit rather than per-card, for the reason `COMMERCE`'s
+ * comment gives in as many words: 183 links died at once when every card record
+ * carried its own copy. Three addresses cover 33 cards. The schemas still
+ * reject commerce fields on records, so this stays the only door.
+ *
+ * The WildCard is not a suit and is not sold as one — it returns null and the
+ * page renders no offer, rather than pointing at a page that does not sell the
+ * thing the visitor is looking at.
+ */
+export const SUIT_STORE_URLS: Record<'1' | '2' | '3', string> = {
+  '1': 'https://maar-world.bandcamp.com/merch/skysounds-1',
+  '2': 'https://maar-world.bandcamp.com/merch/skysounds-2',
+  '3': 'https://maar-world.bandcamp.com/merch/skysounds-3',
+};
+
+export function suitStoreUrl(suitTitle: string | undefined): string | null {
+  const n = suitNumber(suitTitle);
+  return n ? SUIT_STORE_URLS[n] : null;
+}
+
+/**
+ * The suit's name as the OFFER says it, which is not always the name the record
+ * says it.
+ *
+ * `NTH7336` spells its suit `SkySounds 3`; the other ten in that suit spell it
+ * `SkySounds.3`. The label line at the top of the page prints the record
+ * verbatim — that is content, and `suitPigment`'s comment is explicit that the
+ * difference is read around rather than edited. A BUTTON is not content: eleven
+ * cards that offer the same purchase must name it identically, or the eleventh
+ * reads as a different product.
+ */
+export function suitDisplayName(suitTitle: string | undefined): string | null {
+  const n = suitNumber(suitTitle);
+  return n ? `SkySounds.${n}` : null;
+}
+
+/**
+ * WHAT COLLECTING ACTUALLY GETS YOU — one copy, both languages.
+ *
+ * What this replaces was wrong, and wrong in the one way that costs a sale: it
+ * said collecting the card is what unlocks the Orbiter. The Orbiter is open to
+ * everyone and is embedded further down this very page, playing, for free. A
+ * visitor who believes the old line either buys for something they already have
+ * or — reading the page and seeing the player run — concludes the offer is not
+ * to be trusted.
+ *
+ * What the purchase is: the physical card, and the high-quality audio files.
+ * And it is sold BY THE SUIT — eleven cards — which the old line never said, so
+ * the page invited a visitor to "collect this card" and then sent them to a
+ * shop that has no such thing.
+ *
+ * Held here rather than in the records because it was authored as the last line
+ * of all 68 card bodies, en and es, as a literal `<p class="card-unlock">`. That
+ * is 68 copies of one sentence and it is how it came to be untrue in 68 places
+ * at once. Same move MW-19 made on the Collect landing.
+ */
+export const CARD_OFFER: Record<string, { note: string; cta: (suit: string) => string }> = {
+  en: {
+    note: 'The Orbiter is open to everyone — it is playing further down this page. What you collect is the physical card and the high-quality audio files.',
+    /* Names the SUIT, not the card. The offer is eleven cards, and a button
+       reading "collect this card" is what sent people to a shop that sells no
+       single cards. */
+    cta: (suit) => `Collect the ${suit} suit`,
+  },
+  es: {
+    note: 'El orbitador es de acceso libre — está sonando más abajo en esta página. Lo que coleccionás es la carta física y los archivos de audio en alta calidad.',
+    /* `palo` is the word the Collect landing already uses — "Coleccioná palos
+       de 11 cartas". The button must not introduce a second word for it. */
+    cta: (suit) => `Coleccioná el palo ${suit}`,
+  },
+};
+
+/**
  * Which areas the header actually offers, and why it is not all three.
  *
  * `AREAS` is the pigment and path registry for the three merged origins — every

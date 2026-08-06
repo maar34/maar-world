@@ -640,11 +640,14 @@
     "https://youtu.be/oqCx9AirINA",
     "https://youtu.be/riEIWUQ-OWQ"
   ],
-  "allowedNewNote": "Reviewed exceptions, carried forward across re-freezes. Never regenerated from the crawl \u2014 the crawl cannot see a form action or a consent-gated embed id.",
+  "allowedNewNote": "Reviewed exceptions, carried forward across re-freezes. Never regenerated from the crawl \u2014 the crawl cannot see a form action or a consent-gated embed id. Entries added after the freeze carry their reason in a decision record; the three skysounds-N merch pages are .agents/decisions/0005-public-card-pages-sell-the-suit.md, the owner's decision of 2026-08-06 that the public catalogue sells the suit. They are plain anchors and fire no request on load \u2014 'no third-party request fires on page load' passes with them present \u2014 and maar-world.bandcamp.com is already a baseline host via /merch.",
   "allowedNew": [
     "https://aventuresonores.us7.list-manage.com/subscribe/post?u=8cc5ff1d6fb14f3fdc831c40a&id=873fbbbbb9&f_id=00acc5e4f0",
     "https://formspree.io/f/mqkrdkde",
     "https://formspree.io/f/xjvneyen",
+    "https://maar-world.bandcamp.com/merch/skysounds-1",
+    "https://maar-world.bandcamp.com/merch/skysounds-2",
+    "https://maar-world.bandcamp.com/merch/skysounds-3",
     "https://vimeo.com/104399616",
     "https://vimeo.com/137703428",
     "https://vimeo.com/252728417",

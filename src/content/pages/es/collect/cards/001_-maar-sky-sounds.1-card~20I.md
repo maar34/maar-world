@@ -28,8 +28,8 @@ card_description: "El norte de Maar World es un lugar donde la tierra y el agua 
   designación de catálogo de una edición, como un número de obra, y es la misma
   en cualquier idioma.
 
-  Lo que se traduce es lo único que se lee como prosa: `card_description` y la
-  línea del cuerpo.
+  Lo que se traduce es lo único que se lee como prosa: `card_description`. El
+  cuerpo quedó vacío: la línea sobre qué desbloquea la carta era falsa (el
+  orbitador es de acceso libre) y estaba copiada en los 68 registros, así que
+  ahora la escribe la ruta desde `CARD_OFFER` en src/config/site.ts.
 -->
-
-<p class="card-unlock">Coleccioná esta carta para desbloquear el acceso al<br /> orbitador y descargar los archivos de audio en alta calidad.</p>

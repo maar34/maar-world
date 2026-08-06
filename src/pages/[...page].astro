@@ -48,7 +48,8 @@ import DocGlyph from '../components/ui/DocGlyph.astro';
 import { globalLanguageChoices, alternatesFor, validateTranslations, navPathsFor, urlOf, LANGS } from '../lib/translations.mjs';
 import { stampText } from '../lib/mark.mjs';
 import { docExcerpt } from '../lib/doc-excerpt.mjs';
-import { collageFor, articleCoverFor, articleCoverFitFor, docGlyphFor, docReadMoreFor, suitPigment, pageIcon, LAB_INTRO, LAB_PINNED } from '../config/site';
+import Action from '../components/ui/Action.astro';
+import { collageFor, articleCoverFor, articleCoverFitFor, docGlyphFor, docReadMoreFor, suitPigment, suitStoreUrl, suitDisplayName, CARD_OFFER, pageIcon, LAB_INTRO, LAB_PINNED } from '../config/site';
 import { navIconMask } from '../lib/nav-icons.mjs';
 
 export async function getStaticPaths() {
@@ -198,6 +199,24 @@ const cardTrackId = isCard ? trackIdBySuitAndTitle?.[`${d.suit_title}|${d.card_t
  */
 const headingIcon = isCard ? undefined : navIconMask(pageIcon(d.outputPath));
 const orbiterUrl = cardTrackId ? `https://orbiter.plantasia.space/?trackId=${cardTrackId}` : null;
+
+/**
+ * THE CARD'S OFFER — and the one place to be sure which card page this is.
+ *
+ * THIS ROUTE IS THE PUBLIC CATALOGUE. `/collect/cards/…`, reached by browsing.
+ * The 35 URLs printed on the physical cards are `src/pages/[cardCode].astro`,
+ * a different file, and they sell nothing — `COMMERCE.destinationUrl` is null
+ * and stays null. Do not carry this block across to that route: a card in
+ * someone's hand that advertises itself is the thing MW-1/MW-6 forbids.
+ *
+ * Null for the WildCard, which is not sold as a suit, and for anything that is
+ * not a Sky Sounds card at all. Both simply render no offer — see
+ * `suitStoreUrl` for why a fallback to the shop's front door is worse than
+ * nothing here.
+ */
+const cardStoreUrl = isCard ? suitStoreUrl(d.suit_title) : null;
+const cardSuitName = isCard ? suitDisplayName(d.suit_title) : null;
+const cardOffer = CARD_OFFER[d.lang] ?? CARD_OFFER.en;
 
 /**
  * Which pages load the carousel script — only pages with a body carousel.
@@ -642,6 +661,36 @@ const labEntries = isYearIndex
     </div>
 
     {
+      /**
+       * THE OFFER, and why it sits ABOVE the player rather than under it.
+       *
+       * The note says the Orbiter is playing further down this page, and that
+       * has to be readable as a description of what the visitor is looking at,
+       * not as a claim they have to scroll back up to check. Above the embed
+       * the sentence points forward at the thing itself; below it, it points at
+       * nothing and the page has already spent its one purchase moment on a
+       * ten-second WebGL boot.
+       *
+       * ONE STAMP, ONE VIEW. These pages carried no controls at all, so this
+       * spends the whole budget `scripts/verify-actions.mjs` counts — deliberately,
+       * because it is the only thing on the page there is to do. Anything added
+       * here later is quiet, or this stops being the stamp.
+       */
+      isCard && cardStoreUrl && cardSuitName && (
+        <aside class="card-offer">
+          <p class="card-offer__note">{cardOffer.note}</p>
+          <Action
+            href={cardStoreUrl}
+            label={cardOffer.cta(cardSuitName)}
+            variant="collect"
+            emphasis="stamp"
+            icon="category"
+          />
+        </aside>
+      )
+    }
+
+    {
       /* The single approved island. Astro emits JavaScript only for pages that
          mount one, so this branch is also the reason every other page in the
          build ships none. */
@@ -843,6 +892,32 @@ const labEntries = isYearIndex
 
   .description {
     color: var(--ink-muted);
+  }
+
+  /**
+   * The offer block — the note and its one control, read as a single unit.
+   *
+   * NO BOX, NO PANEL, NO TINT. The stamped button is already the loudest thing
+   * on this page by design, and framing it as well would be the second lift the
+   * budget exists to prevent. `.page` separates its children with gap alone —
+   * "sibling groups use gap, never margins" above — so this only has to bind
+   * the note to the button more tightly than the page binds its blocks, which
+   * is what makes the two read as one offer rather than as a stray paragraph
+   * followed by a stray button.
+   *
+   * `align-items: start` keeps the button at its label's width. Stretched to
+   * the measure it stops being a control and becomes a bar.
+   */
+  .card-offer {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: var(--s-3);
+  }
+
+  .card-offer__note {
+    color: var(--ink-muted);
+    margin: 0;
   }
 
   .player {

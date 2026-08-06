@@ -17,5 +17,3 @@ card_image: "/img/cards/SkySounds2_1.webp"
 card_description: "In the world of Maar, the soundscapes from the East are a reflection of the diverse cultures and traditions that have shaped the land. From the soothing melodies of the rivers to the rhythmic beats of the drums, the sounds of the East are a testament to the rich history and heritage of this region. However, as the land has changed and developed, so too have the soundscapes. The once harmonious melodies have been replaced by the hum of machinery and the drone of traffic, a reminder of the impact of modernization on the natural world. They work to preserve traditional soundscapes and incorporate them into their modern lives, creating a unique blend of the old and the new, and a reminder of the importance of integration."
 snip_player: "https://play.maar.world/?g=333&s=1&c=1"
 ---
-
-<p class="card-unlock">Collect this card to unlock access to the<br /> Orbiter and download high-quality audio files.</p>
