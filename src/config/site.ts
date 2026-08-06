@@ -855,10 +855,14 @@ export function docReadMoreFor(lang: string): string {
  */
 export const TREE_LINKS = [
   /**
-   * THE CARDS, FIRST, AND THE ONLY LINK THAT STAYS ON THIS SITE.
+   * THE TWO CARD ROWS COME FIRST, IN THE ORDER A VISITOR MEETS THEM.
    *
-   * Tree is the address in a social profile, so its first row is what a visitor
-   * arriving from a post is most likely to have come for. It carries `hearing`
+   * Tree is the address in a social profile: someone arriving from a post came
+   * for the cards, so the cards are rows one and two, and they read as a pair —
+   * look at them, then buy them. The three sites we are part of follow, in the
+   * order they already had.
+   *
+   * "View Cards" is the only row that stays on this site. It carries `hearing`
    * because that is already the Cards icon in `SECTIONS` — one destination, one
    * symbol, wherever it is offered.
    *
@@ -866,14 +870,29 @@ export const TREE_LINKS = [
    * is needed for the same reason the header needed `localise`: a Spanish
    * visitor sent to `/collect/cards` is dropped back into English by the one
    * press this page exists to serve. A missing `hrefEs` falls back to `href`,
-   * so the four external links stay one line each.
+   * so the three external links stay one line each.
    */
   {
     href: '/collect/cards',
     hrefEs: '/es/collect/cards',
-    label: 'Cards',
-    labelEs: 'Cartas',
+    label: 'View Cards',
+    labelEs: 'Ver cartas',
     icon: 'hearing',
+  },
+  {
+    href: 'https://maar-world.bandcamp.com/merch',
+    label: 'Get Your Cards',
+    /**
+     * `labelEs` is optional, and the three site names below do not have one on
+     * purpose: Artizen Entangled Space, Entangled Space and Plantasia Space are
+     * the names of things, and a name is the same in every language. Only the
+     * rows whose label is a sentence need saying twice.
+     *
+     * A missing `labelEs` falls back to `label`, so adding a link stays one
+     * line and a translation is never silently required.
+     */
+    labelEs: 'Conseguí tus cartas',
+    icon: 'album',
   },
   {
     href: 'https://artizen.fund/index/p/entangled-space--open-protocol-for-regenerative-economies?season=6',
@@ -882,21 +901,6 @@ export const TREE_LINKS = [
   },
   { href: 'https://entangled.space/', label: 'Entangled Space', icon: 'hub' },
   { href: 'https://plantasia.space/', label: 'Plantasia Space', icon: 'potted_plant' },
-  {
-    href: 'https://maar-world.bandcamp.com/merch',
-    label: 'Get Your Cards',
-    /**
-     * `labelEs` is optional, and three of the four links do not have one on
-     * purpose: Artizen Entangled Space, Entangled Space and Plantasia Space are
-     * the names of things, and a name is the same in every language. Only the
-     * one link whose label is a sentence needs saying twice.
-     *
-     * A missing `labelEs` falls back to `label`, so adding a link stays one
-     * line and a translation is never silently required.
-     */
-    labelEs: 'Conseguí tus cartas',
-    icon: 'album',
-  },
 ] as const;
 
 /** The Tree hub's own strings, per language. The links are TREE_LINKS above. */
