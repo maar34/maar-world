@@ -12,7 +12,7 @@ description: "Explorá una dimensión musical nueva con Sky Sounds, una colecci�
 headingHtml: "<span class=\"mark mark--cut mark--tilt-4 mark--tear-2\">Collect</span>"
 collect:
   pitch:
-    title: "Tocá cartas de música con exoplanetas"
+    title: "Crea música con cartas y exoplanetas"
     mark: "exoplanetas"
     body: "Sky Sounds es la primera colección de cartas que, al escanearlas, te deja escuchar su música y transformarla según el movimiento de los exoplanetas a los que pertenece."
     cta: "Coleccionar"

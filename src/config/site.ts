@@ -854,6 +854,27 @@ export function docReadMoreFor(lang: string): string {
  * import has to be static for Vite to inline it.
  */
 export const TREE_LINKS = [
+  /**
+   * THE CARDS, FIRST, AND THE ONLY LINK THAT STAYS ON THIS SITE.
+   *
+   * Tree is the address in a social profile, so its first row is what a visitor
+   * arriving from a post is most likely to have come for. It carries `hearing`
+   * because that is already the Cards icon in `SECTIONS` — one destination, one
+   * symbol, wherever it is offered.
+   *
+   * `hrefEs` is the same optional-per-language shape as `labelEs` below, and it
+   * is needed for the same reason the header needed `localise`: a Spanish
+   * visitor sent to `/collect/cards` is dropped back into English by the one
+   * press this page exists to serve. A missing `hrefEs` falls back to `href`,
+   * so the four external links stay one line each.
+   */
+  {
+    href: '/collect/cards',
+    hrefEs: '/es/collect/cards',
+    label: 'Cards',
+    labelEs: 'Cartas',
+    icon: 'hearing',
+  },
   {
     href: 'https://artizen.fund/index/p/entangled-space--open-protocol-for-regenerative-economies?season=6',
     label: 'Artizen Entangled Space',
