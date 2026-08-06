@@ -19,7 +19,7 @@
 export const LANGS = ['en', 'es'];
 
 /** What a language is called in its own language — never in the page's. */
-export const LANG_LABEL = { en: 'english', es: 'español' };
+export const LANG_LABEL = { en: 'English', es: 'Español' };
 
 /**
  * The other-language versions of a page.

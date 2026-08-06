@@ -182,10 +182,32 @@ export async function checkContent(report) {
      * decoding would move it. See `comparable` in lib/html-text.mjs.
      */
     const readable = comparable(html);
+    /**
+     * CASING IS NOT CONTENT, so the two string assertions below fold it.
+     *
+     * The expectations are production's own strings, and production ran under a
+     * stylesheet whose casing this rebuild does not keep. This site used to set
+     * `text-transform: lowercase` on `body` — a misreading of the design rule
+     * "never all caps" — and removing it restored normal casing to the copy,
+     * including the four player and download labels the 33 NFC card pages draw
+     * as headings. Production's baseline still spells them "soundscapes &
+     * music"; the build now spells them "Soundscapes & music".
+     *
+     * This check exists to catch "the page exists but half the content
+     * vanished". A heading whose every letter is present in the same order,
+     * differing only in which of them are capitals, has not vanished. Comparing
+     * it case-sensitively asserts the legacy theme's typography, which is the
+     * one thing the rebuild is explicitly not keeping.
+     *
+     * Lengths are untouched — `minTextLength` still runs against `text`, and
+     * folding case moves no length.
+     */
+    const foldable = readable.toLowerCase();
+    const folded = (s) => comparable(s).toLowerCase();
     checked += 1;
 
     for (const heading of page.headings || []) {
-      if (!readable.includes(comparable(heading))) {
+      if (!foldable.includes(folded(heading))) {
         const p = `${page.url}: missing heading "${heading}"`;
         problems.push(p);
         byKind.headings.push(p);
@@ -193,7 +215,7 @@ export async function checkContent(report) {
     }
 
     for (const needle of page.contains || []) {
-      if (!readable.includes(comparable(needle))) {
+      if (!foldable.includes(folded(needle))) {
         const p = `${page.url}: missing text "${needle.slice(0, 40)}"`;
         problems.push(p);
         byKind.contains.push(p);

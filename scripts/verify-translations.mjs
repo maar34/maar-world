@@ -369,7 +369,6 @@ export const STRUCTURED_ES = new Set([
 export const SHARED_CHROME_WORDS = new Set([
   /* The wordmark, as the brand link announces it. A brand is not translated. */
   'Maar World',
-  'maar world',
   /* "Collect" is the name of a section of this site, not the verb.
      "Orbiters" WAS ON THIS LIST AND IS NOT ANY MORE. It was here on the
      reasoning that translating it would rename the instrument — and that was
@@ -377,8 +376,11 @@ export const SHARED_CHROME_WORDS = new Set([
      has been for a year. Its `labelEs` says so now, so the word no longer
      appears identically in both headers and no exemption is needed. Leaving the
      entry would have let the English label come back silently. */
-  'collect',
   'Collect',
+  /* The three area labels the header row draws. Each names a former subdomain,
+     so each is a place-name rather than a word: `Maar`, `Collect`, `Tree`. */
+  'Maar',
+  'Tree',
   'Lab',
   /* The language chips themselves — a reader looking for Spanish looks for
      "es", in either language. */
@@ -387,7 +389,7 @@ export const SHARED_CHROME_WORDS = new Set([
   /* The About link is drawn as its icon alone — "just leave the info button"
      — and "info" is the same word in both languages. It exists only as the
      accessible name, since a link with no text cannot be announced. */
-  'info',
+  'Info',
 ]);
 
 /**

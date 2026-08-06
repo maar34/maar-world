@@ -8,7 +8,7 @@ tags: []
 lang: "es"
 origin: "authored"
 translationOf: "tree/index"
-headingHtml: "<span class=\"mark mark--cut mark--tilt-1 mark--tear-2\">tree</span>"
+headingHtml: "<span class=\"mark mark--cut mark--tilt-1 mark--tear-2\">Tree</span>"
 ---
 
 <!--

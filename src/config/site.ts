@@ -14,7 +14,7 @@
 export const SITE = {
   domain: 'maar.world',
   origin: 'https://maar.world',
-  title: 'maar world',
+  title: 'Maar World',
 } as const;
 
 /**
@@ -43,7 +43,7 @@ export const COMMERCE: {
   destinationName: string;
 } = {
   destinationUrl: null,
-  destinationName: 'artizen',
+  destinationName: 'Artizen',
 };
 
 /**
@@ -75,9 +75,9 @@ type AreaConfig = {
 };
 
 export const AREAS: Record<'maar' | 'collect' | 'tree', AreaConfig> = {
-  maar: { pathPrefix: '', pigment: 'var(--c-maar)', label: 'maar' },
-  collect: { pathPrefix: '/collect', pigment: 'var(--c-collect)', label: 'collect', icon: 'category' },
-  tree: { pathPrefix: '/tree', pigment: 'var(--c-tree)', label: 'tree' },
+  maar: { pathPrefix: '', pigment: 'var(--c-maar)', label: 'Maar' },
+  collect: { pathPrefix: '/collect', pigment: 'var(--c-collect)', label: 'Collect', icon: 'category' },
+  tree: { pathPrefix: '/tree', pigment: 'var(--c-tree)', label: 'Tree' },
 };
 
 export type AreaName = keyof typeof AREAS;
@@ -176,7 +176,7 @@ export const SECTIONS: Record<
    * it. "info" rather than "about" or "nosotrxs": it names the button a reader
    * sees rather than a word neither language asked for.
    */
-  { href: '/about', label: 'info', labelEs: 'info', icon: 'info', iconOnly: true },
+  { href: '/about', label: 'Info', labelEs: 'Info', icon: 'info', iconOnly: true },
   ],
   /**
    * Cards is first because it is what Collect is for.
@@ -264,8 +264,8 @@ export function pageIcon(outputPath: string | undefined): NavigationIconName | u
 export const HOME_ACTIONS = [
   {
     href: '/collect/cards',
-    label: 'collect cards',
-    labelEs: 'coleccionar cartas',
+    label: 'Collect cards',
+    labelEs: 'Coleccionar cartas',
     variant: 'primary',
     icon: 'category',
     emphasis: 'stamp',
@@ -274,7 +274,7 @@ export const HOME_ACTIONS = [
   {
     href: '/lab',
     label: 'Enter the lab',
-    labelEs: 'entrá al lab',
+    labelEs: 'Entrá al lab',
     variant: 'secondary',
     icon: 'science',
     emphasis: 'quiet',
@@ -431,12 +431,12 @@ export const COLLECT_LANDING: Record<
       excerpt:
         'This method is designed to be accessible and fun for everyone, from experienced musicians to complete beginners.',
       href: '/collect/docs/tutorials.html',
-      meta: 'watch tutorials',
+      meta: 'Watch tutorials',
     },
     offer: {
       title: 'Get 11 cards envelope 33€',
       excerpt: 'Eleven Sky Sounds cards, posted to you.',
-      meta: 'collect',
+      meta: 'Collect',
     },
     form: {
       heading: 'Contact us',
@@ -457,12 +457,12 @@ export const COLLECT_LANDING: Record<
          page body obeys the rule verify:translations asserts for the header
          navigation: a Spanish page does not drop the reader back into English. */
       href: '/es/collect/docs/tutorials',
-      meta: 'ver tutoriales',
+      meta: 'Ver tutoriales',
     },
     offer: {
       title: 'Sobre de 11 cartas 33€',
       excerpt: 'Once cartas Sky Sounds, enviadas a tu casa.',
-      meta: 'coleccionar',
+      meta: 'Coleccionar',
     },
     form: {
       heading: 'Escribinos',
@@ -486,9 +486,9 @@ export const COLLECT_LANDING: Record<
  *
  * The wording is the design's, which the owner judged better than the migrated
  * theme's ("step into a time lab. a public bitacora to share new and old
- * creations…"). Casing is normal here and lowercased by CSS: the spec is
- * explicit that "lowercase is presentational only — never set in the text
- * content, so screen readers keep the real casing".
+ * creations…"). Casing is normal here and renders as written: the site sets no
+ * `text-transform` at all. The design rule is "never all caps", not "always
+ * lowercase" — see the note in `src/styles/reset.css`.
  *
  * The heading is HTML because it carries a type mark — the OVERPRINT, §02's
  * "a second impression 3px off-register", which is what the design draws on
@@ -527,11 +527,11 @@ export const LAB_INTRO: Record<
     strings: {
       entries: 'entries',
       years: 'years',
-      oldest: 'oldest',
-      updated: 'updated',
+      oldest: 'Oldest',
+      updated: 'Updated',
       readTime: 'min read',
-      pinned: 'pinned',
-      months: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
+      pinned: 'Pinned',
+      months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     },
   },
   es: {
@@ -542,11 +542,11 @@ export const LAB_INTRO: Record<
     strings: {
       entries: 'entradas',
       years: 'años',
-      oldest: 'la más antigua',
-      updated: 'actualizada',
+      oldest: 'La más antigua',
+      updated: 'Actualizada',
       readTime: 'min de lectura',
-      pinned: 'fijada',
-      months: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
+      pinned: 'Fijada',
+      months: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
     },
   },
 };
@@ -829,8 +829,8 @@ export function docGlyphFor(outputPath: string): DocGlyphName {
  * the card says rather than a change of what language it says it in.
  */
 const DOC_READ_MORE: Record<string, string> = {
-  en: 'read more',
-  es: 'leer más',
+  en: 'Read more',
+  es: 'Leer más',
 };
 
 export function docReadMoreFor(lang: string): string {
@@ -881,7 +881,7 @@ export const TREE_LINKS = [
 /** The Tree hub's own strings, per language. The links are TREE_LINKS above. */
 export const TREE_HUB_STRINGS = {
   en: { navLabel: 'Maar World links' },
-  es: { navLabel: 'enlaces de Maar World' },
+  es: { navLabel: 'Enlaces de Maar World' },
 } as const;
 
 export type TreeIconName = (typeof TREE_LINKS)[number]['icon'];

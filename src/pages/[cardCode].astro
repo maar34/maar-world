@@ -108,11 +108,11 @@ const cardName = `${d.suit_title} ${d.card_title}`;
 const isStoney = d.source === 'stoney_way';
 
 const audioFormat = (href: string) =>
-  /\.wav(\?|#|$)/i.test(href) ? 'wav' : /\.mp3(\?|#|$)/i.test(href) ? 'mp3' : 'audio';
+  /\.wav(\?|#|$)/i.test(href) ? 'WAV' : /\.mp3(\?|#|$)/i.test(href) ? 'MP3' : 'Audio';
 
 const playerLabels = isStoney
-  ? ['music', 'music', 'excerpt']
-  : ['soundscapes & music', 'spoken word', 'excerpt'];
+  ? ['Music', 'Music', 'Excerpt']
+  : ['Soundscapes & music', 'Spoken word', 'Excerpt'];
 
 const players = [d.player, d.player2, d.snip_player]
   .map((src, i) => (src ? { src: src as string, label: playerLabels[i] } : null))
@@ -127,7 +127,7 @@ const downloads = [d.download, d.download2]
     href
       ? {
           href: href as string,
-          label: isStoney ? `mix (${audioFormat(href as string)})` : playerLabels[i],
+          label: isStoney ? `Mix (${audioFormat(href as string)})` : playerLabels[i],
         }
       : null,
   )
@@ -141,7 +141,7 @@ const downloads = [d.download, d.download2]
   <div class="card-page">
     {
       orbiterUrl && (
-        <section class="orbiter" aria-label="now playing on Maar Orbiter">
+        <section class="orbiter" aria-label="Now playing on Maar Orbiter">
           {/* Deliberately not an <h2>: this block precedes the page's <h1>, and
               a heading above the h1 inverts the document outline. The section
               is a labelled landmark instead, so it is still announced. */}
@@ -213,7 +213,7 @@ const downloads = [d.download, d.download2]
 
     {
       players.length > 0 && (
-        <section class="players" aria-label="players">
+        <section class="players" aria-label="Players">
           {players.map((p) => (
             <div class="player-block">
               <p class="t-meta player-label">{p.label}</p>
@@ -232,8 +232,8 @@ const downloads = [d.download, d.download2]
 
     {
       downloads.length > 0 && (
-        <section class="downloads" aria-label="downloads">
-          <p class="t-meta">download</p>
+        <section class="downloads" aria-label="Downloads">
+          <p class="t-meta">Download</p>
           <ul role="list" class="download-list">
             {downloads.map((dl) => (
               <li>

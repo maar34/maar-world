@@ -10,7 +10,7 @@ origin: "migrated"
 island: "helix"
 ---
 
-<h1>helix</h1>
+<h1>Helix</h1>
 
 <p>the technical installation diagram for helix at the espacio de arte contemporáneo, montevideo, 2025. three identical stations around a central router, with the cabling and the wireless paths drawn separately so each can be isolated.</p>
 

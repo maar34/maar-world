@@ -6,8 +6,9 @@
  * cannot go stale when a page family changes — there is exactly one main and the
  * shell owns it.
  *
- * Markup keeps normal capitalisation. The lowercase is a text-transform in
- * styles/reset.css, so a screen reader is never handed "s k i p".
+ * Markup keeps normal capitalisation, and so does the rendering: the site sets
+ * no `text-transform`. See the note in styles/reset.css for why the old
+ * lowercase transform was wrong.
  */
 ---
 

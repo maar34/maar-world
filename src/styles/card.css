@@ -490,7 +490,9 @@
 
 /**
  * A chip is a flat field with muted ink on it — §03, "flat fields only. dm
- * mono, lowercase". These are the same chips the Lab's rows used to draw, moved
+ * mono". Read that rule as the prohibition it is — a chip is never set in all
+ * caps — not as a mandate to lowercase the label; the label keeps its own
+ * casing. These are the same chips the Lab's rows used to draw, moved
  * here with the element they label so a selector and its element cannot drift
  * into different files again. That drift is exactly how `.index-row__tag` came
  * to match nothing and render its tags as plain text.

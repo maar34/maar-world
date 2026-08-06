@@ -127,12 +127,12 @@ type WireType = 'ethernet' | 'wifi' | 'hdmi' | 'nfc' | 'audio' | 'led';
  * value appears in this file. `dash` is in SVG user units.
  */
 const WIRE: Record<WireType, { pigment: string; dash?: string; width: number; label: string }> = {
-  ethernet: { pigment: 'var(--helix-maar)', width: 2, label: 'ethernet' },
-  wifi: { pigment: 'var(--helix-maar)', dash: '6 4', width: 1.5, label: 'wifi' },
-  hdmi: { pigment: 'var(--helix-collect)', width: 2, label: 'hdmi' },
-  nfc: { pigment: 'var(--helix-collect)', dash: '3 3', width: 1.5, label: 'datos nfc' },
-  audio: { pigment: 'var(--helix-tree)', width: 2, label: 'audio' },
-  led: { pigment: 'var(--helix-tree)', dash: '6 3 1 3', width: 1.5, label: 'alimentación led' },
+  ethernet: { pigment: 'var(--helix-maar)', width: 2, label: 'Ethernet' },
+  wifi: { pigment: 'var(--helix-maar)', dash: '6 4', width: 1.5, label: 'Wi-Fi' },
+  hdmi: { pigment: 'var(--helix-collect)', width: 2, label: 'HDMI' },
+  nfc: { pigment: 'var(--helix-collect)', dash: '3 3', width: 1.5, label: 'Datos NFC' },
+  audio: { pigment: 'var(--helix-tree)', width: 2, label: 'Audio' },
+  led: { pigment: 'var(--helix-tree)', dash: '6 3 1 3', width: 1.5, label: 'Alimentación LED' },
 };
 
 const LEGEND: WireType[] = ['ethernet', 'hdmi', 'audio', 'wifi', 'nfc', 'led'];
@@ -192,7 +192,7 @@ function StationNode({
       role="button"
       tabIndex={0}
       aria-pressed={active}
-      aria-label={`estación ${station.id.toLowerCase()} — ${station.pc.label}`}
+      aria-label={`Estación ${station.id} — ${station.pc.label}`}
       onClick={press}
       onKeyDown={pressHandler(press)}
       className={active ? 'helix-node helix-node--on' : 'helix-node'}
@@ -202,7 +202,7 @@ function StationNode({
       <rect x={station.pc.x - 6} y={station.pc.y + 7} width={12} height={3} rx={1} className="helix-node__base" />
       <rect x={station.pc.x - 8} y={station.pc.y + 10} width={16} height={2} rx={1} className="helix-node__base" />
       <text x={station.pc.x} y={station.pc.y + 2} textAnchor="middle" fontSize={9} className="helix-label helix-label--on-plate">
-        pc-{station.id.toLowerCase()}
+        PC-{station.id}
       </text>
       <text x={station.pc.x} y={station.pc.y + 50} textAnchor="middle" fontSize={11} className="helix-label">
         {station.pc.label}
@@ -224,7 +224,7 @@ function RouterNode({ active }: { active: boolean }) {
       ))}
       <circle cx={router.x} cy={router.y} r={3} className="helix-node__base" />
       <text x={router.x} y={router.y + 42} textAnchor="middle" fontSize={11} className="helix-label">
-        router wifi
+        Router Wi-Fi
       </text>
       <text x={router.x} y={router.y + 54} textAnchor="middle" fontSize={10} className="helix-label helix-label--faint">
         (+ internet)
@@ -285,12 +285,12 @@ export default function HelixDiagram() {
           aria-labelledby={`${titleId} ${descId}`}
           className="helix__svg"
         >
-          <title id={titleId}>diagrama de instalación técnica helix — eac montevideo 2025</title>
+          <title id={titleId}>Diagrama de instalación técnica Helix — EAC Montevideo 2025</title>
           <desc id={descId}>
-            un router wifi en el centro alimenta por ethernet tres estaciones idénticas (a, b, c) dispuestas en
-            triángulo. cada estación tiene una pantalla por hdmi, un lector nfc y una tira led. la estación b envía
-            audio a un amplificador con tres pares de auriculares. los móviles de las visitantes se conectan al router
-            por wifi.
+            Un router Wi-Fi en el centro alimenta por Ethernet tres estaciones idénticas (A, B, C) dispuestas en
+            triángulo. Cada estación tiene una pantalla por HDMI, un lector NFC y una tira LED. La estación B envía
+            audio a un amplificador con tres pares de auriculares. Los móviles de las visitantes se conectan al router
+            por Wi-Fi.
           </desc>
 
           <polygon
@@ -306,7 +306,7 @@ export default function HelixDiagram() {
             <Peripheral
               key={`scr-${s.id}`}
               node={s.screen}
-              label={`pantalla ${s.id.toLowerCase()}`}
+              label={`Pantalla ${s.id}`}
               active={on('hdmi')}
               pigment={WIRE.hdmi.pigment}
             />
@@ -315,7 +315,7 @@ export default function HelixDiagram() {
             <Peripheral
               key={`nfc-${s.id}`}
               node={s.nfc}
-              label={`nfc-${s.id.toLowerCase()}`}
+              label={`NFC-${s.id}`}
               active={on('nfc')}
               pigment={WIRE.nfc.pigment}
             />
@@ -324,7 +324,7 @@ export default function HelixDiagram() {
             <Peripheral
               key={`led-${s.id}`}
               node={s.led}
-              label={`led-${s.id.toLowerCase()}`}
+              label={`LED-${s.id}`}
               active={on('led')}
               pigment={WIRE.led.pigment}
             />
@@ -333,7 +333,7 @@ export default function HelixDiagram() {
             <Peripheral
               key={`hp-${i}`}
               node={hp}
-              label={`auric. ${i + 1}`}
+              label={`Auric. ${i + 1}`}
               active={on('audio')}
               pigment={WIRE.audio.pigment}
             />
@@ -346,7 +346,7 @@ export default function HelixDiagram() {
           >
             <rect x={amp.x - 46} y={amp.y - 24} width={92} height={48} className="helix-box__plate" />
             <text x={amp.x} y={amp.y - 4} textAnchor="middle" fontSize={11} className="helix-label helix-label--on-plate">
-              amplificador
+              Amplificador
             </text>
             <text
               x={amp.x}
@@ -355,7 +355,7 @@ export default function HelixDiagram() {
               fontSize={10}
               className="helix-label helix-label--faint helix-label--on-plate"
             >
-              auriculares · amp-1
+              Auriculares · Amp-1
             </text>
           </g>
 
@@ -367,7 +367,7 @@ export default function HelixDiagram() {
             <rect x={phones.x - 26} y={phones.y - 30} width={52} height={60} className="helix-box__plate" />
             <rect x={phones.x - 15} y={phones.y - 21} width={30} height={36} className="helix-box__inner" />
             <text x={phones.x} y={phones.y + 44} textAnchor="middle" fontSize={10} className="helix-label">
-              móviles visitantes
+              Móviles visitantes
             </text>
           </g>
 
@@ -378,21 +378,21 @@ export default function HelixDiagram() {
           ))}
 
           {/* y=14, not the legacy y=22: at 22 the caption sat inside the
-              "pantalla a" plate. */}
+              "Pantalla A" plate. */}
           <text x={stations[0].pc.x} y={14} textAnchor="middle" fontSize={11} className="helix-label helix-label--faint">
-            estación a
+            Estación A
           </text>
           <text x={stations[1].pc.x} y={VIEW_H - 24} textAnchor="middle" fontSize={11} className="helix-label helix-label--faint">
-            estación b
+            Estación B
           </text>
           <text x={stations[2].pc.x} y={VIEW_H - 24} textAnchor="middle" fontSize={11} className="helix-label helix-label--faint">
-            estación c
+            Estación C
           </text>
         </svg>
       </div>
 
       <fieldset className="helix__legend">
-        <legend className="t-meta">capas — filtrar el diagrama</legend>
+        <legend className="t-meta">Capas — filtrar el diagrama</legend>
         {LEGEND.map((type) => {
           const w = WIRE[type];
           return (
@@ -414,9 +414,9 @@ export default function HelixDiagram() {
 
       <p className="t-meta helix__hint" role="status">
         {filter
-          ? `mostrando solo ${WIRE[filter].label}`
-          : 'elegí una capa para aislarla · elegí una estación para resaltarla'}
-        {station ? ` · estación ${station.toLowerCase()} seleccionada` : ''}
+          ? `Mostrando solo ${WIRE[filter].label}`
+          : 'Elegí una capa para aislarla · elegí una estación para resaltarla'}
+        {station ? ` · Estación ${station} seleccionada` : ''}
       </p>
     </div>
   );

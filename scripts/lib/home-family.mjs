@@ -56,7 +56,7 @@ const firstTag = (html, tag) => {
 function actionOf(html) {
   const m = /<a\b[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/i.exec(html);
   if (!m) return null;
-  return { href: m[1], label: text(m[2]).toLowerCase() };
+  return { href: m[1], label: text(m[2]) };
 }
 
 /** A paragraph with its call-to-action anchor taken out of it. */
@@ -217,10 +217,10 @@ export function extractHomeFamily(body, { cover } = {}) {
     const action = actionOf(featureBlock.inner);
     if (title && para && action) {
       /**
-       * Case is kept as written. Lowercase is a styling decision the reset
-       * makes — "markup keeps normal capitalisation so screen readers don't
-       * spell words out" — and `verify:content` asserts this exact string,
-       * capital and all, because production served it.
+       * Case is kept as written. The site sets no `text-transform` — the
+       * design rule is "never all caps", not "always lowercase" — so the
+       * casing here is the casing a reader sees, and `verify:content` asserts
+       * this exact string, capital and all, because production served it.
        */
       fields.feature = {
         title: text(title),

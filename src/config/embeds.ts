@@ -68,16 +68,16 @@ interface FacadeStrings {
  */
 export const EMBED_FACADE: Record<string, Record<Lang, FacadeStrings>> = {
   youtube: {
-    en: { name: 'youtube', label: 'watch this video on youtube' },
-    es: { name: 'youtube', label: 'ver este video en youtube' },
+    en: { name: 'YouTube', label: 'Watch this video on YouTube' },
+    es: { name: 'YouTube', label: 'Ver este video en YouTube' },
   },
   vimeo: {
-    en: { name: 'vimeo', label: 'watch this video on vimeo' },
-    es: { name: 'vimeo', label: 'ver este video en vimeo' },
+    en: { name: 'Vimeo', label: 'Watch this video on Vimeo' },
+    es: { name: 'Vimeo', label: 'Ver este video en Vimeo' },
   },
   /**
    * The booking calendar. NOTE THE KEY IS NOT THE NAME — `google-calendar`
-   * against "google calendar" — which is the distinction this table exists to
+   * against "Google Calendar" — which is the distinction this table exists to
    * keep, and the first entry where the two actually differ.
    */
   /**
@@ -91,17 +91,17 @@ export const EMBED_FACADE: Record<string, Record<Lang, FacadeStrings>> = {
    * and a Spanish heading. Fixed by existing here rather than in that body.
    */
   soundcloud: {
-    en: { name: 'soundcloud', label: 'listen to this track on soundcloud' },
-    es: { name: 'soundcloud', label: 'escuchar este track en soundcloud' },
+    en: { name: 'SoundCloud', label: 'Listen to this track on SoundCloud' },
+    es: { name: 'SoundCloud', label: 'Escuchar este track en SoundCloud' },
   },
   'google-calendar': {
-    en: { name: 'google calendar', label: 'open the booking calendar on google calendar' },
-    es: { name: 'google calendar', label: 'abrir el calendario de reservas en google calendar' },
+    en: { name: 'Google Calendar', label: 'Open the booking calendar on Google Calendar' },
+    es: { name: 'Google Calendar', label: 'Abrir el calendario de reservas en Google Calendar' },
   },
 };
 
 /**
- * "opens in a new tab. nothing is requested from youtube until you choose it."
+ * "Opens in a new tab. Nothing is requested from YouTube until you choose it."
  *
  * The reassurance under every facade, composed from the name the facade shows.
  * It is the site's promise that the invariant in AGENTS.md holds — no
@@ -110,8 +110,8 @@ export const EMBED_FACADE: Record<string, Record<Lang, FacadeStrings>> = {
  */
 export const noteFor = (name: string, lang: Lang): string =>
   lang === 'es'
-    ? `se abre en una pestaña nueva. no se le pide nada a ${name} hasta que lo elijas.`
-    : `opens in a new tab. nothing is requested from ${name} until you choose it.`;
+    ? `Se abre en una pestaña nueva. No se le pide nada a ${name} hasta que lo elijas.`
+    : `Opens in a new tab. Nothing is requested from ${name} until you choose it.`;
 
 /**
  * What the GATE says once JavaScript has replaced the facade — MW-19.
@@ -135,13 +135,13 @@ export const noteFor = (name: string, lang: Lang): string =>
  */
 export const GATE = {
   en: {
-    /** The three visible words on the poster: "plays from youtube". */
-    playsFrom: (name: string) => `plays from ${name}`,
+    /** The three visible words on the poster: "Plays from YouTube". */
+    playsFrom: (name: string) => `Plays from ${name}`,
     /** The rest of the offer, for a screen reader only. */
     loadsFrom: (host: string) => `loads the player from ${host}`,
   },
   es: {
-    playsFrom: (name: string) => `se reproduce desde ${name}`,
+    playsFrom: (name: string) => `Se reproduce desde ${name}`,
     loadsFrom: (host: string) => `carga el reproductor desde ${host}`,
   },
 } as const;
