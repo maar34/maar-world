@@ -227,16 +227,19 @@ export const CARD_OFFER: Record<string, { note: string; cta: (suit: string) => s
      * to do with cards, and a purchase button is the last place to make a
      * reader pick the right one.
      *
-     * The alternatives all name the unit some other way — `la serie`, `la
-     * edición`, `las 11 cartas` — and none is needed, because the line directly
-     * above already says "11 cartas físicas … edición de 50". The button does
-     * not have to restate what the sentence touching it just said, so it names
-     * the thing and the verb and nothing else. English drops `suit` for the
-     * same reason, not to mirror the Spanish.
+     * No replacement noun is needed HERE, because the line directly above
+     * already says "11 cartas físicas … edición de 50". The button does not
+     * have to restate what the sentence touching it just said, so it names the
+     * thing and the verb and nothing else. English drops `suit` for the same
+     * reason, not to mirror the Spanish.
      *
-     * THE LANDING PAGE STILL SAYS `palos`. It was not in this change's scope
-     * and has not been touched — if the word is going, that is where it goes
-     * next.
+     * WHERE THE UNIT DOES HAVE TO BE NAMED — `/es/collect/suits` and four docs
+     * pages — the Spanish word is now `serie`: carta → serie de 11 → mazo de
+     * 34. `edición` was NOT available, because these cards already use it for
+     * the print run ("edición de 50") and one word cannot mean both. That
+     * reasoning is written out in `src/content/pages/es/collect/suits.mdx`.
+     * English keeps `Suits`, which is unambiguous in its own language and whose
+     * heading is frozen in verify/content-expectations.json.
      */
     cta: (suit) => `Coleccioná ${suit}`,
   },
