@@ -1,6 +1,6 @@
 ---
 outputPath: "tree/max-network-berlin"
-title: "MAX BERLIN NETWORK - TREE.MAAR.WORLD"
+title: "Max Berlin Network - TREE.MAAR.WORLD"
 area: "tree"
 kind: "page"
 tags: []
@@ -9,7 +9,7 @@ lang: "en"
 origin: "migrated"
 ---
 
-# MAX BERLIN <span class="mark mark--highlight">NETWORK</span>
+# Max Berlin <span class="mark mark--highlight">Network</span>
 
 <div class="button-container"> 
 

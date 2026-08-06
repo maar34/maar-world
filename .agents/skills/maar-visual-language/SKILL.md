@@ -32,6 +32,33 @@ table of where each one landed.
 
 ---
 
+## Casing — read the rule as a prohibition, not a mandate
+
+**The rule is: type is never set in ALL CAPS.** No uppercased eyebrows, no uppercased button
+labels, no `letter-spacing`-and-shout meta lines. That is the whole rule.
+
+**It is not "everything is lowercase."** That reading shipped, as
+`body { text-transform: lowercase }` in `src/styles/reset.css`, and it flattened every heading,
+proper noun, brand and sentence on the site — *maar world*, *montevideo*, *youtube*, *nfc* —
+across every page, in both languages. The transform was removed and ~110 strings that had been
+authored in lowercase to match it were restored to normal casing.
+
+So:
+
+- **There is no `text-transform` anywhere in this repo, and none may be added.** Casing belongs
+  to the copy. A transform also lies to anyone who copies the text, and leaves proper nouns
+  wrong wherever the stylesheet is absent.
+- **Write copy in normal sentence casing**, in config, in components and in content alike.
+- **Where the design source says "lowercase"** — §03's chip rule, the `i / xii` stamps — read it
+  as *not all caps*. The single exception left is `stampText()` in `src/lib/mark.mjs`, which
+  downcases an edition numeral because 4a draws that mark that way. It is a drawn mark, not
+  copy, and nothing else may follow it.
+
+If the design source still reads "all type is lowercase", the source is what needs fixing —
+raise it rather than reinstating the transform.
+
+---
+
 ## The seven marks
 
 Values are 4a's own. Angles are the striking part: there is no single tilt reused — there are

@@ -133,7 +133,8 @@
   --disabled-bg: color-mix(in srgb, var(--ink) 10%, transparent);
 
   /* ---- type scale ------------------------------------------------------ */
-  /* All type is lowercase. Bodoni is display only — never below 34px.
+  /* Type renders in the casing it is written in — no `text-transform` anywhere,
+     and never all caps. Bodoni is display only — never below 34px.
      Archivo never used for prose. DM Mono never used above 14px. */
   --face-display: 'Bodoni Moda', serif;
   /* 'Archivo Variable' is fontsource's family name for the variable build, and

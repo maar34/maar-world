@@ -1,5 +1,5 @@
 /**
- * Reset — box sizing, margin reset, lowercase transform.
+ * Reset — box sizing, margin reset, safe wrapping.
  *
  * Per the design spec's folder map. Deliberately minimal: this is not a
  * normalise library, it is the three things the design actually depends on.
@@ -36,12 +36,20 @@ ol[role='list'] {
   padding: 0;
 }
 
-/* All type is lowercase. This is a design decision, not a content decision —
-   the source text keeps its own casing so it stays correct when copied,
-   quoted, read by a screen reader, or rendered anywhere without this stylesheet. */
-body {
-  text-transform: lowercase;
+/* Type renders in the casing the source is written in. There is deliberately no
+   `text-transform` here.
 
+   This used to be `text-transform: lowercase` on `body`, which flattened every
+   heading, label, name and sentence on the site to lowercase. That came from
+   reading the design rule "never set type in all caps" as "set all type in
+   lowercase" — the opposite instruction. The rule is a prohibition on shouting,
+   not a mandate to whisper: no all-caps eyebrows, no uppercased buttons, no
+   uppercased meta labels; everything else keeps normal sentence casing.
+
+   Casing belongs to the copy, not to the stylesheet. A transform here also lies
+   to anyone who copies the text, and leaves proper nouns ("Maar World",
+   "Montevideo", "NFC") wrong the moment the stylesheet is absent. */
+body {
   /* MW-11: "long Spanish copy and unbroken URLs wrap safely."
      A token wider than the viewport is the one overflow a media query cannot
      fix, because the element that is too wide is not the element you would

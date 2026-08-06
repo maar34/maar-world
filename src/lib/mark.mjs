@@ -212,8 +212,11 @@ const ROMAN = /^(?=[ivxlcdm])m*(c[md]|d?c{0,3})(x[cl]|l?x{0,3})(i[xv]|v?i{0,3})$
  * anything else is the point — `WildCard` is one token and is not an edition,
  * and a card without a numeral gets no stamp rather than an invented one.
  *
- * Lowercased because the whole design is lowercase, and because 4a's own stamps
- * are `i / xii` and `nfc`.
+ * Lowercased because 4a's own stamps are drawn that way — `i / xii`, `nfc`.
+ * This is the ONE deliberate downcasing left on the site, and it survives the
+ * removal of the global lowercase transform on purpose: the stamp is a drawn
+ * mark taken from the reference, not a piece of copy. Nothing else may follow
+ * it — see the note in `src/styles/reset.css`.
  *
  * NOTE ON PLACEMENT, because the doc's suggestion cannot be followed literally:
  * the suit/number line is a LABEL line, and the spec's rules-of-use table gives

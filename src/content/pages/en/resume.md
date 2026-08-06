@@ -13,7 +13,7 @@ origin: "migrated"
 
 <br>
 
-<a href="/img/pdf/02_Bruna-Resume.pdf" rel="resume" target="_blank">DOWNLOAD RESUME </a> <br>
+<a href="/img/pdf/02_Bruna-Resume.pdf" rel="resume" target="_blank">Download resume</a> <br>
 <div class="pdf-embed pdf-preview" data-doc="resume">
 <object data="/img/pdf/02_Bruna-Resume.pdf#toolbar=0&zoom=100" type="application/pdf" width="100%" height="1024px" aria-label="Resume PDF">
 <p>Your browser does not support PDFs. <a href="/img/pdf/02_Bruna-Resume.pdf">Download the Resume PDF</a>.</p>
@@ -23,7 +23,7 @@ origin: "migrated"
 </div>
 </div>
 
-<a href="/img/pdf/03_Bruna-Portfolio.pdf" rel="portfolio" target="_blank">DOWNLOAD PORTFOLIO </a> <br>
+<a href="/img/pdf/03_Bruna-Portfolio.pdf" rel="portfolio" target="_blank">Download portfolio</a> <br>
 <div class="pdf-embed pdf-preview" data-doc="portfolio">
 <object data="/img/pdf/03_Bruna-Portfolio.pdf#toolbar=0&zoom=100" type="application/pdf" width="100%" height="1200px" aria-label="Portfolio PDF">
 <p>Your browser does not support PDFs. <a href="/img/pdf/03_Bruna-Portfolio.pdf">Download the Portfolio PDF</a>.</p>

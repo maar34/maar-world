@@ -86,7 +86,7 @@
 
   const PROVIDERS: Record<string, Provider> = {
     youtube: {
-      name: 'youtube',
+      name: 'YouTube',
       host: 'youtube-nocookie.com',
       embed: (href, autoplay) => {
         const id = YT_ID(href);
@@ -98,7 +98,7 @@
       },
     },
     vimeo: {
-      name: 'vimeo',
+      name: 'Vimeo',
       host: 'player.vimeo.com',
       embed: (href, autoplay) => {
         const id = /vimeo\.com\/(?:video\/)?(\d+)/.exec(href)?.[1];
@@ -114,7 +114,7 @@
       },
     },
     soundcloud: {
-      name: 'soundcloud',
+      name: 'SoundCloud',
       host: 'soundcloud.com',
       embed: (href, autoplay) =>
         /w\.soundcloud\.com\/player/.test(href)
@@ -137,12 +137,12 @@
      * and keeps verify:links honest.
      */
     'google-calendar': {
-      name: 'google calendar',
+      name: 'Google Calendar',
       host: 'calendar.google.com',
       embed: (href) => (/calendar\.google\.com/.test(href) ? href : null),
       poster: () => null,
       panel: true,
-      action: { en: 'open the booking calendar here', es: 'abrir el calendario de reservas acá' },
+      action: { en: 'Open the booking calendar here', es: 'Abrir el calendario de reservas acá' },
     },
   };
 

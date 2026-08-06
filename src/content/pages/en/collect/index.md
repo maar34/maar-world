@@ -9,7 +9,7 @@ lang: "en"
 origin: "migrated"
 family: "collect"
 description: "Explore a new musical dimension with Sky Sounds, a collection of cards that open the doors to a sonic journey through the cosmos."
-headingHtml: "<span class=\"mark mark--cut mark--tilt-4 mark--tear-2\">collect</span>"
+headingHtml: "<span class=\"mark mark--cut mark--tilt-4 mark--tear-2\">Collect</span>"
 collect:
   pitch:
     title: "Play music cards with exoplanets"

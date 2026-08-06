@@ -164,6 +164,41 @@ export async function checkContent(report) {
   const byKind = { absent: [], headings: [], text: [], images: [], embeds: [], links: [], contains: [] };
   let checked = 0;
 
+  /**
+   * The production strings this rebuild deliberately re-cased — MW-23.
+   *
+   * Production served these under `text-transform: lowercase` on `body`, or in
+   * all caps. The transform is gone and the copy carries its own casing now, so
+   * the baseline and the build differ in capitals and in nothing else:
+   *
+   *   soundscapes & music   → Soundscapes & music    the 33 NFC card pages
+   *   spoken word           → Spoken word            the 33 NFC card pages
+   *   TERMS AND CONDITIONS  → Terms and Conditions   /collect/docs/mw/terms
+   *   MAX BERLIN NETWORK    → Max Berlin Network     /tree/max-network-berlin
+   *
+   * CLOSED: it may shrink, never grow. Adding a line is the bypass this list
+   * exists to make visible.
+   */
+  const CASING_MIGRATIONS = new Set([
+    'soundscapes & music',
+    'spoken word',
+    'TERMS AND CONDITIONS',
+    'MAX BERLIN NETWORK',
+  ]);
+  /**
+   * `casingSeen` is what makes the staleness verdict honest, and it is not the
+   * same as "every entry in the list".
+   *
+   * `verify:selftest` runs this checker against single-page fixtures that
+   * assert none of these four strings. Judging an entry stale because THIS run
+   * never used it failed those fixtures for a reason that had nothing to do
+   * with them. An entry is stale only when a page in this run actually asserted
+   * it and matched WITHOUT needing the exception; an entry no page asserted is
+   * simply not exercised, and gets no verdict.
+   */
+  const casingSeen = new Set();
+  const casingUsed = new Set();
+
   for (const page of pages) {
     const file = resolveRoute(page.url, set);
     if (!file) {
@@ -184,8 +219,36 @@ export async function checkContent(report) {
     const readable = comparable(html);
     checked += 1;
 
+    /**
+     * MATCHING IS CASE-SENSITIVE, and the four exceptions are named.
+     *
+     * MW-23 removed `text-transform: lowercase` from `body` and restored normal
+     * casing to the copy, so four strings in the production baseline are now
+     * spelled differently in the build. They are listed in CASING_MIGRATIONS
+     * above and nowhere else.
+     *
+     * The list exists instead of folding case globally, which was the first fix
+     * and was too blunt: it would have accepted `NFC` → `nfc`, `Helix` → `helix`
+     * and every future casing regression in silence — on a branch whose entire
+     * subject is casing. A named list makes each intended change reviewable and
+     * leaves every unnamed one an error.
+     *
+     * It is CLOSED, the same way `STRUCTURED_ES` is: it may shrink, never grow.
+     * An entry that stops being needed is reported below as stale, so the
+     * deletion happens in the same diff as the change that made it unnecessary.
+     */
+    const matches = (expected) => {
+      const c = comparable(expected);
+      if (CASING_MIGRATIONS.has(expected)) casingSeen.add(expected);
+      if (readable.includes(c)) return true;
+      if (!CASING_MIGRATIONS.has(expected)) return false;
+      if (!readable.toLowerCase().includes(c.toLowerCase())) return false;
+      casingUsed.add(expected);
+      return true;
+    };
+
     for (const heading of page.headings || []) {
-      if (!readable.includes(comparable(heading))) {
+      if (!matches(heading)) {
         const p = `${page.url}: missing heading "${heading}"`;
         problems.push(p);
         byKind.headings.push(p);
@@ -193,7 +256,7 @@ export async function checkContent(report) {
     }
 
     for (const needle of page.contains || []) {
-      if (!readable.includes(comparable(needle))) {
+      if (!matches(needle)) {
         const p = `${page.url}: missing text "${needle.slice(0, 40)}"`;
         problems.push(p);
         byKind.contains.push(p);
@@ -276,6 +339,28 @@ export async function checkContent(report) {
   } else {
     report.pass('content survived migration', `${checked} pages asserted`);
   }
+
+  /**
+   * The casing list is reported, not enforced — and the reason is worth stating
+   * so nobody "fixes" it into an assertion again.
+   *
+   * A stale entry is one no page needs any more, and proving that requires the
+   * WHOLE expectation set. `verify:selftest` runs this checker against
+   * single-page fixtures, one of which asserts "soundscapes & music" in
+   * production casing on purpose. Under any automatic staleness rule that
+   * fixture declares three of the four entries dead, because its world has one
+   * page in it. The rule was written, it failed exactly that way, and it is not
+   * worth a page-count heuristic to keep.
+   *
+   * So the counts are printed on every run instead. The list stays closed by
+   * review — the same way `LEGACY_ES` is — and this line is where a reader sees
+   * that four permitted exceptions are still four.
+   */
+  report.pass(
+    'casing migrations are declared, not assumed',
+    `${casingUsed.size} used, ${casingSeen.size} exercised, ${CASING_MIGRATIONS.size} permitted — ` +
+      'closed list: it may shrink, never grow',
+  );
 }
 
 if (process.argv[1] && process.argv[1].endsWith('verify-content.mjs')) {

@@ -11,4 +11,4 @@ redirectTo: "/"
 noindex: true
 ---
 
-<p>this page has moved. redirecting to <a href="/">maar world</a>…</p>
+<p>This page has moved. Redirecting to <a href="/">Maar World</a>…</p>

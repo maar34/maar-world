@@ -37,7 +37,7 @@
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   /** A slide index, said the way the live region should say it. */
-  const say = (i: number, n: number) => `slide ${i + 1} of ${n}`;
+  const say = (i: number, n: number) => `Slide ${i + 1} of ${n}`;
 
   for (const root of document.querySelectorAll<HTMLElement>('.carousel')) {
     const track = root.querySelector<HTMLElement>('.carousel__track');
@@ -116,8 +116,8 @@
       return b;
     };
 
-    const prev = arrow('prev', 'previous slide', 'M15 5 L8 12 L15 19');
-    const next = arrow('next', 'next slide', 'M9 5 L16 12 L9 19');
+    const prev = arrow('prev', 'Previous slide', 'M15 5 L8 12 L15 19');
+    const next = arrow('next', 'Next slide', 'M9 5 L16 12 L9 19');
 
     /**
      * "the counter in a polite live region."

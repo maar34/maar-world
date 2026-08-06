@@ -10,8 +10,8 @@ origin: "migrated"
 island: "helix"
 ---
 
-<h1>helix</h1>
+<h1>Helix</h1>
 
-<p>the technical installation diagram for helix at the espacio de arte contemporáneo, montevideo, 2025. three identical stations around a central router, with the cabling and the wireless paths drawn separately so each can be isolated.</p>
+<p>The technical installation diagram for Helix at the Espacio de Arte Contemporáneo, Montevideo, 2025. Three identical stations around a central router, with the cabling and the wireless paths drawn separately so each can be isolated.</p>
 
-<p>choose a layer to show only that kind of connection, or a station to highlight it. the written description below the diagram carries the same topology in words.</p>
+<p>Choose a layer to show only that kind of connection, or a station to highlight it. The written description below the diagram carries the same topology in words.</p>

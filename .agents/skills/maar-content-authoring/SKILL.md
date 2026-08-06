@@ -206,6 +206,14 @@ was right only until cutover. `scripts/verify-routes.mjs` now separates them.
 
 ## Rules that still apply
 
+- **Write copy in normal sentence casing. Never write it in all lowercase, and
+  never in ALL CAPS.** The design rule is *"never set type in all caps"* — a
+  prohibition on shouting. It is not an instruction to lowercase everything, and
+  reading it that way is a mistake this repo has already made once, at the cost
+  of every heading, name and sentence on the site. Proper nouns keep their
+  capitals: *Maar World*, *Montevideo*, *YouTube*, *NFC*, *HDMI*. There is no
+  `text-transform` in the stylesheets and none may be added — what you type is
+  what a reader sees. See the note at the top of `src/styles/reset.css`.
 - **Never reuse an `outputPath` a migrated page already claims.** Two records with
   the same `outputPath` are two routes with the same param, and the build fails.
   Check with `grep -rn 'outputPath: "your/path"' src/content/`.
