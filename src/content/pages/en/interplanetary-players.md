@@ -11,4 +11,4 @@ redirectTo: "/orbiters"
 noindex: true
 ---
 
-<p>redirecting to <a href="/orbiters">/orbiters</a>…</p>
+<p>Redirecting to <a href="/orbiters">/orbiters</a>…</p>

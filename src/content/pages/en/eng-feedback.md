@@ -11,4 +11,4 @@ redirectTo: "/bookings"
 noindex: true
 ---
 
-<p>this page has moved. redirecting to <a href="/bookings">/bookings</a>…</p>
+<p>This page has moved. Redirecting to <a href="/bookings">/bookings</a>…</p>
