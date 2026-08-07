@@ -1,0 +1,28 @@
+{
+  "projectId": "5944fcc1-0512-451d-9d4e-8be72e30fef2",
+  "shape": "package",
+  "pkg": "maar-world",
+  "globalName": "MaarWorld",
+  "srcDir": "src/components",
+  "tsconfig": "tsconfig.json",
+  "buildCmd": "node .design-sync/build-styles.mjs",
+  "readmeHeader": ".design-sync/conventions.md",
+  "cssEntry": ".design-sync/.cache/styles-flat.css",
+  "componentSrcMap": {
+    "HelixDiagram": "src/components/react/HelixDiagram.tsx"
+  },
+  "overrides": {
+    "HelixDiagram": {
+      "cardMode": "single",
+      "primaryStory": "Diagram",
+      "viewport": "1200x820"
+    }
+  },
+  "extraFonts": [
+    "node_modules/@fontsource/bodoni-moda/400.css",
+    "node_modules/@fontsource/bodoni-moda/400-italic.css",
+    "node_modules/@fontsource-variable/archivo/wdth.css",
+    "node_modules/@fontsource/libre-franklin/400.css",
+    "node_modules/@fontsource/dm-mono/400.css"
+  ]
+}

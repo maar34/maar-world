@@ -1,0 +1,23 @@
+/**
+ * Re-asserts the page surface for design-sync consumers. Appended last by
+ * build-styles.mjs.
+ *
+ * `type.css` already says `body { color: var(--ink); background: var(--sf-base) }`,
+ * which is the whole story on the real site. It is not the whole story here:
+ * the preview-card template and the design host both put their own
+ * `body { background: #fff }` after our stylesheet, and a later rule of equal
+ * specificity wins. The result is #efe7da ink on white — the site's cream text
+ * on a background it was never drawn against, at roughly 1.1:1.
+ *
+ * `html body` is specificity (0,0,2) against that rule's (0,0,1), so it holds
+ * regardless of source order. Nothing here invents a value: both tokens are the
+ * ones type.css already binds.
+ *
+ * This is deliberately not a theme. Maar World has one surface, dark, on every
+ * route — see the note at the top of BaseLayout.astro — so there is no second
+ * state for this to be wrong about.
+ */
+html body {
+  color: var(--ink);
+  background: var(--sf-base);
+}

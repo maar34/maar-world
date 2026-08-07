@@ -1,0 +1,23 @@
+/**
+ * Design-sync stylesheet entry.
+ *
+ * The same stylesheets, in the same order, that `src/layouts/BaseLayout.astro`
+ * imports — that order is the design system, so it is mirrored here rather than
+ * re-derived. `tokens.css` is deliberately absent: it ships separately via
+ * `tokensGlob` so it lands in the bundle's own `tokens/` directory.
+ *
+ * Keep this list in step with BaseLayout. If a stylesheet is added there and
+ * not here, designs built in Claude Design render without it.
+ */
+@import '../src/styles/reset.css';
+@import '../src/styles/type.css';
+@import '../src/styles/shell.css';
+@import '../src/styles/button.css';
+@import '../src/styles/mark.css';
+@import '../src/styles/paper-phrase.css';
+@import '../src/styles/collage-field.css';
+@import '../src/styles/tree-hub.css';
+@import '../src/styles/card.css';
+@import '../src/styles/carousel.css';
+@import '../src/styles/prose.css';
+@import '../src/styles/legacy.css';
