@@ -4,6 +4,24 @@ on:
   pull_request:
   push:
     branches: [main]
+  # A HAND on the pipeline, for the day the pipeline is the thing that broke.
+  #
+  # 2026-08-06: GitHub had a critical Actions and Pages outage. Two pushes to
+  # `main` never got a runner — one was marked failed after 15 minutes with
+  # "the job was not acquired by Runner of type hosted", the other wedged in
+  # `queued` and stayed there after the incident closed, refusing both cancel
+  # ("cannot cancel a run that is completed") and re-run ("already running").
+  #
+  # `deploy` only fires on `verify` CONCLUDING SUCCESSFULLY, which is the right
+  # rule and is why nothing shipped unverified that day. But with no manual
+  # trigger here, a verify run that can never conclude leaves the only route to
+  # production through `deploy`'s own `workflow_dispatch` — publishing a commit
+  # that CI never checked, which is precisely what this pipeline exists to
+  # prevent. The recovery for a stuck run must not be the unsafe path.
+  #
+  # So verify can be started by hand. It changes nothing about what may ship:
+  # the run still has to pass, and `deploy` still waits for it.
+  workflow_dispatch:
 
 # The route manifest is a contract. CI's job is to prove the build still
 # satisfies it — never to update it.
