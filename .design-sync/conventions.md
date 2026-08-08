@@ -85,19 +85,19 @@ stylesheets, `tokens.css` first). `guidelines/` holds the project's own design d
 <div class="shell" data-shell="dark" style="--area-pigment: var(--c-collect)">
   <main class="shell__main">
     <div class="shell__content" style="display:flex; flex-direction:column; gap:var(--s-8)">
-      <p class="t-meta">colección · 2025</p>
-      <h1 class="t-display"><span class="mark mark--highlight">sky sounds</span></h1>
-      <p class="prose">una edición de piezas grabadas sobre el agua.</p>
+      <p class="t-meta">Colección · 2025</p>
+      <h1 class="t-display"><span class="mark mark--highlight">Sky Sounds</span></h1>
+      <p class="prose">Una edición de piezas grabadas sobre el agua.</p>
       <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:var(--s-4)">
         <article class="card card--article">
-          <h3 class="t-h3">primera pieza</h3>
-          <p class="t-small">catorce minutos, campo abierto.</p>
+          <h3 class="t-h3">Primera pieza</h3>
+          <p class="t-small">Catorce minutos, campo abierto.</p>
         </article>
         <article class="card card--feature">
-          <h3 class="t-h3">destacada</h3>
+          <h3 class="t-h3">Destacada</h3>
         </article>
       </div>
-      <a class="btn btn--primary" href="#">escuchar</a>
+      <a class="btn btn--primary" href="#">Escuchar</a>
     </div>
   </main>
 </div>
