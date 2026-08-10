@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="620" viewBox="0 0 1600 620" role="img" aria-label="Shared creation of the world: exoplanet data and each person's interaction feed a generative composition in Plantasia Space, played and mixed in the street.">
+  <!--
+    Redrawn from uploads/02_creacion-del-mundo.svg in the KNOWCASE design
+    project. Same reasons as the NFC diagram beside it: inline palette, generic
+    font stack, dark shell.
+
+    One word changed rather than translated. The source says "Planeta Helix";
+    the public name settled on 2026-08-10 is Exoplaneta Helix, and a diagram
+    shipping the older name would be the page contradicting itself in a picture.
+  -->
+  <rect width="1600" height="620" fill="#0b0a0e"/>
+  <rect x="0.5" y="0.5" width="1599" height="619" fill="none" stroke="#efe7da" stroke-opacity="0.13"/>
+
+  <g font-family="ui-sans-serif, system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+    <text x="80" y="72" fill="#efe7da" font-size="34" letter-spacing="0.5">Making this possible world, together</text>
+
+    <rect x="80" y="150" width="320" height="145" rx="20" fill="#efe7da" fill-opacity="0.04" stroke="#efe7da" stroke-opacity="0.13"/>
+    <text x="240" y="210" text-anchor="middle" fill="#efe7da" font-size="28">Exoplanet data</text>
+    <text x="240" y="252" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">the seed of the composition</text>
+
+    <rect x="80" y="355" width="320" height="145" rx="20" fill="#efe7da" fill-opacity="0.04" stroke="#efe7da" stroke-opacity="0.13"/>
+    <text x="240" y="415" text-anchor="middle" fill="#efe7da" font-size="28">Each person</text>
+    <text x="240" y="457" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">an individual interaction</text>
+
+    <rect x="400" y="220" width="150" height="4" fill="#c36891"/>
+    <polygon points="566,222 546,211 546,233" fill="#c36891"/>
+    <rect x="400" y="425" width="150" height="4" fill="#c36891"/>
+    <polygon points="566,427 546,416 546,438" fill="#c36891"/>
+
+    <rect x="586" y="190" width="440" height="265" rx="28" fill="#c36891" fill-opacity="0.10" stroke="#c36891" stroke-opacity="0.45"/>
+    <text x="806" y="268" text-anchor="middle" fill="#efe7da" font-size="28">Exoplaneta Helix</text>
+    <text x="806" y="310" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">a generative composition</text>
+    <text x="806" y="366" text-anchor="middle" fill="#efe7da" font-size="28">Plantasia Space</text>
+    <text x="806" y="408" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">one same sound world</text>
+
+    <rect x="1026" y="320" width="146" height="4" fill="#c36891"/>
+    <polygon points="1188,322 1168,311 1168,333" fill="#c36891"/>
+
+    <rect x="1208" y="248" width="312" height="160" rx="20" fill="#efe7da" fill-opacity="0.04" stroke="#efe7da" stroke-opacity="0.13"/>
+    <text x="1364" y="313" text-anchor="middle" fill="#efe7da" font-size="28">Play in the street</text>
+    <text x="1364" y="355" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">sessions that mix</text>
+
+    <text x="800" y="565" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="24">Machines, plants and people live inside the same imagined planet.</text>
+  </g>
+</svg>

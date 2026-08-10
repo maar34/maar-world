@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="520" viewBox="0 0 1600 520" role="img" aria-label="Cómo se llega a la experiencia sonora: una carta NFC en la vidriera abre una sesión individual en Plantasia Space, y las sesiones simultáneas se mezclan en la calle.">
+  <!--
+    La mitad española de Exoplaneta-Helix-NFC. Ver la inglesa para por qué el
+    estilo va escrito literalmente y no en tokens.
+
+    Dos archivos y no uno porque el diagrama lleva palabras, y una imagen con
+    palabras es lo único que el sitio traduce como imagen — el par queda
+    declarado en TRANSLATED_ARTWORK, igual que Interplanetary-Orchestra.
+  -->
+  <rect width="1600" height="520" fill="#0b0a0e"/>
+  <rect x="0.5" y="0.5" width="1599" height="519" fill="none" stroke="#efe7da" stroke-opacity="0.13"/>
+
+  <g font-family="ui-sans-serif, system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+    <text x="80" y="72" fill="#efe7da" font-size="34" letter-spacing="0.5">Acceso a la experiencia sonora</text>
+
+    <rect x="80" y="150" width="300" height="190" rx="20" fill="#efe7da" fill-opacity="0.04" stroke="#efe7da" stroke-opacity="0.13"/>
+    <text x="230" y="215" text-anchor="middle" fill="#efe7da" font-size="28">Carta NFC</text>
+    <text x="230" y="255" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">en la vidriera</text>
+    <text x="230" y="291" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">un mismo portal</text>
+
+    <rect x="380" y="242" width="124" height="4" fill="#c36891"/>
+    <polygon points="520,244 500,233 500,255" fill="#c36891"/>
+
+    <rect x="540" y="120" width="440" height="250" rx="26" fill="#c36891" fill-opacity="0.10" stroke="#c36891" stroke-opacity="0.45"/>
+    <text x="760" y="192" text-anchor="middle" fill="#efe7da" font-size="28">Sesión individual</text>
+    <text x="760" y="234" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">la interfaz de Plantasia Space</text>
+    <text x="760" y="286" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">cada persona en su teléfono</text>
+    <text x="760" y="324" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">sin instalación ni registro</text>
+
+    <rect x="980" y="242" width="110" height="4" fill="#c36891"/>
+    <polygon points="1106,244 1086,233 1086,255" fill="#c36891"/>
+
+    <rect x="1130" y="150" width="390" height="190" rx="20" fill="#efe7da" fill-opacity="0.04" stroke="#efe7da" stroke-opacity="0.13"/>
+    <text x="1325" y="215" text-anchor="middle" fill="#efe7da" font-size="28">Mezcla en la calle</text>
+    <text x="1325" y="255" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">las sesiones simultáneas</text>
+    <text x="1325" y="291" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">suenan y se combinan</text>
+
+    <rect x="590" y="412" width="130" height="62" rx="16" fill="#efe7da" fill-opacity="0.04" stroke="#efe7da" stroke-opacity="0.13"/>
+    <rect x="800" y="412" width="130" height="62" rx="16" fill="#efe7da" fill-opacity="0.04" stroke="#efe7da" stroke-opacity="0.13"/>
+    <text x="655" y="451" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">Persona 1</text>
+    <text x="865" y="451" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">Persona 2</text>
+
+    <rect x="653" y="392" width="4" height="20" fill="#c36891"/>
+    <polygon points="655,376 644,396 666,396" fill="#c36891"/>
+    <rect x="863" y="392" width="4" height="20" fill="#c36891"/>
+    <polygon points="865,376 854,396 876,396" fill="#c36891"/>
+  </g>
+</svg>

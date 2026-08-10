@@ -445,8 +445,26 @@ export const SPANISH_ORBITER_ENGLISH =
  *
  * `lab` is here because the Lab index draws that poster as one of its eleven
  * card covers, not for a reason of its own.
+ *
+ * Exoplaneta Helix joins on the same ground and on no wider one. Its two
+ * diagrams — the NFC path and the shared composition — are drawn artwork whose
+ * boxes are labelled in words, so they exist as `.ENG.svg` and `.ESP.svg`
+ * exactly as the Orchestra poster exists as two PNGs. The renders on that page
+ * are photographs and are the SAME file on both halves, which is the rule this
+ * list is an exception to rather than an escape from: listing the pair stops
+ * the comparison for its photographs too, and that is the cost of the entry.
+ *
+ * This list has no CLOSED_AT counter, unlike `LEGACY_ES` and the structured-ES
+ * list, and the absence is not permission. A pair belongs here only when a
+ * reader would otherwise be shown the wrong language INSIDE a picture. If a
+ * future entry is really about a lookup that misses on the Spanish path, that
+ * is the defect this whole check was written to catch — fix the lookup.
  */
-export const TRANSLATED_ARTWORK = new Set(['lab/en/ip-orchestra-design', 'lab']);
+export const TRANSLATED_ARTWORK = new Set([
+  'lab/en/ip-orchestra-design',
+  'lab',
+  'lab/exoplaneta-helix-knowcase-2027',
+]);
 
 /**
  * A page's shape, with every word removed: tag names and first classes, in order.

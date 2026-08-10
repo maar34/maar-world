@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="520" viewBox="0 0 1600 520" role="img" aria-label="How the sound experience is reached: an NFC card at the window opens an individual session in Plantasia Space, and simultaneous sessions mix in the street.">
+  <!--
+    Redrawn from uploads/01_interaccion-nfc.svg in the KNOWCASE design project.
+
+    The original is print artwork on white, and it leaned on CSS classes that
+    lived in the dossier's stylesheet rather than in the file — standing alone
+    it renders as unstyled text on a white slab. Everything here is inline and
+    literal for that reason: an <img> SVG cannot read the page's custom
+    properties, so the palette is written out rather than referenced.
+
+    Colours are the site's own: #efe7da ink on the dark shell, #c36891 for maar.
+    The font stack is generic on purpose — "self-host every font" (AGENTS.md)
+    means an SVG must not reach for a webfont, and a diagram is the one place
+    where the system face costs nothing.
+  -->
+  <rect width="1600" height="520" fill="#0b0a0e"/>
+  <rect x="0.5" y="0.5" width="1599" height="519" fill="none" stroke="#efe7da" stroke-opacity="0.13"/>
+
+  <g font-family="ui-sans-serif, system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+    <text x="80" y="72" fill="#efe7da" font-size="34" letter-spacing="0.5">Reaching the sound experience</text>
+
+    <rect x="80" y="150" width="300" height="190" rx="20" fill="#efe7da" fill-opacity="0.04" stroke="#efe7da" stroke-opacity="0.13"/>
+    <text x="230" y="215" text-anchor="middle" fill="#efe7da" font-size="28">NFC card</text>
+    <text x="230" y="255" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">at the window</text>
+    <text x="230" y="291" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">one same portal</text>
+
+    <rect x="380" y="242" width="124" height="4" fill="#c36891"/>
+    <polygon points="520,244 500,233 500,255" fill="#c36891"/>
+
+    <rect x="540" y="120" width="440" height="250" rx="26" fill="#c36891" fill-opacity="0.10" stroke="#c36891" stroke-opacity="0.45"/>
+    <text x="760" y="192" text-anchor="middle" fill="#efe7da" font-size="28">Individual session</text>
+    <text x="760" y="234" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">the Plantasia Space interface</text>
+    <text x="760" y="286" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">each person on their own phone</text>
+    <text x="760" y="324" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">no installation, no account</text>
+
+    <rect x="980" y="242" width="110" height="4" fill="#c36891"/>
+    <polygon points="1106,244 1086,233 1086,255" fill="#c36891"/>
+
+    <rect x="1130" y="150" width="390" height="190" rx="20" fill="#efe7da" fill-opacity="0.04" stroke="#efe7da" stroke-opacity="0.13"/>
+    <text x="1325" y="215" text-anchor="middle" fill="#efe7da" font-size="28">Mixing in the street</text>
+    <text x="1325" y="255" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">simultaneous sessions</text>
+    <text x="1325" y="291" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">sound and combine</text>
+
+    <rect x="590" y="412" width="130" height="62" rx="16" fill="#efe7da" fill-opacity="0.04" stroke="#efe7da" stroke-opacity="0.13"/>
+    <rect x="800" y="412" width="130" height="62" rx="16" fill="#efe7da" fill-opacity="0.04" stroke="#efe7da" stroke-opacity="0.13"/>
+    <text x="655" y="451" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">Person 1</text>
+    <text x="865" y="451" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">Person 2</text>
+
+    <rect x="653" y="392" width="4" height="20" fill="#c36891"/>
+    <polygon points="655,376 644,396 666,396" fill="#c36891"/>
+    <rect x="863" y="392" width="4" height="20" fill="#c36891"/>
+    <polygon points="865,376 854,396 876,396" fill="#c36891"/>
+  </g>
+</svg>

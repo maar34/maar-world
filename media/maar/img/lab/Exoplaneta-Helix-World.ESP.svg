@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="620" viewBox="0 0 1600 620" role="img" aria-label="Creación compartida del mundo: los datos del exoplaneta y la interacción de cada persona alimentan una composición generativa en Plantasia Space, que se juega y se mezcla en la calle.">
+  <!--
+    La mitad española de Exoplaneta-Helix-World. Ver la inglesa para el estilo y
+    para por qué el original decía «Planeta Helix» y aquí dice Exoplaneta Helix.
+  -->
+  <rect width="1600" height="620" fill="#0b0a0e"/>
+  <rect x="0.5" y="0.5" width="1599" height="619" fill="none" stroke="#efe7da" stroke-opacity="0.13"/>
+
+  <g font-family="ui-sans-serif, system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+    <text x="80" y="72" fill="#efe7da" font-size="34" letter-spacing="0.5">Creación compartida de este mundo posible</text>
+
+    <rect x="80" y="150" width="320" height="145" rx="20" fill="#efe7da" fill-opacity="0.04" stroke="#efe7da" stroke-opacity="0.13"/>
+    <text x="240" y="210" text-anchor="middle" fill="#efe7da" font-size="28">Datos del exoplaneta</text>
+    <text x="240" y="252" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">semilla de la composición</text>
+
+    <rect x="80" y="355" width="320" height="145" rx="20" fill="#efe7da" fill-opacity="0.04" stroke="#efe7da" stroke-opacity="0.13"/>
+    <text x="240" y="415" text-anchor="middle" fill="#efe7da" font-size="28">Cada persona</text>
+    <text x="240" y="457" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">interacción individual</text>
+
+    <rect x="400" y="220" width="150" height="4" fill="#c36891"/>
+    <polygon points="566,222 546,211 546,233" fill="#c36891"/>
+    <rect x="400" y="425" width="150" height="4" fill="#c36891"/>
+    <polygon points="566,427 546,416 546,438" fill="#c36891"/>
+
+    <rect x="586" y="190" width="440" height="265" rx="28" fill="#c36891" fill-opacity="0.10" stroke="#c36891" stroke-opacity="0.45"/>
+    <text x="806" y="268" text-anchor="middle" fill="#efe7da" font-size="28">Exoplaneta Helix</text>
+    <text x="806" y="310" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">composición generativa</text>
+    <text x="806" y="366" text-anchor="middle" fill="#efe7da" font-size="28">Plantasia Space</text>
+    <text x="806" y="408" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">un mismo mundo sonoro</text>
+
+    <rect x="1026" y="320" width="146" height="4" fill="#c36891"/>
+    <polygon points="1188,322 1168,311 1168,333" fill="#c36891"/>
+
+    <rect x="1208" y="248" width="312" height="160" rx="20" fill="#efe7da" fill-opacity="0.04" stroke="#efe7da" stroke-opacity="0.13"/>
+    <text x="1364" y="313" text-anchor="middle" fill="#efe7da" font-size="28">Juego en la calle</text>
+    <text x="1364" y="355" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="22">sesiones que se mezclan</text>
+
+    <text x="800" y="565" text-anchor="middle" fill="#efe7da" fill-opacity="0.6" font-size="24">Máquinas, plantas y personas conviven dentro del mismo planeta imaginario.</text>
+  </g>
+</svg>
