@@ -51,9 +51,25 @@ import { docExcerpt } from '../lib/doc-excerpt.mjs';
 import Action from '../components/ui/Action.astro';
 import { collageFor, articleCoverFor, articleCoverFitFor, docGlyphFor, docReadMoreFor, suitPigment, suitStoreUrl, suitDisplayName, CARD_OFFER, pageIcon, LAB_INTRO, LAB_PINNED } from '../config/site';
 import { navIconMask } from '../lib/nav-icons.mjs';
+import { publishable } from '../lib/publishing.mjs';
 
 export async function getStaticPaths() {
-  const pages = await getCollection('pages');
+  /**
+   * A record with a future `publishAfter` is filtered out HERE, before anything
+   * else reads the collection, and that placement is the design.
+   *
+   * `byPath` and the `all` prop below are both derived from this array, and
+   * every index on the site is drawn from `all` — the Lab list, the language
+   * switcher's alternates, the sitemap. Filtering once at the source therefore
+   * removes the page from all of them together. Filtering at the return
+   * statement instead would drop the route while leaving the record in `all`,
+   * publishing a Lab entry and a hreflang link that both 404. That is the
+   * silent half-state this file's other guards keep being written against.
+   *
+   * NOT a draft flag. A record without `publishAfter` is published, as every
+   * record is today; this only defers one that names a date.
+   */
+  const pages = publishable(await getCollection('pages'));
   const byPath = new Map(pages.map((p) => [p.data.outputPath, p]));
 
   /**

@@ -60,6 +60,7 @@ import { runStandalone } from './lib/report.mjs';
 import { plainText, mainOf } from './lib/html-text.mjs';
 import { ROOT, has, ARTIFACTS, indexDist, readDistFile } from './lib/artifacts.mjs';
 import { resolveRoute } from './lib/routes.mjs';
+import { isPublishable } from '../src/lib/publishing.mjs';
 
 const PAGE_DIRS = [join(ROOT, 'src/content/pages')];
 
@@ -102,6 +103,7 @@ export function loadPageRecords(dirs = PAGE_DIRS) {
       lang: field(text, 'lang'),
       translationOf: field(text, 'translationOf'),
       translationKey: field(text, 'translationKey'),
+      publishAfter: field(text, 'publishAfter'),
       body: bodyOf(text),
     });
   }
@@ -863,7 +865,24 @@ export async function checkTranslations(report) {
 
   const untranslated = [];
   const unbuilt = [];
+  let held = 0;
   for (const { original, translation } of pairs) {
+    /**
+     * A pair held by `publishAfter` is absent from the build ON PURPOSE, and
+     * that is the one absence this check must not call a defect.
+     *
+     * It is tested for BEFORE reading dist rather than folded into the `null`
+     * branch below, so the two absences stay distinguishable. "Held until a
+     * date" and "should be here and is not" look identical in `dist/` and mean
+     * opposite things; collapsing them would turn every genuinely missing
+     * translation into a silent pass the moment anything on the site carried a
+     * date. `src/lib/publishing.mjs` owns the rule, so what this skips is
+     * exactly what the build skipped.
+     */
+    if (!isPublishable(original) || !isPublishable(translation)) {
+      held += 1;
+      continue;
+    }
     const a = textOf(original.outputPath);
     const b = textOf(translation.outputPath);
     if (a === null || b === null) {
@@ -1025,7 +1044,8 @@ export async function checkTranslations(report) {
   } else {
     report.pass(
       'a translation is not its original',
-      `${pairs.length} pairs compared on rendered body text`,
+      `${pairs.length - held} pairs compared on rendered body text` +
+        (held ? `; ${held} held by publishAfter and not built` : ''),
     );
   }
 

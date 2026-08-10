@@ -237,6 +237,29 @@ export const pageSchema = z
     date: z.string().optional(),
 
     /**
+     * Hold this record back until a date. Absent, it publishes now.
+     *
+     * SEPARATE FROM `date` ON PURPOSE. `date` is what the Lab sorts and shows,
+     * so borrowing Jekyll's trick of a future `date` meaning "not yet" would
+     * also move the entry in the index and print a date the reader has not
+     * reached. Two jobs, two fields.
+     *
+     * The shape is asserted rather than parsed loosely because the failure it
+     * prevents is invisible: `isPublishable` treats an unparseable value as
+     * publishable, so a typo here would ship the page immediately and a typo
+     * caught only at read time would hide it forever. Neither is discoverable
+     * from looking at the site — this is the only place that can say so.
+     *
+     * Setting it is not the same as deciding. The scheduled run publishes on
+     * that date whether or not anyone still wants it to; see
+     * scripts/publish-due.mjs.
+     */
+    publishAfter: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'publishAfter must be an ISO date, YYYY-MM-DD — it is read as midnight UTC on that day')
+      .optional(),
+
+    /**
      * A Jekyll `{% include article-list.html %}` became this. The route renders
      * the named list from the collection instead of shipping a literal include
      * that Astro would never resolve.
