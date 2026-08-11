@@ -135,4 +135,12 @@ console.log(`\n  proceed: ${proceed}\n`);
 if (process.env.GITHUB_OUTPUT) {
   appendFileSync(process.env.GITHUB_OUTPUT, `proceed=${proceed}\n`);
   appendFileSync(process.env.GITHUB_OUTPUT, `reason=${reason}\n`);
+  /**
+   * How many records carry a date at all, which is a different question from
+   * whether one is due today. The workflow uses it to decide whether the
+   * scheduled path is load-bearing yet: with no dated record, a missing
+   * publishing token is a dormant problem worth nobody's attention, and with
+   * one it is a countdown to a silent miss.
+   */
+  appendFileSync(process.env.GITHUB_OUTPUT, `dated=${dated.length}\n`);
 }
