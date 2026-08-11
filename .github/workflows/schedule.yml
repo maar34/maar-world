@@ -29,6 +29,19 @@ on:
     - cron: '0 6 * * *'
   # For testing this workflow, and for the morning someone wants the answer now.
   workflow_dispatch:
+    inputs:
+      force:
+        # THE DISPATCH STEP IS OTHERWISE UNTESTABLE UNTIL THE DAY IT MATTERS.
+        #
+        # Whether this token may start a workflow run is the one thing here that
+        # cannot be checked by reading it, and the honest occasions to find out
+        # are precisely the occasions where being wrong is expensive: a date
+        # arrives, nothing happens. This makes the question askable on an
+        # ordinary Tuesday. Forcing it starts `verify` on `main`, which
+        # redeploys the site unchanged — one spare deployment, and an answer.
+        description: 'Start verify even with nothing due — tests the dispatch path'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -62,7 +75,7 @@ jobs:
       # happens, and nothing anywhere says so. A red run in the morning is the
       # cheapest possible way to find out.
       - name: start verify
-        if: steps.due.outputs.proceed == 'true'
+        if: steps.due.outputs.proceed == 'true' || inputs.force
         env:
           GH_TOKEN: ${{ secrets.SCHEDULE_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
