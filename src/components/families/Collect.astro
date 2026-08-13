@@ -116,6 +116,7 @@ import {
   collageFor,
 } from '../../config/site';
 import { facadeStrings } from '../../config/embeds';
+import { imageSize } from '../../lib/image-size.mjs';
 
 interface Slide {
   step: string;
@@ -318,7 +319,7 @@ const slides = COLLECT_JOURNEY_IMAGES.map((image, i) => ({
       image on a hero whose only content was an `<h2>` holding four `<br>`s —
       a spacer wearing a heading's clothes, and an empty heading in the page
       outline. It is an image with an empty alt because it is decoration. */}
-  <img class="collect__banner" src={COLLECT_BAND_IMAGE} alt="" />
+  <img class="collect__banner" src={COLLECT_BAND_IMAGE} alt="" {...imageSize(COLLECT_BAND_IMAGE) ?? {}} />
 
   <section class="prose collect__band collect__band--center" aria-label={copy.orbiters.label}>
     {/* The link asks what an Orbiter is, so it wears what an Orbiter is: the

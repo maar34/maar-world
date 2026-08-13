@@ -1,0 +1,221 @@
+/**
+ * patterns/version-switch — the two-version tab strip, drawn with no script.
+ *
+ * READ `src/components/patterns/VersionSwitch.astro` FIRST. It explains why the
+ * SWAP is radios and a `:checked` selector rather than JavaScript, and it still
+ * is: pressing a tab shows a panel with this stylesheet and nothing else, and
+ * both panels stay in the emitted HTML, which is what keeps `verify:content`'s
+ * heading, image and embed assertions readable.
+ *
+ * `ui/VersionSwitchScript` does exist, and it is not this. It manages when the
+ * IFRAMES inside a panel load, because `display: none` gives a frame a viewport
+ * of 0×0 and `play.maar.world` sizes its canvas once at startup. That is a
+ * consequence of the rule below, not a replacement for it — turn the script off
+ * and the switch still switches.
+ *
+ * ── WHY EVERY SELECTOR COUNTS BY POSITION ────────────────────────────────────
+ *
+ * The two inputs carry ids built from a `name` prop, because a page may hold
+ * more than one switch and a radio group is keyed by name. So a stylesheet
+ * cannot select them by id, and `:nth-of-type` is what is left. It counts among
+ * SIBLINGS OF THE SAME TAG — the two inputs are the only `input`s in the
+ * fieldset, so (1) and (2) are the first and second tab, stably.
+ *
+ * ── AND WHY IT ASKS THE FIELDSET, NOT THE SIBLING ────────────────────────────
+ *
+ * `input:checked ~ .strip .tab` is the textbook spelling and it is not what
+ * ships. Chrome matched it correctly — `document.querySelectorAll` on that exact
+ * selector returned the right label — and then painted the old one anyway: press
+ * version two and both panels swapped while the tab strip stayed lit on version
+ * one. A style invalidation that only reaches the SIBLING and not the sibling's
+ * DESCENDANTS is a browser bug, but it is a browser bug that ships.
+ *
+ * `.version-switch:has(input:checked) .tab` asks the same question upward and
+ * repaints reliably, so every rule below is written that way — the panels
+ * included, even though `~` did work for them. One mechanism, one thing to
+ * check when it breaks, and no rule whose correctness depends on the element
+ * order staying exactly as it is. `:has()` is Baseline in every engine this site
+ * supports.
+ */
+
+.version-switch {
+  /* A fieldset draws a border and an inset margin in every browser's default
+     sheet. This is a grouping, not a boxed form control. */
+  border: 0;
+  margin: 0 0 var(--s-8);
+  padding: 0;
+  min-inline-size: 0;
+}
+
+/* The legend names the group for a screen reader and is not drawn: the two tabs
+   are already legible as a choice, and a heading above them would be a third
+   heading competing with the panel's own. Clipped, never `display: none` — a
+   removed legend is a group with no name. Same shape as `.carousel__counter`. */
+.version-switch__legend {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/**
+ * THE INPUTS ARE CLIPPED, NOT HIDDEN, AND THE DIFFERENCE IS THE WHOLE SWITCH.
+ *
+ * `display: none` and `visibility: hidden` both remove an input from the focus
+ * order. The strip would then be operable by pointer only — no tab stop, no
+ * arrow keys, nothing announced — which is precisely the failure a native radio
+ * group was chosen to avoid. Clipped to a pixel, the radio is still focusable,
+ * still in its group, and still tells a screen reader which of the two is
+ * checked; only its dot is gone, replaced by the label it drives.
+ */
+.version-switch__input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+  appearance: none;
+}
+
+.version-switch__strip {
+  display: flex;
+  flex-wrap: wrap;
+  /* Centred, on the owner's instruction. The two tabs are a choice offered to
+     the page, not a toolbar hung off its left edge, and everything they sit
+     between — the statement above, the bands below — is centred already. */
+  justify-content: center;
+  gap: var(--s-2);
+  margin-block-end: var(--s-6);
+}
+
+/**
+ * The tab IS a button — `.btn.btn--secondary` in the markup — so it inherits the
+ * box, the hit target and the type from styles/button.css and adds only what a
+ * label needs that an anchor does not.
+ *
+ * EXCEPT THAT `.prose label` GETS THERE FIRST. Every page body renders inside
+ * `.prose`, and `styles/button.css` styles `label` as a form field's caption —
+ * `display: grid` and the whole meta type role. At (0,1,1) it outranks `.btn`
+ * and `.btn--secondary` at (0,1,0), so the first build drew the two tabs as
+ * monospaced captions in a grid rather than as buttons. Every declaration below
+ * is `.btn`'s own, restated at a specificity that survives being inside prose —
+ * not new design.
+ *
+ * ALL SIX OF THEM, AND THE FIRST FIX CARRIED THREE. `display`, `font-family` and
+ * `font-size` were restated and the rest were not, which looked right because
+ * the CHECKED tab is repainted below at (0,6,0) and takes its colour from there.
+ * The UNCHECKED tab had no such rule, so it kept `color: var(--ink-meta)` — and
+ * `.btn--secondary` draws its outline in `currentColor`, so the muted ink went
+ * around the box as well as through the words. A half-restated rule is worse
+ * than none: it fixes the state you happen to be looking at.
+ *
+ * WHICH IS WHY THE SELECTOR NAMES THE PARENT. `.version-switch__tab` alone is
+ * one class against `.prose label`'s class-and-element, and loses: restating
+ * the declarations without also raising the specificity changed nothing at all,
+ * and the tabs stayed monospaced through a build that looked correct in the
+ * stylesheet. `.version-switch .version-switch__tab` is two classes and wins,
+ * without tying the component to living inside `.prose`.
+ */
+.version-switch .version-switch__tab {
+  display: inline-flex;
+  font-family: var(--t-h3-face);
+  font-weight: var(--t-h3-weight);
+  font-size: var(--t-small-size);
+  line-height: var(--t-small-line);
+  letter-spacing: normal;
+  color: currentColor;
+  /* NOT `flex: 1 1 auto`. Two tabs that grow fill the row edge to edge, and a
+     row that is already full cannot be centred — `justify-content` on the strip
+     would have had no visible effect at all. They take their own width, with a
+     floor so the pair reads as one control rather than as two words of
+     different lengths, and wrap to two centred rows when that no longer fits. */
+  flex: 0 1 auto;
+  min-inline-size: min(12rem, 100%);
+  max-inline-size: 20rem;
+  /* A label is not a control by default: no pointer, and a double press selects
+     its words instead of flipping the switch. */
+  cursor: pointer;
+  user-select: none;
+}
+
+/* ---- the checked tab ------------------------------------------------------ */
+/**
+ * The primary look, applied by position rather than by a class, because nothing
+ * without script can put a class on a label. Same two declarations as
+ * `.btn--primary`; restated rather than shared because a checked tab is not a
+ * primary action — there is no `.btn--primary` in this markup for a rule to
+ * cascade over, and the border `.btn--secondary` draws has to go.
+ */
+.version-switch:has(.version-switch__input:nth-of-type(1):checked) .version-switch__tab:nth-child(1),
+.version-switch:has(.version-switch__input:nth-of-type(2):checked) .version-switch__tab:nth-child(2) {
+  background: var(--c-maar);
+  color: var(--pigment-ink);
+  border-color: transparent;
+}
+
+/* ---- the focus ring ------------------------------------------------------- */
+/**
+ * The ring belongs to the input and is drawn on the label, since the input is a
+ * pixel wide and an outline on it would be invisible. `verify:a11y` fails any
+ * stylesheet that strips a focus ring and asserts that a `:focus-visible` rule
+ * setting an outline ships; this is that rule for this component.
+ */
+.version-switch:has(.version-switch__input:nth-of-type(1):focus-visible) .version-switch__tab:nth-child(1),
+.version-switch:has(.version-switch__input:nth-of-type(2):focus-visible) .version-switch__tab:nth-child(2) {
+  outline: var(--focus-w) solid var(--focus-c);
+  outline-offset: var(--focus-o);
+}
+
+/* ---- the panels ----------------------------------------------------------- */
+/**
+ * THE FIRST PANEL IS THE CLOSED ONE, which is the half of "version two is the
+ * default" that lives in CSS; the other half is the `checked` attribute in
+ * `patterns/VersionSwitch`. The page opens on version two — the current
+ * instrument — and version one is what you switch back to.
+ *
+ * The rest at rest is deliberate: with CSS off, with the stylesheet unreachable,
+ * or in an engine that fails these selectors, BOTH panels show. Every heading,
+ * every frame and every word is in the document either way; the switch only ever
+ * decides which half is displayed, never which half exists.
+ *
+ * `display: none` and not `visibility` or an offscreen shift: the closed panel
+ * holds live iframes, and it must not be reachable by tab, announced, or given
+ * layout. It is still in the HTML, which is all `verify:content` reads.
+ */
+/**
+ * Open is the base state, and closed is the departure from it. Both rules are
+ * here rather than one being left to the browser's default, because the pair is
+ * one mechanism and reading half of it out of a UA stylesheet is how the other
+ * half comes to look arbitrary.
+ *
+ * It is also the check earning its keep on its first run: `version-switch` was
+ * added to `COMPONENT_CLASSES` in verify-build.mjs and immediately failed with
+ * `.version-switch__panel` — a class the markup and the script both use, drawn
+ * by nothing. `ui/VersionSwitchScript` selects on it to find the frames it
+ * parks, so it is load-bearing and was one rename away from being silently
+ * wrong.
+ */
+.version-switch__panel {
+  display: block;
+}
+
+.version-switch__panel--1 {
+  display: none;
+}
+
+.version-switch:has(.version-switch__input:nth-of-type(1):checked) .version-switch__panel--1 {
+  display: block;
+}
+
+.version-switch:has(.version-switch__input:nth-of-type(1):checked) .version-switch__panel--2 {
+  display: none;
+}

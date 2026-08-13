@@ -7,7 +7,7 @@ tags: []
 source: "maar.world/collections/_pages/orbiters.md"
 lang: "en"
 origin: "migrated"
-description: "Imagine turning your browser into a turntable from outer space."
+description: "Imagine turning your browser into a vitrola from outer space."
 ---
 
 {/*
@@ -36,13 +36,54 @@ description: "Imagine turning your browser into a turntable from outer space."
   `data-autoplay`, and this is the only carousel on the site that sets it. A
   component that could not express it would have stopped the track silently —
   an autoplaying carousel and a still one look identical in a screenshot.
+
+  ── VERSION TWO ──────────────────────────────────────────────────────────────
+
+  The page now shows the Orbiters twice: version one on play.maar.world, which
+  is everything that was already here and is unchanged, and version two on
+  orbiter.plantasia.space, which is the rebuilt instrument playing the same
+  recordings. `patterns/VersionSwitch` swaps between them with no JavaScript:
+  two radio inputs and `:has()`. The script this page does load,
+  `ui/VersionSwitchScript`, switches nothing — it loads a panel's iframes when
+  the panel opens, because `display: none` gives a frame a viewport of 0×0. It
+  is the repo's fourth JavaScript exception, and it is
+  `.agents/decisions/0007-version-switch-loads-frames-late.md`.
+
+  VERSION TWO IS THE ONE THE PAGE OPENS ON. It is the current instrument;
+  version one is the archive you switch back to.
+
+  BOTH PANELS ARE ALWAYS IN THE HTML, only one is displayed. That is what keeps
+  verify:content honest: it asserts nine headings, six images and two embeds by
+  reading dist/, and it reads a closed panel exactly as it reads an open one.
+
+  WHAT STAYS OUTSIDE THE SWITCH: the title, the statement under it and the line
+  about the old name. Everything else belongs to one version or the other —
+  including the two closing bands, Innovative Tradition and the Harmony of the
+  Spheres, which sit inside version one because the cards and Kepler-47 are what
+  THAT instrument is about. Repeating them under version two was the first
+  arrangement, and the owner asked for it not to repeat.
+
+  VERSION TWO IS TWO FRAMES, BOTH PLAIN IFRAMES: the Orbiter itself, and the
+  editor at `?mode=edit`, shown as a demo with an invitation to Plantasia Space
+  under it. Neither sits behind a click-to-load facade — the owner's call, the
+  same one the 33 card pages already run on, and `media/OrbiterEmbed` is where
+  the cost of it is written down. The editor is the taller frame; see `shape`.
+
+  THE trackId IN VERSION TWO IS A PLACEHOLDER. It is a real, live track so the
+  frame plays today, and it is the only thing on this page waiting on an answer.
+  See `ORBITERS.v2` in src/config/articles.ts — the note is there, where the id
+  is, and not repeated here.
 */}
 
 import Band from '../../../components/patterns/Band.astro';
 import Carousel from '../../../components/media/Carousel.astro';
 import Picture from '../../../components/media/Picture.astro';
 import Mark from '../../../components/patterns/Mark.astro';
+import Statement from '../../../components/patterns/Statement.astro';
 import PlayEmbed from '../../../components/media/PlayEmbed.astro';
+import OrbiterEmbed from '../../../components/media/OrbiterEmbed.astro';
+import VersionSwitch from '../../../components/patterns/VersionSwitch.astro';
+import Action from '../../../components/ui/Action.astro';
 import { ORBITERS as M } from '../../../config/articles';
 
 export const cards = [
@@ -53,42 +94,95 @@ export const cards = [
 
 # <Mark tilt={2} tear={4}>Orbiters</Mark>
 
-Imagine turning your browser into a turntable from outer space.
+{/* THE PAGE'S ONE LINE, GIVEN THE WEIGHT IT WAS ALWAYS DOING THE WORK OF.
+    It was a plain paragraph and read as one; the owner asked for it to be more
+    important, so it is a `patterns/Statement` — the display face, centred, with
+    the overprint echo on the word the sentence turns on. It becomes an `h2`,
+    which is what a statement is; the outline gains one level under the `h1` and
+    skips nothing.
+
+    VITROLA IN ENGLISH TOO, AND THAT WAS A CORRECTION. This half said
+    `turntable` and the Spanish one said `vitrola`, on the reasoning that the
+    stained glass hiding inside the Spanish word does not survive translation.
+    The owner's answer on 2026-08-13 was that the word is missing here — so it
+    is not a translation of "turntable" at all. It is the thing's NAME, the same
+    one in both languages, and the picture that closes version two is a vitrola
+    drawn: a brass horn opening onto a nebula. An English reader who has not met
+    the word meets it here and then sees it. */}
+<Statement text="Imagine turning your browser into a vitrola from outer space." mark="vitrola" align="center" />
 
 <Band>
   <p>Orbiters — previously called Interplanetary Players</p>
 </Band>
 
-<Band>
-  <h2>Start your journey</h2>
-</Band>
+<VersionSwitch
+  name="orbiters-version"
+  legend="Choose which version of the Orbiters to play"
+  labelOne="Version 1"
+  labelTwo="Version 2"
+>
+  <Fragment slot="one">
+    <Band>
+      <h2>Start your journey</h2>
+    </Band>
 
-<Carousel
-  id="carousel-orbiters-1"
-  label="3 photographs"
-  slides={cards}
-  stepStyle="inline"
-  orbMedia
-  autoplayMs={M.carouselAutoplayMs}
-/>
+    <Carousel
+      id="carousel-orbiters-1"
+      label="3 photographs"
+      slides={cards}
+      stepStyle="inline"
+      orbMedia
+      autoplayMs={M.carouselAutoplayMs}
+    />
 
-<PlayEmbed src={M.instruments.controlTheSound} title="Control the Sound:" frameTitle="Control the Sound Interactive" level={2}>
-  <p>Please unmute your device and press the PLAY ▶️ button. Adjust the sound by moving the XYZ KNOBS up or down until you like what you hear. If you want to go back to the original sound, press the hexagonal ⬢ buttons to reset the knobs to their equilibrium.</p>
-</PlayEmbed>
+    <PlayEmbed src={M.instruments.controlTheSound} title="Control the Sound:" frameTitle="Control the Sound Interactive" level={2}>
+      <p>Please unmute your device and press the PLAY ▶️ button. Adjust the sound by moving the XYZ KNOBS up or down until you like what you hear. If you want to go back to the original sound, press the hexagonal ⬢ buttons to reset the knobs to their equilibrium.</p>
+    </PlayEmbed>
 
-<PlayEmbed src={M.instruments.regenerativeModes} title="Explore Regenerative Modes:" frameTitle="Explore Regenerative Modes Interactive" level={2}>
-  <p>Experiment with 7 unique modes, creating with real data from exoplanets and their transits and orbits across different time scales. Leave the button pressed to get hints about these parameters.</p>
-</PlayEmbed>
+    <PlayEmbed src={M.instruments.regenerativeModes} title="Explore Regenerative Modes:" frameTitle="Explore Regenerative Modes Interactive" level={2}>
+      <p>Experiment with 7 unique modes, creating with real data from exoplanets and their transits and orbits across different time scales. Leave the button pressed to get hints about these parameters.</p>
+    </PlayEmbed>
 
-<Band>
-  <h2>Innovative Tradition</h2>
-  <Picture src={M.banners.innovativeTradition} alt="Innovative Tradition" />
-  <p>Discover the different cards effects as if you're adjusting a spaceship's experience.</p>
-</Band>
+    <Band>
+      <h2>Innovative Tradition</h2>
+      <Picture src={M.banners.innovativeTradition} alt="Innovative Tradition" />
+      <p>Discover the different cards effects as if you're adjusting a spaceship's experience.</p>
+    </Band>
 
-<Band>
-  <h2>An Extended Harmony of the Spheres</h2>
-  <Picture src={M.banners.harmonyOfTheSpheres} alt="Harmony of the Spheres" />
-  <p>Sync your remix with the movement of the Kepler-47 star system. It's like mixing soundscapes with a touch of stardust, opening a new spectrum of possibilities for jamming with the cosmos.</p>
-  <Picture src={M.banners.keplerTelescope} alt="Kepler telescope" />
-</Band>
+    <Band>
+      <h2>An Extended Harmony of the Spheres</h2>
+      <Picture src={M.banners.harmonyOfTheSpheres} alt="Harmony of the Spheres" />
+      <p>Sync your remix with the movement of the Kepler-47 star system. It's like mixing soundscapes with a touch of stardust, opening a new spectrum of possibilities for jamming with the cosmos.</p>
+      <Picture src={M.banners.keplerTelescope} alt="Kepler telescope" />
+    </Band>
+  </Fragment>
+
+  <Fragment slot="two">
+    <Band>
+      <h2>Built to be played together</h2>
+      <p>Version two is a new instrument, written from scratch for Plantasia Space, and it is open source — the whole thing is out in the open, to read, to learn from, to build on.</p>
+      <p>It is also built to be played with other people. Orbiters run as an online jam: you and your friends on the same sounds at the same time, from anywhere in the world.</p>
+    </Band>
+
+    <OrbiterEmbed trackId={M.v2.orbiter.trackId} title="Play the Orbiter:" frameTitle="Orbiters Interactive" level={2}>
+      <p>Press play, then move across the screen: X and Y follow your hand, and Z follows a zoom. Double-tap one knob to bring a single axis back to equilibrium, or double-tap the screen to reset all three — equilibrium is the sound as it was recorded, so you can always find your way back to it.</p>
+      <p>Every Orbiter carries three dimensions, and the same X, Y and Z do something different in each one — press 1, 2 or 3 to move between them. Drag across the waveform to set a loop and keep it, or switch it off without losing where it was. Each axis has its own Cosmic LFO, some turned by hand and some by the real movement of an exoplanet.</p>
+    </OrbiterEmbed>
+
+    <OrbiterEmbed mode={M.v2.editMode.mode} shape="portrait" title="Build your own:" frameTitle="Orbiters editor demo" level={2}>
+      <p>This is the workshop, open to try right here. Make your own version of an Orbiter: choose the effects each axis reaches for, lay out the panel the way you want to play it, and give it its own colours. Nothing here is saved — it is a demo, and it resets when you leave.</p>
+      <p>To open the full version, and to create, save and share music with your own Orbiters, come to Plantasia Space.</p>
+      <Action href={M.v2.plantasiaUrl} label="Create your own at Plantasia Space" icon="satellite_alt" />
+    </OrbiterEmbed>
+
+    {/* NO HEADING OVER THIS PICTURE. The band above the switch already says
+        "a vitrola from outer space" and this is that sentence drawn — a
+        second line naming it would be the page telling you what you are looking
+        at. The owner's instruction, 2026-08-13. The `alt` still describes it,
+        because a reader who cannot see it has had no picture and no caption. */}
+    <Band>
+      <Picture src={M.v2.banner} alt="A brass gramophone floating in a star field, its horn opening onto a nebula, ringed by the Orbiter's own controls" />
+      <Action href={M.v2.repoUrl} label="Read the source on GitHub" variant="secondary" />
+    </Band>
+  </Fragment>
+</VersionSwitch>

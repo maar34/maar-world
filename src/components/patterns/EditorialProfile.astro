@@ -41,12 +41,16 @@ interface Props {
   portraitAlt: string;
 }
 
+/* Intrinsic size, read from the file at build time, so the browser reserves the
+   right space before the picture arrives. See `lib/image-size`. */
+import { imageSize } from '../../lib/image-size.mjs';
+
 const { portrait, portraitAlt } = Astro.props;
 ---
 
 <section class="editorial-profile">
   <figure class="editorial-profile__portrait plate">
-    <img src={portrait} alt={portraitAlt} />
+    <img src={portrait} alt={portraitAlt} {...imageSize(portrait) ?? {}} />
   </figure>
   <div class="editorial-profile__statement">
     <slot name="statement" />

@@ -25,6 +25,10 @@ interface Props {
   logos: Logo[];
 }
 
+/* Intrinsic size, read from the file at build time, so the browser reserves the
+   right space before the picture arrives. See `lib/image-size`. */
+import { imageSize } from '../../lib/image-size.mjs';
+
 const { credit, logos } = Astro.props;
 ---
 
@@ -36,10 +40,10 @@ const { credit, logos } = Astro.props;
         /* External, so it opens away from the article and carries the
            `noopener noreferrer` pair the rest of the site uses. */
         <a href={logo.href} target="_blank" rel="noopener noreferrer">
-          <img src={logo.src} alt={logo.alt} />
+          <img src={logo.src} alt={logo.alt} {...imageSize(logo.src) ?? {}} />
         </a>
       ) : (
-        <img src={logo.src} alt={logo.alt} />
+        <img src={logo.src} alt={logo.alt} {...imageSize(logo.src) ?? {}} />
       ),
     )
   }

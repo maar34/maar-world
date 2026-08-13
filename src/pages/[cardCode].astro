@@ -27,6 +27,7 @@ import TypeMark from '../components/patterns/TypeMark.astro';
 import Stamp from '../components/patterns/Stamp.astro';
 import { stampText } from '../lib/mark.mjs';
 import { COMMERCE } from '../config/site';
+import { imageSize } from '../lib/image-size.mjs';
 
 export async function getStaticPaths() {
   const cards = await getCollection('cards');
@@ -204,7 +205,7 @@ const downloads = [d.download, d.download2]
         so a card with no numeral is laid out exactly as it was. */}
     <figure class:list={['cover', 'plate', stampText(d.card_title) && 'cover--stamped']}>
       <Stamp cardTitle={d.card_title} />
-      <img src={d.card_image} alt={`${d.suit_title} ${d.card_title}`} loading="lazy" decoding="async" />
+      <img src={d.card_image} alt={`${d.suit_title} ${d.card_title}`} loading="lazy" decoding="async" {...imageSize(d.card_image) ?? {}} />
     </figure>
 
     <p class="description">{d.card_description}</p>

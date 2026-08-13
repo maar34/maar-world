@@ -97,6 +97,20 @@ export const IP_ORCHESTRA = {
  * so `play.maar.world` exists once on the site. Note `controlTheSound` opens
  * `c=0` here and `c=2` on the ip-orchestra articles: a real difference between
  * two pages, and the reason these are not shared either.
+ *
+ * ── TWO VERSIONS ON ONE PAGE ─────────────────────────────────────────────────
+ *
+ * `instruments` is version one: `play.maar.world`, the Orbiters this page has
+ * always shown, and nothing about it changes. `v2` is the rebuilt instrument on
+ * `orbiter.plantasia.space`, which the 33 NFC card pages already forward to —
+ * see `[cardCode].astro`. Both stay on `/orbiters`: the route is frozen in
+ * `routes/manifest.production.json`, so a second page was never an option, and
+ * `patterns/VersionSwitch` swaps between them with no JavaScript.
+ *
+ * A v2 instrument is a DESCRIPTOR, not a query string, because the new app takes
+ * three separate ids — `?trackId=…&orbiterId=…&entangledWorldId=…` — and only
+ * the first is required. `media/OrbiterEmbed` builds the address, the same way
+ * `media/PlayEmbed` writes `play.maar.world` once for version one.
  */
 export const ORBITERS = {
   cards: [
@@ -107,6 +121,78 @@ export const ORBITERS = {
   instruments: {
     controlTheSound: '?g=335&s=1&c=0',
     regenerativeModes: '?g=8&s=0&c=21',
+  },
+  /**
+   * ⚠️ THE `trackId` BELOW IS A PLACEHOLDER AND IS THE ONLY THING ON THIS PAGE
+   * STILL WAITING ON AN ANSWER. It is a real, live Sky Sounds track taken from
+   * `routes/nfc-cards.json` — card AXP3732 — so the page builds, plays and can
+   * be reviewed today. It is NOT the Audio this page means to play. Replace the
+   * id with the one the owner supplies and nothing else here changes.
+   *
+   * ONE ORBITER, NOT TWO. Version one is two instruments because
+   * `play.maar.world` splits the sound and the modes across two frames; version
+   * two does not — one Orbiter carries three dimensions, so the second frame
+   * would have been the same instrument shown twice. The owner's instruction on
+   * 2026-08-13.
+   *
+   * `orbiterId` and `entangledWorldId` are deliberately absent rather than
+   * guessed: the app resolves the track's own released pairing when they are not
+   * named, which is the right default, and inventing an id would silently pin
+   * this frame to the wrong instrument. Both are props on `media/OrbiterEmbed`
+   * for the day a frame does need pinning.
+   */
+  v2: {
+    orbiter: { trackId: '6919d8fde01d8a7df9d0f5af' },
+    /**
+     * The editor, demonstrated in the page. `?mode=edit` and nothing else —
+     * `getWorldInteractionModeFromUrl` is all this address has to satisfy, and
+     * with no `trackId` the editor opens on its own demo rather than on
+     * somebody's release. That is the point: it is a look at the workshop, and
+     * the invitation under it sends anyone who wants to keep what they make to
+     * Plantasia Space, where an account can save and share it.
+     */
+    editMode: { mode: 'edit' as const },
+    /** Where the invitation under the editor goes. */
+    plantasiaUrl: 'https://plantasia.space/',
+    /**
+     * The source. Version two says on the page that it is open source, and a
+     * claim like that is worth exactly as much as the link under it — so the
+     * sentence and the repository ship together, and the page never says "open
+     * source" with nowhere to go.
+     *
+     * On `allowedNew` in verify/external-links-baseline.json, with the reason in
+     * `.agents/decisions/0006-orbiters-v2-links-its-own-source.md`. That list is
+     * how a link introduced after the freeze gets reviewed once instead of
+     * silently.
+     */
+    repoUrl: 'https://github.com/plantasia-space/orbiters',
+    /**
+     * The version-two banner: the vitrola in outer space, wearing the new
+     * instrument's own controls. It closes version two the way the Kepler
+     * telescope closes version one.
+     *
+     * IT IS THE PAGE'S STATEMENT, DRAWN. `Vitrola` is the word the Spanish half
+     * turns on — the owner's, 2026-08-13, reaching past "tocadiscos" for the
+     * older machine and the stained glass inside the name — and this is that
+     * sentence as a picture: a brass gramophone whose horn is a window onto a
+     * nebula, floating in the same star field the instrument draws. The two
+     * arrived in the same conversation and belong to each other.
+     *
+     * It lives under `/img/orbiters/` rather than `/img/interplanetary-players/`
+     * with the rest of this page's art, and the folder is new. Everything in
+     * that other directory is version ONE — it is named for what the Orbiters
+     * used to be called, which is the distinction this page now draws down its
+     * middle. A version-two picture filed under the old product's name would be
+     * the one place on the site where the two versions are mixed up.
+     *
+     * WEBP, LIKE EVERY OTHER BANNER HERE. It arrived as a 1.3 MB PNG and ships
+     * at 159 KB — `cwebp -q 92 -m 6 -sharp_yuv`, measured at 42 dB PSNR against
+     * the original, which on a picture that is mostly black sky with small
+     * bright stars is where banding would have shown first if it were going to.
+     * The site self-hosts everything and fetches nothing from anywhere else, so
+     * its weight is its own to carry.
+     */
+    banner: '/img/orbiters/vitrola-espacio-exterior.webp',
   },
   banners: {
     innovativeTradition: '/img/interplanetary-players/maar-world-banner-ovni.jpg',

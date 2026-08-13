@@ -1,0 +1,114 @@
+---
+/**
+ * ui/version-switch — a frame is loaded when its panel is shown, and not before.
+ *
+ * ── THE FOURTH JAVASCRIPT EXCEPTION, AND WHY IT WAS TAKEN ────────────────────
+ *
+ * AGENTS.md allowed application JavaScript on exactly three things — the Helix
+ * island, `ui/carousel` and `ui/embed-consent` — and said in as many words that
+ * "a fourth exception is a decision to be taken, not a precedent to follow".
+ * This is that fourth exception, taken by the owner on 2026-08-13, and the
+ * decision record is `.agents/decisions/0007-version-switch-loads-frames-late.md`.
+ *
+ * WHAT FORCED IT. `patterns/VersionSwitch` shows one panel and hides the other
+ * with `display: none`. A hidden element has no layout, so an iframe inside it
+ * loads into a viewport of 0×0 — and `play.maar.world` sizes its p5 canvas once,
+ * from the window it finds at startup. Version one's two players were therefore
+ * booting at zero width, behind a closed panel, and were still zero-width when
+ * the panel opened: the owner's report was that the code "is not loading
+ * correctly". Nothing in this repository can reach inside a cross-origin frame
+ * to resize it afterwards, and no CSS makes a `display: none` subtree lay out.
+ *
+ * THE ALTERNATIVES WERE TRIED FIRST, AND EACH ONE FAILS SOMEWHERE:
+ *
+ *   `loading="lazy"`          not a promise. Engines disagree about a lazy frame
+ *                             inside `display: none`, and the ones that defer it
+ *                             give no signal about when they stop deferring.
+ *   `visibility: hidden`      keeps layout, so the frame WOULD size correctly —
+ *                             and both panels then occupy space at once. Stacked
+ *                             in one grid cell the page grows to the taller of
+ *                             the two and leaves a screen of nothing under the
+ *                             shorter one.
+ *   fix it in the player      the real fix, and it is in another repository. The
+ *                             note in styles/prose.css about the 14px scrollbar
+ *                             says the same thing about the same app.
+ *
+ * ── WHAT IT DOES: PARK AND WAKE ──────────────────────────────────────────────
+ *
+ * Every frame ships in the HTML with its real `src`, which is what keeps this an
+ * enhancement rather than a dependency. On load, the frames in the CLOSED panel
+ * are parked — their address moved to `data-parked-src` and `about:blank` put in
+ * its place — and on every switch the pair is reversed: the panel being left is
+ * parked, the panel being opened is woken.
+ *
+ * Waking assigns the original address back, so a frame loads fresh, while
+ * visible, at its real size. That is the owner's instruction almost word for
+ * word: *"when we change to version 1, in that moment we load the iframes of the
+ * version 1, not before"*.
+ *
+ * PARKING THE PANEL YOU LEAVE IS NOT HOUSEKEEPING. Both versions make sound. A
+ * player left running behind a closed panel goes on playing into a page that is
+ * now showing something else, and there is no control on screen to stop it —
+ * `about:blank` is the stop button the visitor would otherwise not have.
+ *
+ * ── WITH THE SCRIPT OFF, NOTHING IS LOST THAT WAS NOT ALREADY LOST ───────────
+ *
+ * No JavaScript means no parking: every frame keeps the `src` the build wrote
+ * and loads exactly as it did before this file existed. Version one is then
+ * mis-sized behind its panel — today's bug, unchanged — and version two, which
+ * is the panel the page opens on, is correct either way. The page loses no
+ * content, no heading and no link, which is the test every other script here is
+ * held to.
+ *
+ * NOTHING IS PERSISTED. No cookie, no storage. A reload starts over on version
+ * two, the same way `ui/embed-consent` returns every embed to its poster.
+ */
+---
+
+<script>
+  for (const group of document.querySelectorAll<HTMLElement>('[data-version-switch]')) {
+    const inputs = [...group.querySelectorAll<HTMLInputElement>('.version-switch__input')];
+    const panels = [...group.querySelectorAll<HTMLElement>('.version-switch__panel')];
+    /* One input drives one panel, by position — the same correspondence
+       styles/version-switch.css draws with `:nth-of-type`. A group whose two
+       lists disagree is a markup change that broke the pairing, and doing
+       nothing is the honest response: every frame then keeps the src the build
+       wrote, which is the no-script behaviour described above. */
+    if (!inputs.length || inputs.length !== panels.length) continue;
+
+    const park = (panel: HTMLElement) => {
+      for (const frame of panel.querySelectorAll('iframe')) {
+        const src = frame.getAttribute('src');
+        if (!src || src === 'about:blank') continue;
+        frame.dataset.parkedSrc = src;
+        /* `setAttribute` rather than `frame.src = …`, so what goes back on the
+           wake is the exact string the build wrote — not a resolved absolute
+           URL, which is the same reason ui/embed-consent reads the attribute. */
+        frame.setAttribute('src', 'about:blank');
+      }
+    };
+
+    const wake = (panel: HTMLElement) => {
+      /* Read a layout property first. The `change` event fires after `:checked`
+         has flipped but style and layout are still stale, and the whole point of
+         waking here is that the frame gets its address once the panel it lives
+         in has a size. This forces that recalculation before the src lands. */
+      void panel.offsetHeight;
+      for (const frame of panel.querySelectorAll('iframe')) {
+        const src = frame.dataset.parkedSrc;
+        if (!src) continue;
+        delete frame.dataset.parkedSrc;
+        frame.setAttribute('src', src);
+      }
+    };
+
+    const sync = () => {
+      inputs.forEach((input, i) => (input.checked ? wake : park)(panels[i]));
+    };
+
+    /* On load this parks the closed panel — cancelling a load that has begun at
+       zero size — and leaves the open one exactly as the build wrote it. */
+    sync();
+    for (const input of inputs) input.addEventListener('change', sync);
+  }
+</script>

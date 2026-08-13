@@ -317,6 +317,25 @@ iframe.orbiter-embed {
   iframe.orbiter-embed { aspect-ratio: 4 / 5; }
 }
 
+/* The Orbiters editor, on /orbiters version two, holds the narrow-screen shape
+   at every width: it stacks its own panel of controls under the instrument and
+   a square leaves that panel no room. `4 / 5` is the portrait ratio — CSS reads
+   a ratio width-first — and it is the same one the rule above already gives
+   every frame below 600px, so nothing new is introduced, only held. Declared
+   after that media block so it wins at both widths. See `shape` in
+   `media/OrbiterEmbed`. */
+iframe.orbiter-embed--portrait { aspect-ratio: 4 / 5; }
+
+/* A button directly under a picture, inside a band.
+   `.hero__content` is a flex column with a `--s-4` gap, which is the right
+   distance between two paragraphs and too close between a full-bleed image and
+   a control: the button read as part of the picture rather than as a thing to
+   press. The owner's note on the Orbiters source link, 2026-08-13. Scoped to
+   this exact adjacency so no other band moves. */
+.prose .hero__content > img + .btn {
+  margin-block-start: var(--s-4);
+}
+
 /* Editorial profile: one portrait and a statement form the magazine opening;
    the founder biography then continues below the statement, rather than
    collapsing all three pieces into an undifferentiated two-column block. */

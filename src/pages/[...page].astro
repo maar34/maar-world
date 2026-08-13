@@ -42,6 +42,7 @@ import LabIndex from '../components/families/LabIndex.astro';
 import CollageField from '../components/patterns/CollageField.astro';
 import CarouselScript from '../components/ui/CarouselScript.astro';
 import PdfViewerScript from '../components/ui/PdfViewerScript.astro';
+import VersionSwitchScript from '../components/ui/VersionSwitchScript.astro';
 import EmbedConsentScript from '../components/ui/EmbedConsentScript.astro';
 import HelixIsland from '../components/react/HelixIsland.astro';
 import DocGlyph from '../components/ui/DocGlyph.astro';
@@ -52,6 +53,7 @@ import Action from '../components/ui/Action.astro';
 import { collageFor, articleCoverFor, articleCoverFitFor, docGlyphFor, docReadMoreFor, suitPigment, suitStoreUrl, suitDisplayName, CARD_OFFER, pageIcon, LAB_INTRO, LAB_PINNED } from '../config/site';
 import { navIconMask } from '../lib/nav-icons.mjs';
 import { publishable } from '../lib/publishing.mjs';
+import { imageSize } from '../lib/image-size.mjs';
 
 export async function getStaticPaths() {
   /**
@@ -289,6 +291,20 @@ const hasCarousel =
    un-upgraded object. */
 const hasPdfEmbed =
   /class="[^"]*pdf-embed/.test(entry.body ?? '') || /<PdfEmbed[\s/>]/.test(entry.body ?? '');
+
+/**
+ * Which pages load the version switch's frame manager — the owner's FOURTH
+ * JavaScript exception, 2026-08-13, narrowed here the way the other three are.
+ *
+ * The swap itself is still CSS and still works with this script absent; what the
+ * script adds is loading a frame when its panel opens rather than while it is
+ * `display: none` at zero size. See `ui/VersionSwitchScript` and
+ * `.agents/decisions/0007-version-switch-loads-frames-late.md`.
+ *
+ * Only `{orbiters,es/orbiters}` call the component today. The test is the
+ * record's own body, so a page that does not hold a switch ships nothing.
+ */
+const hasVersionSwitch = /<VersionSwitch[\s/>]/.test(entry.body ?? '');
 
 /**
  * Which pages load the embed consent gate — only pages with a facade the gate
@@ -653,7 +669,7 @@ const labEntries = isYearIndex
       isCard && d.card_image && (
         <figure class:list={['cover', 'plate', stampText(d.card_title) && 'cover--stamped']}>
           <Stamp cardTitle={d.card_title} />
-          <img src={d.card_image} alt={`${d.suit_title} ${d.card_title}`} loading="lazy" decoding="async" />
+          <img src={d.card_image} alt={`${d.suit_title} ${d.card_title}`} loading="lazy" decoding="async" {...imageSize(d.card_image) ?? {}} />
         </figure>
       )
     }
@@ -822,6 +838,7 @@ const labEntries = isYearIndex
   {hasCarousel && <CarouselScript />}
   {hasPdfEmbed && <PdfViewerScript />}
   {hasMediaEmbed && <EmbedConsentScript />}
+  {hasVersionSwitch && <VersionSwitchScript />}
 </BaseLayout>
 
 <style>

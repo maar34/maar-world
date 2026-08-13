@@ -15,7 +15,7 @@ origin: "migrated"
 
 <br>
 <div style="text-align: center;">
-<img class="image image--xl"  src="/img/music-tree.jpg" alt="Music Technology Tree. 50.000 years old">
+<img class="image image--xl"  src="/img/music-tree.jpg" alt="Music Technology Tree. 50.000 years old" width="1600" height="1280">
 </div>
 <br>
 

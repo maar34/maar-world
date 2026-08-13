@@ -37,9 +37,11 @@ report instead.
   **never persisted** (no cookie, no storage). `play.maar.world` embeds may be plain iframes —
   same registrable domain.
 - **No Tailwind, no shadcn/ui, no CSS-in-JS, no React app shell, no CMS, no backend.**
-- **Application JavaScript is allowed on exactly three things**: the Helix island (React), the
-  `ui/carousel` (Embla, plain JS), and `ui/embed-consent`. Each was a separate owner decision.
-  **A fourth exception is a decision to be taken, not a precedent to follow.**
+- **Application JavaScript is allowed on exactly four things**: the Helix island (React), the
+  `ui/carousel` (Embla, plain JS), `ui/embed-consent`, and `ui/version-switch` (loads a
+  frame when its panel opens — `.agents/decisions/0007-version-switch-loads-frames-late.md`,
+  2026-08-13). Each was a separate owner decision.
+  **A fifth exception is a decision to be taken, not a precedent to follow.**
 - **Never touch DNS, the live sites, or any legacy repository.** `../maar.world-site`,
   `../collect.maar.world` and `../tree.maar.world` are read-only source material.
 

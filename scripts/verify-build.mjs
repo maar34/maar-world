@@ -338,6 +338,22 @@ const DRIVEN_MARKUP = [
     script: /EmbedConsentScript|embed-facade__poster/,
   },
   {
+    what: 'a version switch whose closed panel holds a frame',
+    /**
+     * The fieldset `ui/VersionSwitchScript` queries. A switch WITHOUT a frame in
+     * either panel would need no script at all — but there is no such switch, and
+     * asserting the simple thing is what catches the page that grows one. The
+     * failure this guards is silent: a closed panel's iframe loads at 0×0 and
+     * stays that size when the panel opens, which looks like a broken app rather
+     * than like a missing script.
+     */
+    markup: /class="version-switch"/,
+    /* Inlined by Astro, so there is no filename to match. `parkedSrc` is the
+       dataset key the script writes — a string from its own source, and not one
+       that appears in any markup. */
+    script: /VersionSwitchScript|parkedSrc/,
+  },
+  {
     what: 'a PDF embed the reader upgrades',
     /**
      * THE ONE DRIVEN THING ON THIS SITE THAT HAD NO ASSERTION BEHIND IT.
@@ -525,6 +541,16 @@ const COMPONENT_CLASSES = [
   /* media/EmbedPlate. Drawn in legacy.css beside the facade rules it sits under,
      because it is only ever rendered under a facade — see the rule's own note. */
   { prefix: 'embed-plate', css: 'src/styles/legacy.css' },
+  /**
+   * patterns/VersionSwitch. Added late, and the delay is the argument for this
+   * list: the component shipped with `version-switch__tab` restated at a
+   * specificity `.prose label` beat, so the two tabs rendered as monospaced
+   * captions through a build whose stylesheet read correctly. This check does
+   * not catch that one — the class HAS a rule — but the sibling class that gets
+   * a name and no rule is the same mistake one step further on, and the list's
+   * whole point is that it is not remembered.
+   */
+  { prefix: 'version-switch', css: 'src/styles/version-switch.css' },
 ];
 
 /**

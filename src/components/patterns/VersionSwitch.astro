@@ -1,0 +1,97 @@
+---
+/**
+ * patterns/version-switch — two versions of one thing, swapped with no script.
+ *
+ * `/orbiters` shows the Orbiters twice over: version one on `play.maar.world`,
+ * which this page has always been, and version two on `orbiter.plantasia.space`,
+ * which is the rebuilt instrument. Both live on the one route because
+ * `routes/manifest.production.json` is frozen and `/orbiters` is in it — a
+ * second page was never available, and it would have split the thing in two
+ * anyway.
+ *
+ * ── THE SWAP ITSELF IS CSS, AND THAT IS STILL THE DESIGN ─────────────────────
+ *
+ * Two radio inputs and a `:checked` selector, which browsers have drawn
+ * correctly for fifteen years. Pressing a tab shows a panel with no script
+ * involved, and both panels are in the emitted HTML whichever one is showing —
+ * so every heading, image and embed on this page is present in `dist/`, where
+ * `verify:content` reads them. A panel built by script would be invisible to it.
+ *
+ * ── AND THERE IS A SCRIPT, FOR SOMETHING ELSE ────────────────────────────────
+ *
+ * `ui/VersionSwitchScript` is the owner's FOURTH JavaScript exception, taken on
+ * 2026-08-13 — `.agents/decisions/0007-version-switch-loads-frames-late.md`. It
+ * does not switch anything. It exists because `display: none` gives an iframe a
+ * viewport of 0×0, and `play.maar.world` sizes its canvas once at startup: the
+ * two version-one players were booting at zero width behind a closed panel and
+ * were still zero-width when it opened. The script parks a closed panel's frames
+ * at `about:blank` and restores the address when the panel is shown.
+ *
+ * IT IS AN ENHANCEMENT, NOT A DEPENDENCY, and this component is what makes that
+ * true: every frame ships with its real `src` in the HTML. With the script
+ * absent the page loses no content and no link — only the late loading, which is
+ * how the page behaved before the script existed.
+ *
+ * ── REAL RADIOS, NOT LABELS PRETENDING ───────────────────────────────────────
+ *
+ * The inputs are clipped, never `display: none`, because a display-none input is
+ * not focusable and the switch would be unreachable from a keyboard. As real
+ * radios in one named group they get arrow-key navigation, a group role and a
+ * checked state announced, for free and correctly. `:focus-visible` on the input
+ * draws the ring on its label — `verify:a11y` fails any stylesheet that removes
+ * a focus ring, and rightly.
+ *
+ * ── THE WORDS ARE PROPS ──────────────────────────────────────────────────────
+ *
+ * Same rule as `media/EmbedFacade`: a Spanish page whose switch says "version
+ * one" is the half-translated chrome MW-19 removed. `name` is a prop too, since
+ * two switches on one page would otherwise share a radio group and fight.
+ */
+interface Props {
+  /** The radio group's name. Unique per page — it is what groups the two. */
+  name: string;
+  /** The group's purpose, for a screen reader: "Choose a version". */
+  legend: string;
+  /** The first tab's words. Shown by default. */
+  labelOne: string;
+  /** The second tab's words. */
+  labelTwo: string;
+}
+
+const { name, legend, labelOne, labelTwo } = Astro.props;
+const idOne = `${name}-1`;
+const idTwo = `${name}-2`;
+---
+
+{/*
+  BOTH INPUTS COME FIRST, then the strip of labels that drive them, then the two
+  panels. `styles/version-switch.css` asks the fieldset with `:has()` rather than
+  reaching sideways with `~`, so this order is for a reader rather than for the
+  selectors — but `:nth-of-type` still counts the inputs, so the two of them stay
+  adjacent and stay the only `input`s in here.
+*/}
+<fieldset class="version-switch" data-version-switch>
+  <legend class="version-switch__legend">{legend}</legend>
+
+  {/* VERSION TWO IS CHECKED, AND IT IS THE ONE THE PAGE OPENS ON. The owner's
+      call on 2026-08-13: version two is the current instrument, and version one
+      is the archive you go back to. `styles/version-switch.css` closes panel one
+      at rest to match — the `checked` here and the closed panel there are one
+      decision written in two files, and moving either alone opens the page on a
+      version whose tab is not lit. */}
+  <input class="version-switch__input" type="radio" id={idOne} name={name} />
+  <input class="version-switch__input" type="radio" id={idTwo} name={name} checked />
+
+  {/* The tabs are the site's own button, `.btn.btn--secondary` from
+      styles/button.css, so the strip inherits the box, the 44px hit target and
+      the type instead of inventing a second kind of control. The checked one is
+      repainted by position in styles/version-switch.css — nothing without a
+      script can put a class on a label. */}
+  <div class="version-switch__strip">
+    <label class="btn btn--secondary version-switch__tab" for={idOne}>{labelOne}</label>
+    <label class="btn btn--secondary version-switch__tab" for={idTwo}>{labelTwo}</label>
+  </div>
+
+  <div class="version-switch__panel version-switch__panel--1"><slot name="one" /></div>
+  <div class="version-switch__panel version-switch__panel--2"><slot name="two" /></div>
+</fieldset>

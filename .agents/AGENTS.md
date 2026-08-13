@@ -67,7 +67,7 @@ Read or search any file · `npm run dev` · `npm run build` · `npm run verify` 
 - `npm run freeze:routes` — regenerates the route manifest
 - Anything touching DNS, the live sites, or a legacy checkout
 - Deleting or renaming a route, or any change to a card URL
-- Adding a fourth application-JavaScript exception
+- Adding a fifth application-JavaScript exception (four are taken — see `/AGENTS.md`)
 - Dependency upgrades, `.env` changes, destructive file operations
 
 ## Ambiguity

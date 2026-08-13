@@ -7,7 +7,7 @@ tags: []
 lang: "es"
 origin: "authored"
 translationOf: "orbiters"
-description: "Imaginá convertir tu navegador en un tocadiscos del espacio exterior."
+description: "Imaginá convertir tu navegador en una vitrola del espacio exterior."
 ---
 
 {/*
@@ -45,13 +45,53 @@ description: "Imaginá convertir tu navegador en un tocadiscos del espacio exter
   una sola vez, en ORBITERS de src/config/articles.ts. Lo que sí se traduce es
   el encabezado, el texto de instrucciones y el title del marco, que es lo que
   anuncia un lector de pantalla.
+
+  ── LA VERSIÓN DOS ───────────────────────────────────────────────────────────
+
+  La página ahora muestra los Orbitadores dos veces: la versión uno en
+  play.maar.world, que es todo lo que ya estaba acá y no cambió, y la versión
+  dos en orbiter.plantasia.space, el instrumento reconstruido tocando las
+  mismas grabaciones. `patterns/VersionSwitch` cambia de una a otra sin nada de
+  JavaScript: dos radios y `:has()`.
+
+  LA PÁGINA ABRE EN LA VERSIÓN DOS, que es el instrumento actual; la versión uno
+  es el archivo al que se vuelve.
+
+  LOS DOS PANELES ESTÁN SIEMPRE EN EL HTML, se muestra uno solo. Eso es lo que
+  mantiene honesto a verify:content, que lee dist/ y cuenta encabezados,
+  imágenes y embeds sin distinguir un panel cerrado de uno abierto.
+
+  QUÉ QUEDA AFUERA DEL CAMBIO: el título, la frase de abajo y la línea del
+  nombre anterior. Todo lo demás es de una versión o de la otra — incluidas las
+  dos bandas del final, que van adentro de la versión uno porque las cartas y
+  Kepler-47 son de lo que habla ESE instrumento. Repetirlas en la versión dos
+  fue el primer armado, y el dueño pidió que no se repitan.
+
+  LA VERSIÓN DOS SON DOS MARCOS, LOS DOS EMBEBIDOS DIRECTO: el Orbitador, y el
+  editor en `?mode=edit`, como demo y con una invitación a Plantasia Space
+  debajo. Ninguno va detrás de una puerta de consentimiento — la decisión del
+  dueño, la misma con la que funcionan las 33 páginas de cartas — y lo que eso
+  cuesta está escrito en `media/OrbiterEmbed`. El editor es el marco más alto;
+  ver `shape`.
+
+  EL trackId DE LA VERSIÓN DOS ES PROVISORIO: es un track real para que el
+  marco toque hoy, y es lo único de esta página que espera una respuesta. La
+  nota está en `ORBITERS.v2`, en src/config/articles.ts, junto al id.
+
+  ESTA MITAD SIGUE SIN LLEVAR ESTRUCTURA PROPIA: el orden de los componentes es
+  exactamente el del archivo en inglés, que es lo que verify:translations
+  compara. Lo único que cambia son las palabras.
 */}
 
 import Band from '../../../components/patterns/Band.astro';
 import Carousel from '../../../components/media/Carousel.astro';
 import Picture from '../../../components/media/Picture.astro';
 import Mark from '../../../components/patterns/Mark.astro';
+import Statement from '../../../components/patterns/Statement.astro';
 import PlayEmbed from '../../../components/media/PlayEmbed.astro';
+import OrbiterEmbed from '../../../components/media/OrbiterEmbed.astro';
+import VersionSwitch from '../../../components/patterns/VersionSwitch.astro';
+import Action from '../../../components/ui/Action.astro';
 import { ORBITERS as M } from '../../../config/articles';
 
 export const cards = [
@@ -62,42 +102,93 @@ export const cards = [
 
 # <Mark tilt={2} tear={4}>Orbitadores</Mark>
 
-Imaginá convertir tu navegador en un tocadiscos del espacio exterior.
+{/* La línea de la página, con el peso que ya venía cargando. Era un párrafo
+    común y se leía como tal; ahora es un `patterns/Statement`, centrado, con el
+    eco sobre la palabra sobre la que gira la frase.
+
+    VITROLA, NO "TOCADISCOS", Y NO ES UN SINÓNIMO ELEGIDO AL AZAR. La traducción
+    decía "tocadiscos", que es la palabra correcta y nunca fue la de acá: el
+    dueño lo dijo el 2026-08-13 — *"nunca lo llamé tocadiscos"* — y pidió ir a
+    la raíz, a algo más viejo, a un vitral del espacio exterior. `Vitrola` es
+    esa palabra: la máquina antigua, y el vitral adentro del nombre.
+
+    Y VA IGUAL EN INGLÉS. Primero se dejó `turntable` del otro lado, pensando
+    que el vitral no cruzaba la traducción; el dueño avisó que faltaba. No es la
+    traducción de nada: es el nombre de la cosa, el mismo en las dos lenguas, y
+    la imagen que cierra la versión dos es justamente una vitrola. */}
+<Statement text="Imaginá convertir tu navegador en una vitrola del espacio exterior." mark="vitrola" align="center" />
 
 <Band>
   <p>Orbitadores — antes llamados Interplanetary Players</p>
 </Band>
 
-<Band>
-  <h2>Empezá tu viaje</h2>
-</Band>
+<VersionSwitch
+  name="orbiters-version"
+  legend="Elegí qué versión de los Orbitadores tocar"
+  labelOne="Versión 1"
+  labelTwo="Versión 2"
+>
+  <Fragment slot="one">
+    <Band>
+      <h2>Empezá tu viaje</h2>
+    </Band>
 
-<Carousel
-  id="carousel-es-orbiters-1"
-  label="3 fotografías"
-  slides={cards}
-  stepStyle="inline"
-  orbMedia
-  autoplayMs={M.carouselAutoplayMs}
-/>
+    <Carousel
+      id="carousel-es-orbiters-1"
+      label="3 fotografías"
+      slides={cards}
+      stepStyle="inline"
+      orbMedia
+      autoplayMs={M.carouselAutoplayMs}
+    />
 
-<PlayEmbed src={M.instruments.controlTheSound} title="Controlá el sonido:" frameTitle="Interactivo: controlá el sonido" level={2}>
-  <p>Sacale el silencio al dispositivo y apretá el botón PLAY ▶️. Ajustá el sonido moviendo las PERILLAS XYZ para arriba o para abajo hasta que te guste lo que escuchás. Si querés volver al sonido original, apretá los botones hexagonales ⬢ para devolver las perillas a su equilibrio.</p>
-</PlayEmbed>
+    <PlayEmbed src={M.instruments.controlTheSound} title="Controlá el sonido:" frameTitle="Interactivo: controlá el sonido" level={2}>
+      <p>Sacale el silencio al dispositivo y apretá el botón PLAY ▶️. Ajustá el sonido moviendo las PERILLAS XYZ para arriba o para abajo hasta que te guste lo que escuchás. Si querés volver al sonido original, apretá los botones hexagonales ⬢ para devolver las perillas a su equilibrio.</p>
+    </PlayEmbed>
 
-<PlayEmbed src={M.instruments.regenerativeModes} title="Explorá los modos regenerativos:" frameTitle="Interactivo: explorá los modos regenerativos" level={2}>
-  <p>Experimentá con 7 modos distintos, creando con datos reales de exoplanetas y de sus tránsitos y órbitas en distintas escalas de tiempo. Dejá el botón apretado para ver pistas sobre estos parámetros.</p>
-</PlayEmbed>
+    <PlayEmbed src={M.instruments.regenerativeModes} title="Explorá los modos regenerativos:" frameTitle="Interactivo: explorá los modos regenerativos" level={2}>
+      <p>Experimentá con 7 modos distintos, creando con datos reales de exoplanetas y de sus tránsitos y órbitas en distintas escalas de tiempo. Dejá el botón apretado para ver pistas sobre estos parámetros.</p>
+    </PlayEmbed>
 
-<Band>
-  <h2>Tradición innovadora</h2>
-  <Picture src={M.banners.innovativeTradition} alt="Tradición innovadora" />
-  <p>Descubrí los efectos de cada carta como si estuvieras ajustando la experiencia de una nave.</p>
-</Band>
+    <Band>
+      <h2>Tradición innovadora</h2>
+      <Picture src={M.banners.innovativeTradition} alt="Tradición innovadora" />
+      <p>Descubrí los efectos de cada carta como si estuvieras ajustando la experiencia de una nave.</p>
+    </Band>
 
-<Band>
-  <h2>Una armonía de las esferas, extendida</h2>
-  <Picture src={M.banners.harmonyOfTheSpheres} alt="Armonía de las esferas" />
-  <p>Sincronizá tu remezcla con el movimiento del sistema estelar Kepler-47. Es como mezclar paisajes sonoros con un poco de polvo de estrellas, y abre un espectro nuevo de posibilidades para tocar con el cosmos.</p>
-  <Picture src={M.banners.keplerTelescope} alt="Telescopio Kepler" />
-</Band>
+    <Band>
+      <h2>Una armonía de las esferas, extendida</h2>
+      <Picture src={M.banners.harmonyOfTheSpheres} alt="Armonía de las esferas" />
+      <p>Sincronizá tu remezcla con el movimiento del sistema estelar Kepler-47. Es como mezclar paisajes sonoros con un poco de polvo de estrellas, y abre un espectro nuevo de posibilidades para tocar con el cosmos.</p>
+      <Picture src={M.banners.keplerTelescope} alt="Telescopio Kepler" />
+    </Band>
+  </Fragment>
+
+  <Fragment slot="two">
+    <Band>
+      <h2>Hecho para tocar entre varios</h2>
+      <p>La versión dos es un instrumento nuevo, escrito desde cero para Plantasia Space, y es de código abierto: está todo a la vista, para leerlo, para aprender de él, para seguir construyéndolo.</p>
+      <p>Y está hecho para tocar con otra gente. Los Orbitadores funcionan como una zapada en línea: vos y tus amigos sobre los mismos sonidos al mismo tiempo, desde cualquier lugar del mundo.</p>
+    </Band>
+
+    <OrbiterEmbed trackId={M.v2.orbiter.trackId} title="Tocá el Orbitador:" frameTitle="Interactivo: Orbitadores" level={2}>
+      <p>Apretá play y movete por la pantalla: X e Y siguen tu mano, y Z sigue el zoom. Tocá dos veces una perilla para devolver un solo eje al equilibrio, o dos veces la pantalla para devolver los tres — el equilibrio es el sonido tal como se grabó, así que siempre podés volver.</p>
+      <p>Cada Orbitador lleva tres dimensiones, y los mismos X, Y y Z hacen algo distinto en cada una — apretá 1, 2 o 3 para pasar de una a otra. Arrastrá sobre la onda para armar un loop y dejarlo puesto, o apagalo sin perder dónde estaba. Cada eje tiene su propio Cosmic LFO, algunos girados a mano y otros por el movimiento real de un exoplaneta.</p>
+    </OrbiterEmbed>
+
+    <OrbiterEmbed mode={M.v2.editMode.mode} shape="portrait" title="Armá el tuyo:" frameTitle="Demo del editor de Orbitadores" level={2}>
+      <p>Este es el taller, abierto para probar acá mismo. Armá tu propia versión de un Orbitador: elegí los efectos que busca cada eje, acomodá el panel como quieras tocarlo, y ponele sus colores. Acá no se guarda nada — es una demo, y se borra cuando te vas.</p>
+      <p>Para abrir la versión completa, y para crear, guardar y compartir música con tus propios Orbitadores, venite a Plantasia Space.</p>
+      <Action href={M.v2.plantasiaUrl} label="Creá el tuyo en Plantasia Space" icon="satellite_alt" />
+    </OrbiterEmbed>
+
+    {/* SIN TÍTULO ARRIBA DE LA IMAGEN. La frase de arriba ya dice "una vitrola
+        del espacio exterior" y esto es esa frase dibujada; ponerle un nombre
+        encima sería repetirlo. Instrucción del dueño, 2026-08-13. El `alt` sí
+        la describe: quien no la ve se quedaría sin imagen y sin epígrafe. */}
+    <Band>
+      <Picture src={M.v2.banner} alt="Una vitrola de bronce flotando en un campo de estrellas, con la bocina abierta sobre una nebulosa y los controles del Orbitador alrededor" />
+      <Action href={M.v2.repoUrl} label="Ver el código en GitHub" variant="secondary" />
+    </Band>
+  </Fragment>
+</VersionSwitch>

@@ -1,0 +1,140 @@
+---
+/**
+ * media/orbiter-embed — a version-two Orbiter, on `orbiter.plantasia.space`.
+ *
+ * `media/PlayEmbed` is the version-one shape and this is deliberately its twin:
+ * the same `hero hero--center` plate, the same heading, the same slot of
+ * instructions underneath, and the same plain iframe. Standing on either side of
+ * `patterns/VersionSwitch`, two versions of one instrument should differ in what
+ * they play and in nothing else, so the plate is copied rather than reinvented.
+ *
+ * ── A PLAIN IFRAME, DECIDED BY THE OWNER, AND WHAT IT COSTS ──────────────────
+ *
+ * `play.maar.world` is the same registrable domain as this site and is a plain
+ * iframe for that reason. `orbiter.plantasia.space` is NOT — different
+ * registrable domain — and AGENTS.md's default for one of those is a
+ * click-to-load facade, because "no analytics, no cookie banner … depends on no
+ * third-party request firing on load".
+ *
+ * This one is a plain iframe anyway, by the owner's instruction on 2026-08-13:
+ * *"it's an iframe, it's an embedded iframe — like we do with the cards"*. It is
+ * the same call, extended one page, that `scripts/verify-links.mjs` already
+ * records at its `FIRST_PARTY` regex: `plantasia.space` was added there on
+ * 2026-07-31 so the 33 NFC card pages could embed this player on load, and that
+ * comment states the price in full — the Orbiter pulls `fonts.googleapis.com`
+ * and `fonts.gstatic.com` and writes `localStorage.audioProfile`,
+ * `sessionStorage.uniqueId` and two Firebase IndexedDB stores the moment it
+ * runs. On `/orbiters`, as on the card pages, "no third-party request fires on
+ * page load" now means none that WE emit.
+ *
+ * The first build of this page gated the frame behind `media/EmbedFacade`
+ * instead. It worked and it verified; the owner asked for the iframe, which is
+ * the shape the rest of the product already uses, and the facade came out.
+ *
+ * `loading="lazy"` and `scrolling="no"` are carried from `[cardCode].astro`,
+ * which has been embedding this player longest. Lazy is worth almost nothing
+ * here and is kept for the ordinary reason rather than a clever one: version two
+ * is the panel the page OPENS on, so these two frames are visible from the
+ * start and only the editor, far down the page, is deferred by it. The frames
+ * that begin life hidden are version one's, and parking them is
+ * `ui/VersionSwitchScript`'s job, not this attribute's. `scrolling="no"` is
+ * because the player's canvas
+ * sizes itself to `window.innerWidth` and grows a 14px scrollbar gutter in each
+ * axis that keeps itself alive. That defect is in the embedded app, and the
+ * long note in styles/prose.css is where it is written down.
+ *
+ * ── THE ADDRESS IS BUILT HERE, ONCE ──────────────────────────────────────────
+ *
+ * The caller passes ids, never a URL, the rule `media/PlayEmbed` states one file
+ * over. The new app reads `trackId`, `orbiterId` and `entangledWorldId` from the
+ * query string — see `resolveConfigRequest` in the orbiters repo — and only
+ * `trackId` is required; an absent id means "use the track's own released
+ * pairing", which is why the optional two are omitted rather than defaulted.
+ */
+const ORBITER_ORIGIN = 'https://orbiter.plantasia.space';
+
+interface Props {
+  /**
+   * The released Audio this Orbiter plays.
+   *
+   * OPTIONAL, AND ONLY BECAUSE OF `mode`. A listening frame without one has
+   * nothing to play, and `resolveConfigRequest` would fall through to the app's
+   * own default — so the page must always name it. The editor is the exception:
+   * `?mode=edit` with no track opens the workshop on its own demo, which is
+   * exactly what a demonstration wants. Naming a track there would open the
+   * editor on somebody's release instead.
+   */
+  trackId?: string;
+  /** Pin a specific Orbiter. Omitted = the track's own released pairing. */
+  orbiterId?: string;
+  /** Pin a specific Entangled World. Omitted = the track's own. */
+  entangledWorldId?: string;
+  /** `edit` opens the workshop rather than the player. Omitted = play. */
+  mode?: 'edit';
+  /** The heading above it, in the page's own language. */
+  title: string;
+  /** The iframe's accessible name. Defaults to the heading. */
+  frameTitle?: string;
+  /** The heading's level, for the reason `PlayEmbed` carries one. */
+  level?: 2 | 3;
+  /**
+   * The frame's proportions. `square` matches version one at every width, which
+   * is what a listening frame wants standing beside it.
+   *
+   * `portrait` is 4:5 — taller than it is wide — and it exists for the editor,
+   * which stacks a panel of its own controls under the instrument and is
+   * cramped in a square. The owner asked for it on 2026-08-13 in the words
+   * "more like a vertical one … it needs a little more space below"; they wrote
+   * the ratio as 5/4, and it is set here as `4 / 5` because CSS reads a ratio
+   * width-first and 5/4 is the landscape one. Every frame on this site is
+   * already 4:5 below 600px, so this is the narrow-screen shape held at every
+   * width rather than a new proportion.
+   */
+  shape?: 'square' | 'portrait';
+}
+
+const {
+  trackId,
+  orbiterId,
+  entangledWorldId,
+  mode,
+  title,
+  frameTitle,
+  level = 2,
+  shape = 'square',
+} = Astro.props;
+
+/**
+ * Written in the order the app documents them, and only the values that were
+ * given. `URLSearchParams` would drop nothing, but it also escapes hex ids that
+ * need no escaping; a plain join keeps the address byte-identical to the one
+ * `[cardCode].astro` already writes for the card pages.
+ */
+const query = Object.entries({ trackId, orbiterId, entangledWorldId, mode })
+  .filter(([, value]) => Boolean(value))
+  .map(([key, value]) => `${key}=${value}`)
+  .join('&');
+
+const url = `${ORBITER_ORIGIN}/?${query}`;
+const Heading = `h${level}` as 'h2' | 'h3';
+---
+
+<div class="hero hero--center">
+  <div class="hero__content">
+    <Heading>{title}</Heading>
+    <div class="container">
+      <iframe
+        src={url}
+        class:list={['orbiter-embed', shape === 'portrait' && 'orbiter-embed--portrait']}
+        title={frameTitle ?? title}
+        loading="lazy"
+        scrolling="no"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+      ></iframe>
+    </div>
+    {/* The instructions under the instrument, as prose in the body — the same
+        slot, for the same reason, as `media/PlayEmbed`. */}
+    <slot />
+  </div>
+</div>

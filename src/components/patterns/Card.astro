@@ -25,6 +25,7 @@
  * "no cover" is the common case today, not the edge one.
  */
 import { markHeadingText, cardTiltClass } from '../../lib/mark.mjs';
+import { imageSize } from '../../lib/image-size.mjs';
 
 type Variant = 'entry' | 'compact' | 'place' | 'collection' | 'feature' | 'article';
 
@@ -259,13 +260,13 @@ const bodyClass = twoColumn ? 'card__body' : undefined;
       <div class="card__strip">
         {[0, 1, 2].map((i) => (
           <div class="card__cover plate">
-            {strip?.[i] && <img src={strip[i]} alt="" loading="lazy" decoding="async" />}
+            {strip?.[i] && <img src={strip[i]} alt="" loading="lazy" decoding="async" {...imageSize(strip[i]) ?? {}} />}
           </div>
         ))}
       </div>
     ) : (
       <div class="card__cover plate">
-        {cover && <img src={cover} alt="" loading="lazy" decoding="async" />}
+        {cover && <img src={cover} alt="" loading="lazy" decoding="async" {...imageSize(cover) ?? {}} />}
         {
           /* A COVER THAT IS DRAWN RATHER THAN PHOTOGRAPHED — §04's cover slot,
              filled by a component instead of a file. The Docs grid passes a

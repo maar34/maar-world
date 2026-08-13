@@ -6,6 +6,45 @@ import mdx from '@astrojs/mdx';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { execSync } from 'node:child_process';
+import { imageSize } from './src/lib/image-size.mjs';
+
+/**
+ * Give every markdown image the size it already has on disk.
+ *
+ * `media/Picture` and the components that emit an `<img>` do this themselves —
+ * see the note in `Picture.astro` for why a browser reserves no space without
+ * it, and why the number is measured rather than typed. This is the same fix for
+ * the images a component never sees: `![alt](/img/…)` written in a body, which
+ * is 41 pictures across the migrated pages and cannot take an attribute, because
+ * markdown's image syntax has nowhere to put one.
+ *
+ * A rehype plugin is the only place left that still knows the `<img>` is an
+ * `<img>`. It runs after markdown becomes HTML and before it is serialised, on
+ * `.md` and `.mdx` bodies alike.
+ *
+ * IT ADDS AND NEVER OVERRIDES. A body that spells its own `width` is left
+ * exactly as written — a hand-set attribute is someone's decision, and this is
+ * a default. `imageSize` returns null for an SVG, a remote address or a file
+ * this build cannot find, and all three simply keep the markup they had.
+ */
+function rehypeImageSize() {
+  return (tree) => {
+    const visit = (node) => {
+      if (node.type === 'element' && node.tagName === 'img') {
+        const props = node.properties ?? (node.properties = {});
+        if (props.width == null && props.height == null) {
+          const size = imageSize(typeof props.src === 'string' ? props.src : '');
+          if (size) {
+            props.width = size.width;
+            props.height = size.height;
+          }
+        }
+      }
+      for (const child of node.children ?? []) visit(child);
+    };
+    visit(tree);
+  };
+}
 
 /**
  * LOCAL DEV RUNS ON https://local.maar.world:4321 — see docs/LOCAL-DEVELOPMENT.md.
@@ -214,6 +253,12 @@ export default defineConfig({
         : { port: DEV_PORT }),
     },
   },
+  /**
+   * The only markdown plugin this build has, and it adds two attributes to
+   * images that already exist. It rewrites no URL, emits no element and pulls in
+   * no dependency — see `rehypeImageSize` above.
+   */
+  markdown: { rehypePlugins: [rehypeImageSize] },
   // No analytics, no third-party anything. Prefetch is same-origin only.
   prefetch: false,
   devToolbar: { enabled: false },

@@ -328,8 +328,9 @@ export function auditPage(url, html) {
   /**
    * A control built from a click handler on a non-interactive element cannot be
    * reached by keyboard at all. Nothing on this site should have one — AGENTS.md
-   * allows application JavaScript on exactly three things — so this is both an
-   * accessibility assertion and a second lock on that rule.
+   * allows application JavaScript on exactly four things, and every one of them
+   * binds its listeners in script — so this is both an accessibility assertion
+   * and a second lock on that rule.
    *
    * ── IT USED TO NAME FIVE HANDLERS AND MISS THE ONE THE SITE ACTUALLY HAD ────
    *

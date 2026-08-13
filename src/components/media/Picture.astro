@@ -37,7 +37,30 @@
  * third is spacing that the band around it owns — `.prose .hero__content` is a
  * flex column with a `gap`, so a top margin was adding to a gap that had
  * already been decided.
+ *
+ * ── `width` AND `height` ARE MEASURED, NOT PASSED ────────────────────────────
+ *
+ * They are not props, and that is the point. A browser reserves no space for an
+ * image whose proportions it does not know, so the page laid out, the picture
+ * arrived, and everything under it jumped — on pages that are mostly pictures.
+ * `lib/image-size` reads the intrinsic size out of the file's own header during
+ * the build, so the number is the file's and cannot be typed wrong; a WRONG
+ * ratio reserves the wrong space and shifts the page twice, which is worse than
+ * reserving nothing.
+ *
+ * They are a RATIO here and not a size. `.prose img` is `max-width: 100%;
+ * height: auto`, which overrides both attributes for layout — what survives is
+ * the `aspect-ratio: width / height` every current engine derives from them, so
+ * the picture stays as fluid as it was and the space is reserved before a byte
+ * of it is fetched.
+ *
+ * `lazy` and `async` for the same reason they are on the card players: nothing
+ * on this site is above the fold on every page it appears on, and the two
+ * hints cost nothing where they are wrong. An SVG or a file this build cannot
+ * find yields no attributes at all — see `imageSize` for the three ways that
+ * happens and why none of them is a build error.
  */
+import { imageSize } from '../../lib/image-size.mjs';
 
 interface Props {
   /** Root-relative, first-party. From config — not written into a body. */
@@ -52,6 +75,7 @@ interface Props {
 }
 
 const { src, alt } = Astro.props;
+const size = imageSize(src);
 ---
 
-<img src={src} alt={alt} />
+<img src={src} alt={alt} width={size?.width} height={size?.height} loading="lazy" decoding="async" />

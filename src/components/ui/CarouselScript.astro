@@ -248,9 +248,24 @@
     const autoplayMs = Number(root.dataset.autoplay);
     let autoplay = 0;
     const stopAutoplay = () => window.clearInterval(autoplay);
+    /**
+     * A CAROUSEL THAT IS NOT RENDERED DOES NOT ADVANCE, and that guard arrived
+     * with `patterns/VersionSwitch`. Before it, every carousel on this site was
+     * always on screen and `document.hidden` covered the only way one could be
+     * invisible — a background tab. A switch panel is the other way: the
+     * `/orbiters` carousel now sits inside version one, which is `display: none`
+     * until someone presses the tab, and without this it spent every visit
+     * advancing a carousel nobody could see and then opening on whatever slide
+     * the interval happened to have reached.
+     *
+     * `getClientRects()` is the test for "has a box", which is the actual
+     * question — unlike `offsetParent`, which is also null for a fixed-position
+     * element that is perfectly visible.
+     */
+    const rendered = () => root.getClientRects().length > 0;
     const startAutoplay = () => {
       stopAutoplay();
-      if (!autoplayMs || reduced.matches || document.hidden) return;
+      if (!autoplayMs || reduced.matches || document.hidden || !rendered()) return;
       autoplay = window.setInterval(() => embla.scrollNext(), autoplayMs);
     };
     root.addEventListener('pointerenter', stopAutoplay);
@@ -258,6 +273,16 @@
     root.addEventListener('focusin', stopAutoplay);
     root.addEventListener('focusout', startAutoplay);
     document.addEventListener('visibilitychange', startAutoplay);
+    /**
+     * The signal for a panel opening. None of the listeners above fire when a
+     * stylesheet stops hiding an ancestor — there is no event for that — but the
+     * element goes from no box to a box, which is exactly what a ResizeObserver
+     * reports. A carousel that is always visible fires this once on observe and
+     * behaves as it always has.
+     */
+    if (typeof ResizeObserver === 'function') {
+      new ResizeObserver(() => (rendered() ? startAutoplay() : stopAutoplay())).observe(root);
+    }
     startAutoplay();
 
     /**

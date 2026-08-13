@@ -56,6 +56,11 @@ import '../styles/card.css';
 /* ui/carousel — §06. Styles markup the MIGRATION emits, not a component of
    ours, which is why it is global rather than scoped. */
 import '../styles/carousel.css';
+/* patterns/version-switch — the script-free tab strip on {orbiters,es/orbiters}.
+   Global for the same reason button.css is: it repaints `.btn` by position, so
+   it has to be able to see that file's rules and win, which a scoped sheet
+   cannot. Imported after button.css and before prose.css deliberately. */
+import '../styles/version-switch.css';
 /* The rendered body of every page — permanent, and checked for completeness by
    verify:build. Imported before legacy.css so a dead-theme class name can
    override the element rhythm it sits inside, never the other way round. */

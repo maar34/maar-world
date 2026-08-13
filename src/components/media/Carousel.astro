@@ -110,6 +110,10 @@ interface Props {
   autoplayMs?: number;
 }
 
+/* Intrinsic size, read from the file at build time, so the browser reserves the
+   right space before the picture arrives. See `lib/image-size`. */
+import { imageSize } from '../../lib/image-size.mjs';
+
 const { id, label, slides, stepStyle = 'heading', orbMedia = false, autoplayMs } = Astro.props;
 ---
 
@@ -146,10 +150,10 @@ const { id, label, slides, stepStyle = 'heading', orbMedia = false, autoplayMs }
                   loads would widen the window it exists to close. */}
               {orbMedia ? (
                 <div class="orb-media">
-                  <img src={slide.image} alt={slide.alt ?? ''} />
+                  <img src={slide.image} alt={slide.alt ?? ''} {...imageSize(slide.image) ?? {}} />
                 </div>
               ) : (
-                <img src={slide.image} alt={slide.alt ?? ''} />
+                <img src={slide.image} alt={slide.alt ?? ''} {...imageSize(slide.image) ?? {}} />
               )}
             </div>
             {captioned && (
