@@ -123,11 +123,17 @@ export const ORBITERS = {
     regenerativeModes: '?g=8&s=0&c=21',
   },
   /**
-   * ⚠️ THE `trackId` BELOW IS A PLACEHOLDER AND IS THE ONLY THING ON THIS PAGE
-   * STILL WAITING ON AN ANSWER. It is a real, live Sky Sounds track taken from
-   * `routes/nfc-cards.json` — card AXP3732 — so the page builds, plays and can
-   * be reviewed today. It is NOT the Audio this page means to play. Replace the
-   * id with the one the owner supplies and nothing else here changes.
+   * THE AUDIO VERSION TWO PLAYS. It is a released Sky Sounds track — the one
+   * behind card AXP3732 in `routes/nfc-cards.json`, "SkySounds.2 Card IV". It
+   * went in as a placeholder so the frame would play while the page was being
+   * built, and the owner kept it on 2026-08-13: *"the track is ok, use that
+   * one"*. So it is a choice now, not a stand-in.
+   *
+   * IT IS ALSO SPELLED IN `routes/nfc-cards.json`, and the two are deliberately
+   * not one shared constant. That file is the frozen inventory of what is
+   * printed on 35 physical cards; this is what a public page chooses to play.
+   * They agree today and nothing says they must — the card is a card whatever
+   * this page decides to open on.
    *
    * ONE ORBITER, NOT TWO. Version one is two instruments because
    * `play.maar.world` splits the sound and the modes across two frames; version
