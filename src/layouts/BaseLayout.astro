@@ -56,6 +56,11 @@ import '../styles/card.css';
 /* ui/carousel — §06. Styles markup the MIGRATION emits, not a component of
    ours, which is why it is global rather than scoped. */
 import '../styles/carousel.css';
+/* ui/ai-disclosure — the Article 50 notice. Global for the same reason card.css
+   is: the things that render it are routes and MDX bodies, not one component.
+   After card.css so the notice under a card cover can answer that file's
+   rhythm, before prose.css so an MDX body's element spacing still wins. */
+import '../styles/ai-disclosure.css';
 /* patterns/version-switch — the script-free tab strip on {orbiters,es/orbiters}.
    Global for the same reason button.css is: it repaints `.btn` by position, so
    it has to be able to see that file's rules and win, which a scoped sheet
@@ -92,6 +97,13 @@ interface Props {
   description?: string;
   noindex?: boolean;
   canonical?: string;
+  /**
+   * This page carries work made with AI, so the shell prints the Article 50
+   * notice at the foot of it. Passed straight through to `Shell`, which owns
+   * the placement so it cannot vary between routes. Off by default — see the
+   * prop on `shell-dark/Shell.astro` for why that direction is the safe one.
+   */
+  ai?: boolean;
   /**
    * Which of the three merged areas this page belongs to. Drives one pigment
    * role in the navigation, so Maar, Collect and Tree stay legible as distinct
@@ -160,6 +172,7 @@ const {
   languageChoices,
   navPaths = {},
   outputPath,
+  ai = false,
 } = Astro.props;
 
 /**
@@ -280,6 +293,8 @@ const globalLanguageChoices = languageChoices ?? [
       contentWidth={contentWidth}
       languageChoices={globalLanguageChoices}
       navPaths={navPaths}
+      ai={ai}
+      lang={lang}
     >
       <slot />
     </Shell>

@@ -76,6 +76,7 @@
 .prose p,
 .prose ul,
 .prose ol,
+.prose dl,
 .prose blockquote,
 .prose table,
 .prose figure,
@@ -84,6 +85,34 @@
 }
 
 .prose li {
+  margin-block-end: var(--s-2);
+}
+
+/* ---- definition lists ---------------------------------------------------- */
+/**
+ * `<dl>` entered this site with the AI transparency page's inventory of works,
+ * where a term and its details is what the content actually is. The rhythm is
+ * stated here rather than exempted because a definition list is a block that
+ * spaces its neighbours, not phrasing content that flows inside one.
+ *
+ * `dd` keeps the browser's inherited `margin-inline-start` rather than being
+ * zeroed: the indent is what distinguishes the detail from the term, and it is
+ * the only structure a `<dl>` has once the bullets and rules this site does not
+ * use are taken away.
+ *
+ * A `dt` takes the tighter of the two gaps because it opens a pair — the space
+ * that matters is BETWEEN pairs, not inside one, which is the same reasoning
+ * `h2` and `h3` are set with above.
+ */
+.prose dt {
+  margin-block: var(--s-4) var(--s-1);
+}
+
+.prose dt:first-child {
+  margin-block-start: 0;
+}
+
+.prose dd {
   margin-block-end: var(--s-2);
 }
 

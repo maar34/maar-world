@@ -1,0 +1,68 @@
+---
+outputPath: "es/ai-transparency"
+title: "Transparencia sobre IA - MAAR WORLD"
+area: "maar"
+kind: "page"
+tags: []
+lang: "es"
+origin: "authored"
+translationOf: "ai-transparency"
+description: "Qué tiene que ver la inteligencia artificial con la obra publicada en este sitio, y qué no."
+---
+
+import Mark from '../../../components/patterns/Mark.astro';
+import AiWorkList from '../../../components/ui/AiWorkList.astro';
+
+{/*
+  La traducción de src/content/pages/en/ai-transparency.mdx.
+
+  ESTO ES UN TEXTO LEGAL Y ES UN BORRADOR, igual que la política de privacidad.
+  Necesita la lectura de alguien que pueda confirmar la terminología del
+  Reglamento (UE) 2024/1689 en español. Los términos son los del propio
+  Reglamento y no traducciones libres:
+
+    · «ultrafalsificación» — deepfake, artículo 3.60 y 50.4. NO «ultrasuplantación»:
+      ese era el término del texto español original y la corrección de errores
+      del Reglamento (DOUE, 2025 — BOE DOUE-L-2025-81474) lo sustituyó por
+      «ultrafalsificación» en todo el articulado. Es un neologismo que casi
+      nadie reconoce, así que va glosado con «deepfake»; la glosa es una
+      decisión de lectura, no una imprecisión.
+    · «reconocimiento de emociones» y «categorización biométrica» — artículo 50.3
+
+  SIN FECHA DE ENTRADA EN VIGOR — instrucción del owner, 2026-08-14, a
+  diferencia de la política de privacidad.
+
+  El inventario de obras NO se traduce acá: lo renderiza <AiWorkList lang="es"/>
+  desde src/config/ai-disclosure.ts, donde viven las dos mitades juntas. Es lo
+  que impide que el sitio afirme dos cosas distintas sobre sí mismo en dos
+  idiomas ante un regulador.
+
+  LA ESTRUCTURA DE ESTA PÁGINA Y LA INGLESA DEBEN COINCIDIR ELEMENTO POR
+  ELEMENTO — verify:translations lo comprueba. Al editar una mitad, editar la
+  otra en el mismo movimiento.
+*/}
+
+# Transparencia sobre <Mark tilt={2} tear={1}>IA</Mark>
+
+Parte de la obra publicada acá fue hecha con IA, y el artículo 50 del Reglamento de IA de la UE nos pide decirlo. Esta página es esa declaración.
+
+## Qué hizo la IA acá
+
+<AiWorkList lang="es" />
+
+La asistencia de IA atraviesa la obra publicada en lugar de estar en piezas puntuales: es parte de cómo se hicieron las ilustraciones, las portadas y los textos. La mayor parte es mixta y no generada: elementos hechos a mano primero y después combinados con IA. Por eso el aviso al pie de una página es una sola frase uniforme y no una afirmación sobre una carta en particular.
+
+## Qué no pasa acá
+
+- **Nada acá es una IA con la que interactúes.** Este es un sitio estático: no hay chatbot, no hay asistente, y no se genera nada mientras leés.
+- **Ninguna IA toma ninguna decisión sobre vos.** No ponemos cookies, no corremos analíticas y no construimos ningún perfil tuyo — ver [Privacidad](/es/privacy).
+- **No hay reconocimiento de emociones ni categorización biométrica.**
+- **No hay ultrafalsificaciones (deepfakes), ni voz ni imagen de ninguna persona generadas con IA.** La obra es un exoplaneta imaginario, no una afirmación sobre algo real.
+
+## Dónde ves esto
+
+Un aviso breve va al pie de cada página que lleva obra hecha con IA. Se mantiene pequeño a propósito: para una obra artística el Reglamento sólo pide que se divulgue que hay contenido de IA de una manera que no dificulte el disfrute de la obra. Cada aviso lleva además una marca legible por máquina en la página, aunque no dentro de los propios archivos de imagen y audio, que es un paso más que no dimos.
+
+## Correcciones
+
+Si algo acá es inexacto o incompleto, escribí a **hello@maar.world** y se corrige.

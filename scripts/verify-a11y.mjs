@@ -36,6 +36,21 @@ import { runStandalone } from './lib/report.mjs';
 import { ARTIFACTS, indexDist } from './lib/artifacts.mjs';
 import { readableText, mainOf } from './lib/html-text.mjs';
 
+/**
+ * Image directories whose contents are AI-made, so a page painting one owes the
+ * Article 50 notice at its foot.
+ *
+ * `/img/collages/` — every collage is AI-mixed: elements made by hand, then
+ * combined with AI (owner, 2026-08-14).
+ * `/img/cards/` — the Sky Sounds artwork, made with DALL·E 2 and ChatGPT.
+ *
+ * A DIRECTORY AND NOT A FILE LIST, on purpose: dropping a new collage or card
+ * image in either folder puts every page showing it in scope automatically,
+ * which is the direction that fails safe. Adding a third entry here is how a
+ * future AI-made image set joins the rule.
+ */
+const AI_ARTWORK = ['/img/collages/', '/img/cards/'];
+
 // ── html helpers ──────────────────────────────────────────────────────────
 
 /**
@@ -551,14 +566,60 @@ export async function checkA11y(report) {
 
   const byKind = new Map();
   const documents = [];
+  /**
+   * Pages that paint AI-made artwork, and whether each discloses it.
+   *
+   * ── The failure this exists to catch, which already happened ──────────────
+   *
+   * Every collage under `/img/collages/` is AI-mixed: the owner made the
+   * elements by hand and combined them with AI. So a page showing one carries
+   * AI-made work and owes the Article 50 notice at its foot.
+   *
+   * `[...page].astro` decides that from the record. IT HAS BEEN WRONG TWICE,
+   * and both times every other check in the suite stayed green while real pages
+   * made an undisclosed use of AI artwork:
+   *
+   *   · asking only `collageFor(outputPath)` missed FOUR pages — the home page
+   *     paints four collages and the Tree hub one, and neither goes through
+   *     that helper, because `SECTION_COLLAGE` keys the home page as `''` while
+   *     its record's `outputPath` is `index`;
+   *   · looking only at `/img/collages/` missed `/collect/cards` and its
+   *     Spanish half, which lay out all 34 card covers and are `kind: 'page'`
+   *     rather than cards. Found in review, not by this check.
+   *
+   * This asserts the rule against the BUILT HTML instead of against the
+   * expression that is supposed to implement it, which is the only version that
+   * can catch the expression being wrong. Wire a collage to a new page, forget
+   * the notice, and this fails by name.
+   */
+  const collagePages = [];
   for (const file of pages) {
     const url = `/${file.replace(/index\.html$/, '').replace(/\.html$/, '')}`;
     const html = readFileSync(join(ARTIFACTS.dist.path, file), 'utf8');
     documents.push(html);
+    const artwork = AI_ARTWORK.filter((dir) => html.includes(dir));
+    if (artwork.length) {
+      collagePages.push({ url, artwork, discloses: html.includes('class="ai-note') });
+    }
     for (const p of auditPage(url, html)) {
       if (!byKind.has(p.kind)) byKind.set(p.kind, []);
       byKind.get(p.kind).push(p.detail);
     }
+  }
+
+  const undisclosed = collagePages.filter((p) => !p.discloses);
+  if (undisclosed.length) {
+    report.fail(
+      'every page showing AI artwork discloses it',
+      `${undisclosed.length} of ${collagePages.length} page(s) paint AI artwork and carry no ` +
+        `AI notice — ${undisclosed.slice(0, 5).map((p) => `${p.url} (${p.artwork.join(' ')})`).join(', ')}` +
+        ' — widen `aiNotice` in src/pages/[...page].astro',
+    );
+  } else {
+    report.pass(
+      'every page showing AI artwork discloses it',
+      `${collagePages.length} page(s) paint artwork from ${AI_ARTWORK.join(' or ')}, all disclosed`,
+    );
   }
 
   /** One assertion per kind, so a failure names the defect rather than a count. */

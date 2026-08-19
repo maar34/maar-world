@@ -237,6 +237,30 @@ export const pageSchema = z
     date: z.string().optional(),
 
     /**
+     * This page carries work made with AI, so the shell prints the Article 50
+     * notice at its foot.
+     *
+     * A BARE BOOLEAN, and that is the point. The notice is one uniform sentence
+     * naming no tool and no work, so a record has nothing to choose — it only
+     * declares that the page is in scope. An earlier version made this an enum
+     * of work ids, which implied the page could say something specific about
+     * its own work; it could not, and the enum was a flag wearing a costume.
+     *
+     * It is also what keeps `rthw00` and the other migrated bodies as `.md`.
+     * The alternative was converting them to `.mdx` to call a component, and
+     * those bodies are full of raw HTML that MDX rejects — a large, risky edit
+     * to a live page in order to add one line. Frontmatter costs one line and
+     * no reflow.
+     *
+     * MOST PAGES DO NOT SET IT, and the default must stay `false`: a notice on
+     * a page carrying no AI-made work is a false statement about that page.
+     * Card pages and pages showing a collage cover are detected in the route
+     * instead — see `[...page].astro` — so this field is for the ones neither
+     * rule catches.
+     */
+    ai: z.boolean().optional(),
+
+    /**
      * Hold this record back until a date. Absent, it publishes now.
      *
      * SEPARATE FROM `date` ON PURPOSE. `date` is what the Lab sorts and shows,

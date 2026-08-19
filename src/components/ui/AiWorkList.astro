@@ -1,0 +1,69 @@
+---
+/**
+ * The inventory of works with AI in their making, for the transparency page.
+ *
+ * ── Why this is a component and not a table typed into each page ────────────
+ *
+ * Because it is the same list in both languages, and a list typed twice is a
+ * list that drifts. `collect/index` drifted by two elements with nobody editing
+ * it to diverge, no check could see it, and it took the owner noticing with
+ * their own eyes — which is why the rule here is that structure lives once in
+ * the thing that renders it and the record carries only words.
+ *
+ * That rule is load-bearing rather than tidy this time. The English and Spanish
+ * halves of this list are the same factual claim about the same works, made to
+ * a regulator. Two copies could disagree about which tool touched which work,
+ * and the site would be asserting two different things about itself in two
+ * languages. One array in `config/ai-disclosure.ts`, rendered twice, cannot.
+ *
+ * ── Reading the output ─────────────────────────────────────────────────────
+ *
+ * Per work: what it is, what AI did, and the receipt — `source` names the page
+ * of this site that already recorded it, so a reader can check the claim
+ * against the work's own credits rather than taking this page's word.
+ *
+ * `systems` is printed only where the record names systems. Two entries name
+ * none, because the pages they come from name none, and inventing "presumably
+ * a diffusion model" would be the kind of confident guess that makes the rest
+ * of the list untrustworthy.
+ */
+import { AI_WORKS, aiLineFor } from '../../config/ai-disclosure';
+
+interface Props {
+  /** The page's language. Undefined is English, as everywhere else here. */
+  lang?: string;
+}
+
+const { lang } = Astro.props;
+const isEs = lang === 'es';
+
+/**
+ * The three fixed words this list says around the data. Held here rather than
+ * in the record for the same reason `TREE_HUB_STRINGS` is held in config: they
+ * are what the FEATURE says on any page, so they change in both languages or
+ * in neither.
+ */
+const STRINGS = isEs
+  ? { systems: 'Sistemas', source: 'Registrado en', none: 'Sin sistema nombrado en el registro' }
+  : { systems: 'Systems', source: 'Recorded at', none: 'No system named in the record' };
+
+const works = Object.values(AI_WORKS);
+---
+
+<dl class="ai-works">
+  {
+    works.map((work) => (
+      <div class="ai-works__item">
+        <dt class="ai-works__what">{aiLineFor(work, lang)}</dt>
+        <dd class="ai-works__meta t-meta">
+          <span class="ai-works__systems">
+            {STRINGS.systems}: {work.systems.length ? work.systems.join(', ') : STRINGS.none}
+          </span>
+          <span class="ai-works__source">
+            {STRINGS.source}: {work.source}
+          </span>
+        </dd>
+      </div>
+    ))
+  }
+</dl>

@@ -1,0 +1,69 @@
+---
+/**
+ * The Article 50 notice — one line of fine print at the foot of the page.
+ *
+ * ── Where it sits, and why that is still compliant ─────────────────────────
+ *
+ * At the end of `<main>`, immediately above the footer, on every page that
+ * carries work made with AI. Owner's instruction, 2026-08-14: smaller, at the
+ * bottom, softer.
+ *
+ * That is not a compromise of Article 50(5). The requirement is that the
+ * information reach the person "at the latest at the time of the first
+ * interaction or exposure" — it is about WHICH ENCOUNTER, not about which part
+ * of the page. The notice is on the same page as the work, present the first
+ * time anyone meets it, in the document, in the reader's language. Nothing
+ * about it is deferred to a second visit or a second click.
+ *
+ * And 50(4)'s second subparagraph positively asks for restraint here: on an
+ * "evidently artistic, creative, satirical, fictional or analogous work" the
+ * obligation is limited to a disclosure "that does not hamper the display or
+ * enjoyment of the work". The foot of the page is where fine print belongs; a
+ * banner over a card would be less faithful to the Article, not more.
+ *
+ * ── The floor this cannot go below ─────────────────────────────────────────
+ *
+ * Soft is not invisible, and the limit is not a matter of taste:
+ *
+ *   · `--ink-meta` is the softest ink text may use. `--ink-faint` is documented
+ *     in verify:a11y as "never text" — it clears 3:1, which is the bar for
+ *     decorative graphics, not the 4.5:1 that meta lines and captions must
+ *     meet. Using it here would fail the suite, and it would fail the readers
+ *     50(5) names.
+ *   · `--t-meta-size` (12px) is already the smallest type in the system. There
+ *     is nothing below it and none may be invented — tokens.css is the only
+ *     place a raw value may exist.
+ *
+ * So the softening is done by BREVITY AND PLACEMENT, which cost a reader
+ * nothing: one short sentence instead of a paragraph, no bold label, no
+ * coloured chip, at the foot instead of under the artwork.
+ *
+ * ── Machine-readable ───────────────────────────────────────────────────────
+ *
+ * `digitalSourceType` carries the IPTC controlled URI in microdata, following
+ * the pattern `ui/SiteFooter` already uses for schema.org Person. Emitted as
+ * `<meta itemprop>` because the value is a URI for a parser, not a sentence
+ * for a reader — the reader gets the sentence.
+ *
+ * BE HONEST ABOUT WHAT THIS IS. The authoritative place for a digital source
+ * type is XMP inside the asset, which travels when the file is copied off the
+ * page; markup does not. We do not re-encode the artwork, so this is a
+ * page-level signal, not a content credential. /ai-transparency says so.
+ */
+import { aiNoteFor, DIGITAL_SOURCE_TYPE } from '../../config/ai-disclosure';
+
+interface Props {
+  /** The page's language. Undefined is English, as everywhere else here. */
+  lang?: string;
+}
+
+const { lang } = Astro.props;
+const note = aiNoteFor(lang);
+---
+
+<p class="ai-note t-meta" itemscope itemtype="https://schema.org/CreativeWork">
+  <meta itemprop="digitalSourceType" content={DIGITAL_SOURCE_TYPE.composite} />
+  <span itemprop="creditText">{note.text}</span>
+  {' '}
+  <a class="ai-note__more" href={note.href}>{note.more}</a>
+</p>

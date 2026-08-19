@@ -14,6 +14,7 @@
 import SkipLink from '../../components/ui/SkipLink.astro';
 import SiteHeader from '../../components/ui/SiteHeader.astro';
 import SiteFooter from '../../components/ui/SiteFooter.astro';
+import AiDisclosure from '../../components/ui/AiDisclosure.astro';
 import type { AreaName } from '../../config/site';
 
 interface Props {
@@ -23,9 +24,24 @@ interface Props {
   languageChoices?: { lang: string; label: string; outputPath?: string; current: boolean; unavailable: boolean }[];
   /** English nav URL → same destination in this page's language. */
   navPaths?: Record<string, string>;
+  /**
+   * This page carries work made with AI, so it owes the Article 50 notice.
+   *
+   * A BOOLEAN, and the shell renders it rather than each route, because the
+   * notice is one line of fine print at the foot of the page and it must be
+   * identical on all of them. A route that positioned its own would be a route
+   * that could position it differently.
+   *
+   * It is NOT on by default. Most pages here carry no AI-made work — the bio,
+   * the bookings page — and a notice on those would be a false statement about
+   * them. Opting in is the honest direction for the default to fail in.
+   */
+  ai?: boolean;
+  /** The page's own language, for the notice. Not `chromeLang`, which is the shell's. */
+  lang?: string;
 }
 
-const { area, chromeLang, contentWidth = 'standard', languageChoices = [], navPaths = {} } = Astro.props;
+const { area, chromeLang, contentWidth = 'standard', languageChoices = [], navPaths = {}, ai = false, lang } = Astro.props;
 ---
 
 <div class="shell" data-shell="dark">
@@ -34,6 +50,11 @@ const { area, chromeLang, contentWidth = 'standard', languageChoices = [], navPa
   <main id="content" class="shell__main">
     <div class="shell__content" data-content-width={contentWidth}>
       <slot />
+      {/* Inside the content frame so it takes the page's own measure, and last
+          inside <main> so a screen reader meets it after the work rather than
+          before it. Above the footer, which is chrome and not part of the
+          page. */}
+      {ai && <AiDisclosure lang={lang} />}
     </div>
   </main>
   <SiteFooter chromeLang={chromeLang} />

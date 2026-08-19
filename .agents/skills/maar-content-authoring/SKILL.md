@@ -190,6 +190,42 @@ that list is **closed: it may shrink, never grow.** If the check fails because a
 new page is off-prefix, fix the page's `outputPath`. Adding a line to the list is
 the bypass the list exists to make visible.
 
+## If the page publishes work made with AI
+
+Add one frontmatter field. Do **not** write the disclosure into the body:
+
+```yaml
+ai: true
+```
+
+The shell then prints one line of fine print at the foot of the page, above the
+footer, in the record's own language.
+
+**You usually do not need it.** `[...page].astro` already sets it for every card
+page, every page whose `outputPath` resolves a collage through `collageFor`, and
+the `home` and `tree` families. Reach for the field only when the AI-made work is
+in the page's *own* imagery — `rthw00`, `lab/dadada`.
+
+**Every collage under `/img/collages/` is AI-mixed** (hand-made elements
+combined with AI), so wiring one to a page puts that page in scope.
+`verify:a11y` asserts this against the built HTML — *every page showing an AI
+collage discloses it* — so forgetting is a failed check, not a silent gap.
+
+**The wording is not yours to type, and there is only one of it.** The notice is
+a single sentence — "Parts of this work were made with AI." — held in
+`src/config/ai-disclosure.ts` and identical on every page. It names no tool and
+no work, which is why the field is a bare boolean and not a choice.
+
+Tools and works are named once, in the inventory on `/ai-transparency`. To add
+one: a name in `src/config/ai-work-ids.mjs`, an entry in `ai-disclosure.ts`. A
+name without an entry is a type error.
+
+**Do not reintroduce per-work or per-card wording.** It was tried and the owner
+rejected it: AI runs wider than the credits tables record, a card-by-card audit
+is not going to happen, and a precise claim that is wrong is worse than a
+general one that is right. Reasoning, and why `STW3344` is included rather than
+excepted: `.agents/decisions/0008-ai-disclosure-sits-with-the-work.md`.
+
 ## What you do NOT have to do
 
 - Add anything to `routes/manifest.production.json`. That file is a frozen record

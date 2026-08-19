@@ -513,6 +513,57 @@ const labEntries = isYearIndex
       })
   : [];
 
+/**
+ * Whether this page owes the Article 50 notice at its foot.
+ *
+ * Three ways in, and the middle one is why this is computed rather than typed
+ * into records:
+ *
+ *   · every card page. `isCard` and NOT the suit — the owner's account
+ *     (2026-08-14) is that AI runs across the released work rather than being
+ *     confined to the cards whose credits happen to mention it, so a card is a
+ *     card. An earlier version gated on `suit_title` and left Stoney Way out,
+ *     which was wrong on the facts.
+ *   · every page showing a collage. ALL the collages under `/img/collages/` are
+ *     AI-mixed — the owner made the elements by hand and combined them with AI
+ *     — so a page carrying one carries AI-made work.
+ *
+ *     TWO TESTS, NOT ONE, AND THE SECOND IS NOT REDUNDANT. `sectionCollage` is
+ *     `collageFor(outputPath)`, which answers only for collages this route
+ *     places. The `home` and `tree` families draw their own — four on the home
+ *     page, one on the Tree hub — and `collageFor` cannot see them, because
+ *     `SECTION_COLLAGE` keys the home page as `''` while its record's
+ *     `outputPath` is `index`. Asking only the helper missed four pages that
+ *     were painting collages, which is why `verify:a11y` now asserts the whole
+ *     rule against the BUILT HTML rather than against this expression.
+ *   · anything else, by `ai: true` in the record. That is for pages whose AI
+ *     work is in their own imagery rather than in a collage or a card —
+ *     `rthw00`, `lab/dadada`, the two documentation pages.
+ *
+ * The shell owns the placement, so this decides only whether, never where.
+ */
+const COLLAGE_FAMILIES = new Set(['home', 'tree']);
+
+/**
+ * Indexes that lay out the card artwork itself.
+ *
+ * `/collect/cards` and its Spanish half draw all 34 covers as a scattered grid
+ * — `indexCovers` + `indexCoverShape: 'card'` — so the AI-assisted artwork is
+ * the whole page, not a thumbnail of somewhere else. `isCard` does not catch
+ * them: they are `kind: 'page'` that INDEX cards, not cards.
+ *
+ * Found by review, not by the check that was supposed to find it: the built
+ * assertion only looked at /img/collages/ and these pages paint /img/cards/.
+ * It now looks at both.
+ */
+const CARD_INDEXES = new Set(['collect-cards']);
+
+const aiNotice =
+  isCard ||
+  Boolean(sectionCollage) ||
+  COLLAGE_FAMILIES.has(d.family ?? '') ||
+  CARD_INDEXES.has(d.indexOf ?? '') ||
+  d.ai === true;
 ---
 
 <BaseLayout
@@ -527,6 +578,7 @@ const labEntries = isYearIndex
   languageChoices={langChoices}
   navPaths={navPaths}
   outputPath={d.outputPath}
+  ai={aiNotice}
 >
   {
     /**

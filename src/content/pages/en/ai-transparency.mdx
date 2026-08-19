@@ -1,0 +1,62 @@
+---
+outputPath: "ai-transparency"
+title: "AI transparency - MAAR WORLD"
+area: "maar"
+kind: "page"
+tags: []
+lang: "en"
+origin: "authored"
+description: "What artificial intelligence has to do with the work published on this site, and what it does not."
+---
+
+import Mark from '../../../components/patterns/Mark.astro';
+import AiWorkList from '../../../components/ui/AiWorkList.astro';
+
+{/*
+  THIS IS A LEGAL TEXT AND IT IS A DRAFT, like the privacy policy. Every factual
+  claim comes from `src/config/ai-disclosure.ts`, which is the file to correct —
+  not this one.
+
+  KEEP IT SHORT. It was three times this length and the owner cut it: Article 50
+  requires the disclosure to exist and to be clear, not to be exhaustive, and a
+  long page about a small fact reads as a bigger admission than the fact is.
+  Anything added here should replace something rather than lengthen the page.
+
+  NO EFFECTIVE DATE, owner's instruction 2026-08-14 — unlike the privacy policy,
+  which carries one. A date implies a version history someone has to maintain,
+  and this page states how the work is made rather than terms that took effect.
+
+  DO NOT REINTRODUCE PER-CARD CLAIMS. AI runs wider than the credits tables
+  record, a card-by-card audit is not going to happen, and a precise claim that
+  is wrong is worse than a general one that is right. See
+  .agents/decisions/0008-ai-disclosure-sits-with-the-work.md.
+
+  The list of things that do NOT happen here is the one part not drawn from the
+  record — it is true of the site as built today, and a future chatbot,
+  analytics call or third-party script makes it false rather than incomplete.
+*/}
+
+# AI <Mark tilt={2} tear={1}>transparency</Mark>
+
+Some of the work published here was made with AI, and Article 50 of the EU AI Act asks us to say so. This page is that statement.
+
+## What AI did here
+
+<AiWorkList />
+
+AI assistance runs across the released work rather than sitting in particular pieces — it is part of how the artwork, the covers and the texts were made. Most of it is mixed rather than generated: elements made by hand first, then combined with AI. That is why the notice at the foot of a page is one uniform sentence rather than a claim about a specific card.
+
+## What does not happen here
+
+- **Nothing here is an AI you interact with.** This is a static site: no chatbot, no assistant, and nothing generated while you read.
+- **No AI makes any decision about you.** We set no cookies, run no analytics and build no profile of you — see [Privacy](/privacy).
+- **No emotion recognition and no biometric categorisation.**
+- **No deepfakes, and no AI-generated voice or likeness of any person.** The work is an imaginary exoplanet, not a claim about anything real.
+
+## Where you see this
+
+A short notice sits at the foot of every page carrying work made with AI. It stays small on purpose: for artistic work the Act asks only that AI content be disclosed in a way that does not hamper the enjoyment of the work. Each notice also carries a machine-readable marker in the page — though not inside the image and audio files themselves, which is a further step we have not taken.
+
+## Corrections
+
+If something here is inaccurate or incomplete, write to **hello@maar.world** and it will be corrected.

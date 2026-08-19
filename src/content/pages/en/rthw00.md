@@ -7,6 +7,7 @@ tags: []
 source: "maar.world/collections/_genesis/rthw00.md"
 lang: "en"
 origin: "migrated"
+ai: true
 ---
 
 # Rainbow <span class="mark mark--cut mark--tilt-4 mark--tear-4">technologies</span> to heal war.

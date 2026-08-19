@@ -137,7 +137,15 @@ const downloads = [d.download, d.download2]
 
 {/* The 35 NFC cards are served from the maar.world root, so they are maar-area
     pages. They carry no `lang`, and every one of them is English. */}
-<BaseLayout title={cardName} description={d.card_description} noindex={true} area="maar">
+{/* `ai` on ALL 35 cards, Stoney Way included.
+
+    An earlier version excluded `STW3344` because its credits name no AI tool.
+    The owner corrected that on 2026-08-14: AI ran wider than the credits
+    tables record, across artwork, cover artwork and texts. A per-card audit is
+    not going to happen and would go stale anyway, so the notice is uniform and
+    says only that AI is part of how the work is made — which is true of every
+    card on this route. See config/ai-disclosure.ts. */}
+<BaseLayout title={cardName} description={d.card_description} noindex={true} area="maar" ai={true}>
   {/* The shell owns <main>. This is the page family inside it. */}
   <div class="card-page">
     {

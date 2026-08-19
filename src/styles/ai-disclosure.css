@@ -1,0 +1,102 @@
+/**
+ * ui/ai-disclosure — the Article 50 notice that sits under a work.
+ *
+ * Global rather than scoped for the same reason card.css is: the thing that
+ * renders it on a card page is a route (`[cardCode].astro`, `[...page].astro`),
+ * not a component, and MDX bodies call it too.
+ *
+ * The whole design brief is one sentence: be legible and be quiet. Article
+ * 50(4) limits the disclosure on an artistic work to something that "does not
+ * hamper the display or enjoyment of the work", and 50(5) requires it to be
+ * clear, distinguishable and accessible. Those pull in opposite directions and
+ * the resolution is contrast, not size — meta type at --ink-meta, which is the
+ * same treatment the suit/number label line already wears, so it reads as part
+ * of the mount rather than as an interruption.
+ *
+ * No rule above it. "list rows, panels, footers … carry none — space does that
+ * work", and a hairline here would make the notice louder than the caption it
+ * sits beside.
+ *
+ * No mark, no tilt, no cut word. The rules-of-use table allows marks at h1 and
+ * card-cover level and forbids them at body, ui, label and caption level. This
+ * is a caption. It gets none, and a future session should read that as settled
+ * rather than as an oversight.
+ */
+
+/**
+ * Fine print at the foot of `<main>`, above the footer.
+ *
+ * `--ink-meta` is the FLOOR, not a choice: verify:a11y documents `--ink-faint`
+ * as "never text" because it clears 3:1 — the bar for decorative graphics, not
+ * the 4.5:1 a caption owes. `t-meta` on the element is already the smallest
+ * type in the system. So this rule makes the line recede by placement and by
+ * measure, and it does not reach for an ink or a size that would make it
+ * unreadable to the people Article 50(5) is written for.
+ */
+.ai-note {
+  color: var(--ink-meta);
+  /* Set apart from the work above it, and clear of the footer below. The
+     footer brings its own top space, so the bottom margin here is zero. */
+  margin-block: var(--s-16) 0;
+  max-width: 62ch;
+  /* The sentence and the link are one paragraph, free to wrap as prose rather
+     than as a row — at 320px flex would strand the link on a line of its own. */
+  text-wrap: pretty;
+}
+
+/**
+ * The way out to the full statement. Underlined, because `a` is underlined
+ * everywhere on this site and a link that announces itself by colour alone
+ * fails at meta contrast — which is precisely the accessibility requirement
+ * 50(5) attaches to this notice.
+ */
+.ai-note__more {
+  text-underline-offset: 3px;
+}
+
+.ai-note__more:hover {
+  color: var(--ink);
+}
+
+/* ---- ui/ai-works — the inventory on the transparency page ----------------- */
+/**
+ * A `<dl>`, because it is genuinely a term and its details: the work, then what
+ * is known about it. A table was the other candidate and loses on one point
+ * that matters more than the grid — at 320px a three-column table of sentences
+ * either scrolls sideways or sets four words to a line, and this list has to be
+ * readable on the phone someone is holding when they tap a card.
+ */
+.ai-works {
+  margin-block: var(--s-6) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+}
+
+.ai-works__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+/**
+ * The claim itself, at body scale and full ink. This is the sentence the page
+ * exists to say, so it is the one thing here that is not stood down.
+ */
+.ai-works__what {
+  color: var(--ink);
+  max-width: 62ch;
+}
+
+/**
+ * The receipt. Meta scale, and a column rather than a row so the two facts do
+ * not wrap into each other — "Systems: DALL·E 2, ChatGPT-3 Recorded at
+ * /collect/docs/…" reads as one string the moment they share a line.
+ */
+.ai-works__meta {
+  margin: 0;
+  color: var(--ink-meta);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
