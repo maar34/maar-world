@@ -158,12 +158,25 @@ const { Content } = await render(entry);
  * where it is because it states the reasoning at the place a reader of the Lab
  * page will look for it.
  *
- * Nothing becomes unreachable: every entry is listed on the index in its own
- * language, and both indexes are translations of each other, so the header's
- * language chip reaches either.
+ * An English-only Lab post is the one exception: it appears on both Lab
+ * indexes, once, rather than disappearing from the Spanish index and making
+ * the two index pages structurally diverge. Its card and destination remain
+ * English until it receives a Spanish counterpart.
  */
 const listed = d.indexOf
-  ? all.filter((p) => p.data.indexGroup === d.indexOf && p.data.lang === d.lang)
+  ? all.filter((p) => {
+      if (p.data.indexGroup !== d.indexOf) return false;
+      if (p.data.lang === d.lang) return true;
+      if (d.indexOf !== 'lab' || d.lang !== 'es' || p.data.lang !== 'en') return false;
+
+      const hasSpanishCounterpart = all.some((candidate) =>
+        candidate.data.lang === 'es' && (
+          candidate.data.translationOf === p.data.outputPath ||
+          (p.data.translationKey && candidate.data.translationKey === p.data.translationKey)
+        ),
+      );
+      return !hasSpanishCounterpart;
+    })
   : [];
 
 /**
@@ -474,10 +487,9 @@ const labEntries = isYearIndex
        * which are translations of each other, so the language filter the design
        * draws as a chip is a control this site already has.
        *
-       * Nothing becomes unreachable: each Spanish entry is on `/es/lab`, and
-       * each article's own page carries the switch to its twin.
+       * English-only entries are retained on both indexes until translated;
+       * retaining the same card keeps the index pair structurally aligned.
        */
-      .filter((p) => p.data.lang === d.lang)
       .filter((p) => p.data.date)
       .map((p) => {
         const href = hrefOf(p.data.outputPath);
