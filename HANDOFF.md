@@ -1,9 +1,28 @@
 # Handoff
 
-**State:** `npm run verify` = **96 passed, 0 failed, 0 skipped**.
+**State:** `npm run verify` = **100 passed, 0 failed, 0 skipped**.
 
-**Last shipped:** MW-19 IS DONE. All sixteen pairs converted — the last nine in
-this session, six commits, on `wt/1-mw-19-separate-structure-from-copy`.
+**Last shipped:** the card story now sits behind a `<details>` disclosure,
+closed by default, on both card routes — `2def140` on `main`.
+
+## THE CARD STORY IS HIDDEN BY DISCLOSURE, NOT BY DELETION
+
+`card_description` is roughly half the words on a card page. The owner asked
+for it hidden; it is now a native `<details>` closed by default, summary
+`CARD_STORY` in `src/config/site.ts` in both languages, rendered by
+`[cardCode].astro` (35 NFC pages, English) and `[...page].astro` (68 collect
+pages, en+es).
+
+**Deleting the paragraph is not available, and the reason is worth carrying.**
+It fails two frozen guarantees at once: `verify:cards` fingerprints the
+`<p class="description">` on all 35 NFC pages, and `verify:content` holds every
+card page to 0.85 of its **production** body length — 67 pages dropped under
+the floor. Neither can be re-frozen from this machine (see the warning at the
+foot of this file). Keeping the words in the document is the honest way to
+satisfy checks whose whole job is to count them. If the stories are ever to
+come off the page for real, it is a reasoned `EXCLUSIONS` entry per page in
+`scripts/author-content-expectations.mjs` and new card fingerprints — not a
+regeneration.
 
 ## MW-19 — FINISHED. WHAT IT LEFT BEHIND.
 
@@ -191,12 +210,17 @@ end. Two figures from them are still worth carrying forward as ceilings:
 Everything is green: selftest · schemas · build · contract · routes ·
 cards (+1 skip, needs MW-10) · a11y · content · links · translations · ledger.
 
-⚠ **`npm run author:content-expectations` cannot be run from a worktree.** It
-reads the read-only legacy `_site` checkouts at `ROOT/../maar.world-site` etc.,
-which from `maar-world.worktrees/wt-N` resolve to nothing — it then silently
-falls back to a weaker baseline and rewrites the whole file (measured: 2,424
-deletions, every `legacy-site-exact` baseline lost). Run it from the primary
-checkout, or hand-apply the one page an exclusion changes.
+⚠ **`npm run author:content-expectations` DEGRADES THE BASELINE ON THIS
+MACHINE, FROM ANY DIRECTORY.** It reads the read-only legacy `_site` checkouts
+at `ROOT/../maar.world-site`, `../collect.maar.world` and `../tree.maar.world`.
+This file used to say the trap was running it from a worktree; that was too
+narrow. **None of the three checkouts is present here at all** — not beside the
+primary checkout either — so it falls back to a weaker baseline and rewrites
+the whole file wherever it is run (measured from the PRIMARY checkout on
+2026-08-24: 2,406 deletions, `pageCount` 130→129,
+`migratedPagesWithoutProduction` 11→65). Restore the legacy checkouts first, or
+hand-apply the one page an exclusion changes. `git checkout
+verify/content-expectations.json` is the undo.
 
 ---
 
