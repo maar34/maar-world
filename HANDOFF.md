@@ -2,6 +2,16 @@
 
 **State:** `npm run verify` = **100 passed, 0 failed, 0 skipped**.
 
+**Latest committed:** `fad1b5c` adds the public English Orbiters audio architecture
+post at `/lab/en/orbiters-audio-architecture`. It reproduces the supplied technical
+document and its three inline diagrams, now with an approved-palette signal path
+and distinct informational/warning callout panels, but contains no Linear links
+or `ORB-…` ticket identifiers. It is deliberately not on the bilingual Lab index until a
+Spanish counterpart exists: indexing an English-only item makes the English and
+Spanish Lab indexes render different structures, which `verify:translations`
+correctly rejects. The page now opens with the cost and compiled-unit target;
+the long dimension-chain model is the final, sixth section.
+
 **Last shipped:** the card story now sits behind a `<details>` disclosure,
 closed by default, on both card routes — `2def140` on `main`.
 

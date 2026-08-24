@@ -189,6 +189,7 @@ const PROSE_EXEMPT = new Map([
   ['g', 'inside <svg>'], ['circle', 'inside <svg>'], ['ellipse', 'inside <svg>'],
   ['rect', 'inside <svg>'], ['line', 'inside <svg>'], ['polygon', 'inside <svg>'],
   ['polyline', 'inside <svg>'], ['defs', 'inside <svg>'], ['use', 'inside <svg>'],
+  ['marker', 'arrowhead definition inside <svg>'],
   ['title', 'inside <svg>'], ['desc', 'inside <svg>'], ['text', 'inside <svg>'],
   ['tspan', 'inside <svg>'], ['clippath', 'inside <svg>'], ['mask', 'inside <svg>'],
   ['lineargradient', 'inside <svg>'], ['stop', 'inside <svg>'],

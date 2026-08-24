@@ -144,6 +144,28 @@
   color: var(--ink-muted);
 }
 
+/* Orbiters audio architecture is an engineering note, not a generic quotation.
+   Its diagrams need one clear signal for the active signal path, while its
+   unresolved decisions need a distinct, but still quiet, field. Both use a
+   single approved pigment per component instance; the colour never carries the
+   meaning alone because the note labels remain in the copy. */
+.prose .audio-architecture-note {
+  --audio-note-pigment: var(--c-collect);
+  margin-block: 0 var(--s-4);
+  padding: var(--s-4);
+  border-inline-start: 3px solid var(--audio-note-pigment);
+  background: color-mix(in srgb, var(--audio-note-pigment) 14%, transparent);
+  color: var(--ink);
+}
+
+.prose .audio-architecture-note--warning {
+  --audio-note-pigment: var(--c-destructive);
+}
+
+.prose .audio-architecture-note > :last-child {
+  margin-block-end: 0;
+}
+
 .prose td,
 .prose th {
   padding: var(--s-2) var(--s-3);
@@ -166,6 +188,38 @@
   flex-direction: column;
   gap: var(--s-2);
 }
+
+/* The source diagrams name their highlighted path `--accent`. Binding it here
+   makes the active route legible against the dark Maar surface without baking
+   a new colour into the SVGs. */
+.prose .audio-architecture-diagram {
+  --accent: var(--c-collect);
+  padding: var(--s-4);
+  border: 1px solid var(--ink-hairline);
+  background: var(--sf-sunken);
+}
+
+.prose .audio-architecture-diagram svg {
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.prose .audio-architecture-diagram .diagram-focus,
+.prose .audio-architecture-diagram .diagram-stage {
+  fill: color-mix(in srgb, var(--accent) 14%, transparent);
+  stroke: var(--accent);
+}
+
+/* The performance question is the article's entry point. The complete authoring
+   model remains in the document as the closing reference, after the measured
+   problem and the proposed runtime have made its purpose clear. */
+.prose .audio-architecture-flow {
+  display: flex;
+  flex-direction: column;
+}
+
+.prose .audio-architecture-flow__core { order: 1; }
+.prose .audio-architecture-flow__model { order: 2; }
 
 .prose figcaption {
   color: var(--ink-meta);
