@@ -26,7 +26,7 @@ import GlyphRun from '../components/patterns/GlyphRun.astro';
 import TypeMark from '../components/patterns/TypeMark.astro';
 import Stamp from '../components/patterns/Stamp.astro';
 import { stampText } from '../lib/mark.mjs';
-import { COMMERCE } from '../config/site';
+import { COMMERCE, CARD_STORY } from '../config/site';
 import { imageSize } from '../lib/image-size.mjs';
 
 export async function getStaticPaths() {
@@ -216,7 +216,13 @@ const downloads = [d.download, d.download2]
       <img src={d.card_image} alt={`${d.suit_title} ${d.card_title}`} loading="lazy" decoding="async" {...imageSize(d.card_image) ?? {}} />
     </figure>
 
-    <p class="description">{d.card_description}</p>
+    {/* The card story, closed by default. See CARD_STORY in config/site.ts for
+        why this is a disclosure and not a deletion. These pages carry no `lang`
+        and are all English, as the note above the metadata says. */}
+    <details class="story">
+      <summary>{CARD_STORY.en.summary}</summary>
+      <p class="description">{d.card_description}</p>
+    </details>
 
     <Content />
 
@@ -391,8 +397,36 @@ const downloads = [d.download, d.download2]
     height: auto;
   }
 
+  /**
+   * The story disclosure. Closed by default — the artwork leads, the words
+   * wait to be asked for. Native <details>, no script, same as the header menu.
+   */
+  .story > summary {
+    cursor: pointer;
+    color: var(--ink-muted);
+    list-style: none;
+  }
+
+  .story > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .story > summary::after {
+    content: ' +';
+  }
+
+  .story[open] > summary::after {
+    content: ' \2212';
+  }
+
+  .story > summary:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
   .description {
     color: var(--ink-muted);
+    margin-block-start: var(--s-2);
   }
 
   .players {

@@ -50,7 +50,7 @@ import { globalLanguageChoices, alternatesFor, validateTranslations, navPathsFor
 import { stampText } from '../lib/mark.mjs';
 import { docExcerpt } from '../lib/doc-excerpt.mjs';
 import Action from '../components/ui/Action.astro';
-import { collageFor, articleCoverFor, articleCoverFitFor, docGlyphFor, docReadMoreFor, suitPigment, suitStoreUrl, suitDisplayName, CARD_OFFER, pageIcon, LAB_INTRO, LAB_PINNED } from '../config/site';
+import { collageFor, articleCoverFor, articleCoverFitFor, docGlyphFor, docReadMoreFor, suitPigment, suitStoreUrl, suitDisplayName, CARD_OFFER, CARD_STORY, pageIcon, LAB_INTRO, LAB_PINNED } from '../config/site';
 import { navIconMask } from '../lib/nav-icons.mjs';
 import { publishable } from '../lib/publishing.mjs';
 import { imageSize } from '../lib/image-size.mjs';
@@ -726,7 +726,14 @@ const aiNotice =
       )
     }
 
-    {isCard && d.card_description && <p class="description">{d.card_description}</p>}
+    {/* The card story, closed by default. See CARD_STORY in config/site.ts for
+        why this is a disclosure and not a deletion. */}
+    {isCard && d.card_description && (
+      <details class="story">
+        <summary>{(CARD_STORY[d.lang] ?? CARD_STORY.en).summary}</summary>
+        <p class="description">{d.card_description}</p>
+      </details>
+    )}
 
     {
       /* These five areas use the same compact visual introduction. The page H1
@@ -980,8 +987,36 @@ const aiNotice =
     height: auto;
   }
 
+  /**
+   * The story disclosure. Closed by default — the artwork leads, the words
+   * wait to be asked for. Native <details>, no script, same as the header menu.
+   */
+  .story > summary {
+    cursor: pointer;
+    color: var(--ink-muted);
+    list-style: none;
+  }
+
+  .story > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .story > summary::after {
+    content: ' +';
+  }
+
+  .story[open] > summary::after {
+    content: ' \2212';
+  }
+
+  .story > summary:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
   .description {
     color: var(--ink-muted);
+    margin-block-start: var(--s-2);
   }
 
   /**

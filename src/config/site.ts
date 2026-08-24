@@ -180,6 +180,29 @@ export function suitDisplayName(suitTitle: string | undefined): string | null {
 }
 
 /**
+ * The trigger that opens a card's story.
+ *
+ * The story itself is `card_description` — a paragraph of world-writing per
+ * card, and the owner's decision on 2026-08-24 was that it should not be the
+ * first thing under the artwork. It is now behind a disclosure: hidden until a
+ * reader asks for it, still on the page when they do.
+ *
+ * IT IS A DISCLOSURE, NOT A DELETION, AND THAT IS LOAD-BEARING. Two frozen
+ * guarantees read the built HTML and count this text — `verify:cards`
+ * fingerprints the `<p class="description">`, and `verify:content` holds every
+ * card page to 0.85 of its production body length. Removing the paragraph
+ * fails both, and neither can be re-frozen from here: both derive from
+ * production and the legacy `_site` checkouts, not from `dist/`. A `<details>`
+ * keeps the words in the document, which is the honest way to satisfy them.
+ *
+ * Native `<details>`, like the header menu: no application JavaScript.
+ */
+export const CARD_STORY: Record<string, { summary: string }> = {
+  en: { summary: 'Read the story' },
+  es: { summary: 'Leer la historia' },
+};
+
+/**
  * WHAT COLLECTING GETS YOU — one copy, both languages. THIS IS THE SELL.
  *
  * It names the goods and stops. It does not explain, qualify, or reassure, and
