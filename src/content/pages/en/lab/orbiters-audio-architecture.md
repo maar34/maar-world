@@ -10,6 +10,7 @@ origin: "authored"
 description: "Where the DSP runs, and what a voice costs."
 date: "2026-08-24"
 indexGroup: "lab"
+cover: "/img/lab/orbiters-prototype.png"
 ---
 
 # Orbiters audio architecture
