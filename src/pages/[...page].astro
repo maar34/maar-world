@@ -46,7 +46,7 @@ import VersionSwitchScript from '../components/ui/VersionSwitchScript.astro';
 import EmbedConsentScript from '../components/ui/EmbedConsentScript.astro';
 import HelixIsland from '../components/react/HelixIsland.astro';
 import DocGlyph from '../components/ui/DocGlyph.astro';
-import { globalLanguageChoices, alternatesFor, validateTranslations, navPathsFor, urlOf, LANGS } from '../lib/translations.mjs';
+import { globalLanguageChoices, alternatesFor, validateTranslations, navPathsFor, urlOf, routeParamOf, LANGS } from '../lib/translations.mjs';
 import { stampText } from '../lib/mark.mjs';
 import { docExcerpt } from '../lib/doc-excerpt.mjs';
 import Action from '../components/ui/Action.astro';
@@ -125,11 +125,15 @@ export async function getStaticPaths() {
   );
 
   return pages.map((entry) => ({
-    // Byte-for-byte. No trimming, no slugifying, no case folding.
-    params: { page: entry.data.outputPath },
+    // Byte-for-byte. No trimming, no slugifying, no case folding — with the
+    // one exception `routeParamOf` in lib/translations.mjs explains. It lives
+    // there and not here because Astro compiles getStaticPaths on its own:
+    // a helper declared in this frontmatter is not in scope inside it.
+    params: { page: routeParamOf(entry.data.outputPath) },
     props: { entry, all: [...byPath.values()], trackIdBySuitAndTitle },
   }));
 }
+
 
 const { entry, all, trackIdBySuitAndTitle } = Astro.props;
 const d = entry.data;

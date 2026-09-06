@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Maar World — one static Astro site consolidating maar.world, collect.maar.world and tree.maar.world.",
   "engines": {
-    "node": ">=20.3.0"
+    "node": ">=22.12.0"
   },
   "scripts": {
     "dev": "node scripts/assemble-public.mjs && astro dev",
@@ -34,19 +34,20 @@
     "author:content-expectations": "node scripts/author-content-expectations.mjs"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.14",
-    "@astrojs/react": "^5.0.0",
-    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/markdown-remark": "^7.3.0",
+    "@astrojs/mdx": "^8.0.0",
+    "@astrojs/react": "^6.0.5",
+    "@astrojs/sitemap": "^3.7.4",
     "@fontsource-variable/archivo": "^5.3.0",
     "@fontsource/bodoni-moda": "^5.3.0",
     "@fontsource/dm-mono": "^5.3.0",
     "@fontsource/libre-franklin": "^5.3.0",
-    "@material-symbols/svg-400": "0.45.7",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "astro": "^5.18.2",
+    "@material-symbols/svg-400": "0.47.1",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "astro": "^7.3.1",
     "embla-carousel": "^8.6.0",
-    "pdfjs-dist": "^5.6.205",
+    "pdfjs-dist": "^6.3.289",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   }

@@ -26,7 +26,7 @@
  */
 
 import { runStandalone } from './lib/report.mjs';
-import { plainText, mainOf, comparable } from './lib/html-text.mjs';
+import { plainText, mainOf, comparable, decodeAttrEntities } from './lib/html-text.mjs';
 import { ARTIFACTS, has, loadJson, indexDist, readDistFile } from './lib/artifacts.mjs';
 import { resolveRoute } from './lib/routes.mjs';
 
@@ -308,8 +308,20 @@ export async function checkContent(report) {
       }
     }
 
+    /**
+     * Compared against the attribute-decoded HTML as well as the raw HTML.
+     *
+     * The baseline records a link as production WROTE it — `?a=1&raw=1` — and
+     * that is also what Astro 5 emitted for an anchor that arrived as raw HTML
+     * in a record body. Astro 7's compiler serialises the same attribute as
+     * `&amp;raw=1`, which is the correct HTML for the identical URL: a browser
+     * requests `&raw=1` from either. `decodeAttrEntities` is the same decoding
+     * the external-link baseline already applies to hrefs, so the two checks
+     * keep asking one question. MW-18.
+     */
+    const attrs = decodeAttrEntities(html);
     for (const href of page.links || []) {
-      if (!html.includes(href)) {
+      if (!html.includes(href) && !attrs.includes(href)) {
         const p = `${page.url}: missing link ${href}`;
         problems.push(p);
         byKind.links.push(p);

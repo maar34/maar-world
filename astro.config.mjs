@@ -3,7 +3,8 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { unified } from '@astrojs/markdown-remark';
+import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { execSync } from 'node:child_process';
 import { imageSize } from './src/lib/image-size.mjs';
@@ -126,32 +127,32 @@ const NOINDEX = new Set([
 ]);
 
 /**
- * MAKE `npm run dev` SERVE THE URLS THE HOST SERVES.
+ * THE SIX DIRECTORY-INDEX RECORDS, AND HOW THEY ARE ROUTED — MW-18.
  *
- * `build.format: 'file'` emits a page whose `outputPath` is `collect/index` as
- * `collect/index.html`, and a static host — GitHub Pages today, `astro preview`
- * locally — resolves `/collect` to it. Astro's dev server matches route params
- * literally, so in dev only `/collect/index` answered and `/collect` was a 404.
+ * Six records carry an `outputPath` ending in `index`: the home page and the
+ * two area hubs, in both languages. The contract spells their files literally
+ * — `collect/index.html`, `tree/index.html` — so the record keeps that name.
  *
- * Three pages have that shape: `index`, `collect/index`, `tree/index` — the
- * home page and the two area hubs, which is to say the three most linked URLs
- * on the site. In dev, every one of them 404'd.
+ * Astro 7 changed what a page can be looked up by. Before rendering any page
+ * request it strips `/index.html` and `.html` from the path the way a static
+ * host does, and only then asks `getStaticPaths` for a match. `/collect/index`
+ * therefore arrives as `/collect`, and a static path keyed `collect/index`
+ * is never found: all six failed the build with NoMatchingStaticPathFound,
+ * under `build.format: 'file'` and `'preserve'` alike. The route now keys them
+ * by the path the host serves them at — `collect`, and `undefined` for `/` —
+ * see `routeParamOf` in `src/pages/[...page].astro`. That is also why `npm run
+ * dev` no longer needs the request rewrite that used to live here: `/collect`
+ * matches directly, the way it does on the host.
  *
- * This was in HANDOFF.md as a documented trap, and a documented footgun is a
- * patch: it cost the owner real time — "it gives 404 all the time and I need to
- * restart the server, sometimes works sometimes not". It was never intermittent.
- * It was 404 on `dev` and 200 on `preview`, every time, and which one you had
- * running decided which you saw.
+ * What the key does not decide is the file name. With the shorter key Astro
+ * emits `collect.html`, and the contract wants `collect/index.html`, so the
+ * hook below moves each one after the build — a rename of the file Astro just
+ * wrote, nothing rendered twice and nothing served from two places. The root
+ * needs no move: `/` is written as `index.html` already. The list is derived
+ * from the records rather than hardcoded, so a fourth hub needs no edit here.
  *
- * DEV ONLY, BY CONSTRUCTION. This is a Vite dev-server middleware. It cannot
- * run at build time, so it cannot add, remove or rename a single route: the
- * frozen manifest and `verify:contract` are untouchable from here. What it does
- * is make dev *wrong in the same way production is right* — an internal rewrite,
- * never a redirect, so the URL in the address bar stays exactly what the visitor
- * typed and `trailingSlash: 'never'` still holds.
- *
- * The list is derived from the content records rather than hardcoded, so a
- * fourth hub added later needs no edit here.
+ * `verify:routes` holds `dist/` to the manifest, so a hub that lands under the
+ * wrong name fails the build rather than the deploy.
  */
 function directoryIndexPages(root = new URL('./src/content/', import.meta.url).pathname) {
   const found = new Set();
@@ -161,27 +162,32 @@ function directoryIndexPages(root = new URL('./src/content/', import.meta.url).p
       if (statSync(p).isDirectory()) walk(p);
       else if (entry.endsWith('.md') || entry.endsWith('.mdx')) {
         const m = /^outputPath:\s*"?([^"\n]+)"?\s*$/m.exec(readFileSync(p, 'utf8'));
-        if (m && /(^|\/)index$/.test(m[1].trim())) found.add(`/${m[1].trim()}`);
+        if (m && /(^|\/)index$/.test(m[1].trim())) found.add(m[1].trim());
       }
     }
   };
-  try { walk(root); } catch { /* no content yet — dev has nothing to rewrite */ }
+  try { walk(root); } catch { /* no content yet — nothing to relocate */ }
   return found;
 }
 
-function devHostSemantics() {
+function directoryIndexFiles() {
   return {
-    name: 'maar-dev-host-semantics',
-    apply: 'serve',
-    configureServer(server) {
-      const pages = directoryIndexPages();
-      server.middlewares.use((req, _res, next) => {
-        const [path, query = ''] = (req.url || '/').split('?');
-        // `/` is the one the host maps to `/index`; the rest map `/x` -> `/x/index`.
-        const target = path === '/' ? '/index' : `${path.replace(/\/$/, '')}/index`;
-        if (pages.has(target)) req.url = target + (query ? `?${query}` : '');
-        next();
-      });
+    name: 'maar-directory-index-files',
+    hooks: {
+      'astro:build:done': ({ dir, logger }) => {
+        for (const outputPath of directoryIndexPages()) {
+          const parent = outputPath.replace(/(^|\/)index$/, '');
+          if (!parent) continue; // `/` is already `index.html`
+          const from = new URL(`${parent}.html`, dir);
+          const to = new URL(`${parent}/index.html`, dir);
+          if (!existsSync(from)) {
+            throw new Error(`[maar-directory-index-files] expected ${from.pathname} — was the ${outputPath} record routed under a different key?`);
+          }
+          mkdirSync(dirname(to.pathname), { recursive: true });
+          renameSync(from.pathname, to.pathname);
+          logger.info(`${parent}.html -> ${parent}/index.html`);
+        }
+      },
     },
   };
 }
@@ -227,9 +233,7 @@ export default defineConfig({
    * `fs.allow`, `hmr` — stay under `vite.server` below, where they are read.
    */
   server: HAS_CERTS ? { host: DEV_HOST, port: DEV_PORT } : { port: DEV_PORT },
-  // Dev-only. `apply: 'serve'` means it never participates in a build.
   vite: {
-    plugins: [devHostSemantics()],
     server: {
       // Slots symlink node_modules to the primary checkout, so dependency
       // assets resolve outside this root. Allow the parent holding both.
@@ -257,12 +261,32 @@ export default defineConfig({
    * The only markdown plugin this build has, and it adds two attributes to
    * images that already exist. It rewrites no URL, emits no element and pulls in
    * no dependency — see `rehypeImageSize` above.
+   *
+   * IT RUNS ON THE REMARK/REHYPE PIPELINE, NAMED EXPLICITLY — MW-18. Astro 7
+   * made Sätteri the default markdown processor, and Sätteri runs no rehype
+   * plugins: under the default, `rehypePlugins` is accepted and ignored, and
+   * every markdown image silently loses its width and height again. The
+   * unified processor is the pipeline Astro 5 ran, so ~160 records full of raw
+   * HTML keep rendering byte-for-byte as they did — which is what the frozen
+   * content fingerprints in `verify/` are measured against. `@astrojs/mdx`
+   * compiles through the same processor, so `.mdx` bodies follow.
    */
-  markdown: { rehypePlugins: [rehypeImageSize] },
+  markdown: { processor: unified({ rehypePlugins: [rehypeImageSize] }) },
+  /**
+   * `true` is what Astro 5 did; Astro 7's default is `'jsx'`, which strips
+   * whitespace between inline elements by JSX rules. Either is fine for a
+   * browser. This site is also measured: `verify:cards` fingerprints the card
+   * description on 35 NFC pages and `verify:content` holds body lengths to a
+   * floor taken from production, so the compression rule is pinned to the one
+   * those numbers were frozen under rather than left to drift with a default.
+   */
+  compressHTML: true,
   // No analytics, no third-party anything. Prefetch is same-origin only.
   prefetch: false,
   devToolbar: { enabled: false },
   integrations: [
+    // See the note on `directoryIndexFiles` above: the six `…/index` records.
+    directoryIndexFiles(),
     /**
      * React exists in this build for exactly one island: the Helix diagram at
      * /helix-diagram.html. That page was React 18 + ReactDOM + @babel/standalone
@@ -302,8 +326,8 @@ export default defineConfig({
      * `.md` REMAINS THE DEFAULT and `content.config.ts` still says so. MDX
      * requires JSX-valid markup, which the migrated bodies are not; a body is
      * converted to `.mdx` when its structure is being lifted out, not before.
-     * Pinned to the v4 line because v5 requires Astro 6 and this build is on
-     * Astro 5 — upgrading Astro is a much larger change than this one.
+     * It tracks the major that matches this build's Astro — v4 for Astro 5,
+     * v8 for Astro 7 (MW-18). Its major is not chosen independently.
      */
     mdx(),
     sitemap({

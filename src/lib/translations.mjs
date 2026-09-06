@@ -153,6 +153,28 @@ export const urlOf = (outputPath) =>
   encodeURI(`/${outputPath.replace(/(^|\/)index$/, '')}`.replace(/\/(?=$)/, '')) || '/';
 
 /**
+ * The route key for a record — its `outputPath`, except for a directory index.
+ *
+ * Astro 7 looks a page up by the path a static host would serve it at: it
+ * strips `/index.html` and `.html` from every page request before matching, so
+ * `collect/index` is requested as `collect` and `index` as `/`. A static path
+ * keyed `collect/index` is never asked for, and the build fails with
+ * NoMatchingStaticPathFound. The six records whose `outputPath` ends in `index`
+ * are therefore keyed by the shorter path — the same rule `urlOf` above applies
+ * to their links — and by `undefined`, Astro's spelling of "no segment" for a
+ * rest parameter, at the root.
+ *
+ * RAW, NOT ENCODED. `urlOf` percent-encodes for an href; a route param is the
+ * literal path, and one Collect card path ends in a space that must stay a
+ * space. ONLY the key changes: the record's `outputPath` is untouched and every
+ * link, canonical URL and hreflang still derives from it. The emitted FILE is
+ * put back where the contract spells it — `collect/index.html` — by the
+ * `directoryIndexFiles` hook in astro.config.mjs, which explains the whole
+ * arrangement. MW-18.
+ */
+export const routeParamOf = (outputPath) => outputPath.replace(/(^|\/)index$/, '') || undefined;
+
+/**
  * English navigation URL → the same destination in `lang`.
  *
  * ── The defect this closes ────────────────────────────────────────────────────

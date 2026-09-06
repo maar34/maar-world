@@ -15,6 +15,17 @@ the long dimension-chain model is the final, sixth section.
 **Last shipped:** the card story now sits behind a `<details>` disclosure,
 closed by default, on both card routes — `2def140` on `main`.
 
+## ASTRO 7 — MW-18, on `wt/1-mw-18-upgrade-astro-7`
+
+Astro 5.18 → 7.3.1, mdx 8, react 6, pdfjs 6, Node ≥ 22.12 (`nvm use 22`; CI on 22).
+`npm run verify` = 100 passed under Node 22, and the emitted file set is identical to the
+Astro 5 build. Three things had to be answered and each is explained beside its code:
+the markdown processor is named (`unified()`, or the image-size rehype plugin is silently
+ignored), `compressHTML: true` is pinned, and the six `…/index` records are keyed by the
+host path with the file renamed back after the build — Astro 7 strips `/index.html`
+before the static-path lookup, so `collect/index` can no longer be found by its own key.
+Full account: `.agents/tasks/MW-18-astro-7-upgrade.md`.
+
 ## THE CARD STORY IS HIDDEN BY DISCLOSURE, NOT BY DELETION
 
 `card_description` is roughly half the words on a card page. The owner asked
