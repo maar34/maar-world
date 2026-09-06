@@ -360,7 +360,32 @@ export const pageSchema = z
      * this field fixes: the home page was rendering as an article because
      * "article" was the only thing the route knew how to be.
      */
-    family: z.enum(['home', 'tree', 'collect']).optional(),
+    family: z.enum(['home', 'tree', 'collect', 'notfound']).optional(),
+
+    /**
+     * ── family "notfound" only — MW-17 ──────────────────────────────────────
+     *
+     * The words the 404 page is drawn from. The family draws the label line,
+     * the heading with its marks, and the two actions; the record's body is
+     * the explanation underneath and `description` is the lede.
+     *
+     * `mark` names the word the heading STRIKES and `echo` the run it prints
+     * twice — words, not markup, the `markedWord` rule above. The strike is the
+     * one struck word on the site and stays here because the sentence already
+     * says the page is missing; see the note on `mark.strike` in mark.css.
+     * Both are optional and a heading names at most one of each: the h1 row of
+     * the rules-of-use table allows two marks, and that is the two.
+     */
+    notfound: z
+      .object({
+        /** The label line above the heading, e.g. "404 · page not found". */
+        meta: z.string().min(1),
+        /** The whole heading, as plain text. */
+        heading: z.string().min(1),
+        mark: markedWord,
+        echo: markedWord,
+      })
+      .optional(),
 
     /**
      * ── family 01 only ──────────────────────────────────────────────────────
@@ -537,6 +562,16 @@ export const pageSchema = z
           'a record with family: "collect" must carry a `collect` field — the family draws the ' +
           'whole page from it, so without it the page renders empty. See MW-19 and ' +
           'src/components/families/Collect.astro.',
+      });
+    }
+    // The same rule, for the same reason, on the second family that reads a field.
+    if (value?.family === 'notfound' && !value.notfound) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['notfound'],
+        message:
+          'a record with family: "notfound" must carry a `notfound` field — the family draws the ' +
+          'heading and its actions from it. See MW-17 and src/components/families/NotFound.astro.',
       });
     }
   });

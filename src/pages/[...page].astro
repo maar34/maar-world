@@ -39,6 +39,7 @@ import Home from '../components/families/Home.astro';
 import TreeHub from '../components/families/TreeHub.astro';
 import Collect from '../components/families/Collect.astro';
 import LabIndex from '../components/families/LabIndex.astro';
+import NotFound from '../components/families/NotFound.astro';
 import CollageField from '../components/patterns/CollageField.astro';
 import CarouselScript from '../components/ui/CarouselScript.astro';
 import PdfViewerScript from '../components/ui/PdfViewerScript.astro';
@@ -124,14 +125,23 @@ export async function getStaticPaths() {
       .map((c) => [`${c.data.suit_title}|${c.data.card_title}`, c.data.track_v2_id]),
   );
 
-  return pages.map((entry) => ({
-    // Byte-for-byte. No trimming, no slugifying, no case folding — with the
-    // one exception `routeParamOf` in lib/translations.mjs explains. It lives
-    // there and not here because Astro compiles getStaticPaths on its own:
-    // a helper declared in this frontmatter is not in scope inside it.
-    params: { page: routeParamOf(entry.data.outputPath) },
-    props: { entry, all: [...byPath.values()], trackIdBySuitAndTitle },
-  }));
+  return pages
+    /**
+     * `404` has a route of its own — src/pages/404.astro — because the dev
+     * server serves a custom not-found page only from a route literally named
+     * `/404`, and this catch-all is not that name. The record stays in `all`
+     * (it is a published page); it is only not emitted from here, so one file
+     * has one writer. MW-17.
+     */
+    .filter((entry) => entry.data.outputPath !== '404')
+    .map((entry) => ({
+      // Byte-for-byte. No trimming, no slugifying, no case folding — with the
+      // one exception `routeParamOf` in lib/translations.mjs explains. It lives
+      // there and not here because Astro compiles getStaticPaths on its own:
+      // a helper declared in this frontmatter is not in scope inside it.
+      params: { page: routeParamOf(entry.data.outputPath) },
+      props: { entry, all: [...byPath.values()], trackIdBySuitAndTitle },
+    }));
 }
 
 
@@ -687,6 +697,20 @@ const aiNotice =
         strings={(LAB_INTRO[d.lang] ?? LAB_INTRO.en).strings}
         pinnedKey={LAB_PINNED}
       />
+    )
+  }
+
+  {
+    /**
+     * PAGE FAMILY 09 — the 404. Drawn from the record's `notfound` field, with
+     * the body as the explanation underneath. The host serves this one file
+     * for every address it has no page for, so it is the page a mistyped
+     * card code lands on — see the body copy. MW-17.
+     */
+    d.family === 'notfound' && d.notfound && (
+      <NotFound copy={d.notfound} lede={d.description} lang={d.lang} hasBody={bodyHasContent}>
+        <Content />
+      </NotFound>
     )
   }
 
