@@ -441,6 +441,39 @@ export const HOME_ACTIONS = [
 ] as const;
 
 /**
+ * The 404 page's two actions — MW-17. Same shape as HOME_ACTIONS, for the
+ * same reason: the budget is data you can read in one place.
+ *
+ * The home page takes the stamp because it is the answer to "where now" on a
+ * page whose whole point is that the address led nowhere. The second action
+ * is quiet: a 404 is not a place to spend the break, and a visitor who scanned
+ * a physical card and landed here needs a way to say so, not a gesture.
+ * `/bookings` is the contact page — the record's body says why they might
+ * write. Hrefs are the English paths; a Spanish 404 does not exist because the
+ * host serves one error page, and the header already offers the language.
+ */
+export const NOTFOUND_ACTIONS = [
+  {
+    href: '/',
+    label: 'Back to the home page',
+    labelEs: 'Volver al inicio',
+    variant: 'primary',
+    icon: undefined,
+    emphasis: 'stamp',
+    gesture: undefined,
+  },
+  {
+    href: '/bookings',
+    label: 'Write to us',
+    labelEs: 'Escribinos',
+    variant: 'secondary',
+    icon: 'speaker_group',
+    emphasis: 'quiet',
+    gesture: undefined,
+  },
+] as const;
+
+/**
  * The Collect landing's closing section, and the one place to edit it.
  *
  * These two blocks used to be `.hero--dark` plates in the migrated body: a

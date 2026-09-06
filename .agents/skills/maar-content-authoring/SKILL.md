@@ -155,6 +155,7 @@ Two converted examples, and they are converted differently on purpose:
 | | |
 |---|---|
 | **a landing** (`collect/index`) | a page family. `families/Collect.astro` draws the whole page from record fields. The body is empty. |
+| **the 404** (`404`) | a page family. `families/NotFound.astro` draws the label line, the heading with its two marks and the two actions from `notfound`; the body is the explanation underneath. |
 | **an article** (`lab/*/ip-orchestra`) | `.mdx`. Prose stays markdown; a block calls a component where it goes. A family cannot express an article, because its prose and its blocks interleave and fixed slots would move every carousel to the end. |
 
 **`.md` is still the default.** Convert a body to `.mdx` when you are lifting its

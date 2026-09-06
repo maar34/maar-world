@@ -39,6 +39,7 @@ import Home from '../components/families/Home.astro';
 import TreeHub from '../components/families/TreeHub.astro';
 import Collect from '../components/families/Collect.astro';
 import LabIndex from '../components/families/LabIndex.astro';
+import NotFound from '../components/families/NotFound.astro';
 import CollageField from '../components/patterns/CollageField.astro';
 import CarouselScript from '../components/ui/CarouselScript.astro';
 import PdfViewerScript from '../components/ui/PdfViewerScript.astro';
@@ -683,6 +684,20 @@ const aiNotice =
         strings={(LAB_INTRO[d.lang] ?? LAB_INTRO.en).strings}
         pinnedKey={LAB_PINNED}
       />
+    )
+  }
+
+  {
+    /**
+     * PAGE FAMILY 09 — the 404. Drawn from the record's `notfound` field, with
+     * the body as the explanation underneath. The host serves this one file
+     * for every address it has no page for, so it is the page a mistyped
+     * card code lands on — see the body copy. MW-17.
+     */
+    d.family === 'notfound' && d.notfound && (
+      <NotFound copy={d.notfound} lede={d.description} lang={d.lang} hasBody={bodyHasContent}>
+        <Content />
+      </NotFound>
     )
   }
 

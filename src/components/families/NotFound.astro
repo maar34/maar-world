@@ -1,0 +1,182 @@
+---
+/**
+ * Page family 09 — the 404 / unavailable state. MW-17.
+ *
+ * The one page a visitor reaches by mistake, so it is drawn as a page and not
+ * as an article: a label line, a heading in the display face carrying its
+ * marks, a one-line lede, two ways back in, and then the explanation. Before
+ * this the record rendered through the default branch as a `.prose` column —
+ * correct typography, a struck word, and three links buried in a paragraph.
+ *
+ * ── THE HEADING'S TWO MARKS, AND WHY THEY ARE THESE TWO ─────────────────────
+ *
+ * The direction mockup draws the 404 as the one ransom-note page outside the
+ * landings and card covers, and the rules-of-use table allows an h1 two marks.
+ *
+ *   strike   on `mark`. The one struck word on the site, kept from the record
+ *            that had it: the sentence already says the page is missing, so
+ *            the bar adds emphasis and no information — the test in mark.css.
+ *   echo     on `echo`. The overprint the Lab's h1 and the Collect statements
+ *            already use, on the run of words that carries the sentence.
+ *
+ * Below 600px the responsive table allows one, and the echo is the one that
+ * stands down — the strike is the mark that says something about the copy.
+ * Both are named on the record as words and wrapped here, never as markup;
+ * if a word is not found the heading prints flat rather than failing, the
+ * same choice `patterns/statement` makes and for the same reason.
+ *
+ * The two actions are chrome — NOTFOUND_ACTIONS in `config/site`, one stamp
+ * and no break — and the budget `verify:actions` counts is spent there.
+ */
+import Action from '../ui/Action.astro';
+import { NOTFOUND_ACTIONS, labelFor } from '../../config/site';
+
+interface Copy {
+  meta: string;
+  heading: string;
+  mark?: string;
+  echo?: string;
+}
+
+interface Props {
+  /** The record's `notfound` field. */
+  copy: Copy;
+  /** The record's `description` — the one line under the heading. */
+  lede?: string;
+  lang?: string;
+  /** Whether the record's body has anything in it once comments are stripped. */
+  hasBody?: boolean;
+}
+
+const { copy, lede, lang, hasBody = false } = Astro.props;
+
+const NAV_LABEL: Record<string, string> = {
+  en: 'Ways back into the site',
+  es: 'Caminos de vuelta al sitio',
+};
+
+type Kind = 'plain' | 'strike' | 'echo';
+interface Part { text: string; kind: Kind }
+
+/**
+ * Whole-word, case-sensitive, Unicode-aware — `patterns/statement`'s rule.
+ * Returns the match range or null.
+ */
+function locate(line: string, word: string | undefined): [number, number] | null {
+  if (!word) return null;
+  const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const at = new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, 'u').exec(line);
+  return at ? [at.index, at.index + at[0].length] : null;
+}
+
+/**
+ * The heading cut into plain runs and marked runs, in reading order.
+ *
+ * If the two marks overlap — an `echo` that contains the `mark` word — the
+ * echo is dropped: a struck word inside an overprint is two marks on one word,
+ * which "marks never stack" forbids, and the strike is the one that means.
+ */
+function segments(line: string, mark?: string, echo?: string): Part[] {
+  const spans: { from: number; to: number; kind: Kind }[] = [];
+  const m = locate(line, mark);
+  if (m) spans.push({ from: m[0], to: m[1], kind: 'strike' });
+  const e = locate(line, echo);
+  if (e && !(m && e[0] < m[1] && m[0] < e[1])) spans.push({ from: e[0], to: e[1], kind: 'echo' });
+  spans.sort((a, b) => a.from - b.from);
+  const parts: Part[] = [];
+  let cursor = 0;
+  for (const s of spans) {
+    if (s.from > cursor) parts.push({ text: line.slice(cursor, s.from), kind: 'plain' });
+    parts.push({ text: line.slice(s.from, s.to), kind: s.kind });
+    cursor = s.to;
+  }
+  if (cursor < line.length) parts.push({ text: line.slice(cursor), kind: 'plain' });
+  return parts;
+}
+
+const parts = segments(copy.heading, copy.mark, copy.echo);
+---
+
+<div class="notfound">
+  <p class="t-meta notfound__meta">{copy.meta}</p>
+
+  {/* Written tight on purpose — see patterns/statement for why a line break
+      inside a mark slides the echo off the word it repeats. */}
+  <h1 class="t-display notfound__title">{parts.map((p) =>
+    p.kind === 'plain' ? p.text
+    : p.kind === 'strike' ? <span class="mark mark--strike">{p.text}</span>
+    : <span class="mark mark--overprint">{p.text}<span class="mark__echo" aria-hidden="true">{p.text}</span></span>
+  )}</h1>
+
+  {lede && <p class="notfound__lede">{lede}</p>}
+
+  <nav class="notfound__actions" aria-label={NAV_LABEL[lang ?? 'en'] ?? NAV_LABEL.en}>
+    {NOTFOUND_ACTIONS.map((action) => (
+      <Action
+        href={action.href}
+        label={labelFor(action, lang)}
+        variant={action.variant}
+        emphasis={action.emphasis}
+        gesture={action.gesture}
+        icon={action.icon}
+      />
+    ))}
+  </nav>
+
+  {
+    hasBody && (
+      <div class="prose notfound__body">
+        <slot />
+      </div>
+    )
+  }
+</div>
+
+<style>
+  /* The same vertical rhythm as the route's default `.page`: the shell owns
+     the width, this owns only the column. Sibling groups use gap, never
+     margins. */
+  .notfound {
+    padding-block: var(--s-16) var(--s-24);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-6);
+  }
+
+  .notfound__meta {
+    margin: 0;
+    color: var(--ink-meta);
+  }
+
+  /* A statement's measure, not a column's: the line is meant to be read as
+     one sentence, and the marks need the words around them on the same line
+     to read as marks rather than badges. */
+  .notfound__title {
+    margin: 0;
+    max-inline-size: 16ch;
+    text-wrap: balance;
+  }
+
+  .notfound__lede {
+    margin: 0;
+    max-inline-size: var(--measure);
+    color: var(--ink-muted);
+  }
+
+  /* The components carry their own mechanics; this group only sets the
+     rhythm, and stays usable if the pair ever becomes one action. */
+  .notfound__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    margin-block-start: var(--s-2);
+  }
+
+  /* One mark below 600px — the responsive table's h1 cap. The echo is the
+     one that stands down. */
+  @media (max-width: 599px) {
+    .notfound__title .mark__echo {
+      display: none;
+    }
+  }
+</style>
