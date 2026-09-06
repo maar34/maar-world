@@ -19,6 +19,15 @@ Before this the record rendered through the route's default branch as an article
 - **Schema.** `family` enum gains `notfound`; a `notfound` object field; the same superRefine
   rule as `collect` (family without its field is a build error).
 
+## The dev server, and why `src/pages/404.astro` exists
+
+`npm run dev` serves a custom not-found page only from a route literally named `/404`; a
+catch-all is not that name, so dev showed Astro's own "404: Not Found" (logo and all) for
+every unknown URL and for `/404` itself, while the built `404.html` was already the record.
+`src/pages/404.astro` renders the same record through `[...page].astro` as a component, and
+the catch-all leaves `404` out of its static paths so one file has one writer. Checked on dev:
+`/does-not-exist`, `/404` and `/ABC1234` all render the page with status 404.
+
 ## Open
 
 - `routes/policy.json` still lists `/404` as `drop` / unresolved with the question "decide whether

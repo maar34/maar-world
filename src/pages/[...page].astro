@@ -125,11 +125,20 @@ export async function getStaticPaths() {
       .map((c) => [`${c.data.suit_title}|${c.data.card_title}`, c.data.track_v2_id]),
   );
 
-  return pages.map((entry) => ({
-    // Byte-for-byte. No trimming, no slugifying, no case folding.
-    params: { page: entry.data.outputPath },
-    props: { entry, all: [...byPath.values()], trackIdBySuitAndTitle },
-  }));
+  return pages
+    /**
+     * `404` has a route of its own — src/pages/404.astro — because the dev
+     * server serves a custom not-found page only from a route literally named
+     * `/404`, and this catch-all is not that name. The record stays in `all`
+     * (it is a published page); it is only not emitted from here, so one file
+     * has one writer. MW-17.
+     */
+    .filter((entry) => entry.data.outputPath !== '404')
+    .map((entry) => ({
+      // Byte-for-byte. No trimming, no slugifying, no case folding.
+      params: { page: entry.data.outputPath },
+      props: { entry, all: [...byPath.values()], trackIdBySuitAndTitle },
+    }));
 }
 
 const { entry, all, trackIdBySuitAndTitle } = Astro.props;

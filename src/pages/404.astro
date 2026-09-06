@@ -1,0 +1,38 @@
+---
+/**
+ * `/404`, as a route of its own — MW-17.
+ *
+ * The 404 is a content record like every other page, and `[...page].astro`
+ * would emit it as `404.html` on its own. It gets this file because of what the
+ * DEV server does with an address that matches nothing: it looks for a route
+ * literally named `/404`, and a catch-all is not that name, so `npm run dev`
+ * showed Astro's own "404: Not Found" — logo and all — for every mistyped URL,
+ * and for `/404` itself. Production never did: GitHub Pages serves `404.html`
+ * as the host error document and that file was always the record. The ticket
+ * says the default page is replaced; this replaces it in both places.
+ *
+ * It renders the SAME record through the SAME route component, handed the
+ * props `[...page].astro` builds for itself, so there is one 404 page and not
+ * a second template to keep in step. `[...page].astro` in turn leaves `404`
+ * out of its static paths: two routes writing one file is a conflict Astro
+ * resolves by whichever ran last.
+ *
+ * `trackIdBySuitAndTitle` is empty because it is the card pages' join and the
+ * 404 is not a card. `all` is the same published set the catch-all hands every
+ * page, so the language switcher and the alternates behave as they do
+ * everywhere else.
+ */
+import { getCollection } from 'astro:content';
+import Page from './[...page].astro';
+import { publishable } from '../lib/publishing.mjs';
+
+const pages = publishable(await getCollection('pages'));
+const entry = pages.find((p) => p.data.outputPath === '404');
+if (!entry) {
+  throw new Error(
+    'src/pages/404.astro: no page record with outputPath "404" — src/content/pages/en/404.md is the 404 page.',
+  );
+}
+---
+
+<Page entry={entry} all={pages} trackIdBySuitAndTitle={{}} />
