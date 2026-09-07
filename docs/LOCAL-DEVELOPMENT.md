@@ -13,7 +13,22 @@ lives in `ps-all` and defaults to that root, so every script needs to be pointed
 
 ## One-time setup
 
-### 1. Host entry
+### 1. Node 22
+
+Astro 7 requires Node ≥ 22.12 (`engines` in `package.json`) and refuses to start on 20 — it
+does not degrade, it exits. `.nvmrc` at the repo root names the version:
+
+```sh
+nvm install 22 && nvm use 22
+```
+
+An interactive shell here still opens on whatever `nvm alias default` says, so `nvm use` is
+per-shell until you change that default. The preview server needs no help: the shared
+`boot.sh` reads this same `.nvmrc` and puts that Node in front of the workspace's Homebrew
+node@20 before starting pm2. Without it the process boots, errors on every restart with
+*"Node.js v20 is not supported by Astro"*, and the URL never answers.
+
+### 2. Host entry
 
 `local.maar.world` must resolve to the loopback address. Without it the dev server cannot
 bind the hostname and silently falls back to IPv6 localhost, which is why the site appears
@@ -23,7 +38,7 @@ to work in a browser tab you opened earlier and refuses every fresh request.
 echo "127.0.0.1 local.maar.world" | sudo tee -a /etc/hosts
 ```
 
-### 2. TLS certificate
+### 3. TLS certificate
 
 The dev origin is HTTPS. Certificates are issued by the local `mkcert` CA that already
 signs `local.plantasia.space`, so no new root certificate has to be trusted.
