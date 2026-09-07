@@ -34,7 +34,11 @@ Unchanged because already current: react, react-dom, embla-carousel, the four fo
    path (`routeParamOf` in `lib/translations.mjs`) and `directoryIndexFiles` in `astro.config.mjs`
    renames `collect.html` → `collect/index.html` after the build. The dev-only request rewrite
    that used to fake this in `npm run dev` is gone; `/collect` matches directly now. The emitted
-   file set was diffed against the Astro 5 build: identical.
+   file set was diffed against the Astro 5 build: identical — that is **names only**. One
+   *content* difference came with it: the sitemap's `<loc>` for the six hubs is now
+   `https://maar.world/collect` where Astro 5 wrote `https://maar.world/collect/index`. That is
+   the canonical URL a reader is given and the one the route manifest holds, so it is an
+   improvement rather than a regression, but it is a change and it is recorded here.
 
 One check moved with the compiler: Astro 7 writes `&amp;` inside raw-HTML hrefs where Astro 5
 passed `&` through. `verify:content` now compares links against attribute-decoded HTML as well,

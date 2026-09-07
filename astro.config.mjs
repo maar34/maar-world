@@ -7,6 +7,8 @@ import { unified } from '@astrojs/markdown-remark';
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { execSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { isPublishable } from './src/lib/publishing.mjs';
 import { imageSize } from './src/lib/image-size.mjs';
 
 /**
@@ -154,15 +156,26 @@ const NOINDEX = new Set([
  * `verify:routes` holds `dist/` to the manifest, so a hub that lands under the
  * wrong name fails the build rather than the deploy.
  */
-function directoryIndexPages(root = new URL('./src/content/', import.meta.url).pathname) {
+function directoryIndexPages(root = fileURLToPath(new URL('./src/content/', import.meta.url))) {
   const found = new Set();
   const walk = (dir) => {
     for (const entry of readdirSync(dir)) {
       const p = join(dir, entry);
       if (statSync(p).isDirectory()) walk(p);
       else if (entry.endsWith('.md') || entry.endsWith('.mdx')) {
-        const m = /^outputPath:\s*"?([^"\n]+)"?\s*$/m.exec(readFileSync(p, 'utf8'));
-        if (m && /(^|\/)index$/.test(m[1].trim())) found.add(m[1].trim());
+        const body = readFileSync(p, 'utf8');
+        const m = /^outputPath:\s*"?([^"\n]+)"?\s*$/m.exec(body);
+        if (!m || !/(^|\/)index$/.test(m[1].trim())) continue;
+        /**
+         * A HELD RECORD HAS NO FILE TO MOVE. `[...page].astro` builds through
+         * `publishable()`, so a hub carrying a future `publishAfter` never emits
+         * `<parent>.html` at all. Reading the same field here keeps this walk
+         * agreeing with the route that does the building — otherwise the rename
+         * below would throw on a page whose absence is correct.
+         */
+        const when = /^publishAfter:\s*"?([^"\n]+)"?\s*$/m.exec(body);
+        if (!isPublishable({ publishAfter: when ? when[1].trim() : undefined })) continue;
+        found.add(m[1].trim());
       }
     }
   };
@@ -178,13 +191,18 @@ function directoryIndexFiles() {
         for (const outputPath of directoryIndexPages()) {
           const parent = outputPath.replace(/(^|\/)index$/, '');
           if (!parent) continue; // `/` is already `index.html`
-          const from = new URL(`${parent}.html`, dir);
-          const to = new URL(`${parent}/index.html`, dir);
+          /**
+           * `fileURLToPath` and not `.pathname`: a URL keeps its path
+           * percent-encoded, so a checkout under `~/My Repos/` hands `fs` a
+           * literal `%20` and the rename fails on a path that exists.
+           */
+          const from = fileURLToPath(new URL(`${parent}.html`, dir));
+          const to = fileURLToPath(new URL(`${parent}/index.html`, dir));
           if (!existsSync(from)) {
-            throw new Error(`[maar-directory-index-files] expected ${from.pathname} — was the ${outputPath} record routed under a different key?`);
+            throw new Error(`[maar-directory-index-files] expected ${from} — was the ${outputPath} record routed under a different key?`);
           }
-          mkdirSync(dirname(to.pathname), { recursive: true });
-          renameSync(from.pathname, to.pathname);
+          mkdirSync(dirname(to), { recursive: true });
+          renameSync(from, to);
           logger.info(`${parent}.html -> ${parent}/index.html`);
         }
       },
