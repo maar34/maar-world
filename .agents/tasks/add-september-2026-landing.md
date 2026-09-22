@@ -25,7 +25,7 @@ None supplied.
 
 - “Concert 1” is part of the event label.
 - The supplied English event title is a proper title and remains unchanged on the Spanish page.
-- No venue or article link should be invented because neither was supplied.
+- The supplied conference details identify Musikinstrumenten-Museum in Berlin as the location landmark; no article link should be invented.
 
 ## Invariants in play
 
@@ -35,7 +35,7 @@ None supplied.
 
 ## Risks
 
-- The supplied event has no venue, unlike many older entries; it should remain omitted rather than guessed.
+- The conference description says the event is in the immediate vicinity of Musikinstrumenten-Museum, so the chronology uses the museum as its compact location landmark.
 
 ## Step-by-step plan
 
