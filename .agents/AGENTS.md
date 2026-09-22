@@ -21,7 +21,7 @@ into this repo.
 1. Claim a worktree slot — `.ps-preview/mw wt-claim maar-world`. `main` is the trunk and direct
    commits on it are blocked. See `references/local-dev-and-testing.md`.
 2. Identify the narrowest skill covering the task.
-3. Copy `templates/task.md` and fill it in.
+3. For substantial or multi-step work, copy `templates/task.md` and fill it in. Skip this for trivial content edits.
 4. Do one unit of work.
 5. Run the **narrowest relevant check** — `npm run verify:cards`, not the whole suite.
 6. Commit with the issue key in the message. Say what changed, the number that moved, and
