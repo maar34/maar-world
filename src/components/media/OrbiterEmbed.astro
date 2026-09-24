@@ -60,8 +60,8 @@ interface Props {
    * OPTIONAL, AND ONLY BECAUSE OF `mode`. A listening frame without one has
    * nothing to play, and `resolveConfigRequest` would fall through to the app's
    * own default — so the page must always name it. The editor is the exception:
-   * `?mode=edit` with no track opens the workshop on its own demo, which is
-   * exactly what a demonstration wants. Naming a track there would open the
+   * `?mode=edit&demo=1` with no track opens the workshop on its own demo, which
+   * is exactly what a demonstration wants. Naming a track there would open the
    * editor on somebody's release instead.
    */
   trackId?: string;
@@ -69,7 +69,7 @@ interface Props {
   orbiterId?: string;
   /** Pin a specific Entangled World. Omitted = the track's own. */
   entangledWorldId?: string;
-  /** `edit` opens the workshop rather than the player. Omitted = play. */
+  /** `edit` opens the workshop demo (`mode=edit&demo=1`). Omitted = play. */
   mode?: 'edit';
   /** The heading above it, in the page's own language. */
   title: string;
@@ -110,7 +110,8 @@ const {
  * need no escaping; a plain join keeps the address byte-identical to the one
  * `[cardCode].astro` already writes for the card pages.
  */
-const query = Object.entries({ trackId, orbiterId, entangledWorldId, mode })
+const demo = mode === 'edit' ? 1 : undefined;
+const query = Object.entries({ trackId, orbiterId, entangledWorldId, mode, demo })
   .filter(([, value]) => Boolean(value))
   .map(([key, value]) => `${key}=${value}`)
   .join('&');
