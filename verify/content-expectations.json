@@ -84,7 +84,7 @@
     "legacy-site-exact": 116,
     "legacy-site-approximate": 14
   },
-  "headingsAsserted": 384,
+  "headingsAsserted": 381,
   "imagesAsserted": 169,
   "embedsAsserted": 158,
   "linksAsserted": 176,
@@ -1593,7 +1593,7 @@
         "textSha256": "5c23bc75f1ae86d9",
         "bodyTextLength": 1000,
         "headings": 4,
-        "bodyHeadings": 3,
+        "bodyHeadings": 0,
         "imageCount": 0,
         "iframeCount": 2,
         "outboundLinks": 3
@@ -1611,16 +1611,28 @@
         "article-footer-el",
         "hidden-elements x3"
       ],
-      "excludedPerPage": [],
-      "ownPropertyLinksNotAsserted": 0,
-      "headings": [
-        "Bookings",
-        "Hybrid (Live + DJ) sets",
-        "Contact"
+      "excludedPerPage": [
+        {
+          "kind": "heading",
+          "value": "Bookings | Hybrid (Live + DJ) sets | Contact",
+          "reason": "the three headings. Bookings was folded into Landings by the owner on 2026-11-13: the hybrid-set description and the enquiry form now close /landings, the press kit and spec lines were dropped, and /bookings is a 200 + meta-refresh stub to /landings#contact. Moved and simplified, not lost."
+        },
+        {
+          "kind": "text",
+          "count": 900,
+          "reason": "900 of the 1000 body characters — the page is now a one-line stub. Bookings was folded into Landings by the owner on 2026-11-13: the hybrid-set description and the enquiry form now close /landings, the press kit and spec lines were dropped, and /bookings is a 200 + meta-refresh stub to /landings#contact. Moved and simplified, not lost."
+        },
+        {
+          "kind": "embeds",
+          "count": 1,
+          "reason": "the EPK PDF viewer. Bookings was folded into Landings by the owner on 2026-11-13: the hybrid-set description and the enquiry form now close /landings, the press kit and spec lines were dropped, and /bookings is a 200 + meta-refresh stub to /landings#contact. Moved and simplified, not lost."
+        }
       ],
-      "minTextLength": 850,
+      "ownPropertyLinksNotAsserted": 0,
+      "headings": [],
+      "minTextLength": 85,
       "images": 0,
-      "embeds": 1,
+      "embeds": 0,
       "links": []
     },
     {

@@ -42,7 +42,8 @@ origin: "migrated"
 
 import EmbedPlate from '../../../components/media/EmbedPlate.astro';
 import Mark from '../../../components/patterns/Mark.astro';
-import { LANDINGS as M } from '../../../config/articles';
+import ContactForm from '../../../components/ui/ContactForm.astro';
+import { LANDINGS as M, BOOKINGS } from '../../../config/articles';
 
 # <Mark tilt={2} tear={3}>Landings</Mark>
 ## Sonic events on planet earth
@@ -201,3 +202,17 @@ ENT Worlds
   - [2021](https://www.proximamente.uy/) 📍 Venice, Italy 
 
   ![branch](/img/branch.png)
+
+## Hybrid (Live + DJ) sets
+
+From thirty minutes to four hours: sonic or audiovisual journeys through classical elements, expeditions to solar systems, exoplanets, and stars.
+
+Each concept appears under musical moods ranging from ambient and downtempo to house and techno, always adapting to the moment. Soundscapes and voices bring narrative strands. Over a decade assembling an archive of soundscapes, poetry, testimonies, native South American chants, radio signals, and eclectic music to connect people and cultures through sound.
+
+<ContactForm
+  id="contact"
+  action={BOOKINGS.formAction}
+  heading="Contact"
+  lede="Send a booking inquiry."
+  labels={{ name: 'Your name:', email: 'Your email:', message: 'Your message:', submit: 'Send' }}
+/>

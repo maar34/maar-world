@@ -189,7 +189,6 @@ export const SECTIONS: Record<
     { href: '/orbiters', label: 'Orbiters', labelEs: 'Orbitadores', icon: 'satellite_alt' },
     { href: '/lab', label: 'Lab', labelEs: 'Lab', icon: 'science' },
     { href: '/landings', label: 'Landings', labelEs: 'Aterrizajes', icon: 'travel_explore' },
-    { href: '/bookings', label: 'Bookings', labelEs: 'Contrataciones', icon: 'speaker_group' },
       /**
    * THE INFO BUTTON. Drawn as its icon alone, in both languages — the owner,
    * 2026-08-01: "just leave the info button. Simple."
@@ -313,7 +312,7 @@ export const HOME_ACTIONS = [
  * page whose whole point is that the address led nowhere. The second action
  * is quiet: a 404 is not a place to spend the break, and a visitor who scanned
  * a physical card and landed here needs a way to say so, not a gesture.
- * `/bookings` is the contact page — the record's body says why they might
+ * `/landings#contact` is the contact form — the record's body says why they might
  * write. Hrefs are the English paths; a Spanish 404 does not exist because the
  * host serves one error page, and the header already offers the language.
  */
@@ -328,7 +327,7 @@ export const NOTFOUND_ACTIONS = [
     gesture: undefined,
   },
   {
-    href: '/bookings',
+    href: '/landings#contact',
     label: 'Write to us',
     labelEs: 'Escribinos',
     variant: 'secondary',

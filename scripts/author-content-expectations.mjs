@@ -592,6 +592,30 @@ const EXCLUSIONS = [
       'that loads nothing. There is no embed to preserve.',
   },
   /**
+   * BOOKINGS FOLDED INTO LANDINGS — 2026-11-13.
+   */
+  {
+    url: '/bookings',
+    kind: 'heading',
+    values: ["Bookings", "Hybrid (Live + DJ) sets", "Contact"],
+    reason:
+      "the three headings. Bookings was folded into Landings by the owner on 2026-11-13: the hybrid-set description and the enquiry form now close /landings, the press kit and spec lines were dropped, and /bookings is a 200 + meta-refresh stub to /landings#contact. Moved and simplified, not lost.",
+  },
+  {
+    url: '/bookings',
+    kind: 'text',
+    count: 900,
+    reason:
+      "900 of the 1000 body characters \u2014 the page is now a one-line stub. Bookings was folded into Landings by the owner on 2026-11-13: the hybrid-set description and the enquiry form now close /landings, the press kit and spec lines were dropped, and /bookings is a 200 + meta-refresh stub to /landings#contact. Moved and simplified, not lost.",
+  },
+  {
+    url: '/bookings',
+    kind: 'embeds',
+    count: 1,
+    reason:
+      "the EPK PDF viewer. Bookings was folded into Landings by the owner on 2026-11-13: the hybrid-set description and the enquiry form now close /landings, the press kit and spec lines were dropped, and /bookings is a 200 + meta-refresh stub to /landings#contact. Moved and simplified, not lost.",
+  },
+  /**
    * SKY SOUNDS STOPPED SELLING — 2026-11-13.
    *
    * The owner retired the storefront: the cards are a past project and the site

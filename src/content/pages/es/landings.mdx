@@ -36,7 +36,8 @@ translationOf: "landings"
 
 import EmbedPlate from '../../../components/media/EmbedPlate.astro';
 import Mark from '../../../components/patterns/Mark.astro';
-import { LANDINGS as M } from '../../../config/articles';
+import ContactForm from '../../../components/ui/ContactForm.astro';
+import { LANDINGS as M, BOOKINGS } from '../../../config/articles';
 
 # <Mark tilt={2} tear={3}>Aterrizajes</Mark>
 ## Eventos sonoros en el planeta tierra
@@ -195,3 +196,17 @@ ENT Worlds
   - [2021](https://www.proximamente.uy/) 📍 Venecia, Italia 
 
   ![rama](/img/branch.png)
+
+## Sets híbridos (en vivo + DJ)
+
+De treinta minutos a cuatro horas: viajes sonoros o audiovisuales por los elementos clásicos, expediciones a sistemas solares, exoplanetas y estrellas.
+
+Cada concepto aparece bajo climas musicales que van del ambient y el downtempo al house y al techno, siempre adaptándose al momento. Los paisajes sonoros y las voces traen hilos narrativos. Más de una década reuniendo un archivo de paisajes sonoros, poesía, testimonios, cantos originarios sudamericanos, señales de radio y música ecléctica para conectar a las personas y a las culturas a través del sonido.
+
+<ContactForm
+  id="contact"
+  action={BOOKINGS.formAction}
+  heading="Contacto"
+  lede="Enviá una consulta de contratación."
+  labels={{ name: 'Tu nombre:', email: 'Tu correo electrónico:', message: 'Tu mensaje:', submit: 'Enviar' }}
+/>

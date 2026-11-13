@@ -25,13 +25,15 @@ interface Props {
   /** Heading level. The Collect landing wants h2; an article section wants h3. */
   level?: 2 | 3;
   labels: { name: string; email: string; message: string; submit: string };
+  /** Anchor for links that land on the form — `/landings#contact`. */
+  id?: string;
 }
 
-const { action, heading, lede, level = 2, labels } = Astro.props;
+const { action, heading, lede, level = 2, labels, id } = Astro.props;
 const Heading = `h${level}` as 'h2' | 'h3';
 ---
 
-<div class="form-container">
+<div class="form-container" id={id}>
   <Heading>{heading}</Heading>
   {lede && <p>{lede}</p>}
 
