@@ -1,6 +1,6 @@
 # 0005 — Public card pages sell the suit; NFC card pages still sell nothing
 
-**Status:** accepted
+**Status:** superseded by 0009 (2026-11-13)
 **Date:** 2026-08-06
 **Issue:** MW — cards page copy + suite CTA
 

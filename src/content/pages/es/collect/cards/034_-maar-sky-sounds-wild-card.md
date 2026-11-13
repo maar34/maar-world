@@ -30,10 +30,10 @@ card_description: "El mundo de Maar es un lugar de asombro y de secretos, donde 
   Lo que se traduce es lo único que se lee como prosa: `card_description`. El
   cuerpo quedó vacío: la línea sobre qué desbloquea la carta era falsa (el
   orbitador es de acceso libre) y estaba copiada en los 68 registros, así que
-  ahora la escribe la ruta desde `CARD_OFFER` en src/config/site.ts.
+  se borró (y desde 2026-11-13 no hay oferta: Sky Sounds ya no se vende — decisión 0009).
 
   ESTA CARTA ES LA EXCEPCIÓN: la WildCard no pertenece a ninguna de las tres
   ediciones y no se vende con ellas, así que la ruta no le dibuja ninguna
-  oferta — `suitStoreUrl` devuelve null. Su cuerpo está vacío y así queda. Ver
+  oferta. Su cuerpo está vacío y así queda. Ver
   .agents/decisions/0005-public-card-pages-sell-the-suit.md.
 -->

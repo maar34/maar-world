@@ -14,8 +14,8 @@ collect:
   pitch:
     title: "Creá música con cartas y exoplanetas"
     mark: "exoplanetas"
-    body: "Sky Sounds es la primera colección de cartas que, al escanearlas, te deja escuchar su música y transformarla según el movimiento de los exoplanetas a los que pertenece."
-    cta: "Coleccionar"
+    body: "Sky Sounds es la primera colección de cartas que, al escanearlas, te deja escuchar su música y transformarla según el movimiento de los exoplanetas a los que pertenece. Sky Sounds es un proyecto pasado: las cartas ya no se venden, pero todas se pueden seguir escuchando acá."
+    cta: "Ver las cartas"
   orbiters:
     label: "¿Qué es un orbitador?"
   journey:

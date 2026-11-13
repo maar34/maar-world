@@ -14,8 +14,8 @@ collect:
   pitch:
     title: "Play music cards with exoplanets"
     mark: "exoplanets"
-    body: "Sky Sounds introduces the first-ever card collection that when scanned allows you to listen to their music and transform them based on the movement of the exoplanets they belong."
-    cta: "Collect"
+    body: "Sky Sounds introduces the first-ever card collection that when scanned allows you to listen to their music and transform them based on the movement of the exoplanets they belong. Sky Sounds is a past project: the cards are no longer sold, but every card can still be heard here."
+    cta: "View the cards"
   orbiters:
     label: "What is an Orbiter?"
   journey:

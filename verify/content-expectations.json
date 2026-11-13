@@ -87,7 +87,7 @@
   "headingsAsserted": 384,
   "imagesAsserted": 169,
   "embedsAsserted": 158,
-  "linksAsserted": 179,
+  "linksAsserted": 176,
   "pages": [
     {
       "url": "/",
@@ -125,6 +125,11 @@
           "kind": "images",
           "count": 10,
           "reason": "ten of production's eleven home photographs. Family 01 replaced the photo section with patterns/collage-field — see homeMediaSections() in scripts/lib/home-family.mjs, which cuts the section as a whole. The eleventh, 2024_ss-2.jpeg, is promoted to the feature card cover and is still served. Ledger MW-11 design/page-family-01-home. This one is a design decision about content, not a check artifact — worth re-confirming with the owner."
+        },
+        {
+          "kind": "link",
+          "value": "https://maar-world.bandcamp.com/merch",
+          "reason": "the Sky Sounds Bandcamp store link. Sky Sounds is now a past project and the owner stopped selling the cards on 2026-11-13: every buy button and storefront link left the site in one change, so this page no longer links to the shop. Removal, not loss."
         }
       ],
       "ownPropertyLinksNotAsserted": 0,
@@ -135,7 +140,6 @@
       "images": 1,
       "embeds": 0,
       "links": [
-        "https://maar-world.bandcamp.com/merch",
         "https://plantasia.space"
       ]
     },
@@ -1680,7 +1684,13 @@
         "search-modal",
         "hidden-elements x1"
       ],
-      "excludedPerPage": [],
+      "excludedPerPage": [
+        {
+          "kind": "link",
+          "value": "https://maar-world.bandcamp.com/merch",
+          "reason": "the Sky Sounds Bandcamp store link. Sky Sounds is now a past project and the owner stopped selling the cards on 2026-11-13: every buy button and storefront link left the site in one change, so this page no longer links to the shop. Removal, not loss."
+        }
+      ],
       "ownPropertyLinksNotAsserted": 1,
       "headings": [
         "Sky Sounds",
@@ -1696,9 +1706,7 @@
       "minTextLength": 1144,
       "images": 6,
       "embeds": 1,
-      "links": [
-        "https://maar-world.bandcamp.com/merch"
-      ]
+      "links": []
     },
     {
       "url": "/collect/about",
@@ -6002,6 +6010,11 @@
           "kind": "images",
           "count": 1,
           "reason": "the Tree hub image is hotlinked from herbarium.plantasia.space — a third-party request on page load — and the asset is in no read-only checkout, so it cannot be self-hosted here. Ledger MW-8 tree/sunflower-image (BLOCKED): needs the file or an exception."
+        },
+        {
+          "kind": "link",
+          "value": "https://maar-world.bandcamp.com/merch",
+          "reason": "the Sky Sounds Bandcamp store link. Sky Sounds is now a past project and the owner stopped selling the cards on 2026-11-13: every buy button and storefront link left the site in one change, so this page no longer links to the shop. Removal, not loss."
         }
       ],
       "ownPropertyLinksNotAsserted": 0,
@@ -6010,9 +6023,7 @@
       "minTextLength": 63,
       "images": 0,
       "embeds": 0,
-      "links": [
-        "https://maar-world.bandcamp.com/merch"
-      ]
+      "links": []
     },
     {
       "url": "/tree/max-network-berlin",

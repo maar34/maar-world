@@ -26,7 +26,7 @@
  *                        Keyed by language, both halves adjacent, exactly like
  *                        LAB_INTRO and for the reason stated there.
  *   nowhere              a URL or an image path. Those have no language: they
- *                        are COLLECT_STORE_URL, COLLECT_VIDEO_URL,
+ *                        are COLLECT_VIDEO_URL,
  *                        COLLECT_JOURNEY_IMAGES, COLLECT_BAND_IMAGE.
  *
  * ── THE SECTION COLLAGE IS THIS FAMILY'S JOB, and forgetting that removed it ──
@@ -111,7 +111,6 @@ import {
   COLLECT_COVERS,
   COLLECT_JOURNEY_IMAGES,
   COLLECT_LANDING,
-  COLLECT_STORE_URL,
   COLLECT_VIDEO_URL,
   collageFor,
 } from '../../config/site';
@@ -301,13 +300,16 @@ const slides = COLLECT_JOURNEY_IMAGES.map((image, i) => ({
         is named here rather than in the record because it belongs to the
         destination, not to the sentence: `en` says "Collect" and `es` says
         "Coleccionar", and both are the same action. */}
-    {/* Collect's one stamp. The store is what this page is for, and v4 allows
+    {/* Collect's one stamp. It used to open the Bandcamp store; Sky Sounds is
+        a past project and sells nothing now, so it opens the card archive —
+        the same localised `offer.href` the closing card uses.
+        The store was what this page was for, and v4 allows
         the lift on exactly the primary action of a view. The tilt sign comes
         from the pigment rather than from here — "maar tilts left, collect tilts
         right" — so this leans the opposite way to the home page's stamp without
         either call site choosing an angle. */}
     <Action
-      href={COLLECT_STORE_URL}
+      href={offer.href}
       label={copy.pitch.cta}
       variant="collect"
       emphasis="stamp"
@@ -365,7 +367,7 @@ const slides = COLLECT_JOURNEY_IMAGES.map((image, i) => ({
     />
     <Card
       variant="entry"
-      href={COLLECT_STORE_URL}
+      href={offer.href}
       title={offer.title}
       level={2}
       cover={COLLECT_COVERS.offer}

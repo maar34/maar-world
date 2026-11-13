@@ -591,6 +591,39 @@ const EXCLUSIONS = [
       'production\'s only iframe on the wild card is <iframe src=""> — an empty player ' +
       'that loads nothing. There is no embed to preserve.',
   },
+  /**
+   * SKY SOUNDS STOPPED SELLING — 2026-11-13.
+   *
+   * The owner retired the storefront: the cards are a past project and the site
+   * is informative only. One entry per page that production served the link on.
+   */
+  {
+    url: '/',
+    kind: 'link',
+    value: 'https://maar-world.bandcamp.com/merch',
+    reason:
+      'the Sky Sounds Bandcamp store link. Sky Sounds is now a past project and the owner ' +
+      'stopped selling the cards on 2026-11-13: every buy button and storefront link left the site ' +
+      'in one change, so this page no longer links to the shop. Removal, not loss.',
+  },
+  {
+    url: '/collect',
+    kind: 'link',
+    value: 'https://maar-world.bandcamp.com/merch',
+    reason:
+      'the Sky Sounds Bandcamp store link. Sky Sounds is now a past project and the owner ' +
+      'stopped selling the cards on 2026-11-13: every buy button and storefront link left the site ' +
+      'in one change, so this page no longer links to the shop. Removal, not loss.',
+  },
+  {
+    url: '/tree',
+    kind: 'link',
+    value: 'https://maar-world.bandcamp.com/merch',
+    reason:
+      'the Sky Sounds Bandcamp store link. Sky Sounds is now a past project and the owner ' +
+      'stopped selling the cards on 2026-11-13: every buy button and storefront link left the site ' +
+      'in one change, so this page no longer links to the shop. Removal, not loss.',
+  },
 ];
 
 // ── HTML helpers ─────────────────────────────────────────────────────────────
