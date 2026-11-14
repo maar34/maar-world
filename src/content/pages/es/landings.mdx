@@ -36,6 +36,7 @@ translationOf: "landings"
 
 import EmbedPlate from '../../../components/media/EmbedPlate.astro';
 import Mark from '../../../components/patterns/Mark.astro';
+import { navIconMask } from '../../../lib/nav-icons.mjs';
 import ContactForm from '../../../components/ui/ContactForm.astro';
 import { LANDINGS as M, BOOKINGS } from '../../../config/articles';
 
@@ -197,7 +198,9 @@ ENT Worlds
 
   ![rama](/img/branch.png)
 
-## Sets híbridos (en vivo + DJ)
+<h2 id="bookings" data-page-icon style={`--page-icon: ${navIconMask('speaker_group')}`}>Contrataciones</h2>
+
+### Sets híbridos (en vivo + DJ)
 
 De treinta minutos a cuatro horas: viajes sonoros o audiovisuales por los elementos clásicos, expediciones a sistemas solares, exoplanetas y estrellas.
 
@@ -205,6 +208,7 @@ Cada concepto aparece bajo climas musicales que van del ambient y el downtempo a
 
 <ContactForm
   id="contact"
+  level={3}
   action={BOOKINGS.formAction}
   heading="Contacto"
   lede="Enviá una consulta de contratación."

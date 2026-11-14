@@ -7,8 +7,8 @@ tags: []
 source: "maar.world/collections/_pages/1-feedback-eng.html"
 lang: "en"
 origin: "migrated"
-redirectTo: "/landings#contact"
+redirectTo: "/landings#bookings"
 noindex: true
 ---
 
-<p>This page has moved. Redirecting to <a href="/landings#contact">/landings</a>…</p>
+<p>This page has moved. Redirecting to <a href="/landings#bookings">/landings</a>…</p>

@@ -42,6 +42,7 @@ origin: "migrated"
 
 import EmbedPlate from '../../../components/media/EmbedPlate.astro';
 import Mark from '../../../components/patterns/Mark.astro';
+import { navIconMask } from '../../../lib/nav-icons.mjs';
 import ContactForm from '../../../components/ui/ContactForm.astro';
 import { LANDINGS as M, BOOKINGS } from '../../../config/articles';
 
@@ -203,7 +204,9 @@ ENT Worlds
 
   ![branch](/img/branch.png)
 
-## Hybrid (Live + DJ) sets
+<h2 id="bookings" data-page-icon style={`--page-icon: ${navIconMask('speaker_group')}`}>Bookings</h2>
+
+### Hybrid (Live + DJ) sets
 
 From thirty minutes to four hours: sonic or audiovisual journeys through classical elements, expeditions to solar systems, exoplanets, and stars.
 
@@ -211,6 +214,7 @@ Each concept appears under musical moods ranging from ambient and downtempo to h
 
 <ContactForm
   id="contact"
+  level={3}
   action={BOOKINGS.formAction}
   heading="Contact"
   lede="Send a booking inquiry."

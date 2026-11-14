@@ -82,7 +82,8 @@ h1,
  * its own breakpoints.
  */
 [data-page-icon] .prose h1:first-of-type::before,
-h1[data-page-icon]::before {
+h1[data-page-icon]::before,
+.prose h2[data-page-icon]::before {
   content: '';
   display: inline-block;
   inline-size: 1em;

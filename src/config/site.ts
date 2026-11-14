@@ -312,7 +312,7 @@ export const HOME_ACTIONS = [
  * page whose whole point is that the address led nowhere. The second action
  * is quiet: a 404 is not a place to spend the break, and a visitor who scanned
  * a physical card and landed here needs a way to say so, not a gesture.
- * `/landings#contact` is the contact form — the record's body says why they might
+ * `/landings#bookings` is the contact form — the record's body says why they might
  * write. Hrefs are the English paths; a Spanish 404 does not exist because the
  * host serves one error page, and the header already offers the language.
  */
@@ -327,7 +327,7 @@ export const NOTFOUND_ACTIONS = [
     gesture: undefined,
   },
   {
-    href: '/landings#contact',
+    href: '/landings#bookings',
     label: 'Write to us',
     labelEs: 'Escribinos',
     variant: 'secondary',
