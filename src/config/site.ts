@@ -899,35 +899,12 @@ export function docReadMoreFor(lang: string): string {
  */
 export const TREE_LINKS = [
   /**
-   * THE TWO CARD ROWS COME FIRST, IN THE ORDER A VISITOR MEETS THEM.
-   *
-   * Tree is the address in a social profile: someone arriving from a post came
-   * for the cards, so the cards are rows one and two, and they read as a pair —
-   * look at them, then buy them. The three sites we are part of follow, in the
-   * order they already had.
-   *
-   * "View Cards" is the only row that stays on this site. It carries `hearing`
-   * because that is already the Cards icon in `SECTIONS` — one destination, one
-   * symbol, wherever it is offered.
-   *
-   * `hrefEs` is the same optional-per-language shape as `labelEs` below, and it
-   * is needed for the same reason the header needed `localise`: a Spanish
-   * visitor sent to `/collect/cards` is dropped back into English by the one
-   * press this page exists to serve. A missing `hrefEs` falls back to `href`,
-   * so the three external links stay one line each.
+   * Our own two first — Maar World home, then the Lab — then the two sites we
+   * are part of. Internal rows carry `hrefEs` so a Spanish visitor stays in
+   * Spanish; a missing `hrefEs` or `labelEs` falls back to the English one.
    */
-  {
-    href: '/collect/cards',
-    hrefEs: '/es/collect/cards',
-    label: 'View Cards',
-    labelEs: 'Ver cartas',
-    icon: 'hearing',
-  },
-  {
-    href: 'https://artizen.fund/index/p/entangled-space--open-protocol-for-regenerative-economies?season=6',
-    label: 'Artizen Entangled Space',
-    icon: 'volunteer_activism',
-  },
+  { href: '/', hrefEs: '/es', label: 'Maar World', icon: 'public' },
+  { href: '/lab', hrefEs: '/es/lab', label: 'Lab', labelEs: 'Lab', icon: 'science' },
   { href: 'https://entangled.space/', label: 'Entangled Space', icon: 'hub' },
   { href: 'https://plantasia.space/', label: 'Plantasia Space', icon: 'potted_plant' },
 ] as const;

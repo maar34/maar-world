@@ -26,11 +26,11 @@
  *
  * NO JAVASCRIPT. Every part of this is a link and a stylesheet.
  */
-import volunteerActivism from '@material-symbols/svg-400/outlined/volunteer_activism.svg?raw';
+import science from '@material-symbols/svg-400/outlined/science.svg?raw';
 import hub from '@material-symbols/svg-400/outlined/hub.svg?raw';
 import pottedPlant from '@material-symbols/svg-400/outlined/potted_plant.svg?raw';
 import album from '@material-symbols/svg-400/outlined/album.svg?raw';
-import hearing from '@material-symbols/svg-400/outlined/hearing.svg?raw';
+import publicIcon from '@material-symbols/svg-400/outlined/public.svg?raw';
 import { TREE_LINKS, TREE_HUB_STRINGS, type TreeIconName } from '../../config/site';
 
 interface Props {
@@ -74,11 +74,11 @@ const isExternal = (href: string) => /^[a-z][a-z0-9+.-]*:/i.test(href);
  * are registered here by hand. A new icon in TREE_LINKS needs a line in both.
  */
 const SYMBOLS: Record<TreeIconName, string> = {
-  volunteer_activism: volunteerActivism,
+  science,
   hub,
   potted_plant: pottedPlant,
   album,
-  hearing,
+  public: publicIcon,
 };
 ---
 
